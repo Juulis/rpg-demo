@@ -1,43 +1,70 @@
 # Arkitektur – Runornas kall (2D, TypeScript)
 
 Huvudspåret är en isometrisk 2D-motor i **PixiJS v8**, byggd med **Vite + TypeScript (strict)**.
-Den gamla 3D-versionen ligger orörd som spelbart arkiv i `legacy-3d/` (Three via CDN) och publiceras på `/rpg-demo/legacy-3d/`.
+Den gamla 3D-versionen ligger som spelbart arkiv i `legacy-3d/` och publiceras på `/rpg-demo/legacy-3d/`.
 
-## Regler
+## Regler (permanenta)
 
-- **Modulärt och objektorienterat:** en klass per ansvar. Systemen känner inte till DOM eller Pixi om de inte måste (logik testbar utan renderare).
-- **Inga globala variabler.** Allt nås via `Game`. Kommunikation mellan system sker via den **typade `EventBus<GameEvents>`** (`src/core/events.ts`), inte `window.__rpg`. Enda undantaget är en debug-hook (`window.__game`) i dev-bygget.
-- **Speldata är typad JSON** i `src/data/` (kopierad från Speldesigns `/spel/design/`) med interfaces i `src/data/types.ts`. Saknade id ger fel, inga tysta fallbacks (t.ex. bossens skada kommer bara från `monsterfamiljer.json`).
-- **En sanning per tillstånd:** dödade monster finns bara i `Session.killed` (även bossar).
-- **Sparformatet** är bakåtkompatibelt med legacy `js/save.js` (`rpg_heroes`, `rpg_hero_<id>`, `rpg_save`, `rpg_found`). `SaveManager.migrate()` uppgraderar äldre versioner.
-- Svenska UI-texter. Tangenter: Tab (karta), H (lorebok), M (ljud av/på), B/I (inventory), Alt (visa föremål).
+- **Inga tvingande spärrar.** Fri rörelse mellan alla områden; inga krav på rensade zoner, dödade fiender eller hjältenivå.
+  Svårigheten styrs enbart av monsternivå. Portalen öppnas bara av att alla runor är aktiva. `recommended_level` i data är ren information (tooltip).
+- **Modulärt och objektorienterat:** en klass per ansvar. Logik känner inte till DOM/Pixi om den inte måste.
+- **Inga globaler.** Allt nås via `Game` / `GameContext`. Kommunikation via den typade `EventBus<GameEvents>`
+  (`src/core/EventBus.ts`, `src/core/events.ts`) – inte `window.__rpg`. Undantag: debug-hook `window.__game` i dev.
+- **En namnform per event** (inga alias som `death`/`rune_activate`). Nya events läggs till i `GameEvents`.
+- **Typad speldata** i `src/data/` (kopia av Speldesigns `/spel/design/`), interface i `src/data/types.ts`, åtkomst via `ctx.data`.
+  Saknade id ger fel, inga tysta fallbacks (bossens skada kommer bara från data).
+- **En sanning per tillstånd:** dödade monster (även bossar) finns bara i `session.killed`.
+- **Sparformatet** är bakåtkompatibelt med legacy `js/save.js` (`rpg_heroes`, `rpg_hero_<id>`, `rpg_save`, `rpg_found`).
+- **Assets** som vanliga filer i `public/assets/` (inget base64).
+- Svenska UI-texter. Tangenter: Tab karta, H lorebok, M ljud, B/I inventory, Alt visa föremål, Z etiketter på/av.
 
-## Mappar
+## Moduler och GameContext
+
+```ts
+interface GameContext {
+  bus: EventBus<GameEvents>;
+  hero: Readonly<HeroState>;
+  zone: Readonly<ZoneView>;
+  session: Session;
+  data: GameData;
+}
+interface GameModule {
+  init(ctx: GameContext): void;
+  dispose(): void;
+}
+```
+
+En modul skapas i `src/main.ts` och läggs i `modules`; `Game` anropar `init(ctx)` efter att renderaren startat och `dispose()` vid nedstängning.
+Moduler läser tillstånd via `ctx` och kommunicerar enbart via `ctx.bus` (emit/on; `on` returnerar en avregistreringsfunktion att anropa i `dispose`).
+
+## Mappar och ägare
 
 ```
 index.html            Vite-ingång
+public/assets/        grafik/ljud som filer
 src/
-  main.ts             startar Game (+ debug-hook i dev)
-  core/               Game, EventBus, events (typer), Rng, Session
-  data/               *.json + types.ts + index.ts (typad åtkomst, validering)
-  render/             Renderer (Pixi-lager), Iso (projektion), Camera, Parallax
-  systems/            SpawnSystem, LootSystem, CombatSystem, ...
-  entities/           Entity, Hero, Monster, Drop
-  input/              Input (Diablo-klick, WASD, tangenter)
-  ui/                 Hud, Tooltip, MonsterBar, InventoryUI, MapUI, LorebookUI, StartMenu
-  audio/              AudioManager (portad från legacy js/audio.js)
-  save/               SaveManager
-  assets/             inbäddade bilder (base64-moduler, genererade)
-legacy-3d/            arkiverad 3D-version (kopieras oförändrad till dist/legacy-3d)
+  main.ts             skapar Game, registrerar moduler (+ debug-hook i dev)
+  core/               Game, EventBus, events (GameEvents), GameContext, Rng, Session          – U1
+  data/               *.json + types.ts + index.ts                                              – U1 (data: Speldesign)
+  render/             Renderer, Iso, Camera, Parallax                                           – U1
+  systems/            SpawnSystem, LootSystem, CombatSystem, PortalSystem                       – U1
+  entities/           Entity, Hero, Monster, Drop                                               – U1
+  input/              Input (Diablo-klick, Alt/Z, tangenter)                                    – U1
+  ui/                 Hud, Tooltip, MonsterBar, InventoryUI                                     – U1
+  audio/              AudioManager (port av legacy js/audio.js)                                 – U2 (tom plats)
+  save/               SaveManager + hjälteplatser                                               – U2 (tom plats)
+  map/                MapUI (Tab)                                                               – U2 (tom plats)
+  menu/               StartMenu / hjälteval                                                     – U2 (tom plats)
+  lore/               Lorebook (H)                                                              – U2 (tom plats)
+legacy-3d/            arkiverad 3D-version (kopieras till dist/legacy-3d)
 .github/workflows/    pages.yml (npm ci, typecheck, lint, build → Pages), ci.yml (PR-kontroller)
 ```
 
 ## Flöde
 
-`Game` skapar `Renderer`, `Input`, `Camera` och systemen. En spelomgång (`Session`: seed + killed) väljs av startmenyn via `SaveManager`
-(Fortsätt = sparfilens session, Nytt game = ny seed). `SpawnSystem.roll(area, session)` ger deterministiska `SpawnSpec` med id
-`${area}:${spawnpunktIndex}:${monsterIndex}` (boss `${area}:boss`). Systemen emit:ar händelser (`kill`, `loot_drop`, `pickup`, ...) som
-`AudioManager`, `SaveManager`, UI och lorebok lyssnar på.
+`Game` skapar `Renderer` och systemen och initierar modulerna. Startmenyn (U2) väljer hjälte och session (seed + killed).
+`SpawnSystem.roll(area, session)` ger deterministiska `SpawnSpec` med id `${area}:${spawnpunkt}:${monster}` (boss `${area}:boss`).
+Gameplay emit:ar events (`kill`, `loot_drop`, `pickup` …) som ljud, sparning, karta och lorebok lyssnar på.
 
 ## Kommandon
 
