@@ -1,0 +1,157 @@
+/**
+ * Headless-test med stubbar (jsdom + stub-GameContext). Kör: npx tsx tests/headless.test.mts
+ * Simulerar motorn: svarar på new_game med zone_enter, flyttar hjälten, emit:ar events.
+ */
+import { JSDOM } from 'jsdom';
+import assert from 'node:assert/strict';
+
+const dom = new JSDOM('<!doctype html><body><div id="plate"></div></body>', { url: 'http://localhost/', pretendToBeVisual: true });
+const g = globalThis as unknown as Record<string, unknown>;
+for (const k of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Node', 'KeyboardEvent', 'Event', 'localStorage', 'requestAnimationFrame', 'cancelAnimationFrame']) {
+  g[k] = (dom.window as unknown as Record<string, unknown>)[k];
+}
+
+const { EventBus } = await import('../src/core/EventBus');
+const { MemoryStore } = await import('../src/core/storage');
+const { AudioModule } = await import('../src/audio/AudioModule');
+const { AudioEventBinder } = await import('../src/audio/AudioEventBinder');
+const { SaveModule } = await import('../src/save/SaveModule');
+const { SaveMigrator } = await import('../src/save/SaveMigrator');
+const { MenuModule } = await import('../src/menu/MenuModule');
+const { MapModule } = await import('../src/map/MapModule');
+const { FogRepository } = await import('../src/map/FogRepository');
+import type { GameEvents } from '../src/core/events';
+import type { GameContext } from '../src/core/GameContext';
+
+const bus = new EventBus<GameEvents>();
+const store = new MemoryStore();
+// legacy-data för engångsmigrering
+store.set('rk_inv_barbar', JSON.stringify({ inv: [{ base: 'langsvard' }], equip: {}, gold: 42 }));
+
+const ctx: GameContext = {
+  bus,
+  hero: { id: null, name: '', cls: 'riddare', level: 1, xp: 0, gold: 0, inv: [], equip: {}, stage: 0, runes: 0, city: 'besatt', zone: 'forest', pos: { x: 0, y: 0 }, facing: 0, playing: false },
+  zone: { name: 'forest', circle: 45, colliders: [], runes: [{ x: 10, y: 0, active: false }, { x: -20, y: 5, active: false }], portals: [], cleared: {} },
+  session: { seed: 1, killed: new Set() },
+  data: { portalVillage: { portal: { forest_position: [0, 0] }, village: { zones: [] } } },
+};
+// motorstub: new_game -> bygg zon -> zone_enter (asynkront, som en riktig laddning)
+const log: string[] = [];
+bus.on('new_game', ({ seed }) => {
+  log.push(`new_game:${seed}`);
+  setTimeout(() => {
+    ctx.zone = { ...ctx.zone, name: ctx.hero.zone };
+    ctx.hero.pos = ctx.hero.resumePos ?? { x: 0, y: 0 };
+    ctx.hero.playing = true;
+    bus.emit('zone_enter', { name: ctx.hero.zone });
+  }, 20);
+});
+
+// --- ljud: event -> ljudnamn
+const played: string[] = [];
+let t = 0;
+const binder = new AudioEventBinder({ play: (n) => played.push(n) }, () => t);
+const offs = binder.bind(bus);
+bus.emit('kill', { id: 'x', area: 'a', lvl: 1, champion: false, unique: false, boss: true });
+bus.emit('loot_drop', { quality: 'rare' });
+bus.emit('pickup', { itemId: 'i', first: true });
+bus.emit('step', undefined); t = 100; bus.emit('step', undefined); t = 500; bus.emit('step', undefined);
+assert.deepEqual(played, ['boss', 'drop_rare', 'pickup_first', 'step', 'step']);
+offs.forEach((o) => o());
+
+// --- moduler
+const audio = new AudioModule(store);
+const save = new SaveModule(store);
+const menu = new MenuModule(save);
+const map = new MapModule(store, () => document.body, false);
+for (const m of [audio, save, menu, map]) m.init(ctx);
+
+// M-mute
+assert.equal(audio.volume.isMuted, false);
+window.dispatchEvent(new dom.window.KeyboardEvent('keydown', { code: 'KeyM' }));
+assert.equal(audio.volume.isMuted, true);
+assert.equal(store.get('rpg_mute'), '1');
+assert.ok(document.querySelector('#plate .sfx-ctl'), 'volymreglage monterat');
+
+// engångsmigrering rk_inv_
+const heroes = save.roster.list();
+assert.equal(heroes.length, 1);
+assert.equal(heroes[0]?.cls, 'barbar');
+const migrated = save.roster.load(heroes[0]!.id)!;
+assert.equal(migrated.hero.gold, 42);
+assert.equal(migrated.hero.inv[0]?.base, 'rostig_kortsvard', 'gammalt startgear fixat');
+
+// meny visas, validering
+assert.equal(menu.isOpen, true);
+assert.equal(document.querySelectorAll('.hslot').length, 8);
+assert.match(save.roster.validName('x'), /2–16/);
+assert.match(save.roster.validName('Barbar'), /redan/);
+assert.equal(save.roster.validName('Åsa_1'), '');
+
+// Tab när menyn är öppen: släpps igenom
+const tab = (): KeyboardEvent => new dom.window.KeyboardEvent('keydown', { key: 'Tab', cancelable: true }) as unknown as KeyboardEvent;
+let ev = tab(); window.dispatchEvent(ev);
+assert.equal(ev.defaultPrevented, false, 'Tab ska släppas igenom när menyn är öppen');
+
+// skapa hjälte via UI
+(document.getElementById('hmNewHero') as HTMLButtonElement).click();
+const input = document.querySelector('.hero-name') as HTMLInputElement;
+input.value = 'Ragnar';
+(document.getElementById('hnOk') as HTMLButtonElement).click();
+assert.equal(menu.isOpen, false);
+await new Promise((r) => setTimeout(r, 60));
+assert.equal(ctx.hero.name, 'Ragnar');
+assert.equal(ctx.hero.playing, true);
+assert.ok(log.length === 1, 'new_game emit:at en gång');
+assert.equal(store.get('rk_inv_riddare'), null, 'rk_inv_ skrivs inte längre');
+const ragnarId = ctx.hero.id!;
+assert.ok(store.get(`rpg_hero_${ragnarId}`), 'sparad vid start');
+
+// spela: steg avslöjar fog, kill sparar via bussen (debounce)
+ctx.hero.pos = { x: 5, y: 5 };
+bus.emit('step', undefined);
+assert.ok(map.fogOfWar.isRevealed('forest', 5, 5));
+ctx.hero.gold = 99; ctx.session.killed.add('m1');
+bus.emit('kill', { id: 'm1', area: 'a', lvl: 1, champion: false, unique: false, boss: false });
+await new Promise((r) => setTimeout(r, 200));
+const saved = JSON.parse(store.get(`rpg_hero_${ragnarId}`)!);
+assert.equal(saved.hero.gold, 99);
+assert.deepEqual(saved.game.killed, ['m1']);
+assert.deepEqual(saved.game.pos, [5, 5]);
+
+// Tab under spel: växlar karta, preventDefault
+ev = tab(); window.dispatchEvent(ev);
+assert.equal(ev.defaultPrevented, true);
+assert.equal(map.isOpen, true);
+map.render(0);
+ev = tab(); window.dispatchEvent(ev);
+assert.equal(map.isOpen, false);
+
+// fog sparas per hjälte-id vid zonbyte
+map.flush();
+assert.ok(store.get(FogRepository.key(ragnarId, 'forest')));
+
+// tillbaka till menyn + fortsätt: återupptar position
+menu.show();
+assert.equal(ctx.hero.playing, false);
+(document.getElementById('hmCont') as HTMLButtonElement).click();
+await new Promise((r) => setTimeout(r, 60));
+assert.deepEqual(ctx.hero.pos, { x: 5, y: 5 });
+assert.equal(ctx.session.killed.has('m1'), true);
+
+// radera med bekräftelse -> fog städas via hero_deleted
+menu.show();
+(document.querySelector(`.hslot[data-id="${ragnarId}"]`) as HTMLElement).click();
+(document.getElementById('hmDel') as HTMLButtonElement).click();
+assert.match(document.querySelector('.confirm span')!.textContent!, /Radera Ragnar för alltid\?/);
+(document.getElementById('hmYes') as HTMLButtonElement).click();
+assert.equal(store.get(`rpg_hero_${ragnarId}`), null);
+assert.equal(store.get(FogRepository.key(ragnarId, 'forest')), null);
+
+// migrering: nyare version avvisas, v0 uppgraderas
+const mig = new SaveMigrator();
+assert.equal(mig.migrate({ version: 99, hero: { id: 'a' } }), null);
+assert.equal(mig.migrate({ id: 'a', name: 'A', cls: 'barbar', seed: 5, killed: ['k'] })?.game?.seed, 5);
+
+for (const m of [map, menu, save, audio]) m.dispose();
+console.log('HEADLESS_OK');
