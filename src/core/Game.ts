@@ -4,6 +4,8 @@ import type { GameContext, GameModule, HeroSave, HeroState, Vec2, ZoneView } fro
 import { createSession } from './Session';
 import { Rng } from './Rng';
 import type { GameAuthority } from './GameAuthority';
+import type { FoundRegistry, SaveBackend } from './SaveBackend';
+import { LocalFoundRegistry } from './LocalFoundRegistry';
 import { CombatRules } from '../logic/CombatRules';
 import { LocalAuthority } from '../logic/LocalAuthority';
 import { DATA, validateData } from '../data';
@@ -85,6 +87,7 @@ export class Game {
     cleared: {},
   };
   readonly ctx: GameContext;
+  private foundRegistry: FoundRegistry = new LocalFoundRegistry();
 
   private world: World | null = null;
   private camera!: Camera;
@@ -129,7 +132,7 @@ export class Game {
     this.zones = new ZoneFactory(this.assets);
     this.factory = new MonsterFactory(this.assets, this.spawn);
     const w = (): World => this.mustWorld();
-    this.lootSys = new LootSystem(w, this.assets);
+    this.lootSys = new LootSystem(w, this.assets, () => this.foundRegistry);
     this.combat = new CombatSystem(w, this.lootSys);
     this.ai = new MonsterAI(w, this.combat, this.factory);
     this.portals = new PortalSystem(w, this.assets);
@@ -149,6 +152,8 @@ export class Game {
       this.hud.flash(name);
       this.bus.emit('boss_phase', { phase: ph });
     };
+    // Kartan (U2, MapView) täcker skärmen med rubrik överst och legend nederst: dölj HUD-delar som annars krockar.
+    this.bus.on('map_toggle', ({ open }) => document.body.classList.toggle('map-open', open));
     this.bus.on('locale_changed', () => {
       this.hud.relabel();
       this.invUI.relabel();
@@ -190,6 +195,11 @@ export class Game {
     for (const id of s.killed) this.ctx.session.killed.add(id);
     if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
     if (this.camera) this.enterZone(h.zone === 'village' ? 'village' : 'forest', h.resumePos ?? undefined);
+  }
+
+  /** U2:s SaveBackend (#19) registreras här; motorn använder den för fyndregistret (loreboken). */
+  setSaveBackend(b: SaveBackend): void {
+    this.foundRegistry = b;
   }
 
   /** Sparbar ögonblicksbild (för SaveManager). */

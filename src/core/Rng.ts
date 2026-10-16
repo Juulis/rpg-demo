@@ -1,3 +1,5 @@
+import { cryptoSeed } from './entropy';
+
 /** Deterministisk slump (mulberry32) och FNV-1a-hash för seeds. */
 export class Rng {
   private state: number;
@@ -16,9 +18,7 @@ export class Rng {
   }
 
   static newSeed(): number {
-    const a = new Uint32Array(1);
-    crypto.getRandomValues(a);
-    return (a[0] ?? 1) >>> 1 || 1;
+    return cryptoSeed();
   }
 
   next(): number {

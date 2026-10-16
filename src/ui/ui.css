@@ -432,3 +432,15 @@
 .handItem .itm {
   position: relative;
 }
+/* Karta öppen (map_toggle): rubrik (topp) och legend (botten) får inte krocka med HUD. */
+body.map-open #hud .bars,
+body.map-open #hud .lvl,
+body.map-open #hud .help,
+body.map-open #hud .bossbar,
+body.map-open #monbar,
+body.map-open #msg,
+body.map-open #lootLabels,
+body.map-open .dmg,
+body.map-open #topbar {
+  visibility: hidden;
+}

@@ -84,26 +84,29 @@ export function fullDef(id: string): FullMonsterDef {
   return def;
 }
 
-/** Vilket spriteark ett monster ritas med, och skala/färgton (bara utseende). */
-export function monsterLook(id: string, family: string): { sheet: string; scale: number; tint: number } {
-  const own: Record<string, [string, number, number?]> = {
-    skogsvarg: ['skogsvarg', 0.75],
-    vargbest: ['vargbest', 0.62],
-    taggsvin: ['taggsvin', 0.7],
-    skuggvarg: ['skuggvarg', 0.75],
-    gravargsledare: ['gravargsledare', 0.62],
-    skelett_kapten: ['skelett_kapten', 0.62],
-    askriddare: ['askriddare', 0.62],
-    skelett_hund: ['skuggvarg', 0.65, 0xd8d0b8],
-    skelett_krigare: ['vandrande_skelett', 0.75],
-    skelett_bagskytt: ['vandrande_skelett', 0.72, 0xd8d0c0],
-    skelett_runprast: ['vandrande_skelett', 0.74, 0xe0a0a0],
-    skelett_vakt: ['vandrande_skelett', 0.85, 0xb8bcc8],
-    benkungen_valdemar: ['vandrande_skelett', 1.15, 0xf0d890],
-    gruvspindel: ['skogsspindel', 0.7],
+/**
+ * Vilket spriteark ett monster ritas med (bara utseende). Har monstret ett eget ark (index.json) används det i 1:1
+ * (arken är ritade i skala mot riddaren). Annars lånas ett närliggande ark med färgton.
+ */
+export function monsterLook(id: string, family: string, has: (sheet: string) => boolean): { sheet: string; scale: number; tint: number } {
+  if (has(id)) return { sheet: id, scale: 1, tint: 0xffffff };
+  const alias: Record<string, [string, number?]> = {
+    skelett_hund: ['skuggvarg', 0xd8d0b8],
+    skelett_bagskytt: ['skelett_krigare', 0xd8d0c0],
+    skelett_runprast: ['skelett_krigare', 0xe0a0a0],
+    skelett_vakt: ['skelett_krigare', 0xb8bcc8],
+    gruvspindel: ['skogsspindel'],
+    vargbest: ['likatare_varg'],
+    gravargsledare: ['skuggvarg'],
   };
-  const o = own[id];
-  if (o) return { sheet: o[0], scale: o[1], tint: o[2] ?? 0xffffff };
-  const byFam: Record<string, string> = { bestar: 'skogsvarg', ododa: 'vandrande_skelett', insekter: 'skogsspindel' };
-  return { sheet: byFam[family] ?? 'forvriden_jagare', scale: 0.75, tint: 0xffffff };
+  const a = alias[id];
+  if (a && has(a[0])) return { sheet: a[0], scale: 1, tint: a[1] ?? 0xffffff };
+  const byFam: Record<string, string> = {
+    bestar: 'skogsvarg',
+    ododa: 'vandrande_skelett',
+    insekter: 'skogsspindel',
+    forvridna: 'smittad_bybo',
+    gastar: 'gravgast',
+  };
+  return { sheet: byFam[family] ?? 'forvriden_jagare', scale: 1, tint: 0xffffff };
 }

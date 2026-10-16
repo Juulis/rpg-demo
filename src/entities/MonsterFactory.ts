@@ -15,7 +15,7 @@ export class MonsterFactory {
 
   create(w: World, id: string, pos: Vec2, lvl: number | null, spec: SpawnSpec | null): Monster {
     const def = fullDef(id);
-    const look = monsterLook(id, def.family);
+    const look = monsterLook(id, def.family, (k) => this.assets.monsters.has(k));
     const set = this.assets.monsters.get(look.sheet) ?? this.assets.monsters.get('forvriden_jagare') ?? {};
     const view = new DirSprite(set, look.scale, def.boss ? 40 : 26);
     view.sprite.tint = look.tint;
