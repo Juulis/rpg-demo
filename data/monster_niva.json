@@ -9,11 +9,12 @@
     "hp": "hp(L) = round(hp_ref × 1,10^d)",
     "damage": "skada(L) = round(skada_ref × 1,07^d), min och max var för sig",
     "defense": "forsvar(L) = max(0, forsvar_ref + 0,4 × d)",
-    "attack_rating": "AR(L) = 20 + 8 × L",
-    "defense_rating": "DR(L) = forsvar(L) × 10 + 5 × L",
+    "attack_rating": "AR(L) = 15 + 8 × L",
+    "defense_rating": "DR(L) = 15 + 8 × L + forsvar(L) × 2",
     "xp": "xp(L) = round(xp_mult × 3 × L^1,5) där xp_mult = xp_ref / 10 (xp_ref är monstrets xp i datafilen)",
     "speed": "Fart skalas inte.",
-    "note": "XP räknas från level, inte från d, så samma monster ger mer på högre nivå oavsett ref."
+    "note": "XP räknas från level, inte från d, så samma monster ger mer på högre nivå oavsett ref.",
+    "hit_ref": "attribut.json hit_chance"
   },
   "ref_levels": {
     "skelett_krigare": 2,
@@ -866,5 +867,98 @@
       "defense": 12.8,
       "xp": 2625
     }
-  ]
+  ],
+  "hit_chance_table": [
+    {
+      "anfallare_minus_forsvarare": -9,
+      "hit_pct": 20
+    },
+    {
+      "anfallare_minus_forsvarare": -8,
+      "hit_pct": 26
+    },
+    {
+      "anfallare_minus_forsvarare": -7,
+      "hit_pct": 33
+    },
+    {
+      "anfallare_minus_forsvarare": -6,
+      "hit_pct": 40
+    },
+    {
+      "anfallare_minus_forsvarare": -5,
+      "hit_pct": 46
+    },
+    {
+      "anfallare_minus_forsvarare": -4,
+      "hit_pct": 53
+    },
+    {
+      "anfallare_minus_forsvarare": -3,
+      "hit_pct": 60
+    },
+    {
+      "anfallare_minus_forsvarare": -2,
+      "hit_pct": 67
+    },
+    {
+      "anfallare_minus_forsvarare": -1,
+      "hit_pct": 73
+    },
+    {
+      "anfallare_minus_forsvarare": 0,
+      "hit_pct": 80
+    },
+    {
+      "anfallare_minus_forsvarare": 1,
+      "hit_pct": 83
+    },
+    {
+      "anfallare_minus_forsvarare": 2,
+      "hit_pct": 87
+    },
+    {
+      "anfallare_minus_forsvarare": 3,
+      "hit_pct": 90
+    },
+    {
+      "anfallare_minus_forsvarare": 4,
+      "hit_pct": 93
+    },
+    {
+      "anfallare_minus_forsvarare": 5,
+      "hit_pct": 95
+    },
+    {
+      "anfallare_minus_forsvarare": 6,
+      "hit_pct": 95
+    },
+    {
+      "anfallare_minus_forsvarare": 7,
+      "hit_pct": 95
+    },
+    {
+      "anfallare_minus_forsvarare": 8,
+      "hit_pct": 95
+    },
+    {
+      "anfallare_minus_forsvarare": 9,
+      "hit_pct": 95
+    }
+  ],
+  "progression_check": {
+    "path": [
+      "startskogen 1 till 3 (2 till 3 games)",
+      "vargaby 4 till 6 (1 till 2 games, Gråbjörnen en gång)",
+      "gamla_byn 7 till 9"
+    ],
+    "xp_per_game_simulerat": {
+      "startskogen": 174,
+      "vargaby_utan_boss": 1178,
+      "grabjornen_ulvhild": 2425
+    },
+    "kalkyl": "2 till 3 skogsgames ger cirka 350 till 520 XP (nivå 2 till 3, plus bonus för lägre nivå). Ett Vargaby game med boss ger cirka 3600 XP till, totalt cirka 4000 till 4100: nivå 6 (2821) och nära 7 (4291). Ett andra Vargaby game utan boss ger cirka 5200 totalt: nivå 7.",
+    "resultat": "Spelaren når nivå 6 till 7 innan portalbyn.",
+    "xp_curve": "100 × n^1,5, totalt nivå 6: 2821, nivå 7: 4291"
+  }
 }
