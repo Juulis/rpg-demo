@@ -33,7 +33,7 @@ export class SaveMigrator {
     if (!isRecord(h) || typeof h.id !== 'string') return null;
     const hero: HeroRecord = {
       id: h.id,
-      name: str(h.name, 'Namnlös'),
+      name: str(h.name, ''),
       cls: str(h.cls, 'riddare'),
       level: num(h.level, 1),
       xp: num(h.xp, 0),

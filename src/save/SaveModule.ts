@@ -1,5 +1,6 @@
 import { cryptoSeed, type SeedSource } from '../core/entropy';
 import type { GameContext, GameModule } from '../core/GameContext';
+import type { LocaleManager } from '../i18n/LocaleManager';
 import { AutoSaveService } from './AutoSaveService';
 import type { SaveBackend } from './backend/SaveBackend';
 import { LocalStorageSaveBackend } from './backend/LocalStorageSaveBackend';
@@ -30,6 +31,7 @@ export class SaveModule implements GameModule {
   private loaded = false;
 
   constructor(
+    private readonly i18n: LocaleManager,
     private readonly game: HeroGateway,
     backend: SaveBackend = new LocalStorageSaveBackend(),
     private readonly withDom = true,
@@ -40,7 +42,7 @@ export class SaveModule implements GameModule {
   }
 
   init(ctx: GameContext): void {
-    const indicator = this.withDom ? new SaveIndicator() : null;
+    const indicator = this.withDom ? new SaveIndicator(this.i18n) : null;
     const roster = new HeroRoster(this.repo, ctx.bus, this.entropy);
     const autosave = new AutoSaveService(ctx, this.game, this.repo, (d) => {
       roster.track(d, true);
