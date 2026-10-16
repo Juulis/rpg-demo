@@ -54,8 +54,8 @@ export class SpawnSystem {
     return a;
   }
 
-  /** cityState: stadens tillstånd (bara 'besatt' genererar monster). bossDefeated: från sparfilen. */
-  roll(area: SpawnArea, session: Session, opts: { cityState?: string; bossDefeated?: boolean } = {}): SpawnSpec[] {
+  /** cityState: stadens tillstånd (bara 'besatt' genererar monster). Dödade monster/bossar tas bort via session.killed (enda listan). */
+  roll(area: SpawnArea, session: Session, opts: { cityState?: string } = {}): SpawnSpec[] {
     if (area.city_id && opts.cityState && opts.cityState !== 'besatt') return [];
     const R = area.session_roll ?? {};
     const E = this.levels.elites;
@@ -75,7 +75,7 @@ export class SpawnSystem {
     };
     const out: SpawnSpec[] = [];
     const add = (s: SpawnSpec): void => {
-      if (!session.isKilled(s.uid)) out.push(s);
+      if (!session.killed.has(s.uid)) out.push(s);
     };
     const around = (r: Rng, p: SpawnPoint, radius: number): [number, number] => {
       const a = r.next() * Math.PI * 2;
@@ -146,7 +146,7 @@ export class SpawnSystem {
         });
     }
 
-    if (area.boss && !opts.bossDefeated) {
+    if (area.boss) {
       const b = area.boss;
       add({
         uid: `${area.id}:boss`,
