@@ -67,8 +67,9 @@ export function createInventory({ L, S, statsFor, onChange, onUse, flash }) {
     for (const it of S.inv) { const [w, h] = size(it), el = itemEl(it, w, h); el.style.left = it.x * CELL + 1 + 'px'; el.style.top = it.y * CELL + 1 + 'px'; bag.appendChild(el); }
     renderStats();
   }
-  function renderStats() { const st = statsFor(S.equip), lv = S.level, hit = L.hitChance(st.AR, 2 * 10 + 5 * lv, lv, lv);
-    const row = (k, v, t = '') => `<div title="${t}"><span>${k}</span><b>${v}</b></div>`;
+  function renderStats() { const st = statsFor(S.equip), lv = S.level, hit = L.hitChance(st.AR, 15 + 8 * lv, lv, lv);
+    const EXPL = { Life: 'Max hälsa.', Defence: 'Försvar minskar skadan per träff och sänker fiendens träffchans (DR = 15 + 8·nivå + försvar·2).', Block: 'Chans att blocka helt med sköld. Halveras när du springer, aldrig bakifrån, tak 75 %. Kostar 5 uthållighet.', 'Hit chance': 'Träffchans mot jämnårig fiende utan försvar: 0,80·2·AR/(AR+DR) + nivåterm, 5–95 %.', 'Strong hit': 'Krosslag: extra skada = 25 % av fiendens nuvarande HP (boss 10 %, högst 3 % av max).', MF: 'Magic find: ökar chansen till Magic, Rare, Set och Legendary (avtagande effekt över 100 %).', Krit: 'Kritisk träff ger extra skada.', Uthållighet: 'Resurs för hugg, block och färdigheter.', Skada: 'Vapnets skada med alla bonusar.', Fart: 'Gånghastighet.' };
+    const row = (k, v, t = '') => `<div data-tip-html="${(`<h5>${k}</h5>` + (EXPL[k] || '') + (t ? `<br><span class='dim'>${t}</span>` : '')).replace(/"/g, '&quot;')}"><span>${k}</span><b>${v}</b></div>`;
     statBox.innerHTML = `<h4>${S.cls?.name || ''} · Nivå ${lv}</h4>` + row('Life', st.maxHp) + row('Uthållighet', st.maxSt) + row('Skada', `${st.dmgMin}–${st.dmgMax}`, st.type) + row('Defence', Math.round(st.defense), `−${st.defReduce.toFixed(1)} per träff, försvarsvärde ${Math.round(st.defRating)}`)
       + row('Block', pct(st.block)) + row('Hit chance', pct(hit), `AR ${st.AR} mot jämnårig fiende`) + row('Strong hit', pct(st.strong)) + row('Krit', pct(st.crit)) + row('MF', Math.round(st.mf) + ' %') + row('Fart', st.speed.toFixed(2))
       + `<div class="gold"><span>Guld</span><b>🪙 ${S.gold}</b></div>`; }

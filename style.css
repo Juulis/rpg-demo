@@ -104,3 +104,16 @@ button:hover{background:#4a5058}
 #itTip .good{color:#5fe07a}#itTip .bad{color:#ff5a5a}#itTip .cmpH{margin-top:6px;border-top:1px solid #333;padding-top:4px;color:#cfc7b0}
 #itTip .setH{margin-top:6px;color:var(--q-set)}#itTip .setP,#itTip .setB{color:#1d6a1d;font-size:12px}#itTip .setP.on,#itTip .setB.on{color:#3fe04a}
 .lootLbl i{position:absolute;left:50%;top:100%;width:1px;background:#fff6;display:block}
+/* Generella tooltips (js/tooltip.js), stil från assets/hud/inventory.css .tooltip + .tooltip--liten */
+.rk-tip{position:fixed;z-index:60;max-width:260px;padding:5px 9px;border:12px solid transparent;border-image:url(assets/hud/tooltip_normal.svg) 20 fill stretch;font:13px/1.35 Georgia,serif;color:var(--text);pointer-events:none;box-sizing:border-box}
+.rk-tip.tooltip--liten{max-width:230px;padding:3px 8px;border-width:7px;font-size:12px;text-align:center}
+.rk-tip h5{margin:0 0 3px;font:700 14px Cinzel,Georgia,serif;color:#e6dfcc}.rk-tip .dim{color:var(--dim)}.rk-tip .champ{color:#6a6aff}.rk-tip .unik{color:#c7a35a}.rk-tip .bad{color:#d05050}
+.rk-tip[data-q=magic]{border-image-source:url(assets/hud/tooltip_magic.svg)}.rk-tip[data-q=rare]{border-image-source:url(assets/hud/tooltip_rare.svg)}.rk-tip[data-q=set]{border-image-source:url(assets/hud/tooltip_set.svg)}.rk-tip[data-q=legendary]{border-image-source:url(assets/hud/tooltip_legendary.svg)}
+/* D2-monstermätare överst (hover/strid) */
+#monBar{display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:15;min-width:300px;text-align:center;font-family:Cinzel,Georgia,serif;pointer-events:none;text-shadow:0 1px 3px #000}
+#monBar .mn{font-size:17px;font-weight:700;color:#e8e4da}#monBar .mn.champ{color:#6a6aff}#monBar .mn.unik{color:#c7a35a}
+#monBar .mm{font-size:12px;color:#b9b2a2;margin:1px 0 3px}
+#monBar .mbar{position:relative;height:16px;background:#0a0a0ccc;border:1px solid #6a5a40;box-shadow:0 0 0 1px #000}
+#monBar .mbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#a8242e,#5e0c14)}
+#monBar .mbar span{position:relative;font:12px/16px Georgia,serif;color:#fff}
+#orbL,#orbR,#xpwrap,#lvl,#gold,#quest,#slots .slot{pointer-events:auto}
