@@ -5,12 +5,20 @@ import type { FoundEntry, FoundRegistry } from './SaveBackend';
  * U2:s SaveBackend ersätter den via Game.setSaveBackend().
  */
 export class LocalFoundRegistry implements FoundRegistry {
-  markFound(id: string, entry: FoundEntry): boolean {
+  private heroId: string | null = null;
+
+  setActiveHero(heroId: string | null): void {
+    this.heroId = heroId;
+  }
+
+  async markFound(id: string, entry: FoundEntry): Promise<boolean> {
+    if (!this.heroId) return false;
     try {
-      const f = JSON.parse(localStorage.getItem('rpg_found') ?? '{}') as Record<string, unknown>;
+      const key = `rpg_found_${this.heroId}`;
+      const f = JSON.parse(localStorage.getItem(key) ?? localStorage.getItem('rpg_found') ?? '{}') as Record<string, unknown>;
       if (f[id]) return false;
       f[id] = entry;
-      localStorage.setItem('rpg_found', JSON.stringify(f));
+      localStorage.setItem(key, JSON.stringify(f));
       return true;
     } catch {
       return false;

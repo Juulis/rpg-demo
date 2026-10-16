@@ -70,7 +70,7 @@ export class HeroRoster {
 
   /** Sparar en hjälte (utan att markera som senast spelad) och uppdaterar cachen. */
   async store(d: SaveFile): Promise<void> {
-    if (!(await this.repo.save(d, false))) throw new Error('Kunde inte spara hjälten.');
+    if (!(await this.repo.save(d))) throw new Error('Kunde inte spara hjälten.');
     this.track(d);
   }
 

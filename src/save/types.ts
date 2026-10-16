@@ -1,3 +1,4 @@
+import type { FoundEntry } from '../core/SaveBackend';
 import type { Equipment, ItemInstance } from '../core/GameContext';
 
 export const SAVE_VERSION = 1;
@@ -32,7 +33,10 @@ export interface SaveFile {
   version: number;
   hero: HeroRecord;
   game: GameRecord | null;
+  /** Legacy: antal fynd (js/save.js). */
   found?: number;
+  /** Per-hjälte fyndregister (lorebok), ersätter globalt rpg_found i 2D. */
+  foundItems?: Record<string, FoundEntry>;
   savedAt?: number;
 }
 

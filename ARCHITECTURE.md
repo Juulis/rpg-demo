@@ -44,7 +44,7 @@ Moduler läser tillstånd via `ctx` och kommunicerar enbart via `ctx.bus` (emit/
 Moduler skriver aldrig till `ctx.hero`. `Game.loadHero(save: HeroSave)` laddar hjälte + session (seed, killed, zon, position, runor, stad)
 och emit:ar `hero_loaded`; `Game.getSnapshot(): HeroSave` ger en sparbar ögonblicksbild.
 `zone_enter { name }` (`'forest' | 'village'`) skickas när zonen är färdigladdad efter `newGame()`, `loadHero()` och portalbyte, och då är `hero.playing = true`.
-Fynd (lorebok) registreras via `FoundRegistry.markFound` (del av `SaveBackend`); `Game.setSaveBackend(b)` byter från `LocalFoundRegistry`. Bylayouten fås typad via `villageLayout(ctx.data)`.
+Fynd (lorebok) registreras per hjälte via `FoundRegistry.markFound` (del av `SaveBackend`); `SaveModule` kopplar in `LocalStorageSaveBackend` med `Game.setSaveBackend(b)`. Bylayouten fås typad via `villageLayout(ctx.data)`.
 
 ## Koordinatsystem
 
@@ -112,7 +112,7 @@ Gameplay emit:ar events (`kill`, `loot_drop`, `pickup` …) som ljud, sparning, 
 
 ## Öppna punkter
 
-- **markFound** är synkron. Den blir asynkron när U2 byter till core-interfacet `SaveBackend` (SaveModule anropar ännu inte `Game.setSaveBackend`).
+- **markFound** är asynkron via core-`SaveBackend`; `SaveModule` registrerar backend med `Game.setSaveBackend()`.
 - **U2:** #19 (ljud, sparning, meny, karta) är mergad. #22 (i18n: LocaleManager/DataLocalizer, `locale_changed`) är inte mergad. Autosparning är inte färdig i next/. `Text` får en provider från i18n när #22 är inne.
 - **Quests, dialoger och NPC:er** är inte inbyggda: Speldesigns `quests.json`, `dialoger.json` och `npc.json`, UI:s 13 NPC-sprites och quest-legendarer.
 - **Amazonens 5 kastspjut** (startutrustning) saknas: `kastspjut` har `subtype: kast` och hoppas över av startutrustningen (`HeroModel.startGear`), och skill 2 (kast) finns inte i 2D än.

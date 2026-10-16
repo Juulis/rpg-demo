@@ -1,12 +1,11 @@
 import { cryptoSeed, type SeedSource } from '../core/entropy';
 import type { GameContext, GameModule } from '../core/GameContext';
+import type { SaveBackend } from '../core/SaveBackend';
 import { AutoSaveService } from './AutoSaveService';
-import type { SaveBackend } from './backend/SaveBackend';
 import { LocalStorageSaveBackend } from './backend/LocalStorageSaveBackend';
 import type { HeroGateway } from './HeroGateway';
 import { HeroLoader } from './HeroLoader';
 import { HeroRoster } from './HeroRoster';
-import { LegacyImporter } from './LegacyImporter';
 import { PageLifecycleSaver } from './PageLifecycleSaver';
 import { SaveIndicator } from './SaveIndicator';
 import { SaveRepository } from './SaveRepository';
@@ -20,7 +19,7 @@ interface Parts {
 }
 
 /**
- * Sparmodulen (issue #9). Komponerar spar-logiken (DOM-fri, bakom SaveBackend) med DOM-delarna
+ * Sparmodulen (issue #9). Komponerar spar-logiken (DOM-fri, bakom core SaveBackend) med DOM-delarna
  * (sparikon, sidans livscykel). Exponerar roster/loader/autosave till menyn via konstruktorinjektion, inga globaler.
  */
 export class SaveModule implements GameModule {
@@ -40,6 +39,7 @@ export class SaveModule implements GameModule {
   }
 
   init(ctx: GameContext): void {
+    this.game.setSaveBackend(this.repo.backend);
     const indicator = this.withDom ? new SaveIndicator() : null;
     const roster = new HeroRoster(this.repo, ctx.bus, this.entropy);
     const autosave = new AutoSaveService(ctx, this.game, this.repo, (d) => {
@@ -51,7 +51,6 @@ export class SaveModule implements GameModule {
     lifecycle?.start();
     this.parts = { roster, loader: new HeroLoader(ctx, this.game, autosave, this.entropy), autosave, lifecycle, indicator };
     this.readyP = (async () => {
-      await new LegacyImporter(this.repo, roster).run();
       await roster.refresh();
       this.loaded = true;
     })();

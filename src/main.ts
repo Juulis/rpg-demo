@@ -12,6 +12,7 @@ import { AudioModule, MapModule, MenuModule, SaveModule } from './index';
 const save = new SaveModule({
   loadHero: (s) => game.loadHero(s),
   getSnapshot: () => game.getSnapshot(),
+  setSaveBackend: (b) => game.setSaveBackend(b),
 });
 const modules: GameModule[] = [save, new MenuModule(save), new AudioModule(), new MapModule()]; // save före menu
 

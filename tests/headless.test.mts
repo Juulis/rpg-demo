@@ -40,7 +40,7 @@ function must<T>(v: T | null | undefined, what: string): T {
   return v;
 }
 import type { HeroGateway } from '../src/save/HeroGateway';
-import { KeyValueSaveBackend } from '../src/save/backend/KeyValueSaveBackend';
+import { LocalStorageSaveBackend } from '../src/save/backend/LocalStorageSaveBackend';
 import { HeroLoader } from '../src/save/HeroLoader';
 import type { AutoSaveService } from '../src/save/AutoSaveService';
 
@@ -93,6 +93,7 @@ const ctx: GameContext = {
 const H = ctx.hero as HeroState;
 // Gateway-stub med samma semantik som Game.loadHero/getSnapshot (#18)
 const gateway: HeroGateway = {
+  setSaveBackend() {},
   loadHero(s) {
     Object.assign(H, s.hero);
     const g = s.game;
@@ -157,7 +158,7 @@ offs.forEach((o) => o());
 
 // --- moduler
 const audio = new AudioModule(store);
-const save = new SaveModule(gateway, new KeyValueSaveBackend(store), true, () => 123456789);
+const save = new SaveModule(gateway, new LocalStorageSaveBackend(store), true, () => 123456789);
 const menu = new MenuModule(save);
 const map = new MapModule(store, () => document.body, false);
 for (const m of [audio, save, menu, map]) m.init(ctx);
@@ -298,7 +299,8 @@ for (const m of [map, menu, save, audio]) m.dispose();
     'save/HeroRoster.ts',
     'save/AutoSaveService.ts',
     'save/HeroLoader.ts',
-    'save/LegacyImporter.ts',
+    'save/GlobalFoundMigration.ts',
+    'save/convert.ts',
   ])
     assert.doesNotMatch(src(f), /\b(window|document|localStorage)\b/, `${f} ska vara DOM-fri`);
   for (const dir of ['audio', 'save', 'save/backend', 'map', 'menu'])

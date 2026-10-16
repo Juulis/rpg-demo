@@ -1,31 +1,16 @@
-import { isRecord, parseJson } from '../core/json';
-import type { SaveBackend } from './backend/SaveBackend';
-import { SaveMigrator } from './SaveMigrator';
-import { SAVE_VERSION, type HeroIndexEntry, type SaveFile } from './types';
+import type { SaveBackend } from '../core/SaveBackend';
+import { fromHeroSave, toHeroSave } from './convert';
+import type { HeroIndexEntry, SaveFile } from './types';
 
 /**
- * Sparfiler via ett injicerat SaveBackend (DOM-fri). Nycklar, bakåtkompatibla med js/save.js:
- *   rpg_heroes   [{id, name, cls, level, savedAt}]
- *   rpg_hero_<id> {version, hero, game, found?, savedAt}
- *   rpg_save     {version, last}
- * Skrivningar köas, så att indexet (läs–ändra–skriv) inte kan skrivas över av en samtidig sparning.
+ * Spar-logikens enda väg till lagringen: core-interfacet SaveBackend (lokalt nu, server senare). DOM-fri.
+ * Översätter mellan menyns/autosparningens SaveFile och core-formatet HeroSave.
+ * Anropen köas, så att en sen sparning aldrig kan hamna efter en radering av samma hjälte.
  */
 export class SaveRepository {
-  static readonly K_INDEX = 'rpg_heroes';
-  static readonly K_LAST = 'rpg_save';
-  static readonly K_FOUND = 'rpg_found';
-  static heroKey = (id: string): string => `rpg_hero_${id}`;
-
   private queue: Promise<unknown> = Promise.resolve();
 
-  constructor(
-    readonly backend: SaveBackend,
-    private readonly migrator = new SaveMigrator(),
-  ) {}
-
-  private async readJson(key: string): Promise<unknown> {
-    return parseJson(await this.backend.load(key));
-  }
+  constructor(readonly backend: SaveBackend) {}
 
   private enqueue<T>(job: () => Promise<T>): Promise<T> {
     const run = this.queue.then(job, job);
@@ -33,60 +18,22 @@ export class SaveRepository {
     return run;
   }
 
-  async hasIndex(): Promise<boolean> {
-    return (await this.backend.load(SaveRepository.K_INDEX)) !== null;
-  }
-
-  async index(): Promise<HeroIndexEntry[]> {
-    const raw = await this.readJson(SaveRepository.K_INDEX);
-    if (!Array.isArray(raw)) return [];
-    return raw.filter(isRecord).flatMap((h): HeroIndexEntry[] =>
-      typeof h.id === 'string' && h.id
-        ? [
-            {
-              id: h.id,
-              name: typeof h.name === 'string' ? h.name : h.id,
-              cls: typeof h.cls === 'string' ? h.cls : 'riddare',
-              level: typeof h.level === 'number' ? h.level : 1,
-              ...(typeof h.savedAt === 'number' ? { savedAt: h.savedAt } : {}),
-            },
-          ]
-        : [],
-    );
-  }
-
-  writeIndex(list: HeroIndexEntry[]): Promise<void> {
-    return this.enqueue(() => this.backend.save(SaveRepository.K_INDEX, JSON.stringify(list)));
+  /** Hjältar, senast sparad först (SaveBackend-kontraktet). */
+  index(): Promise<HeroIndexEntry[]> {
+    return this.enqueue(() => this.backend.list());
   }
 
   async load(id: string): Promise<SaveFile | null> {
-    return this.migrator.migrate(await this.readJson(SaveRepository.heroKey(id)));
+    const s = await this.enqueue(() => this.backend.load(id));
+    return s ? fromHeroSave(s, s.foundItems) : null;
   }
 
-  /** Rå (omigrerad) post, t.ex. för engångsimport av äldre nycklar. */
-  loadRaw(key: string): Promise<unknown> {
-    return this.readJson(key);
-  }
-
-  /** Skriver sparfilen och uppdaterar index + senast spelad. false om lagringen misslyckas. */
-  save(d: SaveFile, markLast = true, withFound = false): Promise<boolean> {
+  /** false om lagringen misslyckades. */
+  save(d: SaveFile): Promise<boolean> {
+    const data = toHeroSave(d);
     return this.enqueue(async () => {
       try {
-        if (withFound) d.found = await this.foundCount();
-        await this.backend.save(SaveRepository.heroKey(d.hero.id), JSON.stringify(d));
-        const entry: HeroIndexEntry = {
-          id: d.hero.id,
-          name: d.hero.name,
-          cls: d.hero.cls,
-          level: d.hero.level,
-          ...(d.savedAt ? { savedAt: d.savedAt } : {}),
-        };
-        const idx = await this.index();
-        const i = idx.findIndex((x) => x.id === d.hero.id);
-        if (i >= 0) idx[i] = entry;
-        else idx.push(entry);
-        await this.backend.save(SaveRepository.K_INDEX, JSON.stringify(idx));
-        if (markLast) await this.backend.save(SaveRepository.K_LAST, JSON.stringify({ version: SAVE_VERSION, last: d.hero.id }));
+        await this.backend.save(d.hero.id, data);
         return true;
       } catch (e) {
         console.warn('Sparning misslyckades', e);
@@ -96,21 +43,10 @@ export class SaveRepository {
   }
 
   remove(id: string): Promise<void> {
-    return this.enqueue(async () => {
-      await this.backend.remove(SaveRepository.heroKey(id));
-      const idx = (await this.index()).filter((h) => h.id !== id);
-      await this.backend.save(SaveRepository.K_INDEX, JSON.stringify(idx));
-      if ((await this.lastHeroId()) === id) await this.backend.remove(SaveRepository.K_LAST);
-    });
+    return this.enqueue(() => this.backend.remove(id));
   }
 
-  async lastHeroId(): Promise<string | null> {
-    const r = await this.readJson(SaveRepository.K_LAST);
-    return isRecord(r) && typeof r.last === 'string' ? r.last : null;
-  }
-
-  async foundCount(): Promise<number> {
-    const f = await this.readJson(SaveRepository.K_FOUND);
-    return isRecord(f) ? Object.keys(f).length : 0;
+  lastHeroId(): Promise<string | null> {
+    return this.enqueue(() => this.backend.lastPlayedHeroId());
   }
 }
