@@ -1,0 +1,38 @@
+{
+  "benkungen_valdemar": {
+    "name": "Valdemar the Bone King",
+    "lore": "Once the village chieftain, raised by the demons' runes. His crown bound the village to death.",
+    "phases": {
+      "fas_1": {
+        "name": "The King's Wrath"
+      },
+      "fas_2": {
+        "name": "Court of the Dead"
+      },
+      "fas_3": {
+        "name": "Curse of the Runes"
+      }
+    }
+  },
+  "skelett_krigare": {
+    "name": "Skeleton Warrior"
+  },
+  "skelett_bagskytt": {
+    "name": "Skeleton Archer"
+  },
+  "skelett_vakt": {
+    "name": "Skeleton Guardian"
+  },
+  "skelett_hund": {
+    "name": "Bone Hound"
+  },
+  "skelett_runprast": {
+    "name": "Rune Priest"
+  },
+  "skelett_kapten": {
+    "name": "Skeleton Captain"
+  },
+  "gamla_byn": {
+    "name": "The Old Village"
+  }
+}

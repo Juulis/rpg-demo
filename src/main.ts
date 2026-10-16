@@ -3,22 +3,24 @@ import './ui/ui.css';
 import { Game } from './core/Game';
 import type { GameModule } from './core/GameContext';
 import { AudioModule, MapModule, MenuModule, SaveModule } from './index';
+import { LocaleManager } from './i18n';
 
 /**
  * Moduler registreras här. Varje modul får GameContext (bus, hero, zone, session, data) via init().
  * Registrerade: SaveModule (via Game som HeroGateway), MenuModule, AudioModule, MapModule. Lorebook tillkommer.
  */
-// Game skapas nedan; gatewayen anropas först efter init (vid laddning/sparning).
-const save = new SaveModule({
+const i18n = new LocaleManager();
+const save = new SaveModule(i18n, {
   loadHero: (s) => game.loadHero(s),
   getSnapshot: () => game.getSnapshot(),
   setSaveBackend: (b) => game.setSaveBackend(b),
 });
-const modules: GameModule[] = [save, new MenuModule(save), new AudioModule(), new MapModule()]; // save före menu
+const modules: GameModule[] = [i18n, save, new MenuModule(save, i18n), new AudioModule(i18n), new MapModule(i18n)];
 
 const host = document.getElementById('app');
 if (!host) throw new Error('#app saknas');
 const game = new Game(modules);
+i18n.attachText(game.text);
 await game.start(host);
 document.getElementById('newGame')?.addEventListener('click', () => game.newGame());
 

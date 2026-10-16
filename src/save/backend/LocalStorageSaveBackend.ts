@@ -110,6 +110,17 @@ export class LocalStorageSaveBackend implements SaveBackend {
     return Promise.resolve(this.lastId());
   }
 
+  getSetting(key: string): Promise<string | null> {
+    this.ensureReady();
+    return Promise.resolve(this.kv.get(key));
+  }
+
+  setSetting(key: string, value: string): Promise<void> {
+    this.ensureReady();
+    this.kv.set(key, value);
+    return Promise.resolve();
+  }
+
   private ensureReady(): void {
     if (!this.migratedFound) {
       new GlobalFoundMigration(this.kv, this.migrator).run();
@@ -212,7 +223,7 @@ export class LocalStorageSaveBackend implements SaveBackend {
         version: SAVE_VERSION,
         hero: {
           id: this.newId(),
-          name: c.name,
+          name: c.id,
           cls: c.id,
           level: 1,
           xp: 0,

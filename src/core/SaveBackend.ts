@@ -23,4 +23,7 @@ export interface SaveBackend extends FoundRegistry {
   save(id: string, data: HeroSave): Promise<void>;
   remove(id: string): Promise<void>;
   lastPlayedHeroId(): Promise<string | null>;
+  /** App-inställningar (t.ex. språk). Endast backend-implementationen skriver till lagring. */
+  getSetting(key: string): Promise<string | null>;
+  setSetting(key: string, value: string): Promise<void>;
 }

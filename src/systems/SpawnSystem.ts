@@ -32,15 +32,6 @@ export interface EliteStats {
   extraLoot: MonsterLevels['elites']['champion']['loot'] | null;
 }
 
-export const MODIFIER_NAME: Readonly<Record<string, string>> = {
-  extra_stark: 'Extra stark',
-  extra_snabb: 'Extra snabb',
-  stenhud: 'Stenhud',
-  vampyrisk: 'Vampyrisk',
-  forbannad: 'Förbannad',
-  tornig: 'Tornig',
-};
-
 /**
  * D2-spawn (spawnzoner.json v2, session_roll). Allt i ett område slumpas en gång per game ur
  * hash(seed, area) och hash(seed, area, punkt). Dödade id i sessionen hoppas över.

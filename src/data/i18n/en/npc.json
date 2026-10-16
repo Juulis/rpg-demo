@@ -1,0 +1,284 @@
+{
+  "gamla_ylva": {
+    "namn": "Old Ylva",
+    "repliker": {
+      "halsning": "The runes sleep, child. But they dream.",
+      "rader": [
+        "Three stones once held back the night. They can do it again.",
+        "Don't walk between the stones after dark unless you know what you're doing.",
+        "The ash fell for weeks. We breathed it. Some of us were never the same.",
+        "I remember Ashenhold before it burned. You could hear the bells from here."
+      ]
+    },
+    "quest_krokar": ["What became of the Runecarver?", "Ylva's vision: a fourth stone, somewhere in Ashenhold."],
+    "tillstand_varianter": {
+      "sokare": {
+        "halsning": "The Fourth Stone, child. Everything comes back to the Fourth Stone.",
+        "bark": "He put it out himself. Himself."
+      }
+    }
+  },
+  "tor_kolare": {
+    "namn": "Tor the Collier",
+    "repliker": {
+      "halsning": "Got gold? Then I've got goods. If not, have a pleasant day.",
+      "rader": [
+        "Everything has a price. Even what you find on the dead.",
+        "I buy bones. Don't ask why.",
+        "Arrows? Sure. Potions? If you can afford them."
+      ]
+    },
+    "quest_krokar": ["Tor is looking for his old cart horse, which bolted toward Wolfstead."]
+  },
+  "sigrun_helare": {
+    "namn": "Sigrun",
+    "repliker": {
+      "halsning": "Sit down. Let me look at you.",
+      "rader": [
+        "I can heal wounds, not the Blight. Remember that.",
+        "If a bite turns green, come to me at once.",
+        "The ash settles in your lungs. Breathe through cloth in Ashenhold."
+      ]
+    },
+    "quest_krokar": ["Sigrun wants herbs from the bogs of Mistshore."]
+  },
+  "bror_vakt": {
+    "namn": "Bror",
+    "repliker": {
+      "halsning": "Keep to the path. The forest is hungry.",
+      "rader": [
+        "More wolves since the runes went dark.",
+        "I saw a skeleton by a cairn to the north. It looked back.",
+        "If you go to Wolfstead, go by daylight."
+      ]
+    },
+    "quest_krokar": ["Bror's son vanished in Wolfstead."],
+    "tillstand_varianter": {
+      "bitter": {
+        "halsning": "You chose the huntress. Be on your way.",
+        "bark": "My boy's still out there."
+      },
+      "fridfull": {
+        "halsning": "He rests now. Thanks to you.",
+        "bark": "A good night for the watch."
+      }
+    }
+  },
+  "lilla_mira": {
+    "namn": "Little Mira",
+    "repliker": {
+      "halsning": "Have you seen my brother? He had new sandals.",
+      "rader": [
+        "He ran ahead of me. He was always the fastest.",
+        "Ylva says I shouldn't wait. I wait anyway.",
+        "The wolves sang that night."
+      ]
+    },
+    "quest_krokar": ["If the hero finds the Runaway's Sandals, Mira has something to say."],
+    "tillstand_varianter": {
+      "hjalper_sigrun": {
+        "halsning": "I help Sigrun now. She says I have gentle hands.",
+        "bark": "Sigrun! I brought more water!"
+      },
+      "vandrar_mot_vargaby": {
+        "halsning": "He isn't here. But you said he was here.",
+        "bark": "Has anyone seen a boy in new sandals?"
+      }
+    }
+  },
+  "viskaren": {
+    "namn": "The Whisperer",
+    "repliker": {
+      "halsning": "Do you hear them? No. You never hear.",
+      "rader": [
+        "The bones remember. The bones never lie.",
+        "I lived in Wolfstead. Now I live here. The wolves leave me be.",
+        "My garb? It's elsewhere now. It's waiting for you."
+      ]
+    },
+    "quest_krokar": ["The Whisperer speaks of the Bonewhisperer's Garb and the whispers of the dead."],
+    "tillstand_varianter": {
+      "lugn": {
+        "halsning": "It's quiet now. I'd forgotten what quiet sounds like.",
+        "bark": "Warm yourself. The fire doesn't whisper."
+      },
+      "besatt": {
+        "halsning": "The skull talks to you now, not to me. Do you hear?",
+        "bark": "He chose you. He chose you."
+      }
+    }
+  },
+  "hedda_jagare": {
+    "namn": "Hedda",
+    "repliker": {
+      "halsning": "Fur, bone, arrows. That's all Wolfstead has now.",
+      "rader": [
+        "I buy anything that came off an animal.",
+        "The grey wolves are led by a big male with a chain around his neck.",
+        "Ulvhild ate my husband. I hope she choked."
+      ]
+    },
+    "quest_krokar": ["Hedda wants Ulvhild's pelt."],
+    "tillstand_varianter": {
+      "lamnar": {
+        "halsning": "Wolfstead has nothing left for me. At least there's fish here."
+      }
+    }
+  },
+  "gravvaktaren_ebbe": {
+    "namn": "Ebbe the Gravewarden",
+    "repliker": {
+      "halsning": "No one should come here. Yet here you are.",
+      "rader": [
+        "We guarded the dead for two hundred years. We were too few when they woke.",
+        "Valdemar was a good chieftain. It's the crown that rules him now.",
+        "Crush the bones. Don't pierce. Spears pass right through them."
+      ]
+    },
+    "quest_krokar": ["Ebbe wants Valdemar given a proper burial.", "Gravewarden's Legacy: Ebbe knows where the wardens fell."],
+    "tillstand_varianter": {
+      "berattar_for_barn": {
+        "halsning": "The children want the Chronicle again. Sit with us.",
+        "bark": "And Ebbe's brothers held, to the last man."
+      },
+      "dod": {
+        "miljo": "Ebbe's lantern stands dark by the portal."
+      }
+    }
+  },
+  "marta_torghandlare": {
+    "namn": "Marta",
+    "repliker": {
+      "halsning": "New faces! New faces at last!",
+      "rader": [
+        "The village still smells of bone, but people are coming back.",
+        "I sell what I have, I buy what you have.",
+        "Heard what Olle says about Mistshore?"
+      ]
+    },
+    "quest_krokar": ["Marta misses her daughter, who fled to Copperfell."]
+  },
+  "gunnar_jarnhand": {
+    "namn": "Gunnar Ironhand",
+    "repliker": {
+      "halsning": "I don't forge anymore. But I sell.",
+      "rader": [
+        "My master forged the Runeforged Blade. He died that same night.",
+        "No forge burns in this village while I live. I've seen what fire does.",
+        "I buy weapons. Anything you pry off the dead."
+      ]
+    },
+    "quest_krokar": ["Gunnar's master's sword, the Runeforged Blade, should come home."]
+  },
+  "vaktkapten_ingrid": {
+    "namn": "Captain Ingrid",
+    "repliker": {
+      "halsning": "This village is under my protection. Act accordingly.",
+      "rader": [
+        "My guards are farmers with spears. But they hold.",
+        "My grandfather was a Gravewarden. Ebbe knew him.",
+        "If you see anything move in the graveyard, tell me."
+      ]
+    },
+    "quest_krokar": ["Ingrid wants to know what happened to her grandfather."],
+    "tillstand_varianter": {
+      "gravvaktare": {
+        "halsning": "The Gravewardens live on in us now. Crush the bones, don't pierce.",
+        "bark": "Dawn drill! Shields up!"
+      },
+      "vaktar_porten": {
+        "halsning": "Ebbe is dead. Someone must guard the gate.",
+        "bark": "The lantern will burn again. One day."
+      }
+    }
+  },
+  "olle_vardshus": {
+    "namn": "Olle",
+    "repliker": {
+      "halsning": "Sit! First tankard's on me, the next one's on you.",
+      "rader": [
+        "I hear everything. Half of it's lies. The other half's worse.",
+        "Folk say someone's seen light in Ashenhold again.",
+        "A hunter told me the bells of Mistshore toll beneath the water."
+      ]
+    },
+    "quest_krokar": ["The tavern board: hooks to every town."]
+  },
+  "sara_benlasare": {
+    "namn": "Sara Bonereader",
+    "repliker": {
+      "halsning": "Bones tell. Trinkets listen.",
+      "rader": [
+        "I sell what the dead wore.",
+        "The Whisperer was my teacher, before he lost his way.",
+        "Come at night. The bones speak clearer then."
+      ]
+    },
+    "quest_krokar": ["Sara wants to buy the Crown of the Bone King, but only to bury it."],
+    "tillstand_varianter": {
+      "altare": {
+        "halsning": "Valdemar speaks to me now. He is very angry. Care to buy something?"
+      }
+    }
+  },
+  "lova_fiskarankan": {
+    "namn": "Lova the Fisher's Widow",
+    "repliker": {
+      "halsning": "Don't go too near the water. It pulls.",
+      "rader": [
+        "My husband drowned. Now he walks up the shore at night.",
+        "The ravens wait on the rooftops. For what, no one knows.",
+        "The Bog Queen sings. Have you heard her?"
+      ]
+    },
+    "quest_krokar": ["Lova's husband among the drowned.", "The Raven Mother's Bow."]
+  },
+  "broder_elias": {
+    "namn": "Brother Elias",
+    "repliker": {
+      "halsning": "The Lord has forgotten this mountain. I have not.",
+      "rader": [
+        "The brothers locked themselves in so they would not be twisted. I was the only one who opened the door.",
+        "The spiders hear you walk. Tread lightly.",
+        "The brother with the iron girdle was the strongest of us."
+      ]
+    },
+    "quest_krokar": ["The Iron Monk's Girdle, and what happened in the cloister."]
+  },
+  "rask_avfallen": {
+    "namn": "Rask the Apostate",
+    "repliker": {
+      "halsning": "Don't tell them I'm here. Please.",
+      "rader": [
+        "I was one of the Children of Ash. I believed the fire made us pure.",
+        "Morvath sits in the ruined cathedral. He's not waiting for anything. He just burns.",
+        "The pilgrim walked past me. He greeted me. No one greets anyone in Ashenhold."
+      ]
+    },
+    "quest_krokar": ["Rask knows where the Ashwalker's Burden was scattered.", "The cult's rites around the Fourth Stone."]
+  },
+  "fyrvaktaren_hulda": {
+    "namn": "Hulda the Lightkeeper",
+    "repliker": {
+      "halsning": "The light burns as long as I breathe.",
+      "rader": [
+        "The Rotmarch breathes at night. You can hear it.",
+        "No one has gone into the cathedral and come out.",
+        "The light keeps the Blight away. Don't ask me how."
+      ]
+    },
+    "quest_krokar": ["Why does the lighthouse keep the Blight away?"]
+  },
+  "kram_handlaren": {
+    "namn": "Kram",
+    "repliker": {
+      "halsning": "Everything has a price. So do you.",
+      "rader": [
+        "I buy from anyone. Even cultists.",
+        "The best from the Rotmarch, I sell dear.",
+        "I saw Tor the Collier's cart once. Good cart."
+      ]
+    },
+    "quest_krokar": ["Kram's unknown supplier in the Rotmarch."]
+  }
+}

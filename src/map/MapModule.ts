@@ -1,6 +1,7 @@
 import { Disposables } from '../core/Disposables';
 import type { GameContext, GameModule } from '../core/GameContext';
 import { LocalStore, type KeyValueStore } from '../core/storage';
+import type { LocaleManager } from '../i18n/LocaleManager';
 import { FogOfWar } from './FogOfWar';
 import { FogRepository } from './FogRepository';
 import { GoalTracker } from './GoalTracker';
@@ -28,6 +29,7 @@ export class MapModule implements GameModule {
   private input: MapInput | null = null;
 
   constructor(
+    private readonly i18n: LocaleManager,
     store: KeyValueStore = new LocalStore(),
     private readonly host: () => HTMLElement = () => document.body,
     private readonly animate = true,
@@ -44,12 +46,12 @@ export class MapModule implements GameModule {
 
   init(ctx: GameContext): void {
     this.ctx = ctx;
-    const model = new MapModel(ctx.data);
+    const model = new MapModel(ctx.data, this.i18n);
     const goals = new GoalTracker(model);
     const bus = ctx.bus;
     this.resetFog(ctx.hero.id);
     const painter = new MapPainter(model, () => this.fog);
-    this.views = { big: new MapView(painter, model, goals), mini: new MiniMapView(painter, goals) };
+    this.views = { big: new MapView(painter, model, goals), mini: new MiniMapView(painter, goals, model) };
     this.host().append(this.views.big.canvas, this.views.mini.canvas);
     this.input = new MapInput(
       () => this.playing(),
