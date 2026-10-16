@@ -1,3 +1,6 @@
+import { isRecord } from './json';
+
+export { isRecord };
 /** Nyckel–värde-lagring (localStorage i webbläsaren, MemoryStore i tester). */
 export interface KeyValueStore {
   get(key: string): string | null;
@@ -56,5 +59,3 @@ export function writeJson(store: KeyValueStore, key: string, value: unknown): bo
     return false;
   }
 }
-
-export const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);

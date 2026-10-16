@@ -3,11 +3,12 @@ import type { GameEvents } from '../core/events';
 import type { GameContext } from '../core/GameContext';
 import type { HeroGateway } from './HeroGateway';
 import type { SaveRepository } from './SaveRepository';
-import { SAVE_VERSION, newSeed, type SaveFile } from './types';
+import { SAVE_VERSION, type SaveFile } from './types';
 
 /**
- * Autosparning drivs helt av bussen (issue #12): inga polling-timers.
- * Sparar (debounce 150 ms) vid spelhändelser samt direkt vid beforeunload/visibilitychange.
+ * Autosparning drivs helt av bussen (issue #12): inga polling-timers. DOM-fri:
+ * sidans livscykel (beforeunload/visibilitychange) kopplas in av PageLifecycleSaver.
+ * Sparar (debounce 150 ms) vid spelhändelser. Ögonblicksbilden tas synkront när saveNow anropas.
  */
 export class AutoSaveService {
   static readonly TRIGGERS: ReadonlyArray<keyof GameEvents> = [
@@ -33,7 +34,7 @@ export class AutoSaveService {
     private readonly ctx: GameContext,
     private readonly game: HeroGateway,
     private readonly repo: SaveRepository,
-    private readonly onSaved: () => void = () => undefined,
+    private readonly onSaved: (d: SaveFile) => void = () => undefined,
     private readonly debounceMs = 150,
   ) {}
 
@@ -51,12 +52,6 @@ export class AutoSaveService {
         if (this.current?.hero.id === heroId) this.end(false);
       }),
     );
-    if (typeof window !== 'undefined') {
-      this.d.listen(window, 'beforeunload', () => this.saveNow('beforeunload'));
-      this.d.listen(document, 'visibilitychange', () => {
-        if (document.visibilityState === 'hidden') this.saveNow('hidden');
-      });
-    }
   }
 
   get isPlaying(): boolean {
@@ -73,7 +68,7 @@ export class AutoSaveService {
 
   /** Avslutar spelpass (t.ex. tillbaka till menyn). */
   end(saveFirst = true): void {
-    if (saveFirst) this.saveNow('menu');
+    if (saveFirst) void this.saveNow('menu');
     clearTimeout(this.pending);
     this.playing = false;
     this.current = null;
@@ -81,16 +76,18 @@ export class AutoSaveService {
 
   saveSoon(reason: string): void {
     clearTimeout(this.pending);
-    this.pending = setTimeout(() => this.saveNow(reason), this.debounceMs);
+    this.pending = setTimeout(() => void this.saveNow(reason), this.debounceMs);
   }
 
-  saveNow(reason = ''): boolean {
+  /** Tar ögonblicksbilden direkt (synkront) och skriver den via SaveRepository. */
+  async saveNow(reason = ''): Promise<boolean> {
     if (!this.playing || !this.current) return false;
     const snap = this.snapshot(this.current);
-    if (!this.repo.save(snap)) return false;
     this.current = snap;
+    // köas direkt (före ev. radering), så att en sen sparning aldrig återskapar en raderad hjälte
+    if (!(await this.repo.save(snap, true, true))) return false;
     this.lastSave = { reason, at: snap.savedAt ?? Date.now() };
-    this.onSaved();
+    this.onSaved(snap);
     return true;
   }
 
@@ -104,7 +101,7 @@ export class AutoSaveService {
       version: SAVE_VERSION,
       hero: { id: cur.hero.id, name: cur.hero.name, cls: h.cls, level: h.level, xp: h.xp, gold: h.gold, inv: h.inv, equip: h.equip },
       game: {
-        seed: g?.seed || cur.game?.seed || newSeed(),
+        seed: g?.seed || cur.game?.seed || this.ctx.session.seed,
         killed: g?.killed ?? [],
         zone: g?.zone || this.ctx.zone.name || 'forest',
         pos: g?.pos ? [r2(g.pos.x, 2), r2(g.pos.y, 2)] : null,
@@ -113,7 +110,6 @@ export class AutoSaveService {
         runes: g?.runes ?? 0,
         city: g?.city ?? 'besatt',
       },
-      found: this.repo.foundCount(),
       savedAt: Date.now(),
     };
   }

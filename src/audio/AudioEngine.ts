@@ -1,3 +1,4 @@
+import { cryptoSeed, seededRandom, type RandomFn } from '../core/entropy';
 import type { SfxLibrary, SoundName } from './SfxLibrary';
 import type { VolumeControl } from './VolumeControl';
 
@@ -22,6 +23,8 @@ export class AudioEngine {
     private readonly volume: VolumeControl,
     private readonly fetcher: (url: string) => Promise<ArrayBuffer> = (u) => fetch(u).then((r) => r.arrayBuffer()),
     private readonly ctor: AudioContextCtor | undefined = AudioEngine.findCtor(),
+    /** Seedad slump för tonhöjdsvariation och ljudvarianter. */
+    private readonly rnd: RandomFn = seededRandom(cryptoSeed()),
   ) {}
 
   private static findCtor(): AudioContextCtor | undefined {
@@ -61,9 +64,9 @@ export class AudioEngine {
     const master = this.master;
     if (!ctx || !master || !this.volume.audible) return;
     if (ctx.state === 'suspended') void ctx.resume();
-    const rate = (opts.rate ?? 1) * (1 + (Math.random() * 2 - 1) * (opts.vary ?? 0.06));
+    const rate = (opts.rate ?? 1) * (1 + (this.rnd() * 2 - 1) * (opts.vary ?? 0.06));
     const gain = this.library.def(name).gain * (opts.gain ?? 1);
-    const buf = this.buffers.get(this.library.pickVariant(name));
+    const buf = this.buffers.get(this.library.pickVariant(name, this.rnd));
     if (!buf) {
       this.synth(ctx, master, name, rate, gain);
       return;
