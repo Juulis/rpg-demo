@@ -1,12 +1,18 @@
 import './style.css';
 import { Game } from './core/Game';
 import type { GameModule } from './core/GameContext';
+import { AudioModule, MapModule, MenuModule, SaveModule } from './index';
 
 /**
  * Moduler registreras här. Varje modul får GameContext (bus, hero, zone, session, data) via init().
  * Utvecklare 2 lägger till: new AudioManager(), new SaveManager(), new MapUI(), new StartMenu(), new Lorebook().
  */
-const modules: GameModule[] = [];
+// Game skapas nedan; gatewayen anropas först efter init (vid laddning/sparning).
+const save = new SaveModule({
+  loadHero: (s) => game.loadHero(s),
+  getSnapshot: () => game.getSnapshot(),
+});
+const modules: GameModule[] = [save, new MenuModule(save), new AudioModule(), new MapModule()]; // save före menu
 
 const host = document.getElementById('app');
 if (!host) throw new Error('#app saknas');
