@@ -2,8 +2,20 @@ import { assetUrl } from '../core/assets';
 
 /** Ljudnamn som spelet kan spela. */
 export type SoundName =
-  | 'hit' | 'kill' | 'drop' | 'drop_rare' | 'pickup' | 'pickup_first' | 'gold'
-  | 'rune' | 'portal' | 'zone' | 'boss' | 'step' | 'click' | 'toggle';
+  | 'hit'
+  | 'kill'
+  | 'drop'
+  | 'drop_rare'
+  | 'pickup'
+  | 'pickup_first'
+  | 'gold'
+  | 'rune'
+  | 'portal'
+  | 'zone'
+  | 'boss'
+  | 'step'
+  | 'click'
+  | 'toggle';
 
 export interface SoundDef {
   /** Filvarianter (slumpas) under public/assets/sfx/<variant>.ogg. */

@@ -1,7 +1,11 @@
 type Attrs = Record<string, string | boolean | undefined>;
 
 /** Liten DOM-byggare: textContent i stället för innerHTML, så att hjältenamn aldrig tolkas som HTML. */
-export function el<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs = {}, ...children: Array<Node | string>): HTMLElementTagNameMap[K] {
+export function el<K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  attrs: Attrs = {},
+  ...children: Array<Node | string>
+): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
     if (v === undefined || v === false) continue;

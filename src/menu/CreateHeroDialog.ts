@@ -16,7 +16,12 @@ export class CreateHeroDialog {
     this.cls = 'riddare';
     const row = el('div', { class: 'clsrow' });
     const btns = HERO_CLASSES.map((c) => {
-      const b = el('div', { class: `clsbtn${c.id === this.cls ? ' sel' : ''}`, 'data-c': c.id }, this.assets.portrait(c.id), el('span', { text: c.name }));
+      const b = el(
+        'div',
+        { class: `clsbtn${c.id === this.cls ? ' sel' : ''}`, 'data-c': c.id },
+        this.assets.portrait(c.id),
+        el('span', { text: c.name }),
+      );
       b.addEventListener('click', () => {
         this.cls = c.id;
         btns.forEach((x) => x.classList.toggle('sel', x === b));
