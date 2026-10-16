@@ -40,24 +40,10 @@
   "portal": {
     "id": "rod_portal",
     "trigger": {
-      "type": "all_runes_active_and_gate",
+      "type": "all_runes_active",
       "required_runes": 3,
-      "gate": {
-        "any_of": [
-          {
-            "city_cleared": "vargaby"
-          },
-          {
-            "hero_level_min": 6
-          }
-        ]
-      },
       "replaces": "win_screen_on_count_3",
-      "delay_s": 2.0,
-      "sealed_state": {
-        "visual": "sluten mörkröd portal, svag puls, ingen interaktion",
-        "message": "Sigillet håller. Något starkare måste fällas först."
-      }
+      "delay_s": 2.0
     },
     "forest_position": [
       0,
@@ -77,7 +63,8 @@
       16,
       31
     ],
-    "return_unlocked": "always"
+    "return_unlocked": "always",
+    "recommended_level": "7 (information, ingen spärr)"
   },
   "enemies": [
     {
