@@ -2,12 +2,10 @@ import type { EventBus } from '../core/EventBus';
 import type { GameEvents, UiPanel } from '../core/events';
 import type { HeroLoader } from '../save/HeroLoader';
 import type { HeroRoster } from '../save/HeroRoster';
-import type { LocaleManager } from '../i18n/LocaleManager';
 import { MAX_HEROES, classById, type SaveFile } from '../save/types';
 import type { ConfirmDialog } from './ConfirmDialog';
 import type { CreateHeroDialog } from './CreateHeroDialog';
 import { button, el } from './dom';
-import type { LocalePicker } from './LocalePicker';
 import type { MenuAssets } from './MenuAssets';
 
 /** Hjälteval: 8 platser, Fortsätt / Nytt game / Ny hjälte / Radera (med bekräftelse). Dubbelklick startar. */
@@ -16,8 +14,6 @@ export class HeroSelectMenu {
   readonly root: HTMLDivElement;
   private selected: string | null = null;
   private open = false;
-  private view: 'list' | 'create' = 'list';
-  private readonly offLocale: () => void;
 
   constructor(
     private readonly deps: {
@@ -28,25 +24,12 @@ export class HeroSelectMenu {
       assets: MenuAssets;
       create: CreateHeroDialog;
       confirm: ConfirmDialog;
-      i18n: LocaleManager;
-      picker: LocalePicker;
     },
   ) {
     this.root = el('div', { class: 'hero-menu overlay hidden' });
     // tangenter i menyn ska inte nå spelet (Tab, M, …)
     this.root.addEventListener('keydown', (e) => e.stopPropagation());
     this.root.addEventListener('keyup', (e) => e.stopPropagation());
-    // språkbyte: rita om aktuell vy med nya texter
-    this.offLocale = deps.i18n.onChange(() => {
-      if (!this.open) return;
-      if (this.view === 'create') this.renderCreate();
-      else this.renderList();
-    });
-  }
-
-  dispose(): void {
-    this.offLocale();
-    this.root.remove();
   }
 
   get isOpen(): boolean {
@@ -78,9 +61,7 @@ export class HeroSelectMenu {
   }
 
   renderList(): void {
-    this.view = 'list';
-    const { roster, assets, i18n } = this.deps;
-    const t = i18n.t.bind(i18n);
+    const { roster, assets } = this.deps;
     const hs = roster.list();
     if (!hs.some((h) => h.id === this.selected)) this.selected = roster.defaultSelection();
     const d = this.selected ? roster.load(this.selected) : null;
@@ -98,13 +79,8 @@ export class HeroSelectMenu {
         el(
           'div',
           { class: 'info' },
-          el('b', { text: h.name || t('menu.unnamed') }),
-          el('small', {
-            text: t('menu.slot_info', {
-              cls: classById(h.cls) ? t(`classes.${classById(h.cls)?.id ?? 'riddare'}`) : h.cls,
-              level: h.level,
-            }),
-          }),
+          el('b', { text: h.name }),
+          el('small', { text: `${classById(h.cls)?.name ?? h.cls} · Nivå ${h.level}` }),
         ),
       );
       slot.addEventListener('click', () => {
@@ -120,36 +96,29 @@ export class HeroSelectMenu {
     const btns = el(
       'div',
       { class: 'btns' },
-      button(t('menu.continue'), () => d?.game && this.start(d, true), !d?.game, 'hmCont'),
-      button(t('menu.new_game'), () => d && this.start(d, false), !d, 'hmNewGame'),
-      button(t('menu.create_hero'), () => this.renderCreate(), hs.length >= MAX_HEROES, 'hmNewHero'),
-      button(t('menu.delete_hero'), () => d && btns.replaceWith(this.confirmDelete(d)), !d, 'hmDel'),
+      button('Fortsätt', () => d?.game && this.start(d, true), !d?.game, 'hmCont'),
+      button('Nytt game', () => d && this.start(d, false), !d, 'hmNewGame'),
+      button('Ny hjälte', () => this.renderCreate(), hs.length >= MAX_HEROES, 'hmNewHero'),
+      button('Radera hjälte', () => d && btns.replaceWith(this.confirmDelete(d)), !d, 'hmDel'),
     );
-    this.root.replaceChildren(
-      assets.title(),
-      el('div', { class: 'rubrik', text: t('menu.choose_hero') }),
-      el('small', { class: 'slots-free', text: t('menu.slots_free', { count: MAX_HEROES - hs.length }) }),
-      slots,
-      btns,
-      this.deps.picker.render(),
-    );
+    this.root.replaceChildren(assets.title(), el('div', { class: 'rubrik', text: 'Välj hjälte' }), slots, btns);
   }
 
   private confirmDelete(d: SaveFile): HTMLElement {
     return this.deps.confirm.render(
-      this.deps.i18n.t('menu.delete_confirm', { name: d.hero.name || this.deps.i18n.t('menu.unnamed') }),
-      this.deps.i18n.t('menu.delete_yes'),
+      `Radera ${d.hero.name} för alltid?`,
+      'Ja, radera',
       () => {
-        this.deps.roster.delete(d.hero.id);
-        this.selected = null;
-        this.renderList();
+        void this.deps.roster.delete(d.hero.id).then(() => {
+          this.selected = null;
+          this.renderList();
+        });
       },
       () => this.renderList(),
     );
   }
 
   private renderCreate(): void {
-    this.view = 'create';
     const { root, focus } = this.deps.create.render(
       (d) => {
         this.selected = d.hero.id;
@@ -157,12 +126,7 @@ export class HeroSelectMenu {
       },
       () => this.renderList(),
     );
-    this.root.replaceChildren(
-      this.deps.assets.title(),
-      el('div', { class: 'rubrik', text: this.deps.i18n.t('menu.new_hero') }),
-      root,
-      this.deps.picker.render(),
-    );
+    this.root.replaceChildren(this.deps.assets.title(), el('div', { class: 'rubrik', text: 'Ny hjälte' }), root);
     focus();
   }
 }

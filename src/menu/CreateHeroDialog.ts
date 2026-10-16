@@ -1,5 +1,4 @@
-import type { LocaleManager } from '../i18n/LocaleManager';
-import { NAME_MAX, NAME_MIN, RosterException, type HeroRoster, type RosterError } from '../save/HeroRoster';
+import type { HeroRoster } from '../save/HeroRoster';
 import { HERO_CLASSES, type SaveFile } from '../save/types';
 import { button, el } from './dom';
 import type { MenuAssets } from './MenuAssets';
@@ -11,12 +10,7 @@ export class CreateHeroDialog {
   constructor(
     private readonly roster: HeroRoster,
     private readonly assets: MenuAssets,
-    private readonly i18n: LocaleManager,
   ) {}
-
-  private msg(e: RosterError | null): string {
-    return e ? this.i18n.t(e.key, e.params) : '';
-  }
 
   render(onCreated: (d: SaveFile) => void, onBack: () => void): { root: HTMLElement; focus: () => void } {
     this.cls = 'riddare';
@@ -26,7 +20,7 @@ export class CreateHeroDialog {
         'div',
         { class: `clsbtn${c.id === this.cls ? ' sel' : ''}`, 'data-c': c.id },
         this.assets.portrait(c.id),
-        el('span', { text: this.i18n.t(`classes.${c.id}`) }),
+        el('span', { text: c.name }),
       );
       b.addEventListener('click', () => {
         this.cls = c.id;
@@ -35,27 +29,20 @@ export class CreateHeroDialog {
       return b;
     });
     row.append(...btns);
-    const input = el('input', {
-      class: 'hero-name',
-      maxlength: String(NAME_MAX),
-      placeholder: this.i18n.t('menu.name_placeholder', { min: NAME_MIN, max: NAME_MAX }),
-      autocomplete: 'off',
-    });
+    const input = el('input', { class: 'hero-name', maxlength: '16', placeholder: 'Namn (2–16 tecken)', autocomplete: 'off' });
     const err = el('div', { class: 'hero-err' });
     input.addEventListener('input', () => {
-      err.textContent = input.value.trim().length >= NAME_MIN ? this.msg(this.roster.validName(input.value)) : '';
+      err.textContent = input.value.trim().length >= 2 ? this.roster.validName(input.value) : '';
     });
     const ok = (): void => {
       const e = this.roster.validName(input.value);
       if (e) {
-        err.textContent = this.msg(e);
+        err.textContent = e;
         return;
       }
-      try {
-        onCreated(this.roster.create(input.value, this.cls));
-      } catch (x) {
-        err.textContent = x instanceof RosterException ? this.msg(x.error) : String(x);
-      }
+      this.roster.create(input.value, this.cls).then(onCreated, (x: unknown) => {
+        err.textContent = x instanceof Error ? x.message : String(x);
+      });
     };
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') ok();
@@ -66,12 +53,7 @@ export class CreateHeroDialog {
       row,
       input,
       err,
-      el(
-        'div',
-        { class: 'btns' },
-        button(this.i18n.t('menu.create_play'), ok, false, 'hnOk'),
-        button(this.i18n.t('common.back'), onBack, false, 'hnBack'),
-      ),
+      el('div', { class: 'btns' }, button('Skapa och spela', ok, false, 'hnOk'), button('Tillbaka', onBack, false, 'hnBack')),
     );
     return { root, focus: () => input.focus() };
   }

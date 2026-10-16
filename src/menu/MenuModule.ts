@@ -1,10 +1,8 @@
 import type { GameContext, GameModule } from '../core/GameContext';
 import type { SaveModule } from '../save/SaveModule';
-import type { LocaleManager } from '../i18n/LocaleManager';
 import { ConfirmDialog } from './ConfirmDialog';
 import { CreateHeroDialog } from './CreateHeroDialog';
 import { HeroSelectMenu } from './HeroSelectMenu';
-import { LocalePicker } from './LocalePicker';
 import { MenuAssets } from './MenuAssets';
 
 /** Startmenyn. Kräver att SaveModule är initierad före (main.ts registrerar save före menu). */
@@ -14,13 +12,12 @@ export class MenuModule implements GameModule {
 
   constructor(
     private readonly save: SaveModule,
-    private readonly i18n: LocaleManager,
     private readonly host: () => HTMLElement = () => document.body,
     private readonly showOnInit = true,
   ) {}
 
   init(ctx: GameContext): void {
-    const assets = new MenuAssets(this.i18n);
+    const assets = new MenuAssets();
     this.style = document.createElement('style');
     this.style.textContent = assets.css();
     document.head.appendChild(this.style);
@@ -32,18 +29,19 @@ export class MenuModule implements GameModule {
         if (this.save.autosave.isPlaying) this.save.autosave.end(true);
       },
       assets,
-      create: new CreateHeroDialog(this.save.roster, assets, this.i18n),
-      confirm: new ConfirmDialog(this.i18n),
-      i18n: this.i18n,
-      picker: new LocalePicker(this.i18n),
+      create: new CreateHeroDialog(this.save.roster, assets),
+      confirm: new ConfirmDialog(),
     });
     this.host().appendChild(this.menu.root);
-    if (this.showOnInit) this.menu.show();
+    const menu = this.menu;
+    if (this.showOnInit) void this.save.ready.then(() => menu.show());
   }
 
   /** Visa hjältevalet (t.ex. från motorns "Spela igen"/Esc-meny). */
   show(): void {
-    this.menu?.show();
+    const menu = this.menu;
+    if (this.save.isReady) menu?.show();
+    else void this.save.ready.then(() => menu?.show());
   }
 
   get isOpen(): boolean {
@@ -51,7 +49,7 @@ export class MenuModule implements GameModule {
   }
 
   dispose(): void {
-    this.menu?.dispose();
+    this.menu?.root.remove();
     this.style?.remove();
     this.menu = null;
   }
