@@ -94,15 +94,27 @@ export class LootSystem {
     }
     const it = g.data.item as Item;
     const name = this.label(g.data);
-    if (!h.inv.add(it)) {
+    if (g.picking) return false;
+    if (!h.inv.findSpot(it)) {
       w.fb.flash(w.text.t('msg.bag_full'));
       return false;
     }
-    const first = await this.recordFound(it);
-    w.bus.emit('pickup', { itemId: w.L.foundId(it), first });
-    w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
-    this.remove(g);
-    return true;
+    g.picking = true;
+    try {
+      const first = await this.recordFound(it);
+      this.remove(g);
+      if (!h.inv.add(it)) {
+        console.warn('LootSystem: väska blev full efter reserverat fynd');
+        return false;
+      }
+      w.bus.emit('pickup', { itemId: w.L.foundId(it), first });
+      w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
+      return true;
+    } catch (e) {
+      g.picking = false;
+      console.warn('LootSystem: upplock misslyckades', e);
+      return false;
+    }
   }
 
   /** Första upplock per föremåls-id registreras via FoundRegistry (SaveBackend), aldrig direkt i localStorage. */
@@ -121,7 +133,7 @@ export class LootSystem {
       g.t += dt;
       const top = g.view.children.at(-1);
       if (top) top.y = Math.sin(g.t * 3) * 2;
-      if (g.data.gold && Math.hypot(g.pos.x - w.hero.pos.x, g.pos.y - w.hero.pos.y) < 1.2) this.pickup(g);
+      if (g.data.gold && Math.hypot(g.pos.x - w.hero.pos.x, g.pos.y - w.hero.pos.y) < 1.2) void this.pickup(g);
     }
   }
 }

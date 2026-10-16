@@ -1,23 +1,9 @@
 import type { FoundEntry } from '../core/SaveBackend';
 import type { HeroSave } from '../core/GameContext';
-import { isRecord } from '../core/json';
-import { SAVE_VERSION, type SaveFile } from './types';
+import { readFoundItemsFromSave } from './foundItems';
 
-const foundItems = (v: unknown): Record<string, FoundEntry> | undefined => {
-  if (!isRecord(v)) return undefined;
-  const out: Record<string, FoundEntry> = {};
-  for (const [id, raw] of Object.entries(v)) {
-    if (!isRecord(raw)) continue;
-    if (typeof raw.first !== 'string' || typeof raw.base !== 'string') continue;
-    out[id] = {
-      first: raw.first,
-      quality: typeof raw.quality === 'string' ? raw.quality : 'normal',
-      base: raw.base,
-      ilvl: typeof raw.ilvl === 'number' ? raw.ilvl : 1,
-    };
-  }
-  return Object.keys(out).length ? out : undefined;
-};
+export { readFoundItemsFromSave };
+import { SAVE_VERSION, type SaveFile } from './types';
 
 /** Sparfil (lagringsformat, bakåtkompatibelt med js/save.js) → core-formatet HeroSave. */
 export function toHeroSave(d: SaveFile): HeroSave {
@@ -78,8 +64,5 @@ export function fromHeroSave(s: HeroSave, foundItems?: Record<string, FoundEntry
   return out;
 }
 
-/** Läser foundItems från rå sparfil (efter migrator). */
-export function readFoundItems(raw: unknown): Record<string, FoundEntry> | undefined {
-  if (!isRecord(raw)) return undefined;
-  return foundItems(raw.foundItems);
-}
+/** @deprecated Använd readFoundItemsFromSave */
+export const readFoundItems = readFoundItemsFromSave;

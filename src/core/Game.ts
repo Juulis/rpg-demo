@@ -5,7 +5,7 @@ import { createSession } from './Session';
 import { Rng } from './Rng';
 import type { GameAuthority } from './GameAuthority';
 import type { FoundRegistry, SaveBackend } from './SaveBackend';
-import { LocalFoundRegistry } from './LocalFoundRegistry';
+import { NoOpFoundRegistry } from './NoOpFoundRegistry';
 import { CombatRules } from '../logic/CombatRules';
 import { LocalAuthority } from '../logic/LocalAuthority';
 import { DATA, validateData } from '../data';
@@ -87,7 +87,7 @@ export class Game {
     cleared: {},
   };
   readonly ctx: GameContext;
-  private foundRegistry: FoundRegistry = new LocalFoundRegistry();
+  private foundRegistry: FoundRegistry = new NoOpFoundRegistry();
 
   private world: World | null = null;
   private camera!: Camera;
@@ -539,7 +539,7 @@ export class Game {
     if (td) {
       if (!w.drops.includes(td)) this.targetDrop = null;
       else if (Math.hypot(td.pos.x - h.pos.x, td.pos.y - h.pos.y) < 1.3) {
-        this.lootSys.pickup(td);
+        void this.lootSys.pickup(td);
         this.targetDrop = null;
         h.moveTarget = null;
       }

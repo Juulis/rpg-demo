@@ -1,17 +1,24 @@
-import type { FoundEntry } from '../core/SaveBackend';
 import { isRecord, parseJson } from '../core/json';
 import type { KeyValueStore } from '../core/storage';
-import { readFoundItems } from './convert';
+import { parseGlobalFoundMap } from './foundItems';
 import { SaveMigrator } from './SaveMigrator';
+import type { HeroIndexEntry } from './types';
 
-const MIGRATED_KEY = 'rpg_found_per_hero_v1';
+export const MIGRATED_KEY = 'rpg_found_per_hero_v1';
 const K_FOUND = 'rpg_found';
 const K_LAST = 'rpg_save';
+const K_INDEX = 'rpg_heroes';
 const heroKey = (id: string): string => `rpg_hero_${id}`;
 
 /**
- * Engångsimport: globalt rpg_found (legacy) kopieras till senast spelade hjältes foundItems.
- * 2D använder därefter bara per-hjälte-registret; globala nyckeln lämnas för 3D på samma origin.
+ * Engångsimport av globalt rpg_found (legacy, delat mellan hjältar i 3D).
+ *
+ * Regel: hela registret kopieras till **en** hjälte:
+ *   1) rpg_save.last om den pekar på en befintlig hjälte i indexet
+ *   2) annars hjälten med högst savedAt i rpg_heroes (vid lika: första i indexet)
+ *
+ * Flaggan rpg_found_per_hero_v1 sätts bara när importen lyckats eller när det inte finns något att importera.
+ * Om globala fynd finns men ingen hjälte finns ännu lämnas flaggan unset så importen försöker igen senare.
  */
 export class GlobalFoundMigration {
   constructor(
@@ -21,56 +28,64 @@ export class GlobalFoundMigration {
 
   run(): void {
     if (this.kv.get(MIGRATED_KEY) === '1') return;
-    const global = this.readGlobalFound();
-    if (!global || !Object.keys(global).length) {
+    const global = parseGlobalFoundMap(parseJson(this.kv.get(K_FOUND)));
+    if (!global) {
       this.kv.set(MIGRATED_KEY, '1');
       return;
     }
-    const heroId = this.lastHeroId();
-    if (!heroId) {
-      this.kv.set(MIGRATED_KEY, '1');
-      return;
-    }
-    const key = heroKey(heroId);
-    const raw = parseJson(this.kv.get(key));
+    const heroes = this.index();
+    if (!heroes.length) return;
+
+    const target = this.pickTarget(heroes);
+    if (!target) return;
+
+    const raw = parseJson(this.kv.get(heroKey(target)));
     const file = this.migrator.migrate(raw);
-    if (!file) {
-      this.kv.set(MIGRATED_KEY, '1');
-      return;
-    }
+    if (!file) return;
+
     const merged = { ...global, ...(file.foundItems ?? {}) };
     file.foundItems = merged;
     file.found = Object.keys(merged).length;
-    this.kv.set(key, JSON.stringify(file));
+    this.kv.set(heroKey(target), JSON.stringify(file));
     this.kv.set(MIGRATED_KEY, '1');
   }
 
-  private readGlobalFound(): Record<string, FoundEntry> | null {
-    const raw = parseJson(this.kv.get(K_FOUND));
-    if (!isRecord(raw)) return null;
-    const out: Record<string, FoundEntry> = {};
-    for (const [id, v] of Object.entries(raw)) {
-      if (!isRecord(v) || typeof v.base !== 'string' || typeof v.first !== 'string') continue;
-      out[id] = {
-        first: v.first,
-        quality: typeof v.quality === 'string' ? v.quality : 'normal',
-        base: v.base,
-        ilvl: typeof v.ilvl === 'number' ? v.ilvl : 1,
-      };
+  /** Publik för tester: samma regel som run(). */
+  pickTarget(heroes: HeroIndexEntry[]): string | null {
+    const ids = new Set(heroes.map((h) => h.id));
+    const last = this.lastHeroId();
+    if (last && ids.has(last)) return last;
+    const first = heroes[0];
+    if (!first) return null;
+    let best = first;
+    for (const h of heroes) {
+      const a = h.savedAt ?? 0;
+      const b = best.savedAt ?? 0;
+      if (a > b) best = h;
     }
-    return out;
+    return best.id;
+  }
+
+  private index(): HeroIndexEntry[] {
+    const raw = parseJson(this.kv.get(K_INDEX));
+    if (!Array.isArray(raw)) return [];
+    return raw.filter(isRecord).flatMap((h): HeroIndexEntry[] =>
+      typeof h.id === 'string' && h.id
+        ? [
+            {
+              id: h.id,
+              name: typeof h.name === 'string' ? h.name : h.id,
+              cls: typeof h.cls === 'string' ? h.cls : 'riddare',
+              level: typeof h.level === 'number' ? h.level : 1,
+              ...(typeof h.savedAt === 'number' ? { savedAt: h.savedAt } : {}),
+            },
+          ]
+        : [],
+    );
   }
 
   private lastHeroId(): string | null {
     const r = parseJson(this.kv.get(K_LAST));
     return isRecord(r) && typeof r.last === 'string' ? r.last : null;
-  }
-
-  /** Hjälte utan foundItems men med legacy found-räknare får globala registret vid första läsning. */
-  static mergeLegacyCount(raw: unknown, global: Record<string, FoundEntry> | null): Record<string, FoundEntry> | undefined {
-    const existing = readFoundItems(raw);
-    if (existing) return existing;
-    if (!isRecord(raw) || typeof raw.found !== 'number' || raw.found <= 0) return undefined;
-    return global && Object.keys(global).length ? { ...global } : undefined;
   }
 }

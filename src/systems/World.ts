@@ -17,6 +17,8 @@ export interface GroundDrop {
   data: DropData;
   view: Container;
   t: number;
+  /** Plockning pågår (async markFound) – hindrar dubbelplock. */
+  picking?: boolean;
 }
 export interface Projectile {
   pos: Vec2;

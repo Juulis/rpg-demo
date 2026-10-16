@@ -44,7 +44,7 @@ Moduler läser tillstånd via `ctx` och kommunicerar enbart via `ctx.bus` (emit/
 Moduler skriver aldrig till `ctx.hero`. `Game.loadHero(save: HeroSave)` laddar hjälte + session (seed, killed, zon, position, runor, stad)
 och emit:ar `hero_loaded`; `Game.getSnapshot(): HeroSave` ger en sparbar ögonblicksbild.
 `zone_enter { name }` (`'forest' | 'village'`) skickas när zonen är färdigladdad efter `newGame()`, `loadHero()` och portalbyte, och då är `hero.playing = true`.
-Fynd (lorebok) registreras per hjälte via `FoundRegistry.markFound` (del av `SaveBackend`); `SaveModule` kopplar in `LocalStorageSaveBackend` med `Game.setSaveBackend(b)`. Bylayouten fås typad via `villageLayout(ctx.data)`.
+Fynd (lorebok) registreras per hjälte via `FoundRegistry.markFound` (del av `SaveBackend`, serialiserat); `SaveModule` kopplar in `SerializedSaveBackend(LocalStorageSaveBackend)` med `Game.setSaveBackend(b)`. Bylayouten fås typad via `villageLayout(ctx.data)`.
 
 ## Koordinatsystem
 
@@ -63,7 +63,7 @@ index.html            Vite-ingång (next/)
 public/assets/        grafik/ljud som filer: 2d/ (tiles, dekor, sprites/monster|npc|hero, bakgrund, lorebok), ikoner/, effekter/, sfx/, ui/
 src/
   main.ts             skapar Game, registrerar moduler (+ debug-hook window.__game bara i dev)
-  core/               Game, EventBus, events (GameEvents), GameContext, GameAuthority, SaveBackend, LocalFoundRegistry,
+  core/               Game, EventBus, events (GameEvents), GameContext, GameAuthority, SaveBackend, NoOpFoundRegistry,
                       Rng, entropy (cryptoSeed), Session                                        – U1 (storage/keys/json/assets m.fl. – U2)
   logic/              ren spellogik utan DOM/Pixi: CombatRules, LocalAuthority, HeroModel, Inventory, loot/   – U1
   data/               *.json + types.ts + index.ts                                              – U1 (innehåll: Speldesign)

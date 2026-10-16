@@ -3,6 +3,7 @@ import type { GameContext, GameModule } from '../core/GameContext';
 import type { SaveBackend } from '../core/SaveBackend';
 import { AutoSaveService } from './AutoSaveService';
 import { LocalStorageSaveBackend } from './backend/LocalStorageSaveBackend';
+import { SerializedSaveBackend } from './backend/SerializedSaveBackend';
 import type { HeroGateway } from './HeroGateway';
 import { HeroLoader } from './HeroLoader';
 import { HeroRoster } from './HeroRoster';
@@ -30,7 +31,7 @@ export class SaveModule implements GameModule {
 
   constructor(
     private readonly game: HeroGateway,
-    backend: SaveBackend = new LocalStorageSaveBackend(),
+    backend: SaveBackend = new SerializedSaveBackend(new LocalStorageSaveBackend()),
     private readonly withDom = true,
     /** Plattformens slumpkälla för seeds och id:n (crypto.getRandomValues). */
     private readonly entropy: SeedSource = cryptoSeed,

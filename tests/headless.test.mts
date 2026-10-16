@@ -41,6 +41,7 @@ function must<T>(v: T | null | undefined, what: string): T {
 }
 import type { HeroGateway } from '../src/save/HeroGateway';
 import { LocalStorageSaveBackend } from '../src/save/backend/LocalStorageSaveBackend';
+import { SerializedSaveBackend } from '../src/save/backend/SerializedSaveBackend';
 import { HeroLoader } from '../src/save/HeroLoader';
 import type { AutoSaveService } from '../src/save/AutoSaveService';
 
@@ -158,7 +159,7 @@ offs.forEach((o) => o());
 
 // --- moduler
 const audio = new AudioModule(store);
-const save = new SaveModule(gateway, new LocalStorageSaveBackend(store), true, () => 123456789);
+const save = new SaveModule(gateway, new SerializedSaveBackend(new LocalStorageSaveBackend(store)), true, () => 123456789);
 const menu = new MenuModule(save);
 const map = new MapModule(store, () => document.body, false);
 for (const m of [audio, save, menu, map]) m.init(ctx);
@@ -198,7 +199,7 @@ assert.equal(ev.defaultPrevented, false, 'Tab ska släppas igenom när menyn är
 const input = document.querySelector('.hero-name') as HTMLInputElement;
 input.value = 'Ragnar';
 (document.getElementById('hnOk') as HTMLButtonElement).click();
-await new Promise((r) => setTimeout(r, 60)); // skapandet går via async SaveBackend
+await new Promise((r) => setTimeout(r, 120)); // skapandet går via async SaveBackend (serialiserad kö)
 assert.equal(menu.isOpen, false);
 assert.equal(ctx.hero.name, 'Ragnar');
 assert.equal(ctx.hero.playing, true);

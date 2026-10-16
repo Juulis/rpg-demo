@@ -1,6 +1,6 @@
-import type { FoundEntry } from '../core/SaveBackend';
 import type { Equipment, ItemInstance } from '../core/GameContext';
 import { isRecord } from '../core/json';
+import { parseFoundItemsMap } from './foundItems';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
 const num = (v: unknown, d: number): number => (typeof v === 'number' && Number.isFinite(v) ? v : d);
@@ -45,28 +45,13 @@ export class SaveMigrator {
     };
     this.fixOldStartGear(hero);
     const out: SaveFile = { version: SAVE_VERSION, hero, game: this.game(d.game) };
-    const found = this.parseFoundItems(d.foundItems);
+    const found = parseFoundItemsMap(d.foundItems);
     if (found) {
       out.foundItems = found;
       out.found = Object.keys(found).length;
     } else if (typeof d.found === 'number') out.found = d.found;
     if (typeof d.savedAt === 'number') out.savedAt = d.savedAt;
     return out;
-  }
-
-  private parseFoundItems(v: unknown): Record<string, FoundEntry> | undefined {
-    if (!isRecord(v)) return undefined;
-    const out: Record<string, FoundEntry> = {};
-    for (const [id, raw] of Object.entries(v)) {
-      if (!isRecord(raw) || typeof raw.first !== 'string' || typeof raw.base !== 'string') continue;
-      out[id] = {
-        first: raw.first,
-        quality: typeof raw.quality === 'string' ? raw.quality : 'normal',
-        base: raw.base,
-        ilvl: typeof raw.ilvl === 'number' ? raw.ilvl : 1,
-      };
-    }
-    return Object.keys(out).length ? out : undefined;
   }
 
   private fromV0(d: Record<string, unknown>): Record<string, unknown> {
