@@ -37,8 +37,6 @@ interface Size {
   anchor: [number, number];
 }
 
-const MONSTER_SHEETS = ['skogsvarg', 'skogsspindel', 'skuggvarg', 'taggsvin', 'vandrande_skelett', 'forvriden_jagare'];
-const MONSTER_SINGLE = ['vargbest', 'gravargsledare', 'skelett_kapten', 'askriddare'];
 export const TILES = [
   'gras_1',
   'gras_2',
@@ -136,8 +134,10 @@ export class AssetStore {
     };
   }
   private async loadMonsters(): Promise<void> {
+    // Datadrivet: index.json listar alla ark (<id>/<id>.json), monster.json alla enkelbilder.
+    const index = await json<{ sheets: string[] }>('2d/sprites/monster/index.json');
     await Promise.all(
-      MONSTER_SHEETS.map(async (id) => {
+      index.sheets.map(async (id) => {
         const m = await json<{ anims: Record<AnimName, SheetAnim> }>(`2d/sprites/monster/${id}/${id}.json`);
         const set: AnimSet = {};
         await Promise.all(
@@ -150,9 +150,8 @@ export class AssetStore {
     );
     const meta = await json<{ monster: Record<string, Size & { fil: string }> }>('2d/sprites/monster/monster.json');
     await Promise.all(
-      MONSTER_SINGLE.map(async (id) => {
-        const s = meta.monster[id];
-        if (!s) return;
+      Object.entries(meta.monster).map(async ([id, s]) => {
+        if (this.monsters.has(id)) return;
         const a = single(await tex(`2d/sprites/monster/${s.fil}`), s);
         this.monsters.set(id, { idle: a, gang: a, attack: a });
       }),

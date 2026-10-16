@@ -1,5 +1,6 @@
 import { Assets as PixiAssets, Container, Graphics, Sprite, type Texture } from 'pixi.js';
 import type { Vec2 } from '../core/GameContext';
+import type { FoundRegistry } from '../core/SaveBackend';
 import type { AssetStore } from '../render/Assets';
 import { Iso } from '../render/Iso';
 import type { Drop, Item } from '../logic/loot/types';
@@ -7,11 +8,12 @@ import type { GroundDrop, World } from './World';
 
 const QRANK: Record<string, number> = { legendary: 0, set: 1, rare: 2, magic: 3, normal: 4 };
 
-/** Lägger loot på marken (rollDrops), plockar upp (guld automatiskt) och registrerar fynd för loreboken (rpg_found). */
+/** Lägger loot på marken, plockar upp (guld automatiskt) och registrerar fynd för loreboken via FoundRegistry. */
 export class LootSystem {
   constructor(
     private readonly w: () => World,
     private readonly assets: AssetStore,
+    private readonly found: () => FoundRegistry,
   ) {}
 
   /** Lägger droppar (rullade av GameAuthority) runt en punkt. */
@@ -102,18 +104,14 @@ export class LootSystem {
     return true;
   }
 
-  /** Första upplock per föremåls-id sparas i localStorage['rpg_found'] (samma format som 3D-versionen). */
+  /** Första upplock per föremåls-id registreras via FoundRegistry (SaveBackend), aldrig direkt i localStorage. */
   private recordFound(it: Item): boolean {
-    const id = this.w().L.foundId(it);
-    try {
-      const f = JSON.parse(localStorage.getItem('rpg_found') ?? '{}') as Record<string, unknown>;
-      if (f[id]) return false;
-      f[id] = { first: new Date().toISOString(), quality: it.quality, base: it.base, ilvl: it.ilvl };
-      localStorage.setItem('rpg_found', JSON.stringify(f));
-      return true;
-    } catch {
-      return false;
-    }
+    return this.found().markFound(this.w().L.foundId(it), {
+      first: new Date().toISOString(),
+      quality: it.quality,
+      base: it.base,
+      ilvl: it.ilvl,
+    });
   }
 
   update(dt: number): void {
