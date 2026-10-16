@@ -1,0 +1,154 @@
+{
+  "miras_bror": {
+    "namn": "Sandals in the Moss",
+    "beskrivning": "Little Mira waits for her brother, who ran toward Wolfstead the night the demons came. Follow his trail through the forest and find what was left behind.",
+    "repliker": {
+      "start": "Have you seen my brother? He ran toward Wolfstead. He had new sandals. Will you look for him?",
+      "klar_ge": "They're his. I knew it. Take the doll. He'd want someone to have it.",
+      "klar_behall": "He's alive? I knew it! I'll go there one day."
+    },
+    "steg": {
+      "spar_i_skogen": { "text": "Find the child's sandal in the moss on the road to Wolfstead." },
+      "kolarkojan": { "text": "Follow the tracks to the abandoned charcoal hut along the Wolf Trail." },
+      "sanningen": {
+        "text": "The boy's last traces lie in the hut. The Runaway's Sandals are beneath the floor, guarded by a Warg Brute (Champion)."
+      },
+      "tillbaka": { "text": "Decide what Mira should be told." }
+    },
+    "val": {
+      "ge_sandalerna": { "text": "Give Mira the sandals and tell her the truth." },
+      "behall_och_ljug": { "text": "Keep the sandals and tell her that her brother lives in Wolfstead." }
+    }
+  },
+  "benens_visk": {
+    "namn": "Whispers of the Bones",
+    "beskrivning": "The Whisperer says his brother's skull still lies in his old house in Wolfstead, whispering his name at night. He wants it back. Or does he?",
+    "repliker": {
+      "start": "My brother whispers. Every night. He's still in the house in Wolfstead. Bring him to me.",
+      "klar_ge": "Silence. At last, silence. Thank you. Take the fingers. They no longer point at you.",
+      "klar_behall": "He chose you. Do you hear him now? No. But you will."
+    },
+    "steg": {
+      "benhuset": { "text": "Find the Whisperer's old house in Wolfstead, where the bones lie sorted in heaps." },
+      "lyssna": { "text": "Stand in the house after nightfall and listen. One of the skulls is whispering." },
+      "skallen": { "text": "Take the skull. Two Rotting Corpses (unique minions) rise." },
+      "atervand": { "text": "Return to the Whisperer." }
+    },
+    "val": {
+      "ge_skallen": { "text": "Give the skull to the Whisperer." },
+      "behall_skallen": { "text": "Keep the skull (it is part of the Bonewhisperer's Garb)." }
+    }
+  },
+  "ulvhilds_pals": {
+    "namn": "The Greybear's Pelt",
+    "beskrivning": "Ulvhild devoured Hedda's husband and Bror's son. Both want her pelt, for different reasons. Hedda for vengeance. Bror to bury his son in it.",
+    "repliker": {
+      "start_hedda": "Ulvhild ate my husband. I want her pelt on my wall.",
+      "start_bror": "My boy lies somewhere in her den. I want to bury him in the thing that took him.",
+      "klar_hedda": "There she hangs. Now I can sleep.",
+      "klar_bror": "Thank you. He can rest now. Take the axe. I can't bear to look at it."
+    },
+    "steg": {
+      "spar": { "text": "Find the chains at the mouth of Ulvhild's Den near Wolfstead." },
+      "ulvhild": { "text": "Slay Ulvhild the Greybear." },
+      "palsen": { "text": "Take Ulvhild's Pelt (quest item) and find Bror's son's wolf-tooth necklace among the bones in the den." },
+      "valet": { "text": "Choose who gets the pelt." }
+    },
+    "val": { "ge_hedda": { "text": "Give the pelt to Hedda." }, "ge_bror": { "text": "Give the pelt and the necklace to Bror." } }
+  },
+  "runornas_ristare": {
+    "namn": "The Runecarver",
+    "beskrivning": "Ylva wants to know who carved the runes. Each runestone bears a small mark, visible only by moonlight. The marks lead to the crypt beneath the Bone King's Chapel.",
+    "repliker": {
+      "start": "No one remembers who carved the stones. But the stones remember. Look at them by moonlight, child.",
+      "klar_sanning": "He snuffed it out himself? Then he's the one waiting down there. Then someone must light it again.",
+      "klar_skona": "A hero, then. I knew it. The runes were made by someone brave."
+    },
+    "steg": {
+      "markena": { "text": "Examine the runestones at night. Each shows part of a sign: a chisel, an eye, a crack." },
+      "ylva_tolkar": { "text": "Show the signs to Ylva. She recognizes the chapel's old symbol." },
+      "kryptan": { "text": "Find the Runecarver's wall deep in the Chapel Crypt, behind the Bone King's throne." },
+      "mejseln": { "text": "Take the chisel left beneath the wall and read the inscription about the Fourth Stone." },
+      "berätta": { "text": "Tell Ylva what you read." }
+    },
+    "val": {
+      "sanningen": { "text": "Tell her everything, even that the Runecarver snuffed out the Fourth Stone himself." },
+      "skona": { "text": "Tell her only of the chisel, and say the Runecarver died in battle." }
+    }
+  },
+  "gravvaktarnas_sista_strid": {
+    "namn": "The Gravewardens' Last Stand",
+    "beskrivning": "Ebbe is the last Gravewarden. His brothers fell in the crypt the night the dead rose, and their Chronicle was lost with them. He wants to know how they died.",
+    "repliker": {
+      "start": "My brothers fell down there. I heard them singing. Then nothing. Find out how they died.",
+      "klar_ebbe": "They held. All of them. To the last man. Take the lid. It was our captain's.",
+      "klar_ingrid": "My grandfather? He held the door? Then I will hold the gate."
+    },
+    "steg": {
+      "gravasen": { "text": "Find the body of the last Gravewarden on Barrow Ridge, a key clutched in his hand." },
+      "kryptan": {
+        "text": "Open the Gravewardens' chamber in the Chapel Crypt with the key. It is guarded by a Skeleton Guardian (Unique) who was once their captain."
+      },
+      "kronikan": { "text": "Take the Gravewardens' Chronicle (quest item)." },
+      "valet": { "text": "Decide who the Chronicle belongs to." }
+    },
+    "val": {
+      "ge_ebbe": { "text": "Give the Chronicle to Ebbe." },
+      "ge_ingrid": {
+        "text": "Give the Chronicle to Captain Ingrid, whose grandfather is named in it (if she is in the village; otherwise it is left in her guardhouse)."
+      }
+    }
+  },
+  "begrav_benkungen": {
+    "namn": "Bury the Bone King",
+    "beskrivning": "Valdemar was a good chieftain before the crown took him. Ebbe wants him buried as a man. Sara wants his signet, for reasons of her own.",
+    "repliker": {
+      "start": "The crown rules him, not his own will. Bring him down, and let us bury a chieftain, not a monster.",
+      "klar_begrav": "Rest, Valdemar. The village is yours again.",
+      "klar_signet": "Wear it well. It weighed on him too.",
+      "klar_sara": "You gave him to the bonereader? Then let him talk to her."
+    },
+    "steg": {
+      "benkungen": { "text": "Slay Valdemar the Bone King in the chapel." },
+      "signeten": { "text": "Among his bones lies the Chieftain's Signet (a quest item until you choose)." },
+      "graven": { "text": "Carry his bones to the chieftain's grave in the graveyard and decide the signet's fate." }
+    },
+    "val": {
+      "begrav_med_signet": { "text": "Bury Valdemar with the signet." },
+      "behall_signeten": { "text": "Bury him, but keep the signet." },
+      "ge_sara": { "text": "Give the bones and the signet to Sara Bonereader." }
+    }
+  },
+  "klockorna_under_vattnet": {
+    "namn": "Bells Beneath the Water",
+    "karna": "Follow the tolling through the mist to the Sunken Church and learn why the Bog Queen holds the drowned. Choice: free Lova's husband, or let him guard the shore."
+  },
+  "korpmoderns_sista_flykt": {
+    "namn": "The Raven Mother's Last Flight",
+    "karna": "The ravens lead the hero across the tidal paths to the Raven Isles, where the Raven Mother waits. Choice: kill her, or lift her curse so the ravens watch over Mistshore for the hero."
+  },
+  "jarnmunkens_las": {
+    "namn": "The Iron Monk's Lock",
+    "karna": "Elias opened the door that should have kept the brothers in. Find the Iron Monk in the Iron Cloister and choose: kill him, or let Elias speak with him one last time."
+  },
+  "martas_dotter": {
+    "namn": "Marta's Daughter",
+    "karna": "Marta's daughter fled to Copperfell. The trail leads to the Mine Depths and a group portrait among webs and crystals. Choose what Marta is told."
+  },
+  "den_fjarde_stenen": {
+    "namn": "The Fourth Stone",
+    "karna": "Rask knows the cult is hunting the Fourth Stone. Sneak through the Catacombs of the Cult, unmask the Prophet of Ash, and find the map to the Rift's Floor."
+  },
+  "pilgrimens_vag": {
+    "namn": "The Pilgrim's Road",
+    "karna": "Follow the pilgrim's prayers carved in the trees along the Ash Road to the gates of Ashenhold and beyond. Choice: bury his staff, or carry it to the Burnt Cathedral."
+  },
+  "ljuset_som_haller": {
+    "namn": "The Light That Holds",
+    "karna": "Why does the lighthouse keep the Blight at bay? The light is a runestone. Find where it came from, and defend the lighthouse when the Blightfather sends his congregation."
+  },
+  "tand_stenen": {
+    "namn": "Light the Stone",
+    "karna": "With the Runecarver's Chisel and the truth from the crypt, the hero descends to the Rift's Floor. Face the Extinguished. Choice: light the Fourth Stone and seal the Rift, or take its power (unlocks magic)."
+  }
+}
