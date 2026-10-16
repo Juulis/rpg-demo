@@ -1,0 +1,923 @@
+{
+  "damage_types": [
+    {
+      "id": "hugg",
+      "name": "Hugg"
+    },
+    {
+      "id": "stick",
+      "name": "Stick"
+    },
+    {
+      "id": "kross",
+      "name": "Kross"
+    }
+  ],
+  "multiplier_rules": {
+    "svag": 1.5,
+    "normal": 1.0,
+    "resistent": 0.6
+  },
+  "families": [
+    {
+      "id": "ododa",
+      "name": "Odöda",
+      "theme": "Skelett och gengångare ur gamla gravar, bundna av mörka runor.",
+      "color": "#a8b0a0",
+      "weak": [
+        "kross"
+      ],
+      "resist": [
+        "stick"
+      ],
+      "subtypes": [
+        "skelett_hund",
+        "skelett_krigare",
+        "skelett_bagskytt",
+        "skelett_runprast",
+        "skelett_vakt",
+        "skelett_kapten"
+      ],
+      "boss": "benkungen_valdemar"
+    },
+    {
+      "id": "demoner",
+      "name": "Demoner",
+      "theme": "Varelser ur sprickor i världen, eld och aska, smart och grym.",
+      "color": "#8a1a1a",
+      "weak": [
+        "stick"
+      ],
+      "resist": [
+        "kross"
+      ],
+      "boss": "askfursten_morvath",
+      "subtypes": [
+        "askimp",
+        "eldpiska_demon",
+        "hornslaktare",
+        "askriddare"
+      ]
+    },
+    {
+      "id": "bestar",
+      "name": "Bestar",
+      "theme": "Förvridna vargar, björnar och vildsvin, jagar i flock.",
+      "color": "#5a4630",
+      "weak": [
+        "hugg"
+      ],
+      "resist": [],
+      "boss": "grabjornen_ulvhild",
+      "subtypes": [
+        "skogsvarg",
+        "vargbest",
+        "taggsvin",
+        "skuggvarg",
+        "gravargsledare",
+        "ruttbjorn"
+      ]
+    },
+    {
+      "id": "gastar",
+      "name": "Gastar",
+      "theme": "Drunknade och glömda andar i dimma och träsk, halvgenomskinliga.",
+      "color": "#4a6a7a",
+      "weak": [
+        "hugg"
+      ],
+      "resist": [
+        "kross",
+        "stick"
+      ],
+      "boss": "trasdrottningen",
+      "subtypes": [
+        "dimgast",
+        "klagokvinna",
+        "trasknacken"
+      ]
+    },
+    {
+      "id": "forvridna",
+      "name": "Förvridna",
+      "theme": "Människor som förvandlats av demonisk smitta, sjuka och vanställda.",
+      "color": "#5a6a2a",
+      "weak": [
+        "hugg",
+        "stick"
+      ],
+      "resist": [],
+      "boss": "fadern_av_smittan",
+      "subtypes": [
+        "smittbarare",
+        "galen_munk",
+        "kottklump"
+      ]
+    },
+    {
+      "id": "insekter",
+      "name": "Kryp",
+      "theme": "Jättespindlar och kitinbaggar i gruvor och källare.",
+      "color": "#2a2a3a",
+      "weak": [
+        "kross"
+      ],
+      "resist": [
+        "hugg"
+      ],
+      "boss": "spinnmodern",
+      "subtypes": [
+        "gruvspindel",
+        "syrabagge",
+        "kitinvakt"
+      ]
+    }
+  ],
+  "monsters_note": "Alla monster av samma typ har EXAKT samma stats. Ingen slumpvariation, ingen nivåskalning. Stats är beräknade en gång med formlerna i monster_niva.json (designverktyg). Skada är ett fast värde per träff. attacks_per_s = 1 / attack_cd.",
+  "monsters": [
+    {
+      "id": "skogsvarg",
+      "name": "Varg",
+      "family": "bestar",
+      "level": 1,
+      "hp": 50,
+      "damage": 10,
+      "defense": 0,
+      "speed": 3.6,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 3,
+      "aggro_range": 10,
+      "behavior": "Demons nuvarande varg: vandrar, jagar inom 10, biter.",
+      "weapon_type": null,
+      "zones": [
+        "startskogen"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skogsvarg",
+        "ref_level": 1
+      },
+      "note": "Matchar spawnWolf i game.js."
+    },
+    {
+      "id": "vargbest",
+      "name": "Vargbest",
+      "family": "bestar",
+      "level": 3,
+      "hp": 79,
+      "damage": 13,
+      "defense": 2,
+      "speed": 3.6,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 22,
+      "aggro_range": 10,
+      "behavior": "Större, ärrad varg. Jagar i par, biter och river, flyr aldrig.",
+      "weapon_type": null,
+      "zones": [
+        "startskogen"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skogsvarg",
+        "ref_level": 1,
+        "mods": {
+          "hpm": 1.3,
+          "dmgm": 1.15,
+          "defa": 1,
+          "xpref": 14
+        }
+      },
+      "note": "Matchar spawnWolf i game.js."
+    },
+    {
+      "id": "taggsvin",
+      "name": "Taggsvin",
+      "family": "bestar",
+      "level": 4,
+      "hp": 88,
+      "damage": 16,
+      "defense": 3,
+      "speed": 3.0,
+      "attack_cd": 2.5,
+      "attacks_per_s": 0.4,
+      "xp": 48,
+      "aggro_range": 10,
+      "behavior": "Laddar rakt fram i fart 7 efter 1 s varning, kan undvikas.",
+      "weapon_type": null,
+      "zones": [
+        "vargaby"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "taggsvin",
+        "ref_level": 3
+      }
+    },
+    {
+      "id": "skuggvarg",
+      "name": "Gråvarg",
+      "family": "bestar",
+      "level": 5,
+      "hp": 85,
+      "damage": 14,
+      "defense": 2,
+      "speed": 4.2,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 60,
+      "aggro_range": 12,
+      "behavior": "Gråvarg i flock om 2 till 3. Flankerar och biter i tur och ordning.",
+      "weapon_type": null,
+      "zones": [
+        "vargaby"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skuggvarg",
+        "ref_level": 3
+      }
+    },
+    {
+      "id": "gravargsledare",
+      "name": "Gråvargsledare",
+      "family": "bestar",
+      "level": 6,
+      "hp": 168,
+      "damage": 19,
+      "defense": 4,
+      "speed": 4.2,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 154,
+      "aggro_range": 12,
+      "behavior": "Leder gråvargarna. Ylar var 12:e s: närliggande vargar får +20 % fart i 5 s.",
+      "weapon_type": null,
+      "zones": [
+        "vargaby"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skuggvarg",
+        "ref_level": 3,
+        "mods": {
+          "hpm": 1.8,
+          "dmgm": 1.3,
+          "defa": 2,
+          "xpref": 35
+        }
+      }
+    },
+    {
+      "id": "ruttbjorn",
+      "name": "Ruttbjörn",
+      "family": "bestar",
+      "level": 6,
+      "hp": 293,
+      "damage": 29,
+      "defense": 6,
+      "speed": 2.8,
+      "attack_cd": 2.0,
+      "attacks_per_s": 0.5,
+      "xp": 265,
+      "aggro_range": 8,
+      "behavior": "Långsam, slår omkull, rasar under 30 % HP.",
+      "weapon_type": null,
+      "zones": [
+        "vargaby"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "ruttbjorn",
+        "ref_level": 3
+      }
+    },
+    {
+      "id": "grabjornen_ulvhild",
+      "name": "Gråbjörnen Ulvhild",
+      "family": "bestar",
+      "level": 6,
+      "hp": 1730,
+      "damage": 34,
+      "defense": 8,
+      "speed": 3.2,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 2425,
+      "aggro_range": 10,
+      "behavior": "Boss: tre faser, kallar vargar, laddning, ras.",
+      "weapon_type": null,
+      "zones": [
+        "vargaby"
+      ],
+      "boss": true,
+      "design_source": {
+        "from": "grabjornen_ulvhild",
+        "ref_level": 3
+      }
+    },
+    {
+      "id": "skelett_hund",
+      "name": "Benhund",
+      "family": "ododa",
+      "level": 7,
+      "hp": 48,
+      "damage": 9,
+      "defense": 2,
+      "speed": 5.0,
+      "attack_cd": 0.6,
+      "attacks_per_s": 1.67,
+      "xp": 67,
+      "aggro_range": 12,
+      "behavior": "Flock. Cirklar runt spelaren och biter i tur och ordning. Flyr kort under 30 % HP.",
+      "weapon_type": null,
+      "zones": [
+        "gamla_byn"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_hund",
+        "ref_level": 2
+      },
+      "pack_size": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "skelett_krigare",
+      "name": "Skelettkrigare",
+      "family": "ododa",
+      "level": 7,
+      "hp": 97,
+      "damage": 15,
+      "defense": 4,
+      "speed": 3.4,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 111,
+      "aggro_range": 10,
+      "behavior": "Samma som skogsmonstret: vandrar, jagar inom 10, närstrid.",
+      "weapon_type": "svard",
+      "zones": [
+        "gamla_byn"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_krigare",
+        "ref_level": 2
+      }
+    },
+    {
+      "id": "skelett_bagskytt",
+      "name": "Skelettbågskytt",
+      "family": "ododa",
+      "level": 8,
+      "hp": 71,
+      "damage": 13,
+      "defense": 2,
+      "speed": 3.0,
+      "attack_cd": 1.8,
+      "attacks_per_s": 0.56,
+      "xp": 170,
+      "aggro_range": 14,
+      "behavior": "Håller avstånd 6 till 10, backar om spelaren är närmare än 5, skjuter pil (projektil fart 14).",
+      "weapon_type": "bage",
+      "zones": [
+        "gamla_byn"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_bagskytt",
+        "ref_level": 2
+      }
+    },
+    {
+      "id": "skelett_runprast",
+      "name": "Runpräst",
+      "family": "ododa",
+      "level": 8,
+      "hp": 89,
+      "damage": 21,
+      "defense": 3,
+      "speed": 2.8,
+      "attack_cd": 3.0,
+      "attacks_per_s": 0.33,
+      "xp": 238,
+      "aggro_range": 12,
+      "behavior": "Stödjer: återupplivar ett dött skelett inom 8 var 10:e sekund (max 2 gånger), annars kastar röd eldboll. Teleporterar 5 bort om träffad i närstrid (cd 6).",
+      "weapon_type": "dolk",
+      "zones": [
+        "gamla_byn"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_runprast",
+        "ref_level": 2
+      },
+      "uses_dark_magic": true
+    },
+    {
+      "id": "skelett_vakt",
+      "name": "Skelettväktare",
+      "family": "ododa",
+      "level": 9,
+      "hp": 234,
+      "damage": 27,
+      "defense": 9,
+      "speed": 2.4,
+      "attack_cd": 1.6,
+      "attacks_per_s": 0.62,
+      "xp": 364,
+      "aggro_range": 8,
+      "behavior": "Långsam tank. Sköldblock: 50 % mindre skada framifrån. Patrullerar fast rutt.",
+      "weapon_type": "klubba",
+      "zones": [
+        "gamla_byn"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_vakt",
+        "ref_level": 2
+      },
+      "knockback_resist": 0.7
+    },
+    {
+      "id": "skelett_kapten",
+      "name": "Skelettkapten",
+      "family": "ododa",
+      "level": 9,
+      "hp": 187,
+      "damage": 22,
+      "defense": 7,
+      "speed": 3.4,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 324,
+      "aggro_range": 10,
+      "behavior": "Leder 2 till 3 skelettkrigare. Ropar order: krigarna i närheten får +15 % skada. Hugger i båge.",
+      "weapon_type": "svard",
+      "zones": [
+        "gamla_byn"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_krigare",
+        "ref_level": 2,
+        "mods": {
+          "hpm": 1.6,
+          "dmgm": 1.25,
+          "defa": 2,
+          "xpref": 40
+        }
+      }
+    },
+    {
+      "id": "benkungen_valdemar",
+      "name": "Benkungen Valdemar",
+      "family": "ododa",
+      "level": 10,
+      "hp": 1594,
+      "damage": 32,
+      "defense": 7,
+      "speed": 3.0,
+      "attack_cd": 1.4,
+      "attacks_per_s": 0.71,
+      "xp": 3795,
+      "aggro_range": 14,
+      "behavior": "",
+      "weapon_type": "yxa",
+      "zones": [
+        "gamla_byn"
+      ],
+      "boss": true,
+      "design_source": {
+        "from": "benkungen_valdemar",
+        "ref_level": 4
+      },
+      "uses_dark_magic": true
+    },
+    {
+      "id": "dimgast",
+      "name": "Dimgast",
+      "family": "gastar",
+      "level": 11,
+      "hp": 106,
+      "damage": 18,
+      "defense": 2,
+      "speed": 3.2,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 241,
+      "aggro_range": 10,
+      "behavior": "Svävar genom hinder, blir osynlig 2 s efter träff.",
+      "weapon_type": null,
+      "zones": [
+        "dimmerstrand"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "dimgast",
+        "ref_level": 5
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "klagokvinna",
+      "name": "Klagokvinna",
+      "family": "gastar",
+      "level": 12,
+      "hp": 136,
+      "damage": 12,
+      "defense": 3,
+      "speed": 2.4,
+      "attack_cd": 6.0,
+      "attacks_per_s": 0.17,
+      "xp": 436,
+      "aggro_range": 10,
+      "behavior": "Skrik i radie 6 sänker spelarens uthållighetsregen 50 % i 4 s.",
+      "weapon_type": null,
+      "zones": [
+        "dimmerstrand"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "klagokvinna",
+        "ref_level": 5
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "trasknacken",
+      "name": "Träsknäcken",
+      "family": "gastar",
+      "level": 13,
+      "hp": 236,
+      "damage": 29,
+      "defense": 5,
+      "speed": 2.6,
+      "attack_cd": 3.0,
+      "attacks_per_s": 0.33,
+      "xp": 562,
+      "aggro_range": 10,
+      "behavior": "Drar spelaren mot sig från vatten, räckvidd 6.",
+      "weapon_type": null,
+      "zones": [
+        "dimmerstrand"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "trasknacken",
+        "ref_level": 5
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "trasdrottningen",
+      "name": "Träsdrottningen",
+      "family": "gastar",
+      "level": 14,
+      "hp": 3773,
+      "damage": 55,
+      "defense": 8,
+      "speed": 3.0,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 11000,
+      "aggro_range": 10,
+      "behavior": "Boss.",
+      "weapon_type": null,
+      "zones": [
+        "dimmerstrand"
+      ],
+      "boss": true,
+      "design_source": {
+        "from": "trasdrottningen",
+        "ref_level": 5
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "gruvspindel",
+      "name": "Gruvspindel",
+      "family": "insekter",
+      "level": 15,
+      "hp": 106,
+      "damage": 17,
+      "defense": 6,
+      "speed": 5.0,
+      "attack_cd": 0.8,
+      "attacks_per_s": 1.25,
+      "xp": 279,
+      "aggro_range": 10,
+      "behavior": "Hoppar från tak, flock 3 till 5.",
+      "weapon_type": null,
+      "zones": [
+        "kopparberg"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "gruvspindel",
+        "ref_level": 6
+      }
+    },
+    {
+      "id": "syrabagge",
+      "name": "Syrabagge",
+      "family": "insekter",
+      "level": 16,
+      "hp": 233,
+      "damage": 25,
+      "defense": 10,
+      "speed": 2.6,
+      "attack_cd": 2.2,
+      "attacks_per_s": 0.45,
+      "xp": 576,
+      "aggro_range": 10,
+      "behavior": "Spottar syra som sänker försvar 3 i 5 s.",
+      "weapon_type": null,
+      "zones": [
+        "kopparberg"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "syrabagge",
+        "ref_level": 6
+      }
+    },
+    {
+      "id": "kitinvakt",
+      "name": "Kitinvakt",
+      "family": "insekter",
+      "level": 18,
+      "hp": 565,
+      "damage": 47,
+      "defense": 15,
+      "speed": 2.4,
+      "attack_cd": 1.8,
+      "attacks_per_s": 0.56,
+      "xp": 1260,
+      "aggro_range": 10,
+      "behavior": "Pansar, svag bakifrån (dubbel skada).",
+      "weapon_type": null,
+      "zones": [
+        "kopparberg"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "kitinvakt",
+        "ref_level": 6
+      }
+    },
+    {
+      "id": "spinnmodern",
+      "name": "Spinnmodern",
+      "family": "insekter",
+      "level": 18,
+      "hp": 5649,
+      "damage": 72,
+      "defense": 13,
+      "speed": 3.4,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 18328,
+      "aggro_range": 10,
+      "behavior": "Boss.",
+      "weapon_type": null,
+      "zones": [
+        "kopparberg"
+      ],
+      "boss": true,
+      "design_source": {
+        "from": "spinnmodern",
+        "ref_level": 6
+      }
+    },
+    {
+      "id": "askimp",
+      "name": "Askimp",
+      "family": "demoner",
+      "level": 19,
+      "hp": 157,
+      "damage": 25,
+      "defense": 5,
+      "speed": 4.6,
+      "attack_cd": 1.5,
+      "attacks_per_s": 0.67,
+      "xp": 596,
+      "aggro_range": 10,
+      "behavior": "Kastar glöd från avstånd, flyr i närstrid.",
+      "weapon_type": null,
+      "zones": [
+        "askeborg"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "askimp",
+        "ref_level": 8
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "eldpiska_demon",
+      "name": "Eldpiskedemon",
+      "family": "demoner",
+      "level": 21,
+      "hp": 552,
+      "damage": 53,
+      "defense": 9,
+      "speed": 3.2,
+      "attack_cd": 2.0,
+      "attacks_per_s": 0.5,
+      "xp": 1877,
+      "aggro_range": 10,
+      "behavior": "Piska räckvidd 5, drar spelaren.",
+      "weapon_type": null,
+      "zones": [
+        "askeborg"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "eldpiska_demon",
+        "ref_level": 8
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "hornslaktare",
+      "name": "Hornslaktare",
+      "family": "demoner",
+      "level": 22,
+      "hp": 759,
+      "damage": 72,
+      "defense": 12,
+      "speed": 3.4,
+      "attack_cd": 1.6,
+      "attacks_per_s": 0.62,
+      "xp": 2167,
+      "aggro_range": 10,
+      "behavior": "Närstrid, svepande yxa, laddar.",
+      "weapon_type": "yxa",
+      "zones": [
+        "askeborg"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "hornslaktare",
+        "ref_level": 8
+      }
+    },
+    {
+      "id": "askriddare",
+      "name": "Askriddare",
+      "family": "demoner",
+      "level": 23,
+      "hp": 919,
+      "damage": 70,
+      "defense": 16,
+      "speed": 3.4,
+      "attack_cd": 1.6,
+      "attacks_per_s": 0.62,
+      "xp": 2647,
+      "aggro_range": 10,
+      "behavior": "Fallen riddare i svärtad rustning, besatt av en demon. Blockerar framifrån, hugger med svärd, laddar mot spelaren.",
+      "weapon_type": "svard",
+      "zones": [
+        "askeborg"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "hornslaktare",
+        "ref_level": 8,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 0.9,
+          "defa": 4,
+          "xpref": 80
+        }
+      }
+    },
+    {
+      "id": "askfursten_morvath",
+      "name": "Askfursten Morvath",
+      "family": "demoner",
+      "level": 25,
+      "hp": 12636,
+      "damage": 123,
+      "defense": 17,
+      "speed": 3.6,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 45000,
+      "aggro_range": 10,
+      "behavior": "Slutboss för första akten.",
+      "weapon_type": null,
+      "zones": [
+        "askeborg"
+      ],
+      "boss": true,
+      "design_source": {
+        "from": "askfursten_morvath",
+        "ref_level": 8
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "smittbarare",
+      "name": "Smittbärare",
+      "family": "forvridna",
+      "level": 24,
+      "hp": 404,
+      "damage": 35,
+      "defense": 8,
+      "speed": 2.8,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 705,
+      "aggro_range": 10,
+      "behavior": "Exploderar vid död, giftmoln radie 3.",
+      "weapon_type": null,
+      "zones": [
+        "framtida_slutomrade"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "smittbarare",
+        "ref_level": 7
+      }
+    },
+    {
+      "id": "galen_munk",
+      "name": "Galen munk",
+      "family": "forvridna",
+      "level": 25,
+      "hp": 500,
+      "damage": 47,
+      "defense": 9,
+      "speed": 4.0,
+      "attack_cd": 1.2,
+      "attacks_per_s": 0.83,
+      "xp": 1125,
+      "aggro_range": 10,
+      "behavior": "Oförutsägbar, byter mål.",
+      "weapon_type": "klubba",
+      "zones": [
+        "framtida_slutomrade"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "galen_munk",
+        "ref_level": 7
+      }
+    },
+    {
+      "id": "kottklump",
+      "name": "Köttklump",
+      "family": "forvridna",
+      "level": 27,
+      "hp": 1682,
+      "damage": 74,
+      "defense": 10,
+      "speed": 2.0,
+      "attack_cd": 2.0,
+      "attacks_per_s": 0.5,
+      "xp": 2104,
+      "aggro_range": 10,
+      "behavior": "Delar sig i två små vid död.",
+      "weapon_type": null,
+      "zones": [
+        "framtida_slutomrade"
+      ],
+      "boss": false,
+      "design_source": {
+        "from": "kottklump",
+        "ref_level": 7
+      }
+    },
+    {
+      "id": "fadern_av_smittan",
+      "name": "Fadern av smittan",
+      "family": "forvridna",
+      "level": 28,
+      "hp": 11100,
+      "damage": 116,
+      "defense": 13,
+      "speed": 2.8,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 28892,
+      "aggro_range": 10,
+      "behavior": "Boss, ej placerad ännu.",
+      "weapon_type": null,
+      "zones": [
+        "framtida_slutomrade"
+      ],
+      "boss": true,
+      "design_source": {
+        "from": "fadern_av_smittan",
+        "ref_level": 7
+      }
+    }
+  ]
+}
