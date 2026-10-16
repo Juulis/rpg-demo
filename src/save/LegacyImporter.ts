@@ -2,7 +2,7 @@ import { isRecord, readJson } from '../core/storage';
 import type { HeroRoster } from './HeroRoster';
 import type { SaveRepository } from './SaveRepository';
 import { HERO_CLASSES } from './types';
-import type { ItemInstance, Equipment } from '../core/GameContext';
+import type { ItemInstance, Equipment } from '../core/context.ext';
 
 /**
  * Engångsmigrering: äldre sparningar per klass ('rk_inv_<klass>') blir hjältar, men bara om inget hjälteindex finns.

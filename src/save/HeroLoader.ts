@@ -1,4 +1,5 @@
 import { nextEvent } from '../core/nextEvent';
+import { heroWriter } from '../core/context.ext';
 import type { GameContext } from '../core/GameContext';
 import type { AutoSaveService } from './AutoSaveService';
 import { newGameRecord, newSeed, type SaveFile } from './types';
@@ -19,19 +20,30 @@ export class HeroLoader {
     const g = resume && save.game ? save.game : newGameRecord(newSeed());
     if (!resume || !save.game) save.game = g;
     const h = save.hero;
-    const hero = this.ctx.hero;
-    this.ctx.session = { seed: g.seed, killed: new Set(g.killed) };
+    const hero = heroWriter(this.ctx);
+    // sessionen muteras på plats (Game äger objektet, som i Game.newGame)
+    this.ctx.session.seed = g.seed;
+    this.ctx.session.killed = new Set(g.killed);
     Object.assign(hero, {
-      id: h.id, name: h.name, cls: h.cls, level: h.level, xp: h.xp, gold: h.gold,
-      inv: h.fresh ? [] : h.inv, equip: h.fresh ? {} : h.equip, fresh: !!h.fresh,
-      stage: resume ? g.stage : 0, runes: resume ? g.runes : 0, city: resume ? g.city : 'besatt',
+      id: h.id,
+      name: h.name,
+      cls: h.cls,
+      level: h.level,
+      xp: h.xp,
+      gold: h.gold,
+      inv: h.fresh ? [] : h.inv,
+      equip: h.fresh ? {} : h.equip,
+      fresh: !!h.fresh,
+      stage: resume ? g.stage : 0,
+      runes: resume ? g.runes : 0,
+      city: resume ? g.city : 'besatt',
       zone: resume ? g.zone : 'forest',
       resumePos: resume && g.pos ? { x: g.pos[0], y: g.pos[1] } : null,
       facing: resume ? (g.rot ?? 0) : 0,
     });
     if (h.fresh) delete h.fresh;
     this.ctx.bus.emit('hero_loaded', { heroId: h.id });
-    const ready = nextEvent(this.ctx.bus, 'zone_enter', (p) => p.name === hero.zone, this.zoneTimeoutMs);
+    const ready = nextEvent(this.ctx.bus, 'zone_enter', (p) => p.name === (hero.zone ?? 'forest'), this.zoneTimeoutMs);
     this.ctx.bus.emit('new_game', { seed: g.seed });
     try {
       await ready;

@@ -1,5 +1,6 @@
 import { Disposables } from '../core/Disposables';
-import type { GameEventName } from '../core/events';
+import { heroOf } from '../core/context.ext';
+import type { GameEvents } from '../core/events';
 import type { GameContext } from '../core/GameContext';
 import type { SaveRepository } from './SaveRepository';
 import { SAVE_VERSION, newSeed, type SaveFile } from './types';
@@ -9,8 +10,18 @@ import { SAVE_VERSION, newSeed, type SaveFile } from './types';
  * Sparar (debounce 150 ms) vid spelhändelser samt direkt vid beforeunload/visibilitychange.
  */
 export class AutoSaveService {
-  static readonly TRIGGERS: readonly GameEventName[] = [
-    'kill', 'pickup', 'loot_drop', 'gold', 'rune', 'zone_enter', 'portal_open', 'boss_phase', 'boss_start', 'level_up', 'lore_unlock',
+  static readonly TRIGGERS: ReadonlyArray<keyof GameEvents> = [
+    'kill',
+    'pickup',
+    'loot_drop',
+    'gold',
+    'rune',
+    'zone_enter',
+    'portal_open',
+    'boss_phase',
+    'boss_start',
+    'level_up',
+    'lore_unlock',
   ];
   private current: SaveFile | null = null;
   private playing = false;
@@ -31,13 +42,18 @@ export class AutoSaveService {
     this.d.add(
       bus.on('new_game', ({ seed }) => {
         // nytt game startat av motorn (t.ex. "Spela igen"): ny seed, tom dödlista
-        if (this.current && this.ctx.session.seed !== seed) this.ctx.session = { seed, killed: new Set() };
+        if (this.current && this.ctx.session.seed !== seed) {
+          this.ctx.session.seed = seed;
+          this.ctx.session.killed.clear();
+        }
         this.saveSoon('new_game');
       }),
     );
-    this.d.add(bus.on('hero_deleted', ({ heroId }) => {
-      if (this.current?.hero.id === heroId) this.end(false);
-    }));
+    this.d.add(
+      bus.on('hero_deleted', ({ heroId }) => {
+        if (this.current?.hero.id === heroId) this.end(false);
+      }),
+    );
     if (typeof window !== 'undefined') {
       this.d.listen(window, 'beforeunload', () => this.saveNow('beforeunload'));
       this.d.listen(document, 'visibilitychange', () => {
@@ -82,20 +98,31 @@ export class AutoSaveService {
   }
 
   private snapshot(cur: SaveFile): SaveFile {
-    const { hero: h, session: s, zone } = this.ctx;
+    const { session: s, zone } = this.ctx;
+    const h = heroOf(this.ctx);
+    const prev = cur.game;
     const r2 = (n: number, k: number): number => Number(n.toFixed(k));
     return {
       version: SAVE_VERSION,
-      hero: { id: cur.hero.id, name: cur.hero.name, cls: h.cls, level: h.level, xp: h.xp, gold: h.gold, inv: h.inv, equip: h.equip },
+      hero: {
+        id: cur.hero.id,
+        name: cur.hero.name,
+        cls: h.cls,
+        level: h.level,
+        xp: h.xp,
+        gold: h.gold,
+        inv: h.inv ?? cur.hero.inv,
+        equip: h.equip ?? cur.hero.equip,
+      },
       game: {
         seed: s.seed || cur.game?.seed || newSeed(),
         killed: [...s.killed],
         zone: zone.name || cur.game?.zone || 'forest',
         pos: [r2(h.pos.x, 2), r2(h.pos.y, 2)],
-        rot: r2(h.facing, 3),
-        stage: h.stage,
-        runes: h.runes,
-        city: h.city,
+        rot: r2(h.facing ?? 0, 3),
+        stage: h.stage ?? prev?.stage ?? 0,
+        runes: h.runes ?? prev?.runes ?? 0,
+        city: h.city ?? prev?.city ?? 'besatt',
       },
       found: this.repo.foundCount(),
       savedAt: Date.now(),

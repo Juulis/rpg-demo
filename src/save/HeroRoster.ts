@@ -27,7 +27,8 @@ export class HeroRoster {
     const n = name.trim();
     if (n.length < 2 || n.length > 16) return 'Namnet måste vara 2–16 tecken.';
     if (!/^[\p{L}\p{N}][\p{L}\p{N} _-]*$/u.test(n)) return 'Bara bokstäver, siffror, mellanslag, - och _.';
-    if (this.list().some((h) => h.id !== ignoreId && h.name.toLowerCase() === n.toLowerCase())) return 'Det finns redan en hjälte med det namnet.';
+    if (this.list().some((h) => h.id !== ignoreId && h.name.toLowerCase() === n.toLowerCase()))
+      return 'Det finns redan en hjälte med det namnet.';
     return '';
   }
 
