@@ -1,6 +1,7 @@
 import { isRecord, readJson } from '../core/storage';
 import type { HeroRoster } from './HeroRoster';
 import type { SaveRepository } from './SaveRepository';
+import sv from '../i18n/sv.json';
 import { HERO_CLASSES } from './types';
 import type { ItemInstance, Equipment } from '../core/GameContext';
 
@@ -24,7 +25,7 @@ export class LegacyImporter {
       const o = readJson(this.repo.store, LegacyImporter.PREFIX + c.id);
       if (!isRecord(o) || !Array.isArray(o.inv)) continue;
       try {
-        const d = this.roster.create(c.name, c.id);
+        const d = this.roster.create(sv.classes[c.id], c.id); // sparat hjältenamn (data), inte UI-text;
         d.hero.inv = o.inv as ItemInstance[];
         d.hero.equip = isRecord(o.equip) ? (o.equip as Equipment) : {};
         d.hero.gold = typeof o.gold === 'number' ? o.gold : 0;
