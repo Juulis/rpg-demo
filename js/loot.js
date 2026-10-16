@@ -152,7 +152,7 @@ export function createLoot({ QUAL, BAS, AFX, SET, DROP, ATTR }) {
     const defTotal = (b.defense + g.defense * L + itemDef) * (1 + (t.defense_pct || 0));
     const maxHp = Math.round((b.hp + g.hp * L + (t.life || 0)) * (1 + (t.life_pct || 0)));
     const maxSt = Math.round((b.stamina + g.stamina * L + (t.stamina || 0)) * (1 + (t.stamina_pct || 0)));
-    const AR = 20 + 5 * level + (t.attack_rating || 0), dmgPct = t.damage_pct || 0, w = t._weapon;
+    const AR = 15 + 8 * level + (t.attack_rating || 0), dmgPct = t.damage_pct || 0, w = t._weapon;
     const dMin = (b.damage + g.damage * L + (wdmg ? wdmg[0] : 0) + (t.damage_flat || 0)) * (1 + dmgPct), dMax = (b.damage + g.damage * L + (wdmg ? wdmg[1] : 0) + (t.damage_flat || 0)) * (1 + dmgPct);
     const pen = Math.min(ATTR.move_speed.penalty_cap, movePen);
     return {
@@ -166,7 +166,7 @@ export function createLoot({ QUAL, BAS, AFX, SET, DROP, ATTR }) {
       bleed: t.bleed_dps || 0, vs: { ododa: t.vs_ododa_damage_pct || 0, bestar: t.vs_bestar_damage_pct || 0, demoner: t.vs_demoner_damage_pct || 0 }, setActive, twoHanded: !!w?.two_handed
     };
   }
-  // Träffchans: 2 × AR/(AR+DR) × alvl/(alvl+dlvl), golv 5 %, tak 95 %.
-  const hitChance = (AR, DR, alvl, dlvl) => Math.min(ATTR.hit_chance.cap, Math.max(ATTR.hit_chance.floor, 2 * AR / (AR + DR) * alvl / (alvl + dlvl)));
+  // Träffchans (attribut.json): clamp(0,80 × 2 × AR/(AR+DR) + nivåterm, 5 %, 95 %), d = anfallare − försvarare, 0,067·d under / 0,033·d över.
+  const hitChance = (AR, DR, alvl, dlvl) => { const d = alvl - dlvl, lt = d < 0 ? 0.067 * d : 0.033 * d; return Math.min(ATTR.hit_chance.cap, Math.max(ATTR.hit_chance.floor, 0.8 * 2 * AR / (AR + DR) + lt)); };
   return { Q, B, LEG, SETS, SETPIECE, slotOf, equipable, sizeOf, makeItem, baseOf, nameOf, colorOf, itemStats, rollDrops, monsterLevel, monsterFamily, computeStats, hitChance, setCounts, effMf, qualityOf };
 }

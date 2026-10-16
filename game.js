@@ -399,7 +399,7 @@ function sparks(pos, color = 0xffd890, n = 14) { const mat = new THREE.MeshBasic
 function damageMonster(m, mult = 1, opts = {}) {
   if (m.dead) return;
   // Träffchans enligt attribut.json: AR mot monstrets DR och nivåer.
-  if (!(m.immune > 0)) { const hc = L.hitChance(stats.AR, m.defense * 10 + 5 * m.lvl, S.level, m.lvl); if (Math.random() > hc) { m.aggroed = true; floatText(m.g.position.clone().setY(m.h + 0.3), 'Miss', 'res'); return; } }
+  if (!(m.immune > 0)) { const hc = L.hitChance(stats.AR, 15 + 8 * m.lvl + m.defense * 2, S.level, m.lvl); if (Math.random() > hc) { m.aggroed = true; floatText(m.g.position.clone().setY(m.h + 0.3), 'Miss', 'res'); return; } }
   const t = stats.type, fm = m.fam.weak.includes(t) ? FAM.multiplier_rules.svag : m.fam.resist.includes(t) ? FAM.multiplier_rules.resistent : 1, crit = Math.random() < stats.crit;
   let dmg = rand(stats.dmgMin, stats.dmgMax) * mult * fm * (1 + (stats.vs[L.monsterFamily(m.id) || m.def.family] || 0)) * (crit ? CLS.meta.crit_multiplier : 1);
   if (m.id === 'skelett_vakt') { const f = new THREE.Vector3(Math.sin(m.g.rotation.y), 0, Math.cos(m.g.rotation.y)), to = hero.position.clone().sub(m.g.position).normalize(); if (f.dot(to) > 0.3) dmg *= 0.5; }
@@ -422,8 +422,8 @@ function killMonster(m) { m.dead = 0.001; m.sp.visible = false; gainXp(monsterXp
 function hurt(raw, from, m) {
   if (!S.playing || S.god) return; raw *= m?.dmgMult || 1;
   const alvl = m?.lvl || S.level;
-  // Fiendens träffchans mot spelarens försvarsvärde (försvar × 10).
-  if (Math.random() > L.hitChance(20 + 8 * alvl, stats.defRating, alvl, S.level)) { floatText(hero.position.clone().setY(2.4), 'Undvek', 'weak'); return; }
+  // Fiendens träffchans: monster-AR = 15 + 8·nivå mot hjältens DR = 15 + 8·nivå + försvar·2.
+  if (Math.random() > L.hitChance(15 + 8 * alvl, 15 + 8 * S.level + stats.defense * 2, alvl, S.level)) { floatText(hero.position.clone().setY(2.4), 'Undvek', 'weak'); return; }
   const front = from ? fwd().dot(from.clone().sub(hero.position).setY(0).normalize()) > 0.2 : true;
   // Block: sköldens chans, halverad när man springer, tak 75 %, aldrig bakifrån. Kostar 5 uthållighet.
   if (stats.block > 0 && front && S.st >= 5 && Math.random() < stats.block * (heroMoving ? 0.5 : 1)) { S.st -= 5; S.stDelay = 1; floatText(hero.position.clone().setY(2.4), 'Block', 'weak'); sparks(hero.position.clone().setY(1.2), 0xc8d0d8, 8); return; }
