@@ -44,16 +44,19 @@ export interface HeroIndexEntry {
   savedAt?: number;
 }
 
+export const HERO_CLASS_IDS = ['amazonkrigare', 'barbar', 'riddare'] as const;
+export type HeroClassId = (typeof HERO_CLASS_IDS)[number];
+
+/** Klass-id + ikon. Visningsnamn: i18n-nyckeln `classes.<id>`. */
 export interface HeroClass {
-  id: string;
-  name: string;
+  id: HeroClassId;
   icon: string;
 }
 
 export const HERO_CLASSES: readonly HeroClass[] = [
-  { id: 'amazonkrigare', name: 'Amazonkrigare', icon: '🔱' },
-  { id: 'barbar', name: 'Barbar', icon: '💥' },
-  { id: 'riddare', name: 'Riddare', icon: '🛡️' },
+  { id: 'amazonkrigare', icon: '🔱' },
+  { id: 'barbar', icon: '💥' },
+  { id: 'riddare', icon: '🛡️' },
 ];
 export const classById = (id: string): HeroClass | undefined => HERO_CLASSES.find((c) => c.id === id);
 

@@ -23,7 +23,8 @@ export class DataOverlayLoader {
     let n = 0;
     for (const [path, json] of Object.entries(modules)) {
       const m = /\/([a-z]{2})\/([^/]+)\.json$/.exec(path);
-      if (!m || !isLocale(m[1]) || typeof json !== 'object' || json === null) continue;
+      // filer som börjar med _ (t.ex. _glossary.json) är hjälpfiler för översättare, inte overlays
+      if (!m || !isLocale(m[1]) || m[2]?.startsWith('_') || typeof json !== 'object' || json === null) continue;
       this.target.addOverlay(m[1], m[2] ?? '', json as DataOverlay);
       n++;
     }

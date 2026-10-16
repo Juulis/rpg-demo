@@ -1,5 +1,6 @@
 import type { GameContext, GameModule } from '../core/GameContext';
 import { LocalStore, type KeyValueStore } from '../core/storage';
+import type { LocaleManager } from '../i18n/LocaleManager';
 import { AutoSaveService } from './AutoSaveService';
 import type { HeroGateway } from './HeroGateway';
 import { HeroLoader } from './HeroLoader';
@@ -14,6 +15,7 @@ export class SaveModule implements GameModule {
   private parts: { roster: HeroRoster; loader: HeroLoader; autosave: AutoSaveService; indicator: SaveIndicator | null } | null = null;
 
   constructor(
+    private readonly i18n: LocaleManager,
     private readonly game: HeroGateway,
     store: KeyValueStore = new LocalStore(),
     private readonly showIndicator = true,
@@ -22,7 +24,7 @@ export class SaveModule implements GameModule {
   }
 
   init(ctx: GameContext): void {
-    const indicator = this.showIndicator ? new SaveIndicator() : null;
+    const indicator = this.showIndicator ? new SaveIndicator(this.i18n) : null;
     const autosave = new AutoSaveService(ctx, this.game, this.repo, () => indicator?.show());
     const roster = new HeroRoster(this.repo, ctx.bus);
     new LegacyImporter(this.repo, roster).run();
