@@ -1,0 +1,21 @@
+{
+ "image": "knight_walk_8dir.png",
+ "frameW": 128,
+ "frameH": 128,
+ "rows": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "frames": 8,
+ "fps": 10,
+ "anchor": [
+  64,
+  118
+ ]
+}

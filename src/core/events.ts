@@ -26,4 +26,6 @@ export type GameEvents = {
   map_toggle: { open: boolean };
   ui_open: { panel: UiPanel };
   ui_close: { panel: UiPanel };
+  /** Språkbyte (U2:s LocaleManager, #22). */
+  locale_changed: { locale: 'sv' | 'en' };
 };

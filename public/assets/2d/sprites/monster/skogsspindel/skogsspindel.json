@@ -1,0 +1,66 @@
+{
+ "id": "skogsspindel",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 62,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 113,
+   "frameH": 74,
+   "anchor": [
+    56,
+    68
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 115,
+   "frameH": 74,
+   "anchor": [
+    57,
+    68
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 133,
+   "frameH": 80,
+   "anchor": [
+    66,
+    69
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 117,
+   "frameH": 133,
+   "anchor": [
+    58,
+    127
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_spider.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}

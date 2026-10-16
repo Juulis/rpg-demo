@@ -54,7 +54,35 @@ async function visit(path, check) {
 }
 // Roten ska vara det spelbara 3D-spelet: game.js exponerar __rpg med newGame.
 await visit('', () => typeof window.__rpg?.newGame === 'function' && !!document.querySelector('canvas'));
-if (hasNext) await visit('next/', () => !!document.querySelector('#app canvas'));
+if (hasNext)
+  await visit('next/', async () => {
+    const d = document.documentElement.dataset;
+    if (!document.querySelector('#app canvas') || d.zone !== 'forest' || !document.querySelector('#hud')) return false;
+    // högerklick och Alt ska blockeras, Z växlar lootetiketter
+    const cm = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+    document.querySelector('#app canvas').dispatchEvent(cm);
+    const alt = new KeyboardEvent('keydown', { key: 'Alt', code: 'AltLeft', bubbles: true, cancelable: true });
+    window.dispatchEvent(alt);
+    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'Alt', code: 'AltLeft', bubbles: true, cancelable: true }));
+    const labels = document.querySelector('#lootLabels');
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', code: 'KeyZ', bubbles: true }));
+    await new Promise((r) => setTimeout(r, 200));
+    const zOn = labels?.classList.contains('on');
+    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'z', code: 'KeyZ', bubbles: true }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', code: 'KeyZ', bubbles: true }));
+    await new Promise((r) => setTimeout(r, 200));
+    const zOff = !labels?.classList.contains('on');
+    return cm.defaultPrevented && alt.defaultPrevented && zOn && zOff;
+  });
+{
+  const page = await browser.newPage();
+  await page.goto(base + 'legacy-3d/', { waitUntil: 'load' });
+  await page.waitForTimeout(1500);
+  const ok = new URL(page.url()).pathname === '/rpg-demo/';
+  console.log(`legacy-3d/: ${ok ? 'OK (omdirigerad)' : 'FEL'}`);
+  if (!ok) fail.push('legacy-3d/ omdirigerar inte till roten');
+  await page.close();
+}
 await browser.close();
 server.close();
 if (fail.length) {

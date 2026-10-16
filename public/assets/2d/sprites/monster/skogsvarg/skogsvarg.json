@@ -1,0 +1,66 @@
+{
+ "id": "skogsvarg",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 93,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 115,
+   "frameH": 105,
+   "anchor": [
+    57,
+    104
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 114,
+   "frameH": 109,
+   "anchor": [
+    57,
+    102
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 139,
+   "frameH": 112,
+   "anchor": [
+    69,
+    104
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 160,
+   "frameH": 129,
+   "anchor": [
+    80,
+    104
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_husky.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}

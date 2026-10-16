@@ -1,4 +1,5 @@
 import './style.css';
+import './ui/ui.css';
 import { Game } from './core/Game';
 import type { GameModule } from './core/GameContext';
 
