@@ -1,0 +1,630 @@
+{
+  "meta": {
+    "version": "1.0",
+    "hotkey": "H",
+    "unlock": {
+      "default": "siluett",
+      "rule": "Posten visas som mörk siluett med ??? tills föremålet har plockats upp minst en gång. Då visas namn, bild, egenskaper och lore. Setposter visar setnamn direkt, men delarna låses upp var för sig; setets bonuser blir synliga när första delen hittats."
+    },
+    "progress": "Visar hittade av totalt per kategori och totalt, t.ex. 12/50."
+  },
+  "categories": [
+    {
+      "id": "set",
+      "name": "Set",
+      "entries": [
+        {
+          "id": "tempelriddarens_ed",
+          "name": "Tempelriddarens ed",
+          "quality": "set",
+          "class": "riddare",
+          "item_level": 17,
+          "lore": "De sista tempelriddarna svor att hålla gravarna stängda när himlen sprack. De höll eden i sju nätter. På den åttonde öppnades gravarna inifrån.",
+          "unlock": {
+            "type": "forsta_del_hittad",
+            "name_visible": true
+          },
+          "pieces": [
+            {
+              "id": "edens_klinga",
+              "name": "Edens klinga",
+              "quality": "set",
+              "base": "riddarsvard",
+              "lore": "Bladet är ristat med namnen på varje riddare som föll vid gravarna. Det finns plats kvar för ett namn till.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "edens_mur",
+              "name": "Edens mur",
+              "quality": "set",
+              "base": "tornskold",
+              "lore": "Skölden bar en gång tempelordens vita kors. Nu syns bara klor och sot där korset satt.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "edens_visir",
+              "name": "Edens visir",
+              "quality": "set",
+              "base": "riddarhjalm",
+              "lore": "Genom visiret har riddarna sett sina bröder resa sig ur jorden. Det sägs att man fortfarande kan se dem om man tittar för länge.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "edens_pansar",
+              "name": "Edens pansar",
+              "quality": "set",
+              "base": "tempelpansar",
+              "lore": "Pansaret är bucklat inifrån, som om någon försökt ta sig ut. Ingen riddare vill tala om varför.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "edens_steg",
+              "name": "Edens steg",
+              "quality": "set",
+              "base": "jarnstovlar",
+              "lore": "Stövlarna lämnar spår av kall aska där de går. Tempelriddarna lärde sig gå tyst förbi de döda.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            }
+          ]
+        },
+        {
+          "id": "bergsklanens_raseri",
+          "name": "Bergsklanens raseri",
+          "quality": "set",
+          "class": "barbar",
+          "item_level": 15,
+          "lore": "Bergsklanen åt sina döda hellre än att lämna dem åt demonerna. Deras raseri lever kvar i det de bar, hungrigt och stolt.",
+          "unlock": {
+            "type": "forsta_del_hittad",
+            "name_visible": true
+          },
+          "pieces": [
+            {
+              "id": "klanhovdingens_yxa",
+              "name": "Klanhövdingens yxa",
+              "quality": "set",
+              "base": "stridsyxa",
+              "lore": "Hövdingen högg ner sin egen förvandlade son med den här yxan. Sedan högg han vidare tills ingen demon stod kvar på berget.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "forfadernas_skalle",
+              "name": "Förfädernas skalle",
+              "quality": "set",
+              "base": "benhjalm",
+              "lore": "Hjälmen är gjord av en förfaders skalle, så att de döda skulle se striden med egna ögon. Ibland skrattar den.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "vargpalsen",
+              "name": "Vargpälsen",
+              "quality": "set",
+              "base": "palsvast",
+              "lore": "Pälsen kommer från den första varg som blev förvridd i bergen. Den värmer fortfarande, men den luktar järn.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "blodnavarna",
+              "name": "Blodnävarna",
+              "quality": "set",
+              "base": "laderhandskar",
+              "lore": "Klanens krigare tvättade aldrig sina handskar. Varje fläck är ett namn de vägrar glömma.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "trofebaltet",
+              "name": "Trofébältet",
+              "quality": "set",
+              "base": "laderbalte",
+              "lore": "Bältet är fullt av tänder, horn och klor från demoner som dödats av klanen. Det finns inga lediga hakar kvar.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            }
+          ]
+        },
+        {
+          "id": "jaktgudinnans_dottrar",
+          "name": "Jaktgudinnans döttrar",
+          "quality": "set",
+          "class": "amazonkrigare",
+          "item_level": 15,
+          "lore": "När alla andra flydde stannade amazonerna och jagade i ruinerna. Ingen vet vad de jagade till slut, bara att ingen av dem kom hem.",
+          "unlock": {
+            "type": "forsta_del_hittad",
+            "name_visible": true
+          },
+          "pieces": [
+            {
+              "id": "dottrarnas_spjut",
+              "name": "Döttrarnas spjut",
+              "quality": "set",
+              "base": "valkyriespjut",
+              "lore": "Spjutet gick i arv från mor till dotter i elva generationer. Den sista dottern lämnade det i Vargaby, fastkilat i en björns hjärta.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "manbagen",
+              "name": "Månbågen",
+              "quality": "set",
+              "base": "kompositbage",
+              "lore": "Bågen sjunger svagt i månsken. Amazonerna sa att den sjöng högre de nätter då någon skulle dö.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "jagarinnans_hatta",
+              "name": "Jägarinnans hätta",
+              "quality": "set",
+              "base": "tygluva",
+              "lore": "Hättan gjorde jägarinnorna osynliga för förvridna ögon. Mot demonerna hjälpte den inte alls.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "skugglader",
+              "name": "Skuggläder",
+              "quality": "set",
+              "base": "laderharnesk",
+              "lore": "Lädret är garvat i träskvatten från Dimmerstrand och svartare än natten. Det knarrar aldrig.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "tysta_steg",
+              "name": "Tysta steg",
+              "quality": "set",
+              "base": "sandaler",
+              "lore": "Sandalerna lärde jägarinnorna att gå utan ljud över ben och glas. De sista spåren efter dem leder ner i Kopparbergs gruvor.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            }
+          ]
+        },
+        {
+          "id": "gravvaktarens_arv",
+          "name": "Gravvaktarens arv",
+          "quality": "set",
+          "class": null,
+          "item_level": 9,
+          "lore": "Innan de döda reste sig fanns det de som vaktade dem. Deras utrustning är det enda som fortfarande minns hur man håller dem nere.",
+          "unlock": {
+            "type": "forsta_del_hittad",
+            "name_visible": true
+          },
+          "pieces": [
+            {
+              "id": "vaktarens_hammare",
+              "name": "Vaktarens hammare",
+              "quality": "set",
+              "base": "tvahands_klubba",
+              "lore": "Gravvaktarna slog sönder ben som rörde sig. Hammaren har slagit så många gånger att handtaget formats efter en hand.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "vaktarens_lock",
+              "name": "Vaktarens lock",
+              "quality": "set",
+              "base": "kampskold",
+              "lore": "Skölden var en gång ett kistlock. Vaktarna tyckte att de döda borde mötas av sitt eget trä.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "vaktarens_brynja",
+              "name": "Vaktarens brynja",
+              "quality": "set",
+              "base": "ringbrynja",
+              "lore": "Brynjan är full av små runor som vaktarna ristade en för varje natt de höll vakt. De slutade rista efter nittio nätter.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "vaktarens_grepp",
+              "name": "Vaktarens grepp",
+              "quality": "set",
+              "base": "laderhandskar",
+              "lore": "Handskarna har burit hundratals kistor till jorden. Nu känns de kalla, som om de väntar på nästa.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "vaktarens_ben",
+              "name": "Vaktarens ben",
+              "quality": "set",
+              "base": "bensmycke",
+              "lore": "Amuletten är ett fingerben från den första gravvaktaren. Han bad om att få fortsätta vakta även efter döden.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            }
+          ]
+        },
+        {
+          "id": "askvandrarens_borda",
+          "name": "Askvandrarens börda",
+          "quality": "set",
+          "class": null,
+          "item_level": 21,
+          "lore": "En pilgrim gick in i Askeborg för att be för staden. Det han bar hittades utspritt längs askvägen, men honom hittade ingen.",
+          "unlock": {
+            "type": "forsta_del_hittad",
+            "name_visible": true
+          },
+          "pieces": [
+            {
+              "id": "pilgrimens_torn",
+              "name": "Pilgrimens törn",
+              "quality": "set",
+              "base": "ritualdolk",
+              "lore": "Pilgrimen bar dolken för att skära sina böner i träd längs vägen. Vid Askeborgs port slutar raderna mitt i ett ord.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "den_svartade_rustningen",
+              "name": "Den svärtade rustningen",
+              "quality": "set",
+              "base": "riddarpansar",
+              "lore": "Rustningen var vit när pilgrimen gick in i Askeborg. Den kom ut svart och tom.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "botgordeln",
+              "name": "Botgördeln",
+              "quality": "set",
+              "base": "platebalte",
+              "lore": "Pilgrimen spände gördeln hårdare för varje synd han mindes. Den sitter fortfarande för hårt.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "askvagen",
+              "name": "Askvägen",
+              "quality": "set",
+              "base": "laderstovlar",
+              "lore": "Stövlarna har gått hela vägen till Askeborg och tillbaka, men ingen bar dem på vägen hem.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            },
+            {
+              "id": "den_branda_runan",
+              "name": "Den brända runan",
+              "quality": "set",
+              "base": "runamulett",
+              "lore": "Runan brändes in i amuletten av Askfurstens egen eld. Den viskar om en kraft som ännu inte är din.",
+              "unlock": {
+                "type": "hittad",
+                "hidden_as": "siluett"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legendariska",
+      "name": "Legendariska föremål",
+      "entries": [
+        {
+          "id": "runsmidd_klinga",
+          "name": "Runsmidd klinga",
+          "quality": "legendary",
+          "type": "svard",
+          "base": "langsvard",
+          "item_level": 9,
+          "lore": "Smidd av byns smed med runor han inte förstod, den natten runstenarna slocknade. Han dog innan han hann fråga vad de betydde.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "gravvaktarens_hillebard",
+          "name": "Gravvaktarens hillebard",
+          "quality": "legendary",
+          "type": "spjut",
+          "base": "krigsspjut",
+          "item_level": 9,
+          "lore": "Gravvaktaren höll byporten i tre dagar med denna hillebard. När morgonen kom stod han fortfarande, men han andades inte längre.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "benkungens_lie",
+          "name": "Benkungens lie",
+          "quality": "legendary",
+          "type": "yxa",
+          "base": "jarnyxa",
+          "item_level": 10,
+          "lore": "Valdemar var hövding innan han blev kung över benen. Med denna lie skördade han sin egen by.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "runskold",
+          "name": "Runsköld",
+          "quality": "legendary",
+          "type": "skold",
+          "base": "kampskold",
+          "item_level": 8,
+          "lore": "Skölden bär samma runor som stenarna i skogen. När de vaknar glöder den svagt, som ett minne av något förlorat.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "gravvaktarens_pansar",
+          "name": "Gravvaktarens pansar",
+          "quality": "legendary",
+          "type": "brost",
+          "base": "ringbrynja",
+          "item_level": 9,
+          "lore": "Pansaret har aldrig lämnat byn. Den som bär det känner ibland händer som drar i det, nerifrån jorden.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "benkungens_krona",
+          "name": "Benkungens krona",
+          "quality": "legendary",
+          "type": "hjalm",
+          "base": "benhjalm",
+          "item_level": 10,
+          "lore": "Kronan höll Den gamla byn bunden till döden. Den som bär den hör fortfarande Valdemars röst räkna sina undersåtar.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "vargblodets_band",
+          "name": "Vargblodets band",
+          "quality": "legendary",
+          "type": "ring",
+          "base": "jarnring",
+          "item_level": 6,
+          "lore": "Ringen hittades i magen på Gråbjörnen Ulvhild, fortfarande runt ett finger. Den som bär den drömmer om att springa i flock.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "flyktingens_sandaler",
+          "name": "Flyktingens sandaler",
+          "quality": "legendary",
+          "type": "stovlar",
+          "base": "sandaler",
+          "item_level": 2,
+          "lore": "Ett barn flydde genom startskogen i dessa sandaler när demonerna kom. Sandalerna kom fram till Vargaby, barnet gjorde det inte.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "vargtandens_kniv",
+          "name": "Vargtandens kniv",
+          "quality": "legendary",
+          "type": "dolk",
+          "base": "kniv",
+          "item_level": 4,
+          "lore": "Vargabys jägare gjorde knivar av tänderna från de vargar som vände sig mot dem. Den här tanden kom från ledarens egen hund.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "korpmoderns_bage",
+          "name": "Korpmoderns båge",
+          "quality": "legendary",
+          "type": "bage",
+          "base": "langbage",
+          "item_level": 12,
+          "lore": "Korpmodern skyddade Dimmerstrand med sin båge och sina fåglar tills dimman tog dem alla. Korparna sitter fortfarande på taken och väntar på henne.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "dimvandrarens_handskar",
+          "name": "Dimvandrarens handskar",
+          "quality": "legendary",
+          "type": "handskar",
+          "base": "laderhandskar",
+          "item_level": 13,
+          "lore": "De drunknade i Dimmerstrand letar efter händer att hålla i. Den som bär dessa handskar blir aldrig ensam i dimman.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "klockarens_hammare",
+          "name": "Klockarens hammare",
+          "quality": "legendary",
+          "type": "klubba",
+          "base": "stridshammare",
+          "item_level": 16,
+          "lore": "Klockaren i Kopparberg smälte ner kyrkklockan när spindlarna kom. Han ringde inte längre för mässan, han ringde för att slå ihjäl.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "jarnmunkens_gordel",
+          "name": "Järnmunkens gördel",
+          "quality": "legendary",
+          "type": "balte",
+          "base": "platebalte",
+          "item_level": 18,
+          "lore": "Munken i gruvklostret låste in sig själv med denna gördel för att inte bli förvriden. Låset höll, munken gjorde det inte.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "valkyrians_sista_andetag",
+          "name": "Valkyrians sista andetag",
+          "quality": "legendary",
+          "type": "spjut",
+          "base": "valkyriespjut",
+          "item_level": 19,
+          "lore": "Valkyrian föll i Spinnmoderns nät och kämpade tills hon inte kunde andas. Fjädern på spjutet fladdrar fortfarande, som om hon försöker igen.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "pilgrimens_sista_svard",
+          "name": "Pilgrimens sista svärd",
+          "quality": "legendary",
+          "type": "svard",
+          "base": "riddarsvard",
+          "item_level": 21,
+          "lore": "Det var pilgrimens svärd innan det blev hans gravsten. Någon drog upp det ur askan, och runorna har börjat brinna igen.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "tystnadens_stilett",
+          "name": "Tystnadens stilett",
+          "quality": "legendary",
+          "type": "dolk",
+          "base": "ritualdolk",
+          "item_level": 22,
+          "lore": "Askeborgs mördare använde stiletten för att tysta präster innan staden föll. Demonerna tyckte om den och lät den ligga kvar.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "hornslaktarens_bila",
+          "name": "Hornslaktarens bila",
+          "quality": "legendary",
+          "type": "yxa",
+          "base": "stridsyxa",
+          "item_level": 23,
+          "lore": "Hornslaktarna hugger med bilan tills ingenting rör sig. Märkena i järnet är varje människa den har slaktat.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "sista_vaktens_mur",
+          "name": "Sista vaktens mur",
+          "quality": "legendary",
+          "type": "skold",
+          "base": "tornskold",
+          "item_level": 24,
+          "lore": "Den sista vakten i Askeborg höll porten med denna sköld medan staden brann bakom honom. Repor från tusen klor täcker stadsvapnet.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "askfurstens_horn",
+          "name": "Askfurstens horn",
+          "quality": "legendary",
+          "type": "hjalm",
+          "base": "riddarhjalm",
+          "item_level": 26,
+          "lore": "Morvaths horn bröts av när han krossade den sista kyrkan i Askeborg. Hjälmen smiddes runt dem, och glöden i dem har aldrig slocknat.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        },
+        {
+          "id": "smittfaderns_kapa",
+          "name": "Smittfaderns kåpa",
+          "quality": "legendary",
+          "type": "brost",
+          "base": "riddarpansar",
+          "item_level": 28,
+          "lore": "Smittans fader bar kåpan när han predikade om förvandlingen. Under den lever något fortfarande.",
+          "unlock": {
+            "type": "hittad",
+            "hidden_as": "siluett"
+          }
+        }
+      ]
+    }
+  ]
+}

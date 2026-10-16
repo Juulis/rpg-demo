@@ -1,0 +1,6 @@
+dist
+legacy-3d
+node_modules
+package-lock.json
+src/data/*.json
+src/assets/gen
