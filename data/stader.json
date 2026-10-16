@@ -120,7 +120,7 @@
       ],
       "family": "bestar",
       "boss": "grabjornen_ulvhild",
-      "access": "Väg österut från startskogen, öppen från start. Steget före portalen.",
+      "access": "Väg österut från startskogen.",
       "boss_level": 6,
       "recommended_level": 4
     },
@@ -134,7 +134,7 @@
       ],
       "family": "ododa",
       "boss": "benkungen_valdemar",
-      "access": "rod_portal: tre runor aktiva OCH (vargaby rensad ELLER hjälten nivå 6)",
+      "access": "rod_portal i skogens mitt, öppnas när alla tre runor är aktiva.",
       "data_file": "portal_by.json",
       "unique_reward": "benkungens_krona",
       "boss_level": 10,
@@ -150,7 +150,7 @@
       ],
       "family": "gastar",
       "boss": "trasdrottningen",
-      "access": "Kräver gamla_byn rensad",
+      "access": "Väg västerut, alltid öppen.",
       "boss_level": 14
     },
     {
@@ -163,7 +163,7 @@
       ],
       "family": "insekter",
       "boss": "spinnmodern",
-      "access": "Kräver gamla_byn aterbefolkad_2",
+      "access": "Väg norrut genom bergen, alltid öppen.",
       "boss_level": 18
     },
     {
@@ -176,14 +176,10 @@
       ],
       "family": "demoner",
       "boss": "askfursten_morvath",
-      "access": "Kräver tre rensade städer",
+      "access": "Väg söderut genom askfälten, alltid öppen.",
       "boss_level": 25
     }
   ],
   "level_note": "Monsternivåer är statiska per område och skalas aldrig efter hjälten. Startskogen 1 till 3 före första staden. Förvridna (fadern_av_smittan nivå 28) är reserverade för framtida slutområde 24 till 28.",
-  "progression_gate": {
-    "id": "portalens_sigill",
-    "rule": "Runorna kan aktiveras när som helst (som i demon). Den röda portalen öppnas fullt först när vargaby är rensad eller hjälten är nivå 6. Innan dess syns en sluten, mörkröd portal med texten Sigillet håller. Något starkare måste fällas först.",
-    "why": "Behåller demons runloop, kräver ingen ny zon och leder spelaren till Vargaby."
-  }
+  "design_rule": "Inga rörelsespärrar: alla städer går att besöka när som helst. Svårigheten styrs bara av monstrens nivå. recommended_level är ren information."
 }
