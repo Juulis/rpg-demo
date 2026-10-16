@@ -1,0 +1,66 @@
+{
+ "id": "smittad_bybo",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 155,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 139,
+   "frameH": 174,
+   "anchor": [
+    69,
+    170
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 123,
+   "frameH": 183,
+   "anchor": [
+    61,
+    176
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 197,
+   "frameH": 189,
+   "anchor": [
+    98,
+    183
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 296,
+   "frameH": 232,
+   "anchor": [
+    148,
+    181
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_zombie_a.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}

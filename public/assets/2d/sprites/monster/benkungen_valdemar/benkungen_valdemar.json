@@ -1,0 +1,66 @@
+{
+ "id": "benkungen_valdemar",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 279,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 223,
+   "frameH": 290,
+   "anchor": [
+    111,
+    281
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 223,
+   "frameH": 302,
+   "anchor": [
+    111,
+    290
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 295,
+   "frameH": 306,
+   "anchor": [
+    147,
+    295
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 500,
+   "frameH": 427,
+   "anchor": [
+    250,
+    290
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_skeleton_armor.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}
