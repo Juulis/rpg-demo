@@ -120,7 +120,11 @@ export class MapPainter {
         c.fillStyle = '#ff7080';
         c.font = FONT;
         c.textAlign = 'center';
-        c.fillText(pt.target === 'village' ? 'Portal → Den gamla byn' : 'Portal → Skogen', X(pt.x), Y(pt.y) - Math.max(9, 1.4 * s + 6));
+        c.fillText(
+          this.model.t(pt.target === 'village' ? 'map.portal_to_village' : 'map.portal_to_forest'),
+          X(pt.x),
+          Y(pt.y) - Math.max(9, 1.4 * s + 6),
+        );
       }
     }
   }
@@ -138,7 +142,7 @@ export class MapPainter {
     c.fillStyle = '#f2c46b';
     c.font = FONT;
     c.textAlign = 'center';
-    c.fillText(g.text, x, y + 30);
+    c.fillText(this.model.t(g.text), x, y + 30);
   }
 
   /** Spelarpil; framåt = (sin, cos) av facing. */
