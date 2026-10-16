@@ -40,11 +40,9 @@ export class CreateHeroDialog {
         err.textContent = e;
         return;
       }
-      try {
-        onCreated(this.roster.create(input.value, this.cls));
-      } catch (x) {
+      this.roster.create(input.value, this.cls).then(onCreated, (x: unknown) => {
         err.textContent = x instanceof Error ? x.message : String(x);
-      }
+      });
     };
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') ok();

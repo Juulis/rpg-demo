@@ -109,9 +109,10 @@ export class HeroSelectMenu {
       `Radera ${d.hero.name} för alltid?`,
       'Ja, radera',
       () => {
-        this.deps.roster.delete(d.hero.id);
-        this.selected = null;
-        this.renderList();
+        void this.deps.roster.delete(d.hero.id).then(() => {
+          this.selected = null;
+          this.renderList();
+        });
       },
       () => this.renderList(),
     );

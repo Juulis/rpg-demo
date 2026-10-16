@@ -33,12 +33,15 @@ export class MenuModule implements GameModule {
       confirm: new ConfirmDialog(),
     });
     this.host().appendChild(this.menu.root);
-    if (this.showOnInit) this.menu.show();
+    const menu = this.menu;
+    if (this.showOnInit) void this.save.ready.then(() => menu.show());
   }
 
   /** Visa hjältevalet (t.ex. från motorns "Spela igen"/Esc-meny). */
   show(): void {
-    this.menu?.show();
+    const menu = this.menu;
+    if (this.save.isReady) menu?.show();
+    else void this.save.ready.then(() => menu?.show());
   }
 
   get isOpen(): boolean {
