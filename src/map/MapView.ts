@@ -1,4 +1,4 @@
-import type { MapZone, PlayHero } from '../core/context.ext';
+import type { HeroState, ZoneView } from '../core/GameContext';
 import type { GoalTracker } from './GoalTracker';
 import type { MapModel } from './MapModel';
 import type { MapPainter } from './MapPainter';
@@ -29,7 +29,7 @@ export class MapView {
     this.canvas.style.display = v ? 'block' : 'none';
   }
 
-  draw(z: MapZone, h: Readonly<PlayHero>, time: number): void {
+  draw(z: ZoneView, h: Readonly<HeroState>, time: number): void {
     const prep = this.painter.prepare(this.canvas);
     if (!prep) return;
     const { c, W, H } = prep;
@@ -54,6 +54,6 @@ export class MapView {
     c.shadowBlur = 0;
     c.fillStyle = '#9fc4d4';
     c.font = '13px Cinzel, Georgia, serif';
-    c.fillText(this.model.t('map.legend'), W / 2, H - 22);
+    c.fillText('Tab: stäng karta · ◆ runsten · ● portal · ▲ du · ◯ nästa mål', W / 2, H - 22);
   }
 }
