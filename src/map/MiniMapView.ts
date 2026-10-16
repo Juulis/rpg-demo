@@ -1,5 +1,6 @@
 import type { MapZone, PlayHero } from '../core/context.ext';
 import type { GoalTracker } from './GoalTracker';
+import type { MapModel } from './MapModel';
 import type { MapPainter } from './MapPainter';
 
 /** Rund minikarta centrerad på hjälten; målet visas som prick eller som pil vid kanten. */
@@ -10,6 +11,7 @@ export class MiniMapView {
   constructor(
     private readonly painter: MapPainter,
     private readonly goals: GoalTracker,
+    private readonly model: MapModel,
   ) {
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'minikarta';
@@ -79,6 +81,6 @@ export class MiniMapView {
     c.fillStyle = '#9fc4d4';
     c.font = '10px Cinzel, Georgia, serif';
     c.textAlign = 'center';
-    c.fillText('N', W / 2, 11);
+    c.fillText(this.model.t('map.north'), W / 2, 11);
   }
 }
