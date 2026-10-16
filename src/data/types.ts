@@ -120,7 +120,10 @@ export interface HeroClass {
   name: string;
   role: string;
   main_damage_type: DamageType;
-  base: { hp: number; stamina: number; damage: Range; defense: number; speed: number; crit_chance: number };
+  /** damage = klassens skadebonus (7–9); slagskada = bonus + tillväxt × (nivå − 1) + vapnets skada (attribut.json damage). */
+  base: { hp: number; stamina: number; damage: number; defense: number; speed: number; crit_chance: number };
+  growth?: { hp?: number; stamina?: number; damage?: number };
+  start_gear: StartGear[];
   skills: Skill[];
 }
 export interface Classes {
@@ -128,12 +131,18 @@ export interface Classes {
   classes: HeroClass[];
 }
 
-export interface PortalGate {
-  any_of: ({ city_cleared: string } | { hero_level_min: number })[];
+/** Startutrustning: Normal tier 1, nivåkrav 1, skapas via samma lootregler som annan loot. */
+export interface StartGear {
+  item: string;
+  count: number;
+  quality: string;
+  affixes: string[];
 }
 export interface PortalVillage {
   portal: {
-    trigger: { delay_s: number; gate?: PortalGate; sealed_state?: { message: string } };
+    /** Inga spärrar: portalen öppnas enbart av att alla runor är aktiva. */
+    trigger: { type: 'all_runes_active'; required_runes: number; delay_s: number };
+    recommended_level?: string;
     interaction_radius: number;
   };
   boss: { id?: string; hp: number; level: number; phases: { name: string; damage_mult?: number }[] };
@@ -155,4 +164,30 @@ export interface Quality {
 }
 export interface Qualities {
   qualities: Quality[] | Record<string, Quality>;
+}
+
+// Loot- och lore-data typas direkt från JSON-filerna (resolveJsonModule) tills LootSystem får egna interface.
+export type ItemBases = typeof import('./foremal_bas.json');
+export type Affixes = typeof import('./affix.json');
+export type Sets = typeof import('./set.json');
+export type DropTables = typeof import('./drop_tabeller.json');
+export type Attributes = typeof import('./attribut.json');
+export type Lorebook = typeof import('./lorebok.json');
+export type LootQualities = typeof import('./loot_kvaliteter.json');
+
+/** All speldata, tillgänglig för moduler via GameContext.data. */
+export interface GameData {
+  classes: Classes;
+  families: MonsterFamilies;
+  monsterLevels: MonsterLevels;
+  spawn: SpawnZones;
+  portalVillage: PortalVillage;
+  cities: Cities;
+  qualities: LootQualities;
+  items: ItemBases;
+  affixes: Affixes;
+  sets: Sets;
+  drops: DropTables;
+  attributes: Attributes;
+  lorebook: Lorebook;
 }

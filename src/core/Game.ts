@@ -1,34 +1,65 @@
 import { Graphics, Text } from 'pixi.js';
 import { EventBus } from './EventBus';
 import type { GameEvents } from './events';
-import { Session } from './Session';
-import { validateData } from '../data';
+import type { GameContext, GameModule, HeroState, ZoneView } from './GameContext';
+import { createSession } from './Session';
+import { DATA, validateData } from '../data';
 import { Iso } from '../render/Iso';
 import { Renderer } from '../render/Renderer';
-import { SaveManager } from '../save/SaveManager';
 import { SpawnSystem } from '../systems/SpawnSystem';
 
 /**
  * Toppnivå: äger bussen, renderaren och systemen. Inga globala variabler; allt nås via Game-instansen.
  * PR 1 (skelett): startar renderaren och visar en förhandsvisning av D2-spawnen i isometrisk vy.
- * PR 2 lägger till Input, Camera, Hero/Monster, LootSystem, Inventory, Tooltip, MonsterBar, AudioManager, MapUI, Lorebook.
+ * PR 2 lägger till Input, Camera, Hero/Monster, LootSystem, Inventory, Tooltip, MonsterBar.
+ * Moduler (AudioManager, SaveManager, MapUI, StartMenu, Lorebook – Utvecklare 2) får GameContext via init().
  */
 export class Game {
   readonly bus = new EventBus<GameEvents>();
   readonly renderer = new Renderer();
-  readonly saves = new SaveManager();
   readonly spawn = new SpawnSystem();
-  session = new Session();
+  readonly hero: HeroState = {
+    id: null,
+    name: '',
+    cls: 'riddare',
+    level: 1,
+    xp: 0,
+    gold: 0,
+    hp: 1,
+    maxHp: 1,
+    stamina: 1,
+    maxStamina: 1,
+    pos: { x: 0, y: 0 },
+  };
+  readonly zone: ZoneView = { name: 'forest', areaId: 'startskogen', width: 44, height: 44 };
+  readonly ctx: GameContext;
+
+  constructor(private readonly modules: GameModule[] = []) {
+    this.ctx = { bus: this.bus, hero: this.hero, zone: this.zone, session: createSession(), data: DATA };
+  }
+
+  get session() {
+    return this.ctx.session;
+  }
 
   async start(host: HTMLElement): Promise<void> {
     const issues = validateData();
     if (issues.length) console.warn('Datavarningar:', issues);
     await this.renderer.init(host);
+    for (const m of this.modules) m.init(this.ctx);
     this.preview();
   }
 
+  /** Stänger ner moduler och lyssnare (t.ex. vid HMR). */
+  dispose(): void {
+    for (const m of this.modules) m.dispose();
+    this.bus.clear();
+  }
+
   newGame(): void {
-    this.session = new Session();
+    const s = createSession();
+    this.ctx.session.seed = s.seed;
+    this.ctx.session.killed.clear();
     this.bus.emit('new_game', { seed: this.session.seed });
     this.preview();
   }
@@ -47,7 +78,7 @@ export class Game {
         g.poly([x, y - 32, x + 64, y, x, y + 32, x - 64, y]).fill([0x26301f, 0x2b3522, 0x232c1d, 0x2e3824][shade] ?? 0x26301f);
       }
     r.ground.addChild(g);
-    const specs = this.spawn.roll(this.spawn.area('startskogen'), this.session);
+    const specs = this.spawn.roll(this.spawn.area(this.zone.areaId), this.session);
     const scale = 0.25; // världsenheter → rutor i förhandsvisningen
     for (const s of specs) {
       const { x, y } = Iso.toScreen(s.pos[0] * scale, s.pos[1] * scale);
