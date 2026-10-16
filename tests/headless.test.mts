@@ -40,6 +40,8 @@ function must<T>(v: T | null | undefined, what: string): T {
   return v;
 }
 import type { HeroGateway } from '../src/save/HeroGateway';
+import { HeroLoader } from '../src/save/HeroLoader';
+import type { AutoSaveService } from '../src/save/AutoSaveService';
 
 const bus = new EventBus<GameEvents>();
 const store = new MemoryStore();
@@ -251,4 +253,32 @@ assert.equal(mig.migrate({ version: 99, hero: { id: 'a' } }), null);
 assert.equal(mig.migrate({ id: 'a', name: 'A', cls: 'barbar', seed: 5, killed: ['k'] })?.game?.seed, 5);
 
 for (const m of [map, menu, save, audio]) m.dispose();
+
+// --- HeroLoader: autosparning startar före väntan, och väntan hänger inte utan zone_enter
+{
+  const calls: string[] = [];
+  const fakeAutosave = {
+    isPlaying: false,
+    end: () => calls.push('end'),
+    begin: () => calls.push('begin'),
+    saveNow: (why: string) => calls.push(`save:${why}`),
+  } as unknown as AutoSaveService;
+  const noop: HeroGateway = { loadHero: () => undefined, getSnapshot: () => gateway.getSnapshot() };
+  const rec = structuredClone(migrated);
+  // 1) zonen redan laddad (ctx.zone.name === hero.zone), ingen zone_enter: löses direkt
+  ctx.zone = { ...ctx.zone, name: ctx.hero.zone };
+  let t0 = Date.now();
+  await new HeroLoader(ctx, noop, fakeAutosave, 5_000).start(rec, true);
+  assert.ok(Date.now() - t0 < 1_000, 'HeroLoader ska inte vänta när zonen redan är laddad');
+  assert.deepEqual(calls.slice(0, 3), ['end', 'begin', 'save:start']);
+  // 2) zon ej laddad och ingen zone_enter: autosparning redan igång, timeout löser ut
+  calls.length = 0;
+  ctx.zone = { ...ctx.zone, name: '__ingen__' };
+  t0 = Date.now();
+  const p = new HeroLoader(ctx, noop, fakeAutosave, 50).start(rec, true);
+  assert.deepEqual(calls, ['end', 'begin', 'save:start'], 'start-sparning sker före väntan');
+  await p;
+  assert.ok(Date.now() - t0 < 1_000);
+}
+
 console.log('HEADLESS_OK');

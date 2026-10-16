@@ -5,7 +5,7 @@ import { AudioModule, MapModule, MenuModule, SaveModule } from './index';
 
 /**
  * Moduler registreras här. Varje modul får GameContext (bus, hero, zone, session, data) via init().
- * Utvecklare 2 lägger till: new AudioManager(), new SaveManager(), new MapUI(), new StartMenu(), new Lorebook().
+ * Registrerade: SaveModule (via Game som HeroGateway), MenuModule, AudioModule, MapModule. Lorebook tillkommer.
  */
 // Game skapas nedan; gatewayen anropas först efter init (vid laddning/sparning).
 const save = new SaveModule({
