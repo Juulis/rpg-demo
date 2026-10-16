@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0",
-    "rule": "Monsternivåer är statiska per område (spawnzoner.json) och skalas ALDRIG efter hjältens nivå.",
+    "rule": "Varje monstertyp har fast nivå och fasta stats (monsterfamiljer.json). Formlerna nedan är designverktyg för att räkna fram nya undertyper, inte runtime.",
     "hero_max_level": 30
   },
   "scaling": {
@@ -14,36 +14,8 @@
     "xp": "xp(L) = round(xp_mult × 3 × L^1,5) där xp_mult = xp_ref / 10 (xp_ref är monstrets xp i datafilen)",
     "speed": "Fart skalas inte.",
     "note": "XP räknas från level, inte från d, så samma monster ger mer på högre nivå oavsett ref.",
-    "hit_ref": "attribut.json hit_chance"
-  },
-  "ref_levels": {
-    "skelett_krigare": 2,
-    "skelett_bagskytt": 2,
-    "skelett_vakt": 2,
-    "skelett_hund": 2,
-    "skelett_runprast": 2,
-    "benkungen_valdemar": 4,
-    "skogsvarg": 1,
-    "skuggvarg": 3,
-    "taggsvin": 3,
-    "ruttbjorn": 3,
-    "grabjornen_ulvhild": 3,
-    "dimgast": 5,
-    "trasknacken": 5,
-    "klagokvinna": 5,
-    "trasdrottningen": 5,
-    "gruvspindel": 6,
-    "syrabagge": 6,
-    "kitinvakt": 6,
-    "spinnmodern": 6,
-    "askimp": 8,
-    "hornslaktare": 8,
-    "eldpiska_demon": 8,
-    "askfursten_morvath": 8,
-    "smittbarare": 7,
-    "kottklump": 7,
-    "galen_munk": 7,
-    "fadern_av_smittan": 7
+    "hit_ref": "attribut.json hit_chance",
+    "usage": "Designverktyg: används bara när en ny undertyp skapas. Resultatet skrivs in som fasta tal."
   },
   "boss_levels": {
     "grabjornen_ulvhild": 6,
@@ -68,11 +40,8 @@
     "champion": {
       "name": "Champion",
       "spawn_chance_per_group": "per område, se spawnzoner.json champion_chance_per_group (3 till 10 %)",
-      "group": "hela gruppen blir champions, storlek 2 till 3",
-      "level_bonus": [
-        1,
-        2
-      ],
+      "group": "hela gruppen blir champions",
+      "level_bonus": 1,
       "hp_mult": 2.5,
       "damage_mult": 1.4,
       "defense_add": 3,
@@ -85,7 +54,8 @@
       "visual": "Blå glöd och namn i blått #6a6aff",
       "not_in": [
         "boss"
-      ]
+      ],
+      "stat_rule": "Fasta värden, ingen slump. Stats = undertypens stats × multiplikatorer; nivå = undertyp + 1 (påverkar träff, ilvl och XP avdrag)."
     },
     "unik": {
       "name": "Unikt monster",
@@ -95,16 +65,15 @@
       "damage_mult": 1.6,
       "defense_add": 5,
       "xp_mult": 5.0,
-      "modifiers_count": [
-        1,
-        2
-      ],
+      "modifiers_count": 1,
       "minions": {
         "count": [
           2,
-          4
+          3
         ],
         "level_bonus": 1,
+        "hp_mult": 2.5,
+        "damage_mult": 1.4,
         "as": "champion utan extra loot"
       },
       "loot": {
@@ -116,7 +85,8 @@
       },
       "name_rule": "Slumpat namn ur unique_names plus monstertyp, t.ex. Rutten Gorm Skelettkrigare.",
       "visual": "Guldglöd, namn i guld #c7a35a",
-      "spawn_chance_per_game": "per område, se spawnzoner.json unique_chance_per_game (15 till 50 %)"
+      "spawn_chance_per_game": "per område, se spawnzoner.json unique_chance_per_game (15 till 50 %)",
+      "stat_rule": "Fasta multiplikatorer. Modifieraren väljs med områdets frö och har fast effekt."
     },
     "modifiers": [
       {
@@ -155,7 +125,8 @@
       "Liktörst"
     ],
     "stacking": "Champion och unik multiplikatorer läggs ovanpå levelskalningen.",
-    "rule_ref": "Chanserna rullas en gång per game med områdets frö."
+    "rule_ref": "Chanserna rullas en gång per game med områdets frö.",
+    "note_xp": "XP för elit = undertypens fasta XP × xp_mult. Undertypens XP räknas inte om för elitens nivåtillägg."
   },
   "xp_penalty": {
     "formula": "xp_slut = xp(L_monster) × mult(diff), diff = hjältens level − monstrets level",
@@ -404,470 +375,6 @@
       }
     ]
   },
-  "examples": [
-    {
-      "monster": "skogsvarg",
-      "level": 1,
-      "hp": 50,
-      "damage": [
-        8,
-        12
-      ],
-      "defense": 0,
-      "xp": 3
-    },
-    {
-      "monster": "skogsvarg",
-      "level": 4,
-      "hp": 67,
-      "damage": [
-        10,
-        15
-      ],
-      "defense": 1.2,
-      "xp": 24
-    },
-    {
-      "monster": "skogsvarg",
-      "level": 7,
-      "hp": 89,
-      "damage": [
-        12,
-        18
-      ],
-      "defense": 2.4,
-      "xp": 56
-    },
-    {
-      "monster": "skogsvarg",
-      "level": 10,
-      "hp": 118,
-      "damage": [
-        15,
-        22
-      ],
-      "defense": 3.6,
-      "xp": 95
-    },
-    {
-      "monster": "skogsvarg",
-      "level": 15,
-      "hp": 190,
-      "damage": [
-        21,
-        31
-      ],
-      "defense": 5.6,
-      "xp": 174
-    },
-    {
-      "monster": "skogsvarg",
-      "level": 20,
-      "hp": 306,
-      "damage": [
-        29,
-        43
-      ],
-      "defense": 7.6,
-      "xp": 268
-    },
-    {
-      "monster": "skogsvarg",
-      "level": 25,
-      "hp": 492,
-      "damage": [
-        41,
-        61
-      ],
-      "defense": 9.6,
-      "xp": 375
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 1,
-      "hp": 55,
-      "damage": [
-        8,
-        12
-      ],
-      "defense": 1.6,
-      "xp": 6
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 2,
-      "hp": 60,
-      "damage": [
-        9,
-        13
-      ],
-      "defense": 2.0,
-      "xp": 17
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 4,
-      "hp": 73,
-      "damage": [
-        10,
-        15
-      ],
-      "defense": 2.8,
-      "xp": 48
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 7,
-      "hp": 97,
-      "damage": [
-        13,
-        18
-      ],
-      "defense": 4.0,
-      "xp": 111
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 10,
-      "hp": 129,
-      "damage": [
-        15,
-        22
-      ],
-      "defense": 5.2,
-      "xp": 190
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 15,
-      "hp": 207,
-      "damage": [
-        22,
-        31
-      ],
-      "defense": 7.2,
-      "xp": 349
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 20,
-      "hp": 334,
-      "damage": [
-        30,
-        44
-      ],
-      "defense": 9.2,
-      "xp": 537
-    },
-    {
-      "monster": "skelett_krigare",
-      "level": 25,
-      "hp": 537,
-      "damage": [
-        43,
-        62
-      ],
-      "defense": 11.2,
-      "xp": 750
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 1,
-      "hp": 109,
-      "damage": [
-        13,
-        19
-      ],
-      "defense": 5.6,
-      "xp": 14
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 2,
-      "hp": 120,
-      "damage": [
-        14,
-        20
-      ],
-      "defense": 6.0,
-      "xp": 38
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 4,
-      "hp": 145,
-      "damage": [
-        16,
-        23
-      ],
-      "defense": 6.8,
-      "xp": 108
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 7,
-      "hp": 193,
-      "damage": [
-        20,
-        28
-      ],
-      "defense": 8.0,
-      "xp": 250
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 10,
-      "hp": 257,
-      "damage": [
-        24,
-        34
-      ],
-      "defense": 9.2,
-      "xp": 427
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 15,
-      "hp": 414,
-      "damage": [
-        34,
-        48
-      ],
-      "defense": 11.2,
-      "xp": 784
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 20,
-      "hp": 667,
-      "damage": [
-        47,
-        68
-      ],
-      "defense": 13.2,
-      "xp": 1207
-    },
-    {
-      "monster": "skelett_vakt",
-      "level": 25,
-      "hp": 1075,
-      "damage": [
-        66,
-        95
-      ],
-      "defense": 15.2,
-      "xp": 1688
-    },
-    {
-      "monster": "benkungen_valdemar",
-      "level": 1,
-      "hp": 676,
-      "damage": [
-        15,
-        20
-      ],
-      "defense": 3.8,
-      "xp": 120
-    },
-    {
-      "monster": "benkungen_valdemar",
-      "level": 4,
-      "hp": 900,
-      "damage": [
-        18,
-        24
-      ],
-      "defense": 5.0,
-      "xp": 960
-    },
-    {
-      "monster": "benkungen_valdemar",
-      "level": 7,
-      "hp": 1198,
-      "damage": [
-        22,
-        29
-      ],
-      "defense": 6.2,
-      "xp": 2222
-    },
-    {
-      "monster": "benkungen_valdemar",
-      "level": 10,
-      "hp": 1594,
-      "damage": [
-        27,
-        36
-      ],
-      "defense": 7.4,
-      "xp": 3795
-    },
-    {
-      "monster": "benkungen_valdemar",
-      "level": 15,
-      "hp": 2568,
-      "damage": [
-        38,
-        51
-      ],
-      "defense": 9.4,
-      "xp": 6971
-    },
-    {
-      "monster": "benkungen_valdemar",
-      "level": 20,
-      "hp": 4135,
-      "damage": [
-        53,
-        71
-      ],
-      "defense": 11.4,
-      "xp": 10733
-    },
-    {
-      "monster": "benkungen_valdemar",
-      "level": 25,
-      "hp": 6660,
-      "damage": [
-        75,
-        99
-      ],
-      "defense": 13.4,
-      "xp": 15000
-    },
-    {
-      "monster": "askimp",
-      "level": 1,
-      "hp": 28,
-      "damage": [
-        6,
-        9
-      ],
-      "defense": 0,
-      "xp": 7
-    },
-    {
-      "monster": "askimp",
-      "level": 8,
-      "hp": 55,
-      "damage": [
-        10,
-        14
-      ],
-      "defense": 1.0,
-      "xp": 163
-    },
-    {
-      "monster": "askimp",
-      "level": 10,
-      "hp": 67,
-      "damage": [
-        11,
-        16
-      ],
-      "defense": 1.8,
-      "xp": 228
-    },
-    {
-      "monster": "askimp",
-      "level": 15,
-      "hp": 107,
-      "damage": [
-        16,
-        22
-      ],
-      "defense": 3.8,
-      "xp": 418
-    },
-    {
-      "monster": "askimp",
-      "level": 20,
-      "hp": 173,
-      "damage": [
-        23,
-        32
-      ],
-      "defense": 5.8,
-      "xp": 644
-    },
-    {
-      "monster": "askimp",
-      "level": 25,
-      "hp": 278,
-      "damage": [
-        32,
-        44
-      ],
-      "defense": 7.8,
-      "xp": 900
-    },
-    {
-      "monster": "hornslaktare",
-      "level": 1,
-      "hp": 103,
-      "damage": [
-        15,
-        20
-      ],
-      "defense": 3.2,
-      "xp": 21
-    },
-    {
-      "monster": "hornslaktare",
-      "level": 8,
-      "hp": 200,
-      "damage": [
-        24,
-        32
-      ],
-      "defense": 6.0,
-      "xp": 475
-    },
-    {
-      "monster": "hornslaktare",
-      "level": 10,
-      "hp": 242,
-      "damage": [
-        27,
-        37
-      ],
-      "defense": 6.8,
-      "xp": 664
-    },
-    {
-      "monster": "hornslaktare",
-      "level": 15,
-      "hp": 390,
-      "damage": [
-        39,
-        51
-      ],
-      "defense": 8.8,
-      "xp": 1220
-    },
-    {
-      "monster": "hornslaktare",
-      "level": 20,
-      "hp": 628,
-      "damage": [
-        54,
-        72
-      ],
-      "defense": 10.8,
-      "xp": 1878
-    },
-    {
-      "monster": "hornslaktare",
-      "level": 25,
-      "hp": 1011,
-      "damage": [
-        76,
-        101
-      ],
-      "defense": 12.8,
-      "xp": 2625
-    }
-  ],
   "hit_chance_table": [
     {
       "anfallare_minus_forsvarare": -9,
@@ -953,12 +460,326 @@
       "gamla_byn 7 till 9"
     ],
     "xp_per_game_simulerat": {
-      "startskogen": 174,
-      "vargaby_utan_boss": 1178,
+      "startskogen": 123,
+      "vargaby_utan_boss": 1478,
       "grabjornen_ulvhild": 2425
     },
-    "kalkyl": "2 till 3 skogsgames ger cirka 350 till 520 XP (nivå 2 till 3, plus bonus för lägre nivå). Ett Vargaby game med boss ger cirka 3600 XP till, totalt cirka 4000 till 4100: nivå 6 (2821) och nära 7 (4291). Ett andra Vargaby game utan boss ger cirka 5200 totalt: nivå 7.",
+    "kalkyl": "2 till 3 skogsgames ger cirka 250 till 370 XP (nivå 2, nära 3 med bonus för lägre nivå). Ett Vargaby game med Gråbjörnen ger cirka 3900 XP till, totalt cirka 4200: nivå 6 (2821), nära 7 (4291). Ett andra Vargaby game ger cirka 5700: nivå 7.",
     "resultat": "Spelaren når nivå 6 till 7 innan portalbyn.",
     "xp_curve": "100 × n^1,5, totalt nivå 6: 2821, nivå 7: 4291"
-  }
+  },
+  "fixed_levels": {
+    "skogsvarg": 1,
+    "vargbest": 3,
+    "taggsvin": 4,
+    "skuggvarg": 5,
+    "gravargsledare": 6,
+    "ruttbjorn": 6,
+    "grabjornen_ulvhild": 6,
+    "skelett_hund": 7,
+    "skelett_krigare": 7,
+    "skelett_bagskytt": 8,
+    "skelett_runprast": 8,
+    "skelett_vakt": 9,
+    "skelett_kapten": 9,
+    "benkungen_valdemar": 10,
+    "dimgast": 11,
+    "klagokvinna": 12,
+    "trasknacken": 13,
+    "trasdrottningen": 14,
+    "gruvspindel": 15,
+    "syrabagge": 16,
+    "kitinvakt": 18,
+    "spinnmodern": 18,
+    "askimp": 19,
+    "eldpiska_demon": 21,
+    "hornslaktare": 22,
+    "askriddare": 23,
+    "askfursten_morvath": 25,
+    "smittbarare": 24,
+    "galen_munk": 25,
+    "kottklump": 27,
+    "fadern_av_smittan": 28
+  },
+  "examples_fixed": [
+    {
+      "id": "skogsvarg",
+      "name": "Varg",
+      "level": 1,
+      "hp": 50,
+      "damage": 10,
+      "defense": 0,
+      "xp": 3
+    },
+    {
+      "id": "vargbest",
+      "name": "Vargbest",
+      "level": 3,
+      "hp": 79,
+      "damage": 13,
+      "defense": 2,
+      "xp": 22
+    },
+    {
+      "id": "taggsvin",
+      "name": "Taggsvin",
+      "level": 4,
+      "hp": 88,
+      "damage": 16,
+      "defense": 3,
+      "xp": 48
+    },
+    {
+      "id": "skuggvarg",
+      "name": "Gråvarg",
+      "level": 5,
+      "hp": 85,
+      "damage": 14,
+      "defense": 2,
+      "xp": 60
+    },
+    {
+      "id": "gravargsledare",
+      "name": "Gråvargsledare",
+      "level": 6,
+      "hp": 168,
+      "damage": 19,
+      "defense": 4,
+      "xp": 154
+    },
+    {
+      "id": "ruttbjorn",
+      "name": "Ruttbjörn",
+      "level": 6,
+      "hp": 293,
+      "damage": 29,
+      "defense": 6,
+      "xp": 265
+    },
+    {
+      "id": "grabjornen_ulvhild",
+      "name": "Gråbjörnen Ulvhild",
+      "level": 6,
+      "hp": 1730,
+      "damage": 34,
+      "defense": 8,
+      "xp": 2425
+    },
+    {
+      "id": "skelett_hund",
+      "name": "Benhund",
+      "level": 7,
+      "hp": 48,
+      "damage": 9,
+      "defense": 2,
+      "xp": 67
+    },
+    {
+      "id": "skelett_krigare",
+      "name": "Skelettkrigare",
+      "level": 7,
+      "hp": 97,
+      "damage": 15,
+      "defense": 4,
+      "xp": 111
+    },
+    {
+      "id": "skelett_bagskytt",
+      "name": "Skelettbågskytt",
+      "level": 8,
+      "hp": 71,
+      "damage": 13,
+      "defense": 2,
+      "xp": 170
+    },
+    {
+      "id": "skelett_runprast",
+      "name": "Runpräst",
+      "level": 8,
+      "hp": 89,
+      "damage": 21,
+      "defense": 3,
+      "xp": 238
+    },
+    {
+      "id": "skelett_vakt",
+      "name": "Skelettväktare",
+      "level": 9,
+      "hp": 234,
+      "damage": 27,
+      "defense": 9,
+      "xp": 364
+    },
+    {
+      "id": "skelett_kapten",
+      "name": "Skelettkapten",
+      "level": 9,
+      "hp": 187,
+      "damage": 22,
+      "defense": 7,
+      "xp": 324
+    },
+    {
+      "id": "benkungen_valdemar",
+      "name": "Benkungen Valdemar",
+      "level": 10,
+      "hp": 1594,
+      "damage": 32,
+      "defense": 7,
+      "xp": 3795
+    },
+    {
+      "id": "dimgast",
+      "name": "Dimgast",
+      "level": 11,
+      "hp": 106,
+      "damage": 18,
+      "defense": 2,
+      "xp": 241
+    },
+    {
+      "id": "klagokvinna",
+      "name": "Klagokvinna",
+      "level": 12,
+      "hp": 136,
+      "damage": 12,
+      "defense": 3,
+      "xp": 436
+    },
+    {
+      "id": "trasknacken",
+      "name": "Träsknäcken",
+      "level": 13,
+      "hp": 236,
+      "damage": 29,
+      "defense": 5,
+      "xp": 562
+    },
+    {
+      "id": "trasdrottningen",
+      "name": "Träsdrottningen",
+      "level": 14,
+      "hp": 3773,
+      "damage": 55,
+      "defense": 8,
+      "xp": 11000
+    },
+    {
+      "id": "gruvspindel",
+      "name": "Gruvspindel",
+      "level": 15,
+      "hp": 106,
+      "damage": 17,
+      "defense": 6,
+      "xp": 279
+    },
+    {
+      "id": "syrabagge",
+      "name": "Syrabagge",
+      "level": 16,
+      "hp": 233,
+      "damage": 25,
+      "defense": 10,
+      "xp": 576
+    },
+    {
+      "id": "kitinvakt",
+      "name": "Kitinvakt",
+      "level": 18,
+      "hp": 565,
+      "damage": 47,
+      "defense": 15,
+      "xp": 1260
+    },
+    {
+      "id": "spinnmodern",
+      "name": "Spinnmodern",
+      "level": 18,
+      "hp": 5649,
+      "damage": 72,
+      "defense": 13,
+      "xp": 18328
+    },
+    {
+      "id": "askimp",
+      "name": "Askimp",
+      "level": 19,
+      "hp": 157,
+      "damage": 25,
+      "defense": 5,
+      "xp": 596
+    },
+    {
+      "id": "eldpiska_demon",
+      "name": "Eldpiskedemon",
+      "level": 21,
+      "hp": 552,
+      "damage": 53,
+      "defense": 9,
+      "xp": 1877
+    },
+    {
+      "id": "hornslaktare",
+      "name": "Hornslaktare",
+      "level": 22,
+      "hp": 759,
+      "damage": 72,
+      "defense": 12,
+      "xp": 2167
+    },
+    {
+      "id": "askriddare",
+      "name": "Askriddare",
+      "level": 23,
+      "hp": 919,
+      "damage": 70,
+      "defense": 16,
+      "xp": 2647
+    },
+    {
+      "id": "askfursten_morvath",
+      "name": "Askfursten Morvath",
+      "level": 25,
+      "hp": 12636,
+      "damage": 123,
+      "defense": 17,
+      "xp": 45000
+    },
+    {
+      "id": "smittbarare",
+      "name": "Smittbärare",
+      "level": 24,
+      "hp": 404,
+      "damage": 35,
+      "defense": 8,
+      "xp": 705
+    },
+    {
+      "id": "galen_munk",
+      "name": "Galen munk",
+      "level": 25,
+      "hp": 500,
+      "damage": 47,
+      "defense": 9,
+      "xp": 1125
+    },
+    {
+      "id": "kottklump",
+      "name": "Köttklump",
+      "level": 27,
+      "hp": 1682,
+      "damage": 74,
+      "defense": 10,
+      "xp": 2104
+    },
+    {
+      "id": "fadern_av_smittan",
+      "name": "Fadern av smittan",
+      "level": 28,
+      "hp": 11100,
+      "damage": 116,
+      "defense": 13,
+      "xp": 28892
+    }
+  ]
 }
