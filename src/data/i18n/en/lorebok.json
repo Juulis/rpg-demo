@@ -1,0 +1,265 @@
+{
+  "set": {
+    "name": "Sets",
+    "entries": {
+      "tempelriddarens_ed": {
+        "name": "Templar's Oath",
+        "lore": "When the sky split, the last templars swore to keep the graves shut. They held the oath for seven nights. On the eighth, the graves opened from within.",
+        "pieces": {
+          "edens_klinga": {
+            "name": "Oathblade",
+            "lore": "The blade bears the names of every knight who fell at the graves. There is room left for one more."
+          },
+          "edens_mur": {
+            "name": "Oathwall",
+            "lore": "Once it bore the white cross of the order. Now only claw marks and soot remain where the cross stood."
+          },
+          "edens_visir": {
+            "name": "Oath Visor",
+            "lore": "Through this visor the knights watched their brothers rise from the earth. Stare too long, they say, and you will see them still."
+          },
+          "edens_pansar": {
+            "name": "Oathplate",
+            "lore": "The plate is dented from the inside, as if something tried to get out. No knight will say why."
+          },
+          "edens_steg": {
+            "name": "Oathstride",
+            "lore": "These boots leave a trail of cold ash. The templars learned to walk quietly past the dead."
+          }
+        }
+      },
+      "bergsklanens_raseri": {
+        "name": "Fury of the Mountain Clan",
+        "lore": "The Mountain Clan devoured their dead rather than leave them to the demons. Their fury lives on in what they wore, hungry and proud.",
+        "pieces": {
+          "klanhovdingens_yxa": {
+            "name": "Clanchief's Axe",
+            "lore": "With this axe the chieftain cut down his own twisted son. Then he kept cutting, until no demon stood on the mountain."
+          },
+          "forfadernas_skalle": {
+            "name": "Skull of the Forefathers",
+            "lore": "A helm made from an ancestor's skull, so the dead might see the battle with their own eyes. Sometimes it laughs."
+          },
+          "vargpalsen": {
+            "name": "The Wolfpelt",
+            "lore": "Taken from the first wolf twisted in the mountains. It still keeps you warm, but it smells of iron."
+          },
+          "blodnavarna": {
+            "name": "Bloodfists",
+            "lore": "The clan's warriors never washed their gloves. Every stain is a name they refuse to forget."
+          },
+          "trofebaltet": {
+            "name": "Trophy Belt",
+            "lore": "Teeth, horns and claws of demons slain by the clan. There are no empty hooks left."
+          }
+        }
+      },
+      "jaktgudinnans_dottrar": {
+        "name": "Daughters of the Huntress",
+        "lore": "When all others fled, the amazons stayed and hunted in the ruins. No one knows what they hunted in the end. Only that none came home.",
+        "pieces": {
+          "dottrarnas_spjut": {
+            "name": "Spear of the Daughters",
+            "lore": "Passed from mother to daughter for eleven generations. The last daughter left it in Wolfstead, wedged in a bear's heart."
+          },
+          "manbagen": {
+            "name": "Moonbow",
+            "lore": "The bow sings softly in moonlight. The amazons said it sang louder on nights when someone would die."
+          },
+          "jagarinnans_hatta": {
+            "name": "Huntress's Hood",
+            "lore": "The hood hid the huntresses from twisted eyes. Against demons, it did nothing at all."
+          },
+          "skugglader": { "name": "Shadowhide", "lore": "Tanned in the bog water of Mistshore, blacker than night. It never creaks." },
+          "tysta_steg": {
+            "name": "Silent Steps",
+            "lore": "These sandals taught the huntresses to walk without a sound over bone and glass. Their last tracks lead down into the mines of Copperfell."
+          }
+        }
+      },
+      "gravvaktarens_arv": {
+        "name": "Gravewarden's Legacy",
+        "lore": "Before the dead rose, there were those who guarded them. Their gear is all that still remembers how to keep the dead down.",
+        "pieces": {
+          "vaktarens_hammare": {
+            "name": "Warden's Hammer",
+            "lore": "The Gravewardens shattered any bone that moved. It has struck so often the haft has worn to the shape of a hand."
+          },
+          "vaktarens_lock": {
+            "name": "Warden's Lid",
+            "lore": "This shield was once a coffin lid. The wardens thought the dead should be met with their own wood."
+          },
+          "vaktarens_brynja": {
+            "name": "Warden's Mail",
+            "lore": "Covered in tiny runes, one carved for every night of watch. The carving stopped after ninety nights."
+          },
+          "vaktarens_grepp": {
+            "name": "Warden's Grip",
+            "lore": "These gloves carried hundreds of coffins to the earth. Now they feel cold, as if waiting for the next."
+          },
+          "vaktarens_ben": {
+            "name": "Warden's Bone",
+            "lore": "A finger bone of the first Gravewarden. He asked to keep watch even after death."
+          }
+        }
+      },
+      "askvandrarens_borda": {
+        "name": "Ashwalker's Burden",
+        "lore": "A pilgrim walked into Ashenhold to pray for the city. What he carried was found strewn along the Ash Road. Him, no one found.",
+        "pieces": {
+          "pilgrimens_torn": {
+            "name": "Pilgrim's Thorn",
+            "lore": "The pilgrim used this dagger to carve his prayers into trees along the road. At the gates of Ashenhold, the lines end mid-word."
+          },
+          "den_svartade_rustningen": {
+            "name": "The Blackened Armor",
+            "lore": "It was white when the pilgrim entered Ashenhold. It came out black, and empty."
+          },
+          "botgordeln": {
+            "name": "Penitent's Girdle",
+            "lore": "The pilgrim cinched it tighter for every sin he remembered. It is still too tight."
+          },
+          "askvagen": {
+            "name": "The Ash Road",
+            "lore": "These boots walked all the way to Ashenhold and back. No one wore them on the way home."
+          },
+          "den_branda_runan": {
+            "name": "The Burnt Rune",
+            "lore": "Branded into the amulet by the Ash Prince's own fire. It whispers of a power not yet yours."
+          }
+        }
+      },
+      "benviskarens_drakt": {
+        "name": "Bonewhisperer's Garb",
+        "lore": "After the wolves took Wolfstead, a hermit lived among the bones. He learned to hear the dead whisper through them. In the end, he whispered back.",
+        "pieces": {
+          "viskarens_skalle": {
+            "name": "Whisperer's Skull",
+            "lore": "The skull of the hermit's own brother. He wore it so he would never stop hearing his voice."
+          },
+          "viskarens_revben": {
+            "name": "Whisperer's Ribs",
+            "lore": "Each rib belonged to a villager the wolves left behind. At night they knock against each other, as if asking to be let in."
+          },
+          "viskarens_fingrar": {
+            "name": "Whisperer's Fingers",
+            "lore": "The finger bones move on their own, pointing at what is about to die. Most often they point at the wearer."
+          },
+          "viskarens_kotor": {
+            "name": "Whisperer's Spine",
+            "lore": "Strung from the vertebrae of a child who was never found. The hermit said it was the only way to keep it close."
+          },
+          "viskarens_steg": {
+            "name": "Whisperer's Steps",
+            "lore": "These boots leave no tracks, only a faint crunch, like bone on bone. Wolves never follow the one who wears them."
+          }
+        }
+      }
+    }
+  },
+  "legendariska": {
+    "name": "Legendary Items",
+    "entries": {
+      "runsmidd_klinga": {
+        "name": "Runeforged Blade",
+        "lore": "Forged by the village smith with runes he did not understand, the night the runestones went dark. He died before he could ask what they meant."
+      },
+      "gravvaktarens_hillebard": {
+        "name": "Gravewarden's Halberd",
+        "lore": "With this halberd the Gravewarden held the village gate for three days. When morning came he was still standing. He was no longer breathing."
+      },
+      "benkungens_lie": {
+        "name": "The Bone King's Scythe",
+        "lore": "Valdemar was a chieftain before he was king of bones. With this scythe he reaped his own village."
+      },
+      "runskold": {
+        "name": "Runeshield",
+        "lore": "It bears the same runes as the stones in the forest. When they wake, it glows faintly, like the memory of something lost."
+      },
+      "gravvaktarens_pansar": {
+        "name": "Gravewarden's Plate",
+        "lore": "This plate has never left the village. Its wearer sometimes feels hands tugging at it from beneath the earth."
+      },
+      "benkungens_krona": {
+        "name": "Crown of the Bone King",
+        "lore": "The crown bound the Old Village to death. Its wearer still hears Valdemar's voice, counting his subjects."
+      },
+      "vargblodets_band": {
+        "name": "Wolfblood Band",
+        "lore": "Found in the belly of Ulvhild the Greybear, still around a finger. Its wearer dreams of running with the pack."
+      },
+      "flyktingens_sandaler": {
+        "name": "The Runaway's Sandals",
+        "lore": "A child fled through Wildwood in these sandals when the demons came. The sandals reached Wolfstead. The child did not."
+      },
+      "vargtandens_kniv": {
+        "name": "Wolftooth Knife",
+        "lore": "The hunters of Wolfstead made knives from the teeth of the wolves that turned on them. This tooth came from the packleader's own hound."
+      },
+      "korpmoderns_bage": {
+        "name": "The Raven Mother's Bow",
+        "lore": "The Raven Mother guarded Mistshore with her bow and her birds, until the mist took them all. The ravens still wait on the rooftops for her."
+      },
+      "dimvandrarens_handskar": {
+        "name": "Mistwalker's Gloves",
+        "lore": "The drowned of Mistshore seek hands to hold. Whoever wears these gloves is never alone in the mist."
+      },
+      "klockarens_hammare": {
+        "name": "The Bellringer's Hammer",
+        "lore": "When the spiders came, the bellringer of Copperfell melted down the church bell. He no longer rang for mass. He rang to kill."
+      },
+      "jarnmunkens_gordel": {
+        "name": "The Iron Monk's Girdle",
+        "lore": "The monk of the mine cloister locked himself in this girdle so he would not be twisted. The lock held. The monk did not."
+      },
+      "valkyrians_sista_andetag": {
+        "name": "Valkyrie's Last Breath",
+        "lore": "The valkyrie fell into the Broodmother's web and fought until she could not breathe. The feather on the spear still flutters, as if she is trying again."
+      },
+      "pilgrimens_sista_svard": {
+        "name": "The Pilgrim's Last Sword",
+        "lore": "It was the pilgrim's sword before it became his gravestone. Someone pulled it from the ash, and the runes have begun to burn again."
+      },
+      "tystnadens_stilett": {
+        "name": "Stiletto of Silence",
+        "lore": "The assassins of Ashenhold used it to silence priests before the city fell. The demons liked it, and left it where it lay."
+      },
+      "hornslaktarens_bila": {
+        "name": "Hornbutcher's Cleaver",
+        "lore": "Hornbutchers swing this cleaver until nothing moves. Every notch in the iron is a man it has butchered."
+      },
+      "sista_vaktens_mur": {
+        "name": "The Last Sentinel's Wall",
+        "lore": "The last sentinel of Ashenhold held the gate with this shield while the city burned behind him. Scratches from a thousand claws cover the city's crest."
+      },
+      "askfurstens_horn": {
+        "name": "Horns of the Ash Prince",
+        "lore": "Morvath's horns broke off when he crushed the last church in Ashenhold. The helm was forged around them, and their embers have never died."
+      },
+      "smittfaderns_kapa": {
+        "name": "The Blightfather's Shroud",
+        "lore": "The Blightfather wore this shroud as he preached the Change. Something beneath it still lives."
+      },
+      "likatarens_kake": {
+        "name": "The Carrion Jaw",
+        "lore": "The oldest carrion wolf in the Old Village fed on the Bone King's dead for a hundred years. When it died the jaw remained, and it still bit."
+      },
+      "revbensburen": {
+        "name": "The Ribcage",
+        "lore": "The Bog Queen kept her lovers in a cage of their own ribs. Its wearer still hears them begging to be let out."
+      },
+      "miras_docka": {
+        "name": "Mira's Doll",
+        "lore": "When her brother did not return, Mira sewed a lock of his hair into this doll. She gave it to the one who brought his sandals home."
+      },
+      "ristarens_mejsel": {
+        "name": "The Runecarver's Chisel",
+        "lore": "With this chisel the forest runes were carved. It lay in the crypt as if the carver had set it down, meaning to come back."
+      },
+      "hovdingens_signet": {
+        "name": "The Chieftain's Signet",
+        "lore": "Valdemar wore this signet before the crown took him. Given by the living, it carries the village's thanks, not its curse."
+      }
+    }
+  }
+}
