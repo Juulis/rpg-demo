@@ -11,18 +11,37 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # TS-versionen (next/) får inte stoppa hotfixar till 3D-spelet på roten: fel här hoppar bara över next/.
+      - name: Bygg TS-versionen till dist/next
+        id: next
+        continue-on-error: true
+        run: npm run typecheck && npm run lint && npm run build
+      - name: Sätt ihop Pages-artefakten (3D-spelet på roten)
+        run: node scripts/assemble-pages.mjs
+      - run: npx playwright install --with-deps chromium
+      - name: Röktest – roten måste vara spelbar
+        run: node scripts/smoke.mjs dist ${{ steps.next.outcome == 'success' && ' ' || '--allow-missing-next' }}
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
