@@ -2,7 +2,8 @@ import type { GameContext } from '../core/GameContext';
 import { nextEvent } from '../core/nextEvent';
 import type { AutoSaveService } from './AutoSaveService';
 import type { HeroGateway } from './HeroGateway';
-import { newGameRecord, newSeed, type SaveFile } from './types';
+import type { SeedSource } from '../core/entropy';
+import { newGameRecord, type SaveFile } from './types';
 
 /**
  * Startar en hjälte via Game.loadHero (skriver hjälte + session, skickar hero_loaded),
@@ -15,12 +16,14 @@ export class HeroLoader {
     private readonly ctx: GameContext,
     private readonly game: HeroGateway,
     private readonly autosave: AutoSaveService,
+    /** Seed för nytt game; injiceras (crypto i plattformslagret, eller från Game). */
+    private readonly newSeed: SeedSource,
     private readonly zoneTimeoutMs = 2_000,
   ) {}
 
   async start(save: SaveFile, resume: boolean): Promise<void> {
     this.autosave.end(this.autosave.isPlaying);
-    const g = resume && save.game ? save.game : newGameRecord(newSeed());
+    const g = resume && save.game ? save.game : newGameRecord(this.newSeed());
     if (!resume || !save.game) save.game = g;
     const h = save.hero;
     const fresh = !!h.fresh;
@@ -48,7 +51,7 @@ export class HeroLoader {
     });
     if (fresh) delete h.fresh;
     this.autosave.begin(save);
-    this.autosave.saveNow('start');
+    await this.autosave.saveNow('start');
     const zone = this.ctx.hero.zone;
     const ready = nextEvent(this.ctx.bus, 'zone_enter', (p) => p.name === zone, this.zoneTimeoutMs);
     this.ctx.bus.emit('new_game', { seed: g.seed });
