@@ -34,6 +34,11 @@ const { MapModule } = await import('../src/map/MapModule');
 const { FogRepository } = await import('../src/map/FogRepository');
 import type { GameEvents } from '../src/core/events';
 import type { GameContext, HeroState } from '../src/core/GameContext';
+
+function must<T>(v: T | null | undefined, what: string): T {
+  if (v === null || v === undefined) throw new Error(`saknas: ${what}`);
+  return v;
+}
 import type { HeroGateway } from '../src/save/HeroGateway';
 
 const bus = new EventBus<GameEvents>();
@@ -165,7 +170,7 @@ assert.ok(document.querySelector('#plate .sfx-ctl'), 'volymreglage monterat');
 const heroes = save.roster.list();
 assert.equal(heroes.length, 1);
 assert.equal(heroes[0]?.cls, 'barbar');
-const migrated = save.roster.load(heroes[0]!.id)!;
+const migrated = must(save.roster.load(must(heroes[0], 'hjälte 0').id), 'migrerad hjälte');
 assert.equal(migrated.hero.gold, 42);
 assert.equal(migrated.hero.inv[0]?.base, 'rostig_kortsvard', 'gammalt startgear fixat');
 
@@ -193,7 +198,7 @@ assert.equal(ctx.hero.name, 'Ragnar');
 assert.equal(ctx.hero.playing, true);
 assert.ok(log.length === 1, 'new_game emit:at en gång');
 assert.equal(store.get('rk_inv_riddare'), null, 'rk_inv_ skrivs inte längre');
-const ragnarId = ctx.hero.id!;
+const ragnarId = must(ctx.hero.id, 'hjälte-id');
 assert.ok(store.get(`rpg_hero_${ragnarId}`), 'sparad vid start');
 
 // spela: steg avslöjar fog, kill sparar via bussen (debounce)
@@ -204,7 +209,7 @@ H.gold = 99;
 ctx.session.killed.add('m1');
 bus.emit('kill', { id: 'm1', area: 'a', lvl: 1, champion: false, unique: false, boss: false });
 await new Promise((r) => setTimeout(r, 200));
-const saved = JSON.parse(store.get(`rpg_hero_${ragnarId}`)!);
+const saved = JSON.parse(must(store.get(`rpg_hero_${ragnarId}`), 'sparfil'));
 assert.equal(saved.hero.gold, 99);
 assert.deepEqual(saved.game.killed, ['m1']);
 assert.deepEqual(saved.game.pos, [5, 5]);
@@ -235,7 +240,7 @@ assert.equal(ctx.session.killed.has('m1'), true);
 menu.show();
 (document.querySelector(`.hslot[data-id="${ragnarId}"]`) as HTMLElement).click();
 (document.getElementById('hmDel') as HTMLButtonElement).click();
-assert.match(document.querySelector('.confirm span')!.textContent!, /Radera Ragnar för alltid\?/);
+assert.match(must(document.querySelector('.confirm span')?.textContent, 'bekräftelsetext'), /Radera Ragnar för alltid\?/);
 (document.getElementById('hmYes') as HTMLButtonElement).click();
 assert.equal(store.get(`rpg_hero_${ragnarId}`), null);
 assert.equal(store.get(FogRepository.key(ragnarId, 'forest')), null);
