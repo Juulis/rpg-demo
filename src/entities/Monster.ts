@@ -12,14 +12,14 @@ export class Monster {
   max: number;
   defense: number;
   dmgMult = 1;
-  facing = Math.random() * 6.28;
+  facing = 0;
   readonly elite: EliteKind | null;
   readonly es: EliteStats | null;
   readonly mods: string[];
   readonly uname: string | undefined;
   readonly uid: string | null;
   // AI-tillstånd
-  cd = Math.random();
+  cd = 0;
   wanderT = 0;
   target: Vec2;
   kb: Vec2 = { x: 0, y: 0 };
@@ -49,7 +49,10 @@ export class Monster {
     readonly view: DirSprite,
     spec: SpawnSpec | null,
     es: EliteStats | null,
+    rnd: () => number,
   ) {
+    this.facing = rnd() * 6.28;
+    this.cd = rnd();
     this.pos = { ...pos };
     this.home = { ...pos };
     this.target = { ...pos };

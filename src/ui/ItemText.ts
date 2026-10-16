@@ -1,6 +1,6 @@
-import type { Hero } from '../entities/Hero';
-import type { HeroStats, Loot } from '../loot/Loot';
-import type { Equip, Item } from '../loot/types';
+import type { HeroModel as Hero } from '../logic/HeroModel';
+import type { HeroStats, Loot } from '../logic/loot/Loot';
+import type { Equip, Item } from '../logic/loot/types';
 import type { Text, TextKey } from '../text/Text';
 
 const pct = (v: number): string => Math.round(v * 1000) / 10 + ' %';

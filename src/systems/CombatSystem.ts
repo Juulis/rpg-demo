@@ -3,6 +3,7 @@ import { DATA } from '../data';
 import type { Vec2 } from '../core/GameContext';
 import type { Monster } from '../entities/Monster';
 import { Iso } from '../render/Iso';
+import type { MonsterSnapshot } from '../logic/CombatRules';
 import type { LootSystem } from './LootSystem';
 import type { World } from './World';
 
@@ -11,9 +12,8 @@ interface HitOpts {
   stun?: number;
   ranged?: boolean;
 }
-const rand = (a: number, b: number): number => a + Math.random() * (b - a);
 
-/** Strid: hjältens anfall och färdigheter, träffchans, skada, krosslag, knuff, livsstöld, taggar, XP och död. */
+/** Strid i klienten: effekter, knuff, projektiler. Utfall (träff, skada, XP, droppar) avgörs av GameAuthority. Hjältens anfall och färdigheter, träffchans, skada, krosslag, knuff, livsstöld, taggar, XP och död. */
 export class CombatSystem {
   /** Anropas när bossen dör. */
   onBossDefeated: (m: Monster) => void = () => undefined;
@@ -24,6 +24,29 @@ export class CombatSystem {
     private readonly loot: LootSystem,
   ) {}
 
+  /** Ren data om monstret för spellogiken (GameAuthority). */
+  snapshot(m: Monster): MonsterSnapshot {
+    const h = this.w().hero;
+    const f = { x: Math.sin(m.facing), y: Math.cos(m.facing) };
+    const to = this.norm({ x: h.pos.x - m.pos.x, y: h.pos.y - m.pos.y });
+    return {
+      id: m.id,
+      lvl: m.lvl,
+      hp: m.hp,
+      max: m.max,
+      defense: m.defense,
+      boss: m.boss,
+      family: m.def.family,
+      weak: m.def.weak,
+      resist: m.def.resist,
+      immune: m.immune > 0,
+      vulnerable: m.vuln > 0,
+      shieldedFront: m.id === 'skelett_vakt' && f.x * to.x + f.y * to.y > 0.3,
+      xp: m.def.xp,
+      xpMult: m.es?.xp ?? 1,
+    };
+  }
+
   damageMonster(m: Monster, mult = 1, opts: HitOpts = {}): void {
     const w = this.w();
     const h = w.hero;
@@ -31,27 +54,12 @@ export class CombatSystem {
     const t = w.text;
     if (m.dead) return;
     m.aggroed = true;
-    if (!(m.immune > 0) && Math.random() > w.L.hitChance(st.AR, 15 + 8 * m.lvl + m.defense * 2, h.level, m.lvl)) {
+    const r = w.authority.heroHit(st, h.level, this.snapshot(m), mult);
+    if (!r.hit) {
       w.fb.float(m.pos, t.t('fx.miss'), 'res', m.view.height2);
       return;
     }
-    const rules = DATA.families.multiplier_rules;
-    const type = st.type as never;
-    const fm = m.def.weak.includes(type) ? rules.svag : m.def.resist.includes(type) ? rules.resistent : 1;
-    const crit = Math.random() < st.crit;
-    const fam = w.L.monsterFamily(m.id) ?? m.def.family;
-    let dmg = rand(st.dmgMin, st.dmgMax) * mult * fm * (1 + (st.vs[fam] ?? 0)) * (crit ? DATA.classes.meta.crit_multiplier : 1);
-    if (m.id === 'skelett_vakt') {
-      const f = { x: Math.sin(m.facing), y: Math.cos(m.facing) };
-      const to = this.norm({ x: h.pos.x - m.pos.x, y: h.pos.y - m.pos.y });
-      if (f.x * to.x + f.y * to.y > 0.3) dmg *= 0.5;
-    }
-    dmg = m.immune > 0 ? 0 : Math.max(1, Math.round(dmg - (m.vuln > 0 ? 0 : m.defense)));
-    let strong = 0;
-    if (dmg > 0 && Math.random() < st.strong) {
-      strong = Math.round(m.boss ? Math.min(m.hp * 0.1, m.max * 0.03) : m.hp * 0.25);
-      dmg += strong;
-    }
+    const { dmg, crit, strong, fm } = r;
     m.hp -= dmg;
     m.flash = 0.15;
     m.lastHit = w.time;
@@ -71,7 +79,7 @@ export class CombatSystem {
     if (st.lifesteal) h.s.hp = Math.min(st.maxHp, h.s.hp + dmg * st.lifesteal);
     if (m.id === 'skelett_runprast' && !((m.timers.tp ?? 0) > 0) && m.hp > 0) {
       m.timers.tp = 6;
-      const a = rand(0, 6.28);
+      const a = w.rng.float(0, 6.28);
       m.pos.x += Math.cos(a) * 5;
       m.pos.y += Math.sin(a) * 5;
       w.zone.collide(m.pos, 0.5);
@@ -79,27 +87,30 @@ export class CombatSystem {
     if (m.hp <= 0) this.kill(m);
   }
 
-  /** XP(L) = round(xp/10 · 3 · L^1,5) × avdrag efter nivåskillnad (boss golv 0,25). */
-  monsterXp(m: Monster): number {
-    const diff = this.w().hero.level - m.lvl;
-    const row = DATA.monsterLevels.xp_penalty.table.find((r) => r.hjalte_minus_monster === Math.max(-8, Math.min(12, diff)));
-    let k = row ? row.xp_mult : 1;
-    if (m.boss) k = Math.max(0.25, k);
-    return Math.round(((m.def.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * (m.es?.xp ?? 1));
-  }
-
   kill(m: Monster): void {
     const w = this.w();
     m.dead = 0.001;
     m.view.play('dod');
-    const ups = w.hero.gainXp(this.monsterXp(m));
+    const first = !!m.uid && m.boss && !w.session.killed.has(m.uid);
+    if (m.uid) w.session.killed.add(m.uid);
+    const st = w.hero.stats;
+    const lo = m.es?.extraLoot;
+    const reward = w.authority.killReward({
+      m: this.snapshot(m),
+      heroLvl: w.hero.level,
+      mf: st.mf,
+      goldFind: st.goldFind,
+      firstKill: first,
+      ilvl: Math.min(DATA.monsterLevels.item_level.cap, m.lvl + (m.boss ? 2 : m.elite === 'unik' ? 1 : 0)),
+      extraRolls: lo?.extra_rolls ?? 0,
+      qualityMult: lo?.quality_mult ?? 1,
+    });
+    const ups = w.hero.gainXp(reward.xp);
     if (ups) {
       w.fb.flash(w.text.t('msg.level_up', { level: w.hero.level }));
       w.bus.emit('level_up', { level: w.hero.level });
     }
-    const first = !!m.uid && m.boss && !w.session.killed.has(m.uid);
-    if (m.uid) w.session.killed.add(m.uid);
-    this.loot.dropFor(m, first);
+    this.loot.scatter(m.pos, reward.drops);
     w.bus.emit('kill', {
       id: m.uid ?? m.id,
       area: w.zone.areaId,
@@ -118,28 +129,26 @@ export class CombatSystem {
     const st = h.stats;
     const t = w.text;
     if (!h.s.playing) return;
-    raw *= m?.dmgMult ?? 1;
-    const alvl = m?.lvl ?? h.level;
-    if (Math.random() > w.L.hitChance(15 + 8 * alvl, 15 + 8 * h.level + st.defense * 2, alvl, h.level)) {
-      w.fb.float(h.pos, t.t('fx.dodge'), 'weak', 100);
-      return;
-    }
     const f = h.forward();
     const to = from ? this.norm({ x: from.x - h.pos.x, y: from.y - h.pos.y }) : null;
     const front = to ? f.x * to.x + f.y * to.y > 0.2 : true;
-    if (st.block > 0 && front && h.s.stamina >= 5 && Math.random() < st.block * (h.moving ? 0.5 : 1)) {
+    const r = w.authority.monsterHit({
+      raw: raw * (m?.dmgMult ?? 1),
+      monsterLvl: m?.lvl ?? h.level,
+      st,
+      heroLvl: h.level,
+      front,
+      moving: h.moving,
+      stamina: h.s.stamina,
+      blocking: h.blocking && !!from,
+    });
+    if (r.kind === 'dodge') return w.fb.float(h.pos, t.t('fx.dodge'), 'weak', 100);
+    if (r.kind === 'block' || r.reduced) {
       h.s.stamina -= 5;
       h.stDelay = 1;
-      w.fb.float(h.pos, t.t('fx.block'), 'weak', 100);
-      return;
     }
-    let d = raw;
-    if (h.blocking && from && front && h.s.stamina >= 5) {
-      d *= 0.3;
-      h.s.stamina -= 5;
-      h.stDelay = 1;
-    }
-    d = Math.max(1, Math.round(d - st.defReduce));
+    if (r.kind === 'block') return w.fb.float(h.pos, t.t('fx.block'), 'weak', 100);
+    const d = r.dmg;
     h.s.hp = Math.max(0, h.s.hp - d);
     if (m?.es?.lifeSteal && !m.dead) m.hp = Math.min(m.max, m.hp + d * m.es.lifeSteal);
     if (m?.es?.curse) h.curse = 4;

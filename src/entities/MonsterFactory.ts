@@ -20,7 +20,7 @@ export class MonsterFactory {
     const view = new DirSprite(set, look.scale, def.boss ? 40 : 26);
     view.sprite.tint = look.tint;
     const es = spec?.elite ? this.spawn.eliteStats(spec) : null;
-    const m = new Monster(def, lvl ?? spec?.level ?? def.level, pos, view, spec, es);
+    const m = new Monster(def, lvl ?? spec?.level ?? def.level, pos, view, spec, es, () => w.rng.next());
     if (m.elite) {
       const c = m.elite === 'unik' ? 0xc7a35a : 0x8a8aff;
       view.sprite.tint = c === 0xc7a35a ? 0xffe8b0 : 0xc8c8ff;

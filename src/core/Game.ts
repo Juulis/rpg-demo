@@ -2,12 +2,16 @@ import { EventBus } from './EventBus';
 import type { GameEvents } from './events';
 import type { GameContext, GameModule, HeroSave, HeroState, Vec2, ZoneView } from './GameContext';
 import { createSession } from './Session';
+import { Rng } from './Rng';
+import type { GameAuthority } from './GameAuthority';
+import { CombatRules } from '../logic/CombatRules';
+import { LocalAuthority } from '../logic/LocalAuthority';
 import { DATA, validateData } from '../data';
 import { Hero } from '../entities/Hero';
 import type { Monster } from '../entities/Monster';
 import { MonsterFactory } from '../entities/MonsterFactory';
 import { Input } from '../input/Input';
-import { Loot } from '../loot/Loot';
+import { Loot } from '../logic/loot/Loot';
 import { AssetStore, dirIndex } from '../render/Assets';
 import { Camera } from '../render/Camera';
 import { DirSprite } from '../render/DirSprite';
@@ -43,7 +47,9 @@ export class Game {
   readonly spawn = new SpawnSystem();
   readonly text = new Text();
   readonly assets = new AssetStore();
-  readonly loot = new Loot(this.text);
+  readonly rng = new Rng(Rng.newSeed());
+  readonly loot = new Loot(this.text, this.rng);
+  readonly authority: GameAuthority = new LocalAuthority(this.loot, new CombatRules(this.loot, this.rng));
   private readonly heroState: HeroState = {
     id: null,
     name: '',
@@ -101,7 +107,7 @@ export class Game {
   private dead = false;
 
   constructor(private readonly modules: GameModule[] = []) {
-    this.ctx = { bus: this.bus, hero: this.heroState, zone: this.zoneView, session: createSession(), data: DATA };
+    this.ctx = { bus: this.bus, hero: this.heroState, zone: this.zoneView, session: createSession(), data: DATA, rng: this.rng };
   }
 
   get session() {
@@ -283,6 +289,8 @@ export class Game {
       bus: this.bus,
       session: this.session,
       L: this.loot,
+      rng: this.rng,
+      authority: this.authority,
       text: this.text,
       hero,
       zone,

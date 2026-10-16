@@ -1,6 +1,7 @@
-import { DATA } from '../data';
-import type { HeroClass } from '../data/types';
-import type { Text } from '../text/Text';
+import { DATA } from '../../data';
+import type { Rng } from '../../core/Rng';
+import type { HeroClass } from '../../data/types';
+import type { Text } from '../../text/Text';
 import type {
   Affix,
   AffixDef,
@@ -51,9 +52,6 @@ export class LootRng {
     return e.at(-1)?.[0] ?? null;
   }
 }
-
-let seedCounter = 1;
-const newSeed = (): number => ((Date.now() & 0xffffff) * 977 + seedCounter++ * 2654435761) >>> 0;
 
 export interface HeroStats {
   maxHp: number;
@@ -106,6 +104,7 @@ const SIZE: Dict<Num2> = {
 };
 
 /**
+ * Ren spellogik (ingen DOM/Pixi): körbar på server.
  * Lootsystemet (port av legacy js/loot.js, loot_design.md): kvaliteter, affix, set, legendariska, 7-stegs dropalgoritm,
  * samlade attribut. Inga ädelstenar, inga hylsor, ingen föremålsmodifiering.
  */
@@ -147,7 +146,10 @@ export class Loot {
     stamina: { regen_floor: number };
   };
 
-  constructor(private readonly text: Text) {
+  constructor(
+    private readonly text: Text,
+    private readonly rng: Rng,
+  ) {
     this.Q = Object.fromEntries(this.qual.qualities.map((q) => [q.id, q]));
     const all = [...this.bas.weapons, ...this.bas.armor, ...this.bas.jewelry, ...this.bas.potions, ...this.bas.materials];
     this.B = Object.fromEntries(all.map((b) => [b.id, b]));
@@ -192,7 +194,7 @@ export class Loot {
     const b = this.B[baseId];
     if (!b) throw new Error(`Okänd bastyp: ${baseId}`);
     const it: Item = {
-      uid: Math.random().toString(36).slice(2, 10),
+      uid: this.rng.id(),
       base: baseId,
       quality: o.quality ?? 'normal',
       affixes: o.affixes ?? [],
@@ -368,7 +370,7 @@ export class Loot {
     seed: number;
     drops: Drop[];
   } {
-    const seed = newSeed();
+    const seed = Math.floor(this.rng.next() * 2 ** 32) >>> 0;
     const R = new LootRng(seed);
     const out: Drop[] = [];
     const boss = this.drops.bosses[o.id];

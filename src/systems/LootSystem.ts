@@ -1,10 +1,8 @@
 import { Assets as PixiAssets, Container, Graphics, Sprite, type Texture } from 'pixi.js';
-import { DATA } from '../data';
 import type { Vec2 } from '../core/GameContext';
-import type { Monster } from '../entities/Monster';
 import type { AssetStore } from '../render/Assets';
 import { Iso } from '../render/Iso';
-import type { Drop, Item } from '../loot/types';
+import type { Drop, Item } from '../logic/loot/types';
 import type { GroundDrop, World } from './World';
 
 const QRANK: Record<string, number> = { legendary: 0, set: 1, rare: 2, magic: 3, normal: 4 };
@@ -16,21 +14,13 @@ export class LootSystem {
     private readonly assets: AssetStore,
   ) {}
 
-  dropFor(m: Monster, firstKill: boolean): void {
+  /** Lägger droppar (rullade av GameAuthority) runt en punkt. */
+  scatter(at: Vec2, drops: Drop[]): void {
     const w = this.w();
-    const st = w.hero.stats;
-    const cap = DATA.monsterLevels.item_level.cap;
-    const ilvl = Math.min(cap, m.lvl + (m.boss ? 2 : m.elite === 'unik' ? 1 : 0));
-    const { drops } = w.L.rollDrops({ id: m.id, mlvl: m.lvl, ilvl, mf: st.mf, goldFind: st.goldFind, firstKill });
-    const lo = m.es?.extraLoot;
-    if (lo)
-      for (let i = 0; i < (lo.extra_rolls || 0); i++)
-        drops.push(
-          ...w.L.rollDrops({ id: m.id, mlvl: m.lvl, ilvl, mf: st.mf + ((lo.quality_mult || 1) - 1) * 100, goldFind: st.goldFind }).drops,
-        );
+    const m = { pos: at };
     drops.forEach((d, i) => {
-      const a = (i / drops.length) * 6.28 + Math.random();
-      const r = drops.length > 1 ? 0.6 + Math.random() * 0.6 : Math.random() * 0.3;
+      const a = (i / drops.length) * 6.28 + w.rng.next();
+      const r = drops.length > 1 ? 0.6 + w.rng.next() * 0.6 : w.rng.next() * 0.3;
       const p = { x: m.pos.x + Math.cos(a) * r, y: m.pos.y + Math.sin(a) * r };
       w.zone.collide(p, 0.2);
       this.spawn(p, d);
@@ -79,7 +69,7 @@ export class LootSystem {
     view.position.set(s.x, s.y);
     view.zIndex = pos.x + pos.y - 0.5;
     w.objects.addChild(view);
-    w.drops.push({ pos: { ...pos }, data: d, view, t: Math.random() * 6 });
+    w.drops.push({ pos: { ...pos }, data: d, view, t: w.rng.next() * 6 });
   }
 
   remove(g: GroundDrop): void {

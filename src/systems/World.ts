@@ -2,11 +2,13 @@ import type { Container } from 'pixi.js';
 import type { EventBus } from '../core/EventBus';
 import type { GameEvents } from '../core/events';
 import type { Session } from '../core/Session';
+import type { Rng } from '../core/Rng';
+import type { GameAuthority } from '../core/GameAuthority';
 import type { Vec2 } from '../core/GameContext';
 import type { Hero } from '../entities/Hero';
 import type { Monster } from '../entities/Monster';
-import type { Loot } from '../loot/Loot';
-import type { Drop as DropData } from '../loot/types';
+import type { Loot } from '../logic/loot/Loot';
+import type { Drop as DropData } from '../logic/loot/types';
 import type { Text } from '../text/Text';
 import type { Zone } from '../world/Zone';
 
@@ -37,6 +39,8 @@ export interface World {
   bus: EventBus<GameEvents>;
   session: Session;
   L: Loot;
+  rng: Rng;
+  authority: GameAuthority;
   text: Text;
   hero: Hero;
   zone: Zone;

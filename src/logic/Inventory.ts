@@ -1,5 +1,5 @@
-import type { Loot } from '../loot/Loot';
-import { SLOTS, type Equip, type Item, type Slot } from '../loot/types';
+import type { Loot } from './loot/Loot';
+import { SLOTS, type Equip, type Item, type Slot } from './loot/types';
 
 export const BAG_W = 10;
 export const BAG_H = 4;

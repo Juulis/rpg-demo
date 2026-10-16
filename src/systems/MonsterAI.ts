@@ -6,7 +6,6 @@ import { Iso } from '../render/Iso';
 import type { CombatSystem } from './CombatSystem';
 import type { World } from './World';
 
-const rand = (a: number, b: number): number => a + Math.random() * (b - a);
 /** Bossens attackskada kommer enbart ur data (portal_by.json faser) – saknas den är det ett datafel. */
 function dmgOf(a: MonsterAttack | undefined, what: string): number {
   if (a?.damage === undefined) throw new Error(`Bossattack saknar skada i data: ${what}`);
@@ -132,8 +131,8 @@ export class MonsterAI {
       } else {
         m.wanderT -= dt;
         if (m.wanderT <= 0) {
-          m.wanderT = rand(2, 5);
-          const a = rand(0, 6.28);
+          m.wanderT = this.w().rng.float(2, 5);
+          const a = this.w().rng.float(0, 6.28);
           m.target = { x: m.home.x + Math.cos(a) * 5, y: m.home.y + Math.sin(a) * 5 };
         }
         const ox = m.target.x - m.pos.x;
@@ -236,7 +235,13 @@ export class MonsterAI {
       m.timers.court = court.cd ?? 15;
       for (const [id, n] of Object.entries(court.summon))
         for (let i = 0; i < n; i++) {
-          const s = this.factory.create(w, id, { x: m.pos.x + rand(-4, 4), y: m.pos.y + rand(2, 4) }, null, null);
+          const s = this.factory.create(
+            w,
+            id,
+            { x: m.pos.x + this.w().rng.float(-4, 4), y: m.pos.y + this.w().rng.float(2, 4) },
+            null,
+            null,
+          );
           s.aggroed = true;
         }
       w.fb.flash(w.text.t('msg.court'));

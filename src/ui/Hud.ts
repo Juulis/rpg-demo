@@ -3,7 +3,7 @@ import type { Camera } from '../render/Camera';
 import type { Text } from '../text/Text';
 import type { FloatKind } from '../systems/World';
 import type { Vec2 } from '../core/GameContext';
-import { Hero as HeroCls } from '../entities/Hero';
+import { HeroModel as HeroCls } from '../logic/HeroModel';
 
 interface Floater {
   el: HTMLDivElement;

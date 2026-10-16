@@ -16,7 +16,9 @@ export class Rng {
   }
 
   static newSeed(): number {
-    return (Math.random() * 0x7fffffff) >>> 0 || 1;
+    const a = new Uint32Array(1);
+    crypto.getRandomValues(a);
+    return (a[0] ?? 1) >>> 1 || 1;
   }
 
   next(): number {
@@ -32,6 +34,16 @@ export class Rng {
     if (typeof v === 'number') return v;
     const [a, b] = v;
     return a + Math.floor(this.next() * (b - a + 1));
+  }
+
+  /** Flyttal i [a, b). */
+  float(a = 0, b = 1): number {
+    return a + this.next() * (b - a);
+  }
+
+  /** Kort slumpat id (föremål). */
+  id(): string {
+    return Math.floor(this.next() * 2 ** 32).toString(36) + Math.floor(this.next() * 2 ** 16).toString(36);
   }
 
   chance(p: number): boolean {

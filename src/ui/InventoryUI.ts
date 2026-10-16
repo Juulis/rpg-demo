@@ -1,9 +1,9 @@
 import type { EventBus } from '../core/EventBus';
 import type { GameEvents } from '../core/events';
 import type { Hero } from '../entities/Hero';
-import { BAG_H, BAG_W } from '../entities/Inventory';
-import type { Loot } from '../loot/Loot';
-import { SLOTS, type Item, type Slot } from '../loot/types';
+import { BAG_H, BAG_W } from '../logic/Inventory';
+import type { Loot } from '../logic/loot/Loot';
+import { SLOTS, type Item, type Slot } from '../logic/loot/types';
 import { assetUrl, type AssetStore } from '../render/Assets';
 import type { Text, TextKey } from '../text/Text';
 import type { ItemText } from './ItemText';
