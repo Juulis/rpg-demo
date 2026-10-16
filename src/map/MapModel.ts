@@ -1,4 +1,5 @@
-import type { GameData, VillageZoneDef, ZoneView } from '../core/GameContext';
+import { villageLayout, type MapZone, type VillageLayout, type VillageZoneDef } from '../core/context.ext';
+import type { GameData } from '../data/types';
 
 export type Bounds = readonly [x0: number, y0: number, x1: number, y1: number];
 
@@ -6,13 +7,22 @@ export type Bounds = readonly [x0: number, y0: number, x1: number, y1: number];
 export class MapModel {
   static readonly ZONE_NAME: Readonly<Record<string, string>> = { forest: 'Den dimmiga skogen', village: 'Den gamla byn' };
   static readonly AREA_NAME: Readonly<Record<string, string>> = {
-    portalgladet: 'Portalgläntan', byporten: 'Byporten', torget: 'Torget', vasterhus: 'Västerhusen',
-    osterhus: 'Österhusen', kyrkogarden: 'Kyrkogården', benkungens_kapell: 'Benkungens kapell',
+    portalgladet: 'Portalgläntan',
+    byporten: 'Byporten',
+    torget: 'Torget',
+    vasterhus: 'Västerhusen',
+    osterhus: 'Österhusen',
+    kyrkogarden: 'Kyrkogården',
+    benkungens_kapell: 'Benkungens kapell',
   };
 
-  constructor(private readonly data: GameData) {}
+  private readonly layout: VillageLayout;
 
-  zoneName(z: ZoneView): string {
+  constructor(data: GameData) {
+    this.layout = villageLayout(data);
+  }
+
+  zoneName(z: MapZone): string {
     return MapModel.ZONE_NAME[z.name] ?? z.name;
   }
 
@@ -20,7 +30,7 @@ export class MapModel {
     return MapModel.AREA_NAME[id] ?? id;
   }
 
-  bounds(z: ZoneView): Bounds {
+  bounds(z: MapZone): Bounds {
     if (z.rect) return [z.rect[0] - 3, z.rect[0] - 3, z.rect[1] + 3, z.rect[1] + 3];
     const c = z.circle ?? 45;
     return [-c - 3, -c - 3, c + 3, c + 3];
@@ -32,10 +42,10 @@ export class MapModel {
   }
 
   villageZones(): readonly VillageZoneDef[] {
-    return this.data.portalVillage.village.zones;
+    return this.layout.zones;
   }
 
   forestPortal(): [number, number] | null {
-    return this.data.portalVillage.portal.forest_position ?? null;
+    return this.layout.forestPortal;
   }
 }

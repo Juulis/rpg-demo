@@ -1,4 +1,4 @@
-import type { Vec2, ZoneView } from '../core/GameContext';
+import type { MapZone, Vec2 } from '../core/context.ext';
 import type { MapModel } from './MapModel';
 
 export interface Goal {
@@ -11,7 +11,7 @@ export interface Goal {
 export class GoalTracker {
   constructor(private readonly model: MapModel) {}
 
-  goal(z: ZoneView, hero: Vec2): Goal | null {
+  goal(z: MapZone, hero: Vec2): Goal | null {
     const inactive = z.runes.filter((r) => !r.active);
     if (inactive.length) {
       let best = inactive[0];

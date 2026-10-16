@@ -1,4 +1,4 @@
-import type { HeroState, ZoneView } from '../core/GameContext';
+import type { MapZone, PlayHero } from '../core/context.ext';
 import { FogOfWar, type Rgba } from './FogOfWar';
 import type { Goal } from './GoalTracker';
 import type { MapModel } from './MapModel';
@@ -37,7 +37,7 @@ export class MapPainter {
     return { c, W, H };
   }
 
-  world(c: CanvasRenderingContext2D, z: ZoneView, p: Projection, fogColor: Rgba): void {
+  world(c: CanvasRenderingContext2D, z: MapZone, p: Projection, fogColor: Rgba): void {
     const X = (x: number): number => p.ox + x * p.s;
     const Y = (y: number): number => p.oy + y * p.s;
     const s = p.s;
@@ -65,8 +65,8 @@ export class MapPainter {
       c.fillRect(X(-1), Y(-24), 4 * s, 54 * s);
       c.fillRect(X(-25), Y(2.5), 50 * s, 3 * s);
       for (const q of this.model.villageZones()) {
-        const [ax, ay] = this.model.tileToWorld(...q.tiles[0]);
-        const [bx, by] = this.model.tileToWorld(...q.tiles[1]);
+        const [ax, ay] = this.model.tileToWorld(q.tiles[0][0], q.tiles[0][1]);
+        const [bx, by] = this.model.tileToWorld(q.tiles[1][0], q.tiles[1][1]);
         c.strokeStyle = q.boss_arena ? '#c0182a99' : q.safe ? '#f2c46b88' : '#4a6a7a88';
         c.setLineDash([4, 4]);
         c.lineWidth = 1;
@@ -142,9 +142,9 @@ export class MapPainter {
   }
 
   /** Spelarpil; framåt = (sin, cos) av facing. */
-  hero(c: CanvasRenderingContext2D, h: HeroState, p: Projection): void {
-    const fx = Math.sin(h.facing);
-    const fy = Math.cos(h.facing);
+  hero(c: CanvasRenderingContext2D, h: Readonly<PlayHero>, p: Projection): void {
+    const fx = Math.sin(h.facing ?? 0);
+    const fy = Math.cos(h.facing ?? 0);
     const sz = p.mini ? 7 : 10;
     const X = p.ox + h.pos.x * p.s;
     const Y = p.oy + h.pos.y * p.s;
