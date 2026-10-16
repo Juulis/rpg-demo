@@ -2,15 +2,24 @@ import type { Dictionary } from './types';
 
 const localesDir = new URL('./locales/', import.meta.url);
 
-const dictModules: Record<string, () => Promise<{ default: Dictionary }>> =
-  typeof import.meta.glob === 'function'
-    ? (import.meta.glob('./locales/*.json') as Record<string, () => Promise<{ default: Dictionary }>>)
-    : {};
+function viteDictModules(): Record<string, () => Promise<{ default: Dictionary }>> {
+  try {
+    return import.meta.glob('./locales/*.json') as Record<string, () => Promise<{ default: Dictionary }>>;
+  } catch {
+    return {};
+  }
+}
 
-export const overlayModules: Record<string, () => Promise<{ default: unknown }>> =
-  typeof import.meta.glob === 'function'
-    ? (import.meta.glob('../data/i18n/*/*.json') as Record<string, () => Promise<{ default: unknown }>>)
-    : {};
+function viteOverlayModules(): Record<string, () => Promise<{ default: unknown }>> {
+  try {
+    return import.meta.glob('../data/i18n/*/*.json') as Record<string, () => Promise<{ default: unknown }>>;
+  } catch {
+    return {};
+  }
+}
+
+const dictModules = viteDictModules();
+export const overlayModules = viteOverlayModules();
 
 function idsFromGlob(mods: Record<string, unknown>, re: RegExp): string[] {
   return Object.keys(mods)
