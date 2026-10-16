@@ -1,4 +1,3 @@
-import { cryptoSeed, seededRandom, type RandomFn } from '../core/entropy';
 import type { SfxLibrary, SoundName } from './SfxLibrary';
 import type { VolumeControl } from './VolumeControl';
 
@@ -18,13 +17,18 @@ export class AudioEngine {
   private readonly buffers = new Map<string, AudioBuffer>();
   private unsubVolume: (() => void) | null = null;
 
+  /** Slump för tonhöjd/varianter: ctx.rng (seedad, core) kopplas in via useRandom() i init. Före dess ingen variation. */
+  private rnd: () => number = () => 0.5;
+
+  useRandom(rnd: () => number): void {
+    this.rnd = rnd;
+  }
+
   constructor(
     private readonly library: SfxLibrary,
     private readonly volume: VolumeControl,
     private readonly fetcher: (url: string) => Promise<ArrayBuffer> = (u) => fetch(u).then((r) => r.arrayBuffer()),
     private readonly ctor: AudioContextCtor | undefined = AudioEngine.findCtor(),
-    /** Seedad slump för tonhöjdsvariation och ljudvarianter. */
-    private readonly rnd: RandomFn = seededRandom(cryptoSeed()),
   ) {}
 
   private static findCtor(): AudioContextCtor | undefined {

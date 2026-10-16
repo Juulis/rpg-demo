@@ -85,7 +85,7 @@ export class AutoSaveService {
     const snap = this.snapshot(this.current);
     this.current = snap;
     // köas direkt (före ev. radering), så att en sen sparning aldrig återskapar en raderad hjälte
-    if (!(await this.repo.save(snap, true, true))) return false;
+    if (!(await this.repo.save(snap))) return false;
     this.lastSave = { reason, at: snap.savedAt ?? Date.now() };
     this.onSaved(snap);
     return true;

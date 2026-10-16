@@ -2,7 +2,6 @@ import type { GameContext } from '../core/GameContext';
 import { nextEvent } from '../core/nextEvent';
 import type { AutoSaveService } from './AutoSaveService';
 import type { HeroGateway } from './HeroGateway';
-import type { SeedSource } from '../core/entropy';
 import { newGameRecord, type SaveFile } from './types';
 
 /**
@@ -17,7 +16,7 @@ export class HeroLoader {
     private readonly game: HeroGateway,
     private readonly autosave: AutoSaveService,
     /** Seed för nytt game; injiceras (crypto i plattformslagret, eller från Game). */
-    private readonly newSeed: SeedSource,
+    private readonly newSeed: () => number,
     private readonly zoneTimeoutMs = 2_000,
   ) {}
 

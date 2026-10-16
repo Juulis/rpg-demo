@@ -1,4 +1,3 @@
-import type { SeedSource } from '../core/entropy';
 import type { EventBus } from '../core/EventBus';
 import type { GameEvents } from '../core/events';
 import type { SaveRepository } from './SaveRepository';
@@ -18,7 +17,7 @@ export class HeroRoster {
     private readonly repo: SaveRepository,
     private readonly bus: EventBus<GameEvents>,
     /** Slumpdel i hjälte-id; injiceras. */
-    private readonly idEntropy: SeedSource,
+    private readonly idEntropy: () => number,
   ) {}
 
   /** Läser index, sparfiler och senast spelad från lagringen. */
@@ -28,7 +27,7 @@ export class HeroRoster {
     this.saves.clear();
     loaded.forEach((d) => d && this.saves.set(d.hero.id, d));
     this.heroes = heroes;
-    this.last = await this.repo.lastHeroId();
+    this.last = heroes[0]?.id ?? null; // SaveBackend.list(): senast sparad först
   }
 
   list(): HeroIndexEntry[] {
@@ -70,7 +69,7 @@ export class HeroRoster {
 
   /** Sparar en hjälte (utan att markera som senast spelad) och uppdaterar cachen. */
   async store(d: SaveFile): Promise<void> {
-    if (!(await this.repo.save(d, false))) throw new Error('Kunde inte spara hjälten.');
+    if (!(await this.repo.save(d))) throw new Error('Kunde inte spara hjälten.');
     this.track(d);
   }
 
