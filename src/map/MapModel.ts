@@ -1,33 +1,34 @@
 import { villageLayout, type MapZone, type VillageLayout, type VillageZoneDef } from '../core/context.ext';
 import type { GameData } from '../data/types';
+import type { LocaleManager } from '../i18n/LocaleManager';
+import type { Key } from '../i18n/types';
+import sv from '../i18n/sv.json';
 
 export type Bounds = readonly [x0: number, y0: number, x1: number, y1: number];
 
 /** Statisk kartgeometri och namn. All zon-geometri läses ur ZoneView/GameData, inget hårdkodat utöver namn. */
 export class MapModel {
-  static readonly ZONE_NAME: Readonly<Record<string, string>> = { forest: 'Den dimmiga skogen', village: 'Den gamla byn' };
-  static readonly AREA_NAME: Readonly<Record<string, string>> = {
-    portalgladet: 'Portalgläntan',
-    byporten: 'Byporten',
-    torget: 'Torget',
-    vasterhus: 'Västerhusen',
-    osterhus: 'Österhusen',
-    kyrkogarden: 'Kyrkogården',
-    benkungens_kapell: 'Benkungens kapell',
-  };
-
   private readonly layout: VillageLayout;
 
-  constructor(data: GameData) {
+  constructor(
+    data: GameData,
+    private readonly i18n: LocaleManager,
+  ) {
     this.layout = villageLayout(data);
   }
 
+  /** Zonnamn via i18n (map.zones.<namn>); okänd zon visas med sitt id. */
   zoneName(z: MapZone): string {
-    return MapModel.ZONE_NAME[z.name] ?? z.name;
+    return z.name in sv.map.zones ? this.i18n.t(`map.zones.${z.name}` as Key) : z.name;
   }
 
+  /** Områdesnamn via i18n (map.areas.<id>). */
   areaName(id: string): string {
-    return MapModel.AREA_NAME[id] ?? id;
+    return id in sv.map.areas ? this.i18n.t(`map.areas.${id}` as Key) : id;
+  }
+
+  t(key: Key): string {
+    return this.i18n.t(key);
   }
 
   bounds(z: MapZone): Bounds {
