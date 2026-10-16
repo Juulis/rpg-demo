@@ -9,6 +9,14 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { attachBus } from './js/bus.js';
+import { rollArea, eliteStats, newGameSeed, MOD_NAME } from './js/spawn.js';
+import { createTooltip } from './js/tooltip.js';
+// window.__rpg utökas (ersätts aldrig): event-bus + session. Andra moduler (ljud, karta, lorebok, autosparning) kan redan ha lagt lyssnare här.
+const RPG = attachBus(window.__rpg || (window.__rpg = {})), emit = (...a) => RPG.emit(...a);
+// Session (kontrakt med autosparningen): { seed:number, killed:Set<string> }. Läses före varje spawn, skapas om den saknas.
+function session() { let ss = RPG.session; if (!ss || typeof ss.seed !== 'number') ss = RPG.session = { seed: newGameSeed(), killed: new Set() }; if (!(ss.killed instanceof Set)) ss.killed = new Set(ss.killed || []); return ss; }
+const TIP = createTooltip(); let lastHitM = null, playedSession = null;
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { VignetteShader } from 'three/addons/shaders/VignetteShader.js';
 import { createLoot, SLOTS } from './js/loot.js';
@@ -20,7 +28,7 @@ const L = createLoot({ QUAL, BAS, AFX, SET, DROP, ATTR });
 const FAMS = Object.fromEntries(FAM.families.map(f => [f.id, f]));
 const P = { bg: 0x0d0f12, fog: 0x1c2128, stone: 0x3a3f45, grass: 0x3d4430, peat: 0x3b2f26, rust: 0x6e3b24, bone: 0xa8b0a0, gast: 0x4a6a7a, blood: 0x7a1018, portal: 0xc0182a, glow: 0xff3344, torch: 0xe08a2a, hope: 0xf2c46b };
 const $ = id => document.getElementById(id);
-const rand = (a, b) => a + Math.random() * (b - a), randi = (a, b) => Math.floor(rand(a, b + 1)), roll = r => randi(r[0], r[1]);
+const rand = (a, b) => a + Math.random() * (b - a), randi = (a, b) => Math.floor(rand(a, b + 1)), roll = r => Array.isArray(r) ? randi(r[0], r[1]) : r; // fasta värden (monsterfamiljer.json) eller gamla spann
 const TOUCH = matchMedia('(pointer:coarse)').matches;
 
 // ---------- renderer / ljus enligt stilguide ----------
@@ -272,8 +280,10 @@ function buildVillage() {
 // ---------- fiendedata: monsterfamiljer.json + detaljer från portal_by.json ----------
 const DEFS = {};
 for (const m of FAM.monsters) DEFS[m.id] = { attack_range: 1.8, ...m };
-for (const e of PB.enemies) DEFS[e.id] = { ...(DEFS[e.id] || {}), ...e };
-DEFS.benkungen_valdemar = { ...(DEFS.benkungen_valdemar || {}), ...PB.boss, damage: [18, 24], attack_cd: 1.4, attack_range: 2.6 };
+for (const e of PB.enemies) DEFS[e.id] = { ...(DEFS[e.id] || {}), ...e, ...(FAM.monsters.find(m => m.id === e.id) || {}) };
+// Nya undertyper ärver beteende/attacker från sin källtyp (design_source.from), stats är undertypens egna fasta värden.
+for (const m of FAM.monsters) { const src = m.design_source?.from; if (src && src !== m.id && DEFS[src]) DEFS[m.id] = { ...DEFS[src], ...m, from: src }; }
+DEFS.benkungen_valdemar = { ...(DEFS.benkungen_valdemar || {}), ...PB.boss, damage: DEFS.benkungen_valdemar?.damage ?? [18, 24], attack_cd: 1.4, attack_range: 2.6 };
 const MODELS = {
   quad(color, o = {}) { // vargar, benhund, taggsvin
     const s = o.scale || 1, g = new THREE.Group(), body = new THREE.Group(); body.scale.setScalar(s); g.add(body); const m = toon(color, { transparent: true }), d = toon(o.dark || 0x2a2218, { transparent: true }), mats = [m, d]; const w = o.thin ? 0.32 : o.stocky ? 0.7 : 0.5;
@@ -320,34 +330,41 @@ const LOOKS = {
   skogsvarg: () => MODELS.quad(0x6a5640), skuggvarg: () => MODELS.quad(0x2c2830, { scale: 1.15, dark: 0x151215 }), taggsvin: () => MODELS.quad(0x4a3a2a, { stocky: true, dark: 0x201810 }),
   skelett_hund: () => MODELS.quad(P.bone, { thin: true, dark: 0x7a8070 }), skelett_krigare: () => glbSkeleton({ weapon: 'sword' }), skelett_bagskytt: () => glbSkeleton({ weapon: 'bow' }),
   skelett_vakt: () => glbSkeleton({ weapon: 'shield', scale: 1.2, color: 0xa8aca0 }), skelett_runprast: () => glbSkeleton({ weapon: 'staff', color: 0xb8b0b8 }),
-  benkungen_valdemar: () => glbSkeleton({ weapon: 'scythe', scale: 1.6, crown: true })
+  benkungen_valdemar: () => glbSkeleton({ weapon: 'scythe', scale: 1.6, crown: true }),
+  // Nya undertyper: familjens modell med skala/färgton tills riktiga modeller finns.
+  vargbest: () => MODELS.quad(0x7a5a38, { scale: 1.3, stocky: true, dark: 0x3a2818 }), gravargsledare: () => MODELS.quad(0x4a4650, { scale: 1.45, dark: 0x1a1820 }),
+  skelett_kapten: () => glbSkeleton({ weapon: 'sword', scale: 1.2, color: 0xc8b890 })
 };
 const hitGeo = new THREE.CylinderGeometry(0.8, 0.8, 2.4, 8), hitMat = new THREE.MeshBasicMaterial({ visible: false });
-// Statiska monsternivåer (monster_niva.json): skalas efter områdets nivå, aldrig efter hjälten.
-function monsterScale(id, lvl) { const d = lvl - (MN.ref_levels[id] ?? lvl); return { hp: Math.pow(1.10, d), dmg: Math.pow(1.07, d), defAdd: 0.4 * d }; }
-function spawnMonster(z, id, x, y, lvl) {
-  lvl = lvl ?? MN.boss_levels[id] ?? L.monsterLevel(id);
-  const def = DEFS[id], v = LOOKS[id](); if (!v.glb) outline(v.g);
+// Fasta stats per undertyp (monsterfamiljer.json): ingen runtime-skalning. Elites (champion/unik) multipliceras i js/spawn.js eliteStats.
+function spawnMonster(z, id, x, y, lvl, spec) {
+  lvl = lvl ?? DEFS[id]?.level ?? MN.boss_levels[id] ?? L.monsterLevel(id);
+  const def = DEFS[id], v = (LOOKS[id] || LOOKS[def.from] || LOOKS.skogsvarg)(); if (!v.glb) outline(v.g);
   const c = document.createElement('canvas'); c.width = 64; c.height = 8; const tex = new THREE.CanvasTexture(c);
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false })); sp.scale.set(1.2, 0.15, 1); sp.position.y = v.h + 0.2; sp.renderOrder = 10; v.g.add(sp);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false })); sp.scale.set(1.2, 0.15, 1); sp.position.y = v.h + 0.2; sp.renderOrder = 10; sp.visible = false; v.g.add(sp); // ersatt av monstermätaren överst
   const hit = new THREE.Mesh(hitGeo, hitMat); hit.position.y = 1.2; if (id === 'benkungen_valdemar') hit.scale.setScalar(1.5); v.g.add(hit);
   v.g.position.set(x, 0, y); v.g.rotation.y = rand(0, 6.28); z.g.add(v.g);
   const fam = FAMS[def.family] || { weak: [], resist: [] };
-  const sc = monsterScale(id, lvl), mhp = Math.round(def.hp * sc.hp);
-  const m = { id, lvl, dmgMult: sc.dmg, defense: Math.max(0, (def.defense || 0) + sc.defAdd), def, fam, ...v, c, tex, sp, hit, hp: mhp, max: mhp, cd: rand(0, 1), wt: 0, tx: x, tz: y, kb: new THREE.Vector3(), flash: 0, dead: 0, walk: 0, stun: 0, t: {}, home: [x, y] };
+  const mhp = def.hp;
+  const m = { id, lvl, dmgMult: 1, defense: def.defense || 0, def, fam, ...v, c, tex, sp, hit, hp: mhp, max: mhp, cd: rand(0, 1), wt: 0, tx: x, tz: y, kb: new THREE.Vector3(), flash: 0, dead: 0, walk: 0, stun: 0, t: {}, home: [x, y] };
   hit.userData.m = m; if (id === 'benkungen_valdemar') { sp.visible = false; m.boss = true; m.phase = 0; m.active = false; }
+  if (spec) { m.uid = spec.uid; m.area = z.areaId; const es = spec.elite && eliteStats(spec, MN);
+    if (es) { m.elite = spec.elite; m.es = es; m.max = m.hp = Math.round(m.max * es.hp); m.dmgMult *= es.dmg; m.defense += es.def; m.uname = spec.uname; m.mods = spec.mods || [];
+      const gl = new THREE.PointLight(spec.elite === 'unik' ? 0xc7a35a : 0x6a6aff, spec.elite === 'unik' ? 3 : 2, 5); gl.position.y = 1.4; v.g.add(gl); } }
   drawHp(m); z.monsters.push(m); return m;
 }
-function drawHp(m) { const x = m.c.getContext('2d'); x.fillStyle = '#000b'; x.fillRect(0, 0, 64, 8); x.fillStyle = '#b8323c'; x.fillRect(1, 1, 62 * Math.max(0, m.hp) / m.max, 6); m.tex.needsUpdate = true; }
+function drawHp(m) { const x = m.c.getContext('2d'); x.fillStyle = '#000b'; x.fillRect(0, 0, 64, 8); x.fillStyle = m.elite === 'unik' ? '#c7a35a' : m.elite ? '#6a6aff' : '#b8323c'; x.fillRect(1, 1, 62 * Math.max(0, m.hp) / m.max, 6); m.tex.needsUpdate = true; }
 
 // ---------- spawnsystem enligt spawnzoner.json / "Spawnalgoritm" ----------
 function weighted(table) { const sum = table.reduce((a, r) => a + r.weight, 0), r = Math.random() * sum; let acc = 0; for (const row of table) { acc += row.weight; if (acc > r) return row; } return table[table.length - 1]; }
+// D2-spawn (spawnzoner.json v2, js/spawn.js): allt i området slumpas en gång per game ur sessionens seed. Döda id (session.killed) hoppas över.
 function initSpawner(z, areaId) {
-  const A = SPAWN.areas.find(a => a.id === areaId), city = !!A.city_id, conv = city ? p => T(p[0], p[1]) : p => p, sc = city ? 2 : 1;
-  const mk = (pts, table, resp, out) => pts.map(p => ({ ...p, pos: conv(p.pos), radius: p.radius * sc, timer: rand(0, 1.5), first: true, alive: [], table: (A.zone_tables && p.zone && A.zone_tables[p.zone]) || table, resp, outskirts: out }));
-  z.sp = { A, points: [...mk(A.spawn_points, A.enemy_table, A.respawn_s, false), ...(A.outskirts ? mk(A.outskirts.spawn_points, A.outskirts.enemy_table, A.outskirts.respawn_s, true) : [])] };
-  z.zoneIds = [...new Set(A.spawn_points.map(p => p.zone).filter(Boolean))]; z.cleared = {};
-  if (A.boss && S.city === 'besatt') { const [x, y] = conv(A.boss.pos); spawnMonster(z, A.boss.enemy, x, y); }
+  const A = SPAWN.areas.find(a => a.id === areaId), city = !!A.city_id, conv = city ? p => T(p[0], p[1]) : p => p, ss = session();
+  z.areaId = areaId; z.sp = { A, rolled: true }; z.zoneIds = [...new Set(A.spawn_points.map(p => p.zone).filter(Boolean))]; z.cleared = {};
+  const res = rollArea(A, { seed: ss.seed, dead: ss.killed, cityState: city ? S.city : null, bossDefeated: city && S.city !== 'besatt' }, MN, id => DEFS[id]?.level || 1);
+  for (const sp of res.monsters) { const [x, y] = conv(sp.pos), m = spawnMonster(z, sp.enemy, x, y, sp.lvl, sp); m.zoneId = sp.zone; m.home = [x, y]; }
+  if (res.boss && !ss.killed.has(res.boss.uid)) { const [x, y] = conv(res.boss.pos); spawnMonster(z, res.boss.enemy, x, y, undefined, { uid: res.boss.uid }); }
+  z.rollInfo = { seed: ss.seed, count: res.monsters.length, elites: res.monsters.filter(m => m.elite).map(m => m.elite + ':' + m.enemy) };
 }
 const frustum = new THREE.Frustum(), projM = new THREE.Matrix4();
 function visible(x, y) {
@@ -367,29 +384,9 @@ function okSpawn(z, x, y, minD, ignoreSight) {
   return ignoreSight || !visible(x, y);
 }
 const zoneAlive = (z, id) => z.monsters.filter(m => !m.dead && m.zoneId === id).length;
-function updateSpawner(z, dt) {
-  const sp = z.sp; if (!sp || !S.playing) return; const A = sp.A, st = A.city_id ? S.city : 'alltid';
-  if (!A.state_spawn_multiplier) { // spawnzoner v2 (D2-spawn): allt slumpas en gång när området laddas, ingen respawn. Full session_roll med seed kommer nästa runda.
-    if (!sp.rolled) { sp.rolled = true; if (!A.city_id || S.city === 'besatt') for (const p of sp.points) { const gr = p.groups || [1, 1]; for (let gi = randi(gr[0], gr[1]); gi > 0; gi--) {
-      const row = weighted(p.table || A.enemy_table), g = row.group || p.group_size || [1, 1], lvl = roll(p.level_range || A.level_range || [1, 1]);
-      for (let i = randi(g[0], g[1]); i > 0; i--) { const a = rand(0, 6.283), r = Math.sqrt(Math.random()) * p.radius, m = spawnMonster(z, row.enemy, p.pos[0] + Math.cos(a) * r, p.pos[1] + Math.sin(a) * r, lvl); m.point = p; m.zoneId = p.zone; p.alive.push(m); } } p.spawned = true; } }
-    for (const zid of z.zoneIds) if (!z.cleared[zid] && zoneAlive(z, zid) === 0) { z.cleared[zid] = true; flash(`Område rensat: ${zid.replace('_', ' ')}`); checkVillage(); }
-    return; }
-  const mult = A.state_spawn_multiplier[st] ?? 0, outMult = A.outskirts?.state_spawn_multiplier[st] ?? 0, rs = A.runes_scaling ? (A.runes_scaling[String(S.runes)] || 1) : 1;
-  let areaAlive = z.monsters.filter(m => !m.dead && m.point && !m.point.outskirts).length;
-  for (const zid of z.zoneIds) if (!z.cleared[zid]) { const pts = sp.points.filter(p => p.zone === zid); if (pts.every(p => p.spawned) && zoneAlive(z, zid) === 0) { z.cleared[zid] = true; flash(`Område rensat: ${PB.village.zones.find(q => q.id === zid)?.id.replace('_', ' ') || zid}`); checkVillage(); } }
-  for (const p of sp.points) {
-    p.alive = p.alive.filter(m => !m.dead);
-    if (p.zone && z.cleared[p.zone]) continue;
-    if ((p.timer -= dt) > 0) continue;
-    const k = p.outskirts ? outMult : mult, cap = Math.floor(p.max_alive * k), areaCap = Math.floor(A.max_alive_area * k * rs);
-    if (cap <= 0 || p.alive.length >= cap || (!p.outskirts && areaAlive >= areaCap)) { p.timer = 2; continue; }
-    const row = weighted(p.table), g = row.group || A.group_size; let n = Math.min(randi(g[0], g[1]), cap - p.alive.length, p.outskirts ? 99 : areaCap - areaAlive), placed = 0;
-    for (let i = 0; i < n; i++) for (let tries = 0; tries < 10; tries++) { const a = rand(0, 6.283), r = Math.sqrt(Math.random()) * p.radius, x = p.pos[0] + Math.cos(a) * r, y = p.pos[1] + Math.sin(a) * r;
-      if (okSpawn(z, x, y, A.min_player_distance, p.first)) { const m = spawnMonster(z, row.enemy, x, y, roll(p.level_range || A.level_range || [1, 1])); m.point = p; m.zoneId = p.zone; p.alive.push(m); placed++; areaAlive++; break; } }
-    if (placed) { p.spawned = true; p.first = false; p.timer = p.resp ? rand(p.resp[0], p.resp[1]) : Infinity; } else p.timer = 5; // utan respawn_s: ingen respawn
-  }
-  for (const m of z.monsters) if (!m.dead && !m.boss && m.g.position.distanceTo(hero.position) > 60 && !visible(m.g.position.x, m.g.position.z)) { z.g.remove(m.g); m.gone = true; }
+function updateSpawner(z, dt) { // ingen respawn i v2; bara kontroll av rensade zoner
+  if (!z.sp || !S.playing) return;
+  for (const zid of z.zoneIds) if (!z.cleared[zid] && zoneAlive(z, zid) === 0) { z.cleared[zid] = true; flash(`Område rensat: ${zid.replace('_', ' ')}`); checkVillage(); }
 }
 
 // ---------- skada ----------
@@ -406,9 +403,11 @@ function damageMonster(m, mult = 1, opts = {}) {
   dmg = m.immune > 0 ? 0 : Math.max(1, Math.round(dmg - (m.vuln > 0 ? 0 : m.defense)));
   // Krosslag (Strong hit): 25 % av nuvarande HP, mot boss 10 % men högst 3 % av max HP.
   let strong = 0; if (dmg > 0 && Math.random() < stats.strong) { strong = Math.round(m.boss ? Math.min(m.hp * 0.10, m.max * 0.03) : m.hp * 0.25); dmg += strong; }
-  m.hp -= dmg; m.flash = 0.15; if (dmg > 0 && stats.lifeOnHit) S.hp = Math.min(stats.maxHp, S.hp + stats.lifeOnHit); if (!m.boss) m.sp.visible = true; drawHp(m);
-  const o = m.g.position.clone().sub(hero.position).setY(0).normalize(); m.kb.copy(o.multiplyScalar((opts.kb || 8) * (1 - (m.def.knockback_resist || 0)) * (m.boss ? 0.15 : 1)));
+  m.hp -= dmg; m.flash = 0.15; if (dmg > 0 && stats.lifeOnHit) S.hp = Math.min(stats.maxHp, S.hp + stats.lifeOnHit); m.lastHit = clock.elapsedTime; lastHitM = m; drawHp(m);
+  const o = m.g.position.clone().sub(hero.position).setY(0).normalize(); m.kb.copy(o.multiplyScalar((opts.kb || 8) * (1 - (m.def.knockback_resist || 0)) * (m.boss ? 0.15 : 1) * (m.es?.kbImmune ? 0 : 1)));
   if (opts.stun) m.stun = opts.stun; m.aggroed = true;
+  if (m.es?.thorns && dmg > 0 && !opts.ranged) { const th = Math.max(1, Math.round(dmg * m.es.thorns)); S.hp = Math.max(1, S.hp - th); floatText(hero.position.clone().setY(2.4), '-' + th + ' torn', 'hurt'); }
+  emit('hit', { monsterId: m.id, id: m.uid, dmg, crit, strong });
   const hp = m.g.position.clone(); hp.y = 1.2; sparks(hp);
   floatText(hp.clone().setY(m.h + 0.3), m.immune > 0 ? 'Immun' : (crit ? dmg + '!' : '' + dmg) + (strong ? ' Krosslag' : ''), (fm > 1 ? 'weak ' : fm < 1 ? 'res ' : '') + (crit ? 'crit' : ''));
   if (stats.lifesteal) S.hp = Math.min(stats.maxHp, S.hp + dmg * stats.lifesteal);
@@ -417,8 +416,13 @@ function damageMonster(m, mult = 1, opts = {}) {
 }
 // XP(L) = round(xp_ref/10 × 3 × L^1,5) × avdrag efter nivåskillnad (bossar golv 0,25).
 function monsterXp(m) { const diff = S.level - m.lvl, row = MN.xp_penalty.table.find(r => r.hjalte_minus_monster === Math.max(-8, Math.min(12, diff))); let k = row ? row.xp_mult : 1; if (m.boss) k = Math.max(0.25, k);
-  return Math.round((m.def.xp || 10) / 10 * 3 * Math.pow(m.lvl, 1.5) * k); }
-function killMonster(m) { m.dead = 0.001; m.sp.visible = false; gainXp(monsterXp(m)); dropLoot(m); if (m.boss) bossDefeated(); }
+  return Math.round((m.def.xp || 10) / 10 * 3 * Math.pow(m.lvl, 1.5) * k * (m.es?.xp || 1)); }
+function killMonster(m) { m.dead = 0.001; m.sp.visible = false; gainXp(monsterXp(m)); dropLoot(m);
+  if (m.uid) session().killed.add(m.uid);
+  const kd = { id: m.uid || m.id, monsterId: m.id, area: Z.areaId, lvl: m.lvl, champion: m.elite === 'champion' || m.elite === 'minion', unique: m.elite === 'unik', boss: !!m.boss };
+  Object.defineProperty(kd, 'toString', { value: () => kd.id }); // lyssnare som tar kill(id) som sträng (js/audio.js) får id:t
+  emit('kill', kd); emit('death', kd);
+  if (m.boss) bossDefeated(); }
 function hurt(raw, from, m) {
   if (!S.playing || S.god) return; raw *= m?.dmgMult || 1;
   const alvl = m?.lvl || S.level;
@@ -430,6 +434,7 @@ function hurt(raw, from, m) {
   let d = raw;
   if (blocking && from && front && S.st >= 5) { d *= 0.3; S.st -= 5; S.stDelay = 1; }
   d = Math.max(1, Math.round(d - stats.defReduce)); S.hp = Math.max(0, S.hp - d);
+  if (m?.es?.vamp && !m.dead) { m.hp = Math.min(m.max, m.hp + d * m.es.vamp); drawHp(m); } if (m?.es?.curse) S.curse = 4;
   if (stats.thorns && m && !m.dead) { m.hp -= stats.thorns; drawHp(m); if (m.hp <= 0) killMonster(m); }
   floatText(hero.position.clone().setY(2.4), '-' + d, 'hurt');
   const f = $('flash'); f.classList.add('on'); setTimeout(() => f.classList.remove('on'), 90);
@@ -440,7 +445,8 @@ function hurt(raw, from, m) {
 // Dropalgoritmen i js/loot.js (loot_design.md, 7 steg). Här läggs resultatet på marken.
 function dropLoot(m) {
   const first = m.boss && !S.killed[m.id]; if (m.boss) S.killed[m.id] = true;
-  const { seed, drops } = L.rollDrops({ id: m.id, mlvl: m.lvl, ilvl: Math.min(MN.item_level.cap, m.lvl + (m.boss ? MN.item_level.bonus.boss : 0)), mf: stats.mf, goldFind: stats.goldFind, firstKill: first }); lastSeeds.push(seed); if (lastSeeds.length > 20) lastSeeds.shift();
+  const { seed, drops } = L.rollDrops({ id: m.id, mlvl: m.lvl, ilvl: Math.min(MN.item_level.cap, m.lvl + (m.boss ? 2 : m.elite === 'unik' ? 1 : 0)), mf: stats.mf, goldFind: stats.goldFind, firstKill: first }); lastSeeds.push(seed); if (lastSeeds.length > 20) lastSeeds.shift();
+  if (m.es?.loot) { const lo = m.es.loot; for (let i = 0; i < (lo.extra_rolls || 0); i++) drops.push(...L.rollDrops({ id: m.id, mlvl: m.lvl, ilvl: Math.min(MN.item_level.cap, m.lvl + (m.boss ? 2 : m.elite === 'unik' ? 1 : 0)), mf: stats.mf + ((lo.quality_mult || 1) - 1) * 100, goldFind: stats.goldFind }).drops); }
   const p = m.g.position; drops.forEach((o, i) => { const a = i / drops.length * 6.28 + rand(0, 1), r = drops.length > 1 ? 0.6 + rand(0, 0.6) : rand(0, 0.3); spawnDrop(Z, p.x + Math.cos(a) * r, p.z + Math.sin(a) * r, o); });
 }
 const lastSeeds = [];
@@ -457,21 +463,22 @@ function spawnDrop(z, x, y, o) {
   if (o.item && (o.item.quality === 'set' || o.item.quality === 'legendary')) { // ljuspelare i kvalitetens färg
     const pil = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.3, 8, 10, 1, true), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
     pil.position.set(x, 4, y); z.g.add(pil); d.pillar = pil; flash(`${L.nameOf(o.item)} föll!`, dropColor(o)); }
-  z.g.add(mesh); z.drops.push(d);
+  z.g.add(mesh); z.drops.push(d); emit('loot_drop', o.gold ? 'gold' : o.item.quality, o.gold ? { quality: 'gold', gold: o.gold } : { quality: o.item.quality, base: o.item.base });
 }
 function removeDrop(d) { Z.g.remove(d.mesh); if (d.pillar) Z.g.remove(d.pillar); d.el?.remove(); const i = Z.drops.indexOf(d); if (i >= 0) Z.drops.splice(i, 1); if (pickTarget === d) pickTarget = null; }
 // Bara guld plockas automatiskt. Föremål plockas med klick på föremålet eller etiketten. Returnerar false om väskan är full.
 // Första upplock per föremåls-id (legendarisk id, setdelens id eller bastyp) sparas i localStorage för lorebokens skull.
-function recordFound(it) { const id = it.leg || (it.set && L.SETPIECE[it.set + ':' + it.base]?.piece.id) || it.base; try { const f = JSON.parse(localStorage.getItem('rpg_found') || '{}'); if (!f[id]) { f[id] = { first: new Date().toISOString(), quality: it.quality, base: it.base, ilvl: it.ilvl }; localStorage.setItem('rpg_found', JSON.stringify(f)); } } catch {} }
+const foundId = it => it.leg || (it.set && L.SETPIECE[it.set + ':' + it.base]?.piece.id) || it.base;
+function recordFound(it) { const id = foundId(it); try { const f = JSON.parse(localStorage.getItem('rpg_found') || '{}'); if (!f[id]) { f[id] = { first: new Date().toISOString(), quality: it.quality, base: it.base, ilvl: it.ilvl }; localStorage.setItem('rpg_found', JSON.stringify(f)); return true; } } catch {} return false; }
 function pickup(d) {
-  if (d.o.gold) { S.gold += d.o.gold; floatText(hero.position.clone().setY(2.2), `+${d.o.gold} guld`, 'weak'); inv.save(); removeDrop(d); return true; }
+  if (d.o.gold) { S.gold += d.o.gold; emit('gold', d.o.gold, S.gold); floatText(hero.position.clone().setY(2.2), `+${d.o.gold} guld`, 'weak'); inv.save(); removeDrop(d); return true; }
   const it = d.o.item, name = dropName(d.o);
   if (!inv.addToBag(it)) { flash('Väskan är full'); return false; }
-  recordFound(it); flash(`Hittade: ${name}`, dropColor(d.o)); removeDrop(d); renderSlots(); return true;
+  emit('pickup', foundId(it), recordFound(it)); flash(`Hittade: ${name}`, dropColor(d.o)); removeDrop(d); renderSlots(); return true;
 }
 function gainXp(n) {
   if (S.level >= PB.progression.max_level) return; S.xp += n;
-  while (S.level < PB.progression.max_level && S.xp >= need(S.level)) { S.xp -= need(S.level); S.level++; recalc(); S.hp = stats.maxHp; S.st = stats.maxSt; flash(`Nivå ${S.level}!`); }
+  while (S.level < PB.progression.max_level && S.xp >= need(S.level)) { S.xp -= need(S.level); S.level++; recalc(); S.hp = stats.maxHp; S.st = stats.maxSt; flash(`Nivå ${S.level}!`); emit('level_up', S.level); checkSeal(); }
   if (S.level >= PB.progression.max_level) S.xp = 0;
 }
 function useItem(it) {
@@ -502,7 +509,7 @@ function startGear() {
 // ---------- uppdrag ----------
 function quest() {
   const v = zones.village;
-  const q = [['Runornas kall', 'Väck de tre runstenarna i skogen.', `Runstenar: ${S.runes}/3`], ['Runornas kall', 'Gå genom den röda portalen.', 'Gå genom portalen'],
+  const q = [['Runornas kall', 'Väck de tre runstenarna i skogen.', `Runstenar: ${S.runes}/3`], (zones.forest?.portals || []).some(p => p.sealed) ? ['Portalens sigill', SEAL_MSG, `Nivå ${S.level}/${SEAL_LVL} eller rensa Vargaby`] : ['Runornas kall', 'Gå genom den röda portalen.', 'Gå genom portalen'],
     ['Rensa byn', 'Driv ut de odöda ur byns områden.', v ? `Områden rensade: ${Object.keys(v.cleared).length}/${v.zoneIds.length}` : ''],
     ['Besegra Benkungen Valdemar', 'Kapellets port är öppen. Möt Benkungen.', ''], ['Byn är rensad', 'Människor kan flytta tillbaka.', '✔']][S.stage];
   $('qTitle').textContent = q[0]; $('qText').textContent = q[1]; $('qCount').textContent = q[2];
@@ -518,7 +525,7 @@ function bossDefeated() {
 }
 
 // ---------- strid ----------
-let atkT = 0, atkCd = 0, skillCd = 0, blocking = false, heroMoving = false;
+let stepT = 0, atkT = 0, atkCd = 0, skillCd = 0, blocking = false, heroMoving = false;
 const fwd = () => new THREE.Vector3(Math.sin(hero.rotation.y), 0, Math.cos(hero.rotation.y));
 function arcHit(range, dot, mult, opts = {}, max = 99) {
   const f = fwd(); let n = 0;
@@ -547,7 +554,7 @@ function updateMonsters(dt) {
     const p = m.g.position, hx = hp.x - p.x, hz = hp.z - p.z, d = Math.hypot(hx, hz) || 0.01, D = m.def;
     for (const k in m.t) m.t[k] -= dt; m.cd -= dt; m.immune = (m.immune || 0) - dt; m.vuln = (m.vuln || 0) - dt; m.stun -= dt;
     let vx = 0, vz = 0, sp = 0, face = null; const aggro = S.playing && (d < D.aggro_range || (m.aggroed && d < D.aggro_range * 2)) && (!m.boss || m.active);
-    if (m.boss && !m.active && S.stage === 3 && inArena(hp)) { m.active = true; $('bossbar').classList.remove('hidden'); flash('Benkungen Valdemar vaknar!'); }
+    if (m.boss && !m.active && S.stage === 3 && inArena(hp)) { m.active = true; $('bossbar').classList.remove('hidden'); flash('Benkungen Valdemar vaknar!'); emit('boss_start', { id: m.uid || m.id, monsterId: m.id }); emit('boss_phase', 0, PB.boss.phases[0].name); }
     if (m.stun > 0) { }
     else if (m.boss && m.active && S.playing) { const r = bossAI(m, d, hx, hz, dt); vx = r[0]; vz = r[1]; sp = r[2]; near = true; face = Math.atan2(hx, hz); }
     else if (m.charge > 0) { // taggsvin: laddning i fart 7
@@ -558,18 +565,18 @@ function updateMonsters(dt) {
       if (m.id === 'skelett_hund' && m.hp < m.max * 0.3 && !m.fled) m.fled = 2;
       if (m.fled > 0) { m.fled -= dt; vx = -hx / d; vz = -hz / d; sp = D.speed; face = Math.atan2(vx, vz); if (m.fled <= 0) m.fled = -1; }
       else if (m.id === 'taggsvin') {
-        if (m.warn > 0) { m.warn -= dt; m.flash = 0.05; if (m.warn <= 0) { m.charge = 1; m.chit = false; m.cdir = new THREE.Vector3(hx / d, 0, hz / d); m.cd = D.attack_cd; } }
+        if (m.warn > 0) { m.warn -= dt; m.flash = 0.05; if (m.warn <= 0) { m.charge = 1; m.chit = false; m.cdir = new THREE.Vector3(hx / d, 0, hz / d); m.cd = D.attack_cd * (m.es?.cd || 1); } }
         else if (d < 8 && m.cd <= 0) m.warn = 1; else if (d > 2) { vx = hx / d; vz = hz / d; sp = D.speed; }
       }
       else if (ranged) {
         if (d < 5) { vx = -hx / d; vz = -hz / d; sp = D.speed * 0.8; } else if (d > 10) { vx = hx / d; vz = hz / d; sp = D.speed; }
-        if (d <= D.attack_range && m.cd <= 0) { m.cd = D.attack_cd; const a = D.attacks[0]; projectile(p.clone().setY(1.4), hp.clone().setY(1.2), a.projectile_speed, roll(a.damage) * m.dmgMult, m.id === 'skelett_runprast' ? 'fire' : 'arrow'); m.atk = 0.3; }
-      } else { if (d > D.attack_range * 0.75) { vx = hx / d; vz = hz / d; sp = D.speed; } if (d < D.attack_range && m.cd <= 0) { m.cd = D.attack_cd; m.atk = 0.3; hurt(roll(D.damage), p, m); } }
+        if (d <= D.attack_range && m.cd <= 0) { m.cd = D.attack_cd * (m.es?.cd || 1); const a = D.attacks[0]; projectile(p.clone().setY(1.4), hp.clone().setY(1.2), a.projectile_speed, roll(typeof D.damage === 'number' ? D.damage : a.damage) * m.dmgMult, m.id === 'skelett_runprast' ? 'fire' : 'arrow'); m.atk = 0.3; }
+      } else { if (d > D.attack_range * 0.75) { vx = hx / d; vz = hz / d; sp = D.speed; } if (d < D.attack_range && m.cd <= 0) { m.cd = D.attack_cd * (m.es?.cd || 1); m.atk = 0.3; hurt(roll(D.damage), p, m); } }
     } else {
       m.wt -= dt; if (m.wt <= 0) { m.wt = rand(2, 5); const a = rand(0, 6.28); m.tx = m.home[0] + Math.cos(a) * 5; m.tz = m.home[1] + Math.sin(a) * 5; }
       const ox = m.tx - p.x, oz = m.tz - p.z, od = Math.hypot(ox, oz); if (od > 0.5) { vx = ox / od; vz = oz / od; sp = D.speed * 0.4; face = Math.atan2(vx, vz); }
     }
-    p.x += (vx * sp + m.kb.x) * dt; p.z += (vz * sp + m.kb.z) * dt; m.kb.multiplyScalar(Math.max(0, 1 - dt * 7)); collide(p, m.boss ? 0.9 : 0.5);
+    const spd = sp * (m.es?.speed || 1); p.x += (vx * spd + m.kb.x) * dt; p.z += (vz * spd + m.kb.z) * dt; m.kb.multiplyScalar(Math.max(0, 1 - dt * 7)); collide(p, m.boss ? 0.9 : 0.5);
     if (Z.name === 'forest' && !aggro) { const r = Math.hypot(p.x, p.z); if (r < 12 && r > 0) { p.x *= 12 / r; p.z *= 12 / r; } }
     if (m.boss && !m.active) { p.x = m.home[0]; p.z = m.home[1]; }
     if (face !== null) { let df = face - m.g.rotation.y; df = Math.atan2(Math.sin(df), Math.cos(df)); m.g.rotation.y += df * Math.min(1, dt * 10); }
@@ -585,7 +592,7 @@ function updateMonsters(dt) {
 }
 function bossAI(m, d, hx, hz, dt) {
   const ratio = m.hp / m.max, ph = ratio > 0.6 ? 0 : ratio > 0.3 ? 1 : 2;
-  if (ph !== m.phase) { m.phase = ph; m.immune = 2; flash(PB.boss.phases[ph].name); }
+  if (ph !== m.phase) { m.phase = ph; m.immune = 2; flash(PB.boss.phases[ph].name); emit('boss_phase', ph, PB.boss.phases[ph].name); }
   const F = PB.boss.phases[ph], A = Object.fromEntries(F.attacks.map(a => [a.id, a])), mult = F.damage_mult || 1, speed = F.speed || PB.boss.speed, lie = A.liehugg, p = m.g.position;
   $('bossFill').style.width = Math.max(0, ratio * 100) + '%'; $('bossPhase').textContent = `Fas ${ph + 1}: ${F.name}`;
   if (m.wind > 0) { m.wind -= dt; if (m.wind <= 0) { m.atk = 0.3; const f = new THREE.Vector3(Math.sin(m.g.rotation.y), 0, Math.cos(m.g.rotation.y)), to = new THREE.Vector3(hx, 0, hz).normalize(); if (d <= lie.range + 0.6 && f.dot(to) >= Math.cos(lie.arc_deg / 2 * Math.PI / 180)) hurt(roll(lie.damage) * mult, p, m); } return [0, 0, 0]; }
@@ -677,10 +684,19 @@ function updateLootLabels() {
 function nearRune() { return Z?.runes?.find(r => !r.active && Math.hypot(r.x - hero.position.x, r.z - hero.position.z) < 2.6); }
 function activate(r = nearRune(), free = false) {
   if (!S.playing || !r || r.active) return false; if (!free && !spendSt(20)) return false;
-  r.active = true; S.runes++; r.runeMat.emissive.setHex(0x7fb8d8); r.runeMat.emissiveIntensity = 2; flash(`Runan vaknar! (${S.runes}/3)`); quest();
-  if (S.runes >= 3) setTimeout(() => { makePortal(zones.forest, ...PB.portal.forest_position, 'village'); S.stage = Math.max(S.stage, 1); quest(); flash('En röd portal öppnar sig i gläntan…'); }, PB.portal.trigger.delay_s * 1000);
+  r.active = true; S.runes++; r.runeMat.emissive.setHex(0x7fb8d8); r.runeMat.emissiveIntensity = 2; flash(`Runan vaknar! (${S.runes}/3)`); quest(); emit('rune', S.runes); emit('rune_activate', S.runes);
+  if (S.runes >= 3) setTimeout(() => { const pt = makePortal(zones.forest, ...PB.portal.forest_position, 'village'); S.stage = Math.max(S.stage, 1);
+    if (sealOpen()) { flash('En röd portal öppnar sig i gläntan…'); emit('portal_open'); } else { sealPortal(pt, true); flash(SEAL_MSG); emit('portal_sealed'); } quest(); }, PB.portal.trigger.delay_s * 1000);
   return true;
 }
+// Portalens sigill (portal_by.json trigger.gate, stader.json): öppnas fullt när Vargaby är rensad (Gråbjörnen Ulvhild död) ELLER hjälten är nivå 6.
+// Vargaby finns inte i spelet än, så i praktiken gäller nivå 6-villkoret; staden kollas via rk_stad_vargaby / boss-kill för framtiden.
+const SEAL_MSG = PB.portal.trigger.sealed_state?.message || 'Sigillet håller. Något starkare måste fällas först.';
+const SEAL_LVL = PB.portal.trigger.gate?.any_of?.find(g => g.hero_level_min)?.hero_level_min || 6;
+const sealOpen = () => S.level >= SEAL_LVL || localStorage.getItem('rk_stad_vargaby') === 'rensad' || !!S.killed?.grabjornen_ulvhild;
+function sealPortal(pt, on) { pt.sealed = on; const c = on ? 0x3a0408 : P.portal, e = on ? 0x220205 : P.glow;
+  pt.mat.color.setHex(c); pt.mat.emissive.setHex(e); pt.light.color.setHex(on ? 0x5a0a10 : P.glow); pt.disc.material.color.setHex(c); pt.parts.pts.material.color.setHex(on ? 0x4a0a10 : P.portal); pt.cloud.pts.material.color.setHex(on ? 0x2a0508 : P.portal); }
+function checkSeal() { for (const pt of zones.forest?.portals || []) if (pt.sealed && sealOpen()) { sealPortal(pt, false); flash('Sigillet brister – portalen öppnas!'); emit('portal_open'); quest(); } }
 let switching = false;
 function enterZone(name, spawn) {
   if (switching) return; switching = true; $('fade').classList.add('on'); moveTarget = enemyTarget = null;
@@ -688,7 +704,7 @@ function enterZone(name, spawn) {
     if (Z) scene.remove(Z.g); if (!zones[name]) zones[name] = name === 'village' ? buildVillage() : buildForest();
     Z = zones[name]; scene.add(Z.g); const sp = spawn || Z.entry; hero.position.set(sp[0], 0, sp[1]); hero.rotation.y = Math.PI; yaw = 0; yawVel = 0; camPos.set(sp[0], 8, sp[1] + 8);
     if (name === 'village' && S.stage < 2) S.stage = 2; quest(); setFog(true);
-    flash(name === 'village' ? 'Den gamla byn' : 'Den dimmiga skogen'); $('fade').classList.remove('on'); setTimeout(() => switching = false, 800);
+    flash(name === 'village' ? 'Den gamla byn' : 'Den dimmiga skogen'); emit('zone_enter', name, Z.areaId); $('fade').classList.remove('on'); setTimeout(() => switching = false, 800);
   }, 420);
 }
 function setFog(snap) { let f = Z.fog; if (Z.name === 'village' && inArena(hero.position) && S.stage < 4) f = [0x1f0d10, 10, 45];
@@ -700,7 +716,7 @@ const SKILL_ICON = { amazonkrigare: '🔱', barbar: '💥', riddare: '🛡️' }
 function renderSlots() {
   if (!S.cls) return; const cnt = f => S.inv.filter(i => f(L.baseOf(i))).reduce((a, b) => a + (b.n || 1), 0), hpN = cnt(b => b.category === 'dryck' && (b.heal || b.heal_pct)), stN = cnt(b => b.category === 'dryck' && (b.stamina || b.stamina_pct));
   $('slots').innerHTML = [['⚔️', 1, '', 'active'], [SKILL_ICON[S.cls.id], 2, 'Q', ''], ['🧪', 3, hpN, ''], ['🍶', 4, stN, ''], ['🔒', 5, '', 'locked']]
-    .map(([i, k, n, c]) => `<div class="slot ${c}"><i>${i}</i><small>${k}</small><em>${n}</em>${k === 2 ? '<div class="cd" id="skcd"></div>' : ''}</div>`).join('');
+    .map(([i, k, n, c]) => `<div class="slot ${c}" data-tip="@slot${k}"><i>${i}</i><small>${k}</small><em>${n}</em>${k === 2 ? '<div class="cd" id="skcd"></div>' : ''}</div>`).join('');
 }
 $('help').textContent = 'Vänsterklick: gå / anfall · Musen mot kanten: vrid kameran · Högerdrag: kamera · WASD: gå · Mellanslag: hugg · Q: färdighet · E: aktivera · 3/4: drycker · B / I: utrustning · Alt: visa föremål';
 let chosen = 'riddare';
@@ -708,6 +724,10 @@ $('classes').innerHTML = CLS.classes.map(c => `<div class="card${c.id === chosen
 document.querySelectorAll('.card').forEach(el => el.onclick = () => { chosen = el.dataset.id; document.querySelectorAll('.card').forEach(x => x.classList.toggle('sel', x === el)); });
 function newGame(id) {
   S.cls = CLS.classes.find(c => c.id === id); Object.assign(S, { level: 1, xp: 0, gold: 0, stage: 0, runes: 0, inv: [], equip: {}, city: 'besatt' }); localStorage.removeItem('rk_stad_gamla_byn');
+  // Session: en session som någon annan satt (t.ex. js/save.js före newGame, "Fortsätt") används som den är.
+  // Bara om ingen finns, eller om den redan har spelats av detta game, skapas ny seed + tom killed och new_game emit:as.
+  if (!RPG.session || RPG.session === playedSession) { RPG.session = { seed: newGameSeed(), killed: new Set() }; emit('new_game', { seed: RPG.session.seed }); }
+  playedSession = session();
   S.killed = {}; if (!inv.load()) startGear(); inv.save(); recalc(); S.hp = stats.maxHp; S.st = stats.maxSt; renderSlots(); buildHero(id);
   for (const k in zones) { zones[k].fx.forEach(f => f.el?.remove()); delete zones[k]; } if (Z) scene.remove(Z.g); Z = null;
   $('bossbar').classList.add('hidden'); ['win', 'lose', 'start'].forEach(i => $(i).classList.add('hidden')); $('hud').classList.remove('hidden');
@@ -748,8 +768,7 @@ function tick() {
     if (moveTarget && !leftDown && Math.hypot(p.x - ox, p.z - oz) < sp * 0.1) moveTarget = null;
     let diff = Math.atan2(dx, dz) - hero.rotation.y; diff = Math.atan2(Math.sin(diff), Math.cos(diff)); hero.rotation.y += diff * Math.min(1, dt * 12); moving = true;
   }
-  heroMoving = moving; {
-  }
+  heroMoving = moving; if (moving && S.playing && (stepT -= dt) <= 0) { stepT = 0.36; emit('step'); }
   walkT += dt * (moving ? 10 : 0); const sw = moving ? Math.sin(walkT) * 0.7 : 0, k = Math.min(1, dt * 10);
   if (H.anim) { if (atkT > 0) atkT -= dt; if (!S.playing && S.hp <= 0) H.anim.play('die', 0.1); else if (atkT > 0) { } else H.anim.play(moving ? 'walk' : 'idle'); if (H.anim.A.walk) H.anim.A.walk.timeScale = stats.speed / 4; H.anim.mixer.update(dt); }
   else { H.legL.rotation.x += (sw - H.legL.rotation.x) * k; H.legR.rotation.x += (-sw - H.legR.rotation.x) * k;
@@ -757,7 +776,7 @@ function tick() {
   if (atkT > 0) { atkT -= dt; const q = 1 - Math.max(0, atkT) / 0.3, e2 = q * q * (3 - 2 * q); H.armR.rotation.x = -2.8 + e2 * 2.6; H.armR.rotation.z = Math.sin(q * Math.PI) * 0.5; } else { H.armR.rotation.x += (sw * 0.6 - H.armR.rotation.x) * k; H.armR.rotation.z *= 0.8; }
   H.torso.position.y = 1.2 + (moving ? Math.abs(Math.sin(walkT)) * 0.06 : Math.sin(t * 2) * 0.015); if (H.capeP) H.capeP.rotation.x = (moving ? 0.4 : 0.08) + Math.sin(t * 3) * 0.05; }
   atkCd -= dt; skillCd -= dt; if (blocking && S.st <= 0) blocking = false;
-  updateSpawner(Z, dt);
+  updateSpawner(Z, dt); emit('_frame', rawDt);
   const near = updateMonsters(dt);
   for (let i = Z.projectiles.length - 1; i >= 0; i--) { const pr = Z.projectiles[i]; pr.life -= dt; pr.mesh.position.addScaledVector(pr.v, dt);
     if (pr.mesh.position.distanceTo(tmpV.copy(hero.position).setY(1.2)) < 0.7) { hurt(pr.dmg, pr.mesh.position.clone()); pr.life = 0; }
@@ -771,13 +790,13 @@ function tick() {
     const dd = Math.hypot(d.mesh.position.x - hero.position.x, d.mesh.position.z - hero.position.z);
     if (S.playing && d.o.gold && dd < 1.2) pickup(d); else if (S.playing && pickTarget === d && dd < 1.4) { pickTarget = null; moveTarget = null; pickup(d); } }
   updateLootLabels();
-  if (S.stDelay > 0) S.stDelay -= dt; else S.st = Math.min(stats.maxSt, S.st + stats.regen * dt);
+  if (S.curse > 0) S.curse -= dt; if (S.stDelay > 0) S.stDelay -= dt; else S.st = Math.min(stats.maxSt, S.st + stats.regen * dt * (S.curse > 0 ? 0.7 : 1));
   if (S.playing) S.hp = Math.min(stats.maxHp, S.hp + dt * ((near ? 0 : 2) + stats.lifeRegen));
   if (Z.runes) for (const r of Z.runes) { if (!r.active) continue; r.light.intensity = 3 + Math.sin(t * 4) * 0.6; r.parts.pts.material.opacity = 0.9;
     for (let i = 0; i < r.parts.n; i++) { const ph = (t * 0.4 + i / r.parts.n) % 1, a = i * 2.4 + t; r.parts.pos[i * 3] = Math.cos(a) * (0.8 + ph * 0.5); r.parts.pos[i * 3 + 1] = ph * 3.5; r.parts.pos[i * 3 + 2] = Math.sin(a) * (0.8 + ph * 0.5); } r.parts.pts.geometry.attributes.position.needsUpdate = true; }
-  for (const pt of Z.portals || []) { pt.t += dt; pt.ring.rotation.z += dt * 0.6; pt.light.intensity = PB.portal.light_intensity * (1 + Math.sin(t * 9) * 0.15); pt.disc.material.opacity = 0.3 + Math.sin(t * 3) * 0.1;
+  for (const pt of Z.portals || []) { pt.t += dt; pt.ring.rotation.z += dt * 0.6; pt.light.intensity = PB.portal.light_intensity * (pt.sealed ? 0.25 + Math.sin(t * 1.5) * 0.08 : 1 + Math.sin(t * 9) * 0.15); pt.disc.material.opacity = 0.3 + Math.sin(t * 3) * 0.1;
     for (let i = 0; i < pt.parts.n; i++) { const ph = (t * 0.5 + i / pt.parts.n) % 1, a = i * 2.39 + t * 1.5, r = (1.4 + Math.sin(i) * 0.15) * (1 - ph * 0.6); pt.parts.pos[i * 3] = Math.cos(a) * r; pt.parts.pos[i * 3 + 1] = 1.7 + Math.sin(a) * r; pt.parts.pos[i * 3 + 2] = (ph - 0.5) * 0.6; } pt.parts.pts.geometry.attributes.position.needsUpdate = true;
-    if (S.playing && pt.t > 0.5 && Math.hypot(pt.x - hero.position.x, pt.z - hero.position.z) < PB.portal.interaction_radius) enterZone(pt.target, pt.spawn); }
+    if (S.playing && pt.t > 0.5 && Math.hypot(pt.x - hero.position.x, pt.z - hero.position.z) < PB.portal.interaction_radius) { if (pt.sealed) { if (t - (pt.msgT || -9) > 3) { pt.msgT = t; flash(SEAL_MSG, '#d05050'); emit('portal_sealed'); } } else enterZone(pt.target, pt.spawn); } }
   for (const l of Z.torches || []) l.intensity = 1.2 * (1 + (Math.random() - 0.5) * 0.3);
   $('hp').style.height = S.hp / stats.maxHp * 100 + '%'; $('hpT').textContent = `${Math.ceil(S.hp)}/${stats.maxHp}`;
   $('st').style.height = S.st / stats.maxSt * 100 + '%'; $('stT').textContent = `${Math.floor(S.st)}/${stats.maxSt}`;
@@ -805,7 +824,48 @@ setQuality(quality);
 tick();
 
 // ---------- debug ----------
-window.__rpg = Object.defineProperties(window.__rpg || {}, Object.getOwnPropertyDescriptors({ // behåll session/on/emit (js/save.js m.fl.), getters intakta
+// ---------- tooltips (js/tooltip.js) ----------
+{ const pc = v => Math.round(v * 100) + ' %', h = (t, b) => `<h5>${t}</h5>${b}`;
+  const tipAttr = (id, key, small) => { const e = $(id); if (e) { e.dataset.tip = '@' + key; if (small) e.dataset.tipSmall = ''; } };
+  TIP.provide('hp', () => h('Hälsa', `${Math.ceil(S.hp)} / ${stats.maxHp}<br><span class="dim">Dryck: tangent 3. Life från utrustning höjer max.</span>`));
+  TIP.provide('st', () => h('Uthållighet', `${Math.floor(S.st)} / ${stats.maxSt}<br><span class="dim">Hugg, block och färdigheter kostar. Återhämtning ${stats.regen.toFixed(1)}/s${S.curse > 0 ? ' <span class="bad">(förbannad −30 %)</span>' : ''}. Dryck: 4.</span>`));
+  TIP.provide('xp', () => h('Erfarenhet', S.level >= PB.progression.max_level ? 'Maxnivå' : `${Math.floor(S.xp)} / ${need(S.level)} XP till nivå ${S.level + 1}<br><span class="dim">Monster under din nivå ger mindre XP.</span>`));
+  TIP.provide('lvl', () => h(`Nivå ${S.level}`, `<span class="dim">Max ${PB.progression.max_level}. Portalens sigill släpper vid nivå ${SEAL_LVL}.</span>`));
+  TIP.provide('gold', () => `${S.gold} guld<br><span class="dim">Guld plockas upp automatiskt.</span>`);
+  TIP.provide('qBtn', () => 'Byt grafikkvalitet (G)');
+  TIP.provide('quest', () => h('Uppdrag', $('qText').textContent));
+  TIP.provide('slot1', () => h('Hugg (1 / Mellanslag)', `Skada ${stats.dmgMin}–${stats.dmgMax} (${stats.type})<br><span class="dim">Klick på fiende anfaller.</span>`));
+  TIP.provide('slot2', () => { const k = S.cls?.skills[0]; return k ? h(`${k.name} (Q)`, `Kostnad ${k.stamina_cost} uthållighet · Nedkylning ${k.cooldown_s} s<br>${k.effect}`) : ''; });
+  TIP.provide('slot3', () => h('Hälsodryck (3)', 'Dricker den minsta som räcker.'));
+  TIP.provide('slot4', () => h('Uthållighetsdryck (4)', 'Fyller på uthållighet.'));
+  TIP.provide('slot5', () => h('Magi (5)', '<span class="dim">Låst – runorna bär på hemligheten.</span>'));
+  [['orbL', 'hp'], ['orbR', 'st'], ['xpwrap', 'xp'], ['lvl', 'lvl', 1], ['gold', 'gold', 1], ['qBtn', 'qBtn', 1], ['quest', 'quest']].forEach(a => tipAttr(...a));
+  TIP.avoid(inv.el);
+  // Världen: monster, loot på marken, runor och portal under muspekaren (skärmavstånd, ingen extra raycast).
+  const scr = new THREE.Vector3(), near = (x, y, z, r) => { scr.set(x, y, z).project(camera); if (scr.z > 1) return Infinity; const d = Math.hypot((scr.x + 1) / 2 * innerWidth - mx, (1 - scr.y) / 2 * innerHeight - my); return d < r ? d : Infinity; };
+  const monTip = m => { const n = m.uname ? `${m.uname} ${m.def.name || m.id}` : (m.def.name || m.id), cls = m.elite === 'unik' ? 'unik' : m.elite ? 'champ' : '';
+    return h(`<span class="${cls}">${n}</span>`, `Nivå ${m.lvl}${m.boss ? ' · Boss' : m.elite === 'unik' ? ' · Unik' : m.elite ? ' · Champion' : ''}<br>HP ${Math.max(0, Math.ceil(m.hp))} / ${m.max}`
+      + (m.mods?.length ? `<br><span class="unik">${m.mods.map(x => MOD_NAME[x]).join(', ')}</span>` : '') + `<br><span class="dim">Träffchans ${pc(L.hitChance(stats.AR, 15 + 8 * m.lvl + m.defense * 2, S.level, m.lvl))}</span>`); };
+  // D2-monstermätare överst: namn (vit/blå champion/guld unik+boss), modifierare, nivå, HP-mätare med exakt HP. Stats per undertyp läses från DEFS/monster_niva när Speldesign levererar dem.
+  const mb = document.createElement('div'); mb.id = 'monBar'; mb.innerHTML = '<div class="mn"></div><div class="mm"></div><div class="mbar"><i></i><span></span></div>'; document.body.appendChild(mb);
+  let mbM = null; function monBar(m) { if (!m || (m.boss && !$('bossbar').classList.contains('hidden'))) { mb.style.display = 'none'; mbM = null; return; }
+    if (m !== mbM) { mbM = m; const base = m.def.name || DEFS[m.id]?.name || m.id.replace(/_/g, ' '), cls = m.boss || m.elite === 'unik' ? 'unik' : m.elite ? 'champ' : '';
+      mb.querySelector('.mn').className = 'mn ' + cls; mb.querySelector('.mn').textContent = (m.uname ? m.uname + ' ' : '') + base;
+      mb.querySelector('.mm').textContent = [m.boss ? 'Boss' : m.elite === 'unik' ? 'Unik' : m.elite ? 'Champion' : '', ...(m.mods || []).map(x => MOD_NAME[x])].filter(Boolean).join(' · ') + `${m.elite || m.boss ? ' · ' : ''}Nivå ${m.lvl}`; }
+    mb.querySelector('i').style.width = Math.max(0, m.hp / m.max * 100) + '%'; mb.querySelector('span').textContent = `${Math.max(0, Math.ceil(m.hp))}/${m.max}`; mb.style.display = 'block'; }
+  let acc = 0;
+  RPG.on('_frame', dt => { if ((acc += dt) < 0.1) return; acc = 0;
+    if (!Z || !S.playing || inv.isOpen()) { monBar(null); return TIP.hideWorld(); } if (TOUCH) { monBar([enemyTarget, lastHitM].find(m => m && !m.dead)); return; } let best = Infinity, html = '', q = '';
+    let hov = null, hb = Infinity; for (const m of Z.monsters) if (!m.dead) { const d = near(m.g.position.x, m.h * 0.6, m.g.position.z, 45); if (d < hb) { hb = d; hov = m; } }
+    const fight = [enemyTarget, lastHitM].find(m => m && !m.dead && Z.monsters.includes(m) && (m === enemyTarget || clock.elapsedTime - m.lastHit < 4));
+    monBar(hov || fight); if (hov) best = hb; // monstret visas i mätaren överst, inte som tooltip
+    for (const d0 of Z.drops) { const d = near(d0.mesh.position.x, 0.3, d0.mesh.position.z, 26); if (d < best) { best = d; html = d0.o.gold ? `${d0.o.gold} guld` : `<span style="color:${dropColor(d0.o)}">${dropName(d0.o)}</span><br><span class="dim">Klicka för att plocka upp</span>`; q = d0.o.item?.quality || ''; } }
+    for (const r of Z.runes || []) { const d = near(r.x, 1.5, r.z, 50); if (d < best) { best = d; html = h('Runsten', r.active ? 'Vaken.' : `Sover. Stå nära och tryck E (20 uthållighet).<br><span class="dim">${S.runes}/3 vakna</span>`); q = ''; } }
+    for (const pt of Z.portals || []) { const d = near(pt.x, 1.7, pt.z, 70); if (d < best) { best = d; html = pt.sealed ? h('Förseglad portal', `<span class="bad">${SEAL_MSG}</span><br><span class="dim">Öppnas vid nivå ${SEAL_LVL} (du: ${S.level}) eller när Vargaby är rensad.</span>`) : h('Röd portal', pt.target === 'village' ? 'Leder till Den gamla byn.' : 'Leder tillbaka till skogen.'); q = ''; } }
+    if (best < Infinity && html) { TIP.showWorld(html, mx, my, { now: true }); TIP.el.dataset.q = q; } else { TIP.hideWorld(); delete TIP.el.dataset.q; } });
+}
+
+Object.defineProperties(RPG, Object.getOwnPropertyDescriptors({ // behåller getters (zone, stats …)
   state: S, hero, get zone() { return Z; }, get stats() { return stats; }, attack, skill, newGame, DEFS,
   setCamera(y, p) { yaw = y; yawVel = 0; if (p !== undefined) pitch = p; },
   activateAll() { hero.position.set(0, 0, 6); hero.rotation.y = Math.PI; yaw = 0; zones.forest.runes.forEach(r => activate(r, true)); },
@@ -815,10 +875,10 @@ window.__rpg = Object.defineProperties(window.__rpg || {}, Object.getOwnProperty
   spawnBoss() { const go = () => { this.clearVillage(); hero.position.set(1, 0, Z.arena[3] - 3); hero.rotation.y = Math.PI; yaw = 0; }; if (Z.name !== 'village') { enterZone('village'); setTimeout(go, 700); } else go(); },
   boss() { return Z.monsters.find(m => m.boss); },
   setBossHp(f) { const b = this.boss(); b.hp = b.max * f; drawHp(b); },
-  setLevel(n) { S.level = Math.max(1, Math.min(PB.progression.max_level, n)); S.xp = 0; recalc(); S.hp = stats.maxHp; S.st = stats.maxSt; },
+  setLevel(n) { S.level = Math.max(1, Math.min(PB.progression.max_level, n)); S.xp = 0; recalc(); S.hp = stats.maxHp; S.st = stats.maxSt; checkSeal(); },
   spawnNear(dist = 3, id = Z.name === 'village' ? 'skelett_krigare' : 'skogsvarg') { return spawnMonster(Z, id, hero.position.x + Math.sin(hero.rotation.y) * dist, hero.position.z + Math.cos(hero.rotation.y) * dist); },
   screenOf(m) { const v = m.g.position.clone().setY(1).project(camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; },
-  spawnInfo() { return { area: Z.sp?.A.id, points: Z.sp?.points.length, alive: Z.monsters.filter(m => !m.dead).map(m => m.id) }; },
+  spawnInfo() { return { area: Z.areaId, roll: Z.rollInfo, alive: Z.monsters.filter(m => !m.dead).map(m => m.uid || m.id) }; }, sealOpen, TIP,
   killBoss() { const b = this.boss(); b.immune = 0; b.hp = 0; drawHp(b); killMonster(b); },
   L, inv, camera, get lastSeeds() { return lastSeeds; },
   dropDemo() { const mk = (b, o) => ({ item: L.makeItem(b, o) }), list = [mk('stor_halsodryck'), mk('jarnyxa', { quality: 'magic', affixes: [{ id: 'vass', name: 'Vass', kind: 'prefix', stat: 'damage_pct', value: 0.18 }] }), mk('langsvard', { quality: 'legendary', leg: 'runsmidd_klinga' }), mk('ringbrynja', { quality: 'set', set: 'gravvaktarens_arv' }), mk('benhjalm', { quality: 'rare', rareName: 'Gravens Klo', affixes: [{ id: 'livets', name: 'Livets', kind: 'suffix', stat: 'life', value: 10 }] }), mk('laderharnesk'), mk('silverring', { quality: 'magic', affixes: [{ id: 'lyckosam', name: 'Lyckosam', kind: 'prefix', stat: 'magic_find', value: 0.08 }] }), { gold: 37 }];

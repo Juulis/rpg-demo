@@ -10,8 +10,8 @@
       "persistent": "Stadstillstånd, lorebok, hjälte och föremål sparas mellan games; monster gör det inte."
     },
     "state_rule": "Endast besatt genererar monster. rensad och aterbefolkad_1 till 3 stänger spawn permanent i alla games, inklusive utkant. Bossen genereras bara om den inte är besegrad i sparfilen (besegrad boss ger rensad stad när alla zoner är rensade).",
-    "group_rule": "Varje spawnpunkt slumpar ett antal grupper inom groups. Varje grupp väljer fiende viktat ur tabellen och storlek ur radens group eller punktens group_size.",
-    "level_rule": "Varje grupp slumpar en level inom punktens level_range (hela gruppen samma level). Champions och unika lägger till levelbonus enligt monster_niva.json. Skalas aldrig efter hjälten.",
+    "group_rule": "Varje grupp väljer undertyp viktat ur punktens enemy_table (eller zonens tabell). escort lägger till följeslagare.",
+    "level_rule": "Spawnpunkter väljer undertyp (subtypes och enemy_table på punkten, annars zone_tables eller områdets enemy_table). Monstrets nivå och stats är undertypens fasta värden. level_range_derived är bara information.",
     "elite_rule": "Se session_roll.champions och session_roll.uniques.",
     "elites_ref": "monster_niva.json elites",
     "removed": "Respawntider, max_alive, max_alive_area, state_spawn_multiplier, outskirts och runes_scaling är borttagna i version 2.0.",
@@ -33,15 +33,37 @@
             24,
             -22
           ],
-          "level_range": [
-            2,
-            3
-          ],
           "groups": [
             1,
             2
           ],
           "group_size": [
+            1,
+            3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skogsvarg",
+              "weight": 70,
+              "group": [
+                1,
+                3
+              ]
+            },
+            {
+              "enemy": "vargbest",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            }
+          ],
+          "subtypes": [
+            "skogsvarg",
+            "vargbest"
+          ],
+          "level_range_derived": [
             1,
             3
           ]
@@ -53,10 +75,6 @@
             30,
             4
           ],
-          "level_range": [
-            1,
-            2
-          ],
           "groups": [
             1,
             2
@@ -64,6 +82,23 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skogsvarg",
+              "weight": 70,
+              "group": [
+                1,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "skogsvarg"
+          ],
+          "level_range_derived": [
+            1,
+            1
           ]
         },
         {
@@ -73,10 +108,6 @@
             20,
             28
           ],
-          "level_range": [
-            1,
-            2
-          ],
           "groups": [
             1,
             2
@@ -84,6 +115,23 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skogsvarg",
+              "weight": 70,
+              "group": [
+                1,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "skogsvarg"
+          ],
+          "level_range_derived": [
+            1,
+            1
           ]
         },
         {
@@ -93,10 +141,6 @@
             -6,
             32
           ],
-          "level_range": [
-            1,
-            2
-          ],
           "groups": [
             1,
             2
@@ -104,6 +148,23 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skogsvarg",
+              "weight": 70,
+              "group": [
+                1,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "skogsvarg"
+          ],
+          "level_range_derived": [
+            1,
+            1
           ]
         },
         {
@@ -113,10 +174,6 @@
             -26,
             22
           ],
-          "level_range": [
-            1,
-            2
-          ],
           "groups": [
             1,
             2
@@ -124,6 +181,23 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skogsvarg",
+              "weight": 70,
+              "group": [
+                1,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "skogsvarg"
+          ],
+          "level_range_derived": [
+            1,
+            1
           ]
         },
         {
@@ -133,15 +207,37 @@
             -32,
             -2
           ],
-          "level_range": [
-            2,
-            3
-          ],
           "groups": [
             1,
             2
           ],
           "group_size": [
+            1,
+            3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skogsvarg",
+              "weight": 70,
+              "group": [
+                1,
+                3
+              ]
+            },
+            {
+              "enemy": "vargbest",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            }
+          ],
+          "subtypes": [
+            "skogsvarg",
+            "vargbest"
+          ],
+          "level_range_derived": [
             1,
             3
           ]
@@ -153,16 +249,29 @@
             -22,
             -26
           ],
-          "level_range": [
-            3,
-            3
-          ],
           "groups": [
             1,
             2
           ],
           "group_size": [
             1,
+            3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "vargbest",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            }
+          ],
+          "subtypes": [
+            "vargbest"
+          ],
+          "level_range_derived": [
+            3,
             3
           ]
         },
@@ -173,15 +282,37 @@
             2,
             -34
           ],
-          "level_range": [
-            2,
-            3
-          ],
           "groups": [
             1,
             2
           ],
           "group_size": [
+            1,
+            3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skogsvarg",
+              "weight": 70,
+              "group": [
+                1,
+                3
+              ]
+            },
+            {
+              "enemy": "vargbest",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            }
+          ],
+          "subtypes": [
+            "skogsvarg",
+            "vargbest"
+          ],
+          "level_range_derived": [
             1,
             3
           ]
@@ -197,19 +328,11 @@
           ]
         },
         {
-          "enemy": "skuggvarg",
-          "weight": 20,
+          "enemy": "vargbest",
+          "weight": 30,
           "group": [
             1,
-            1
-          ]
-        },
-        {
-          "enemy": "taggsvin",
-          "weight": 10,
-          "group": [
-            1,
-            1
+            2
           ]
         }
       ],
@@ -274,10 +397,6 @@
             24
           ],
           "zone": "byporten",
-          "level_range": [
-            7,
-            7
-          ],
           "groups": [
             1,
             2
@@ -285,6 +404,14 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_hund",
+            "skelett_krigare"
+          ],
+          "level_range_derived": [
+            7,
+            7
           ]
         },
         {
@@ -295,10 +422,6 @@
             24
           ],
           "zone": "byporten",
-          "level_range": [
-            7,
-            7
-          ],
           "groups": [
             1,
             2
@@ -306,6 +429,14 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_hund",
+            "skelett_krigare"
+          ],
+          "level_range_derived": [
+            7,
+            7
           ]
         },
         {
@@ -316,10 +447,6 @@
             15
           ],
           "zone": "torget",
-          "level_range": [
-            7,
-            8
-          ],
           "groups": [
             1,
             2
@@ -327,6 +454,15 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_bagskytt",
+            "skelett_kapten",
+            "skelett_krigare"
+          ],
+          "level_range_derived": [
+            7,
+            9
           ]
         },
         {
@@ -337,10 +473,6 @@
             20
           ],
           "zone": "torget",
-          "level_range": [
-            7,
-            8
-          ],
           "groups": [
             1,
             2
@@ -348,6 +480,15 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_bagskytt",
+            "skelett_kapten",
+            "skelett_krigare"
+          ],
+          "level_range_derived": [
+            7,
+            9
           ]
         },
         {
@@ -358,10 +499,6 @@
             13
           ],
           "zone": "vasterhus",
-          "level_range": [
-            8,
-            8
-          ],
           "groups": [
             1,
             2
@@ -369,6 +506,15 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_bagskytt",
+            "skelett_krigare",
+            "skelett_runprast"
+          ],
+          "level_range_derived": [
+            7,
+            8
           ]
         },
         {
@@ -379,10 +525,6 @@
             21
           ],
           "zone": "vasterhus",
-          "level_range": [
-            8,
-            8
-          ],
           "groups": [
             1,
             2
@@ -390,6 +532,15 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_bagskytt",
+            "skelett_krigare",
+            "skelett_runprast"
+          ],
+          "level_range_derived": [
+            7,
+            8
           ]
         },
         {
@@ -400,10 +551,6 @@
             13
           ],
           "zone": "osterhus",
-          "level_range": [
-            8,
-            8
-          ],
           "groups": [
             1,
             2
@@ -411,6 +558,14 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_hund",
+            "skelett_krigare"
+          ],
+          "level_range_derived": [
+            7,
+            7
           ]
         },
         {
@@ -421,10 +576,6 @@
             21
           ],
           "zone": "osterhus",
-          "level_range": [
-            8,
-            8
-          ],
           "groups": [
             1,
             2
@@ -432,6 +583,14 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_hund",
+            "skelett_krigare"
+          ],
+          "level_range_derived": [
+            7,
+            7
           ]
         },
         {
@@ -442,10 +601,6 @@
             11
           ],
           "zone": "kyrkogarden",
-          "level_range": [
-            9,
-            9
-          ],
           "groups": [
             1,
             1
@@ -453,6 +608,16 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_kapten",
+            "skelett_krigare",
+            "skelett_runprast",
+            "skelett_vakt"
+          ],
+          "level_range_derived": [
+            7,
+            9
           ]
         },
         {
@@ -463,10 +628,6 @@
             10
           ],
           "zone": "kyrkogarden",
-          "level_range": [
-            9,
-            9
-          ],
           "groups": [
             1,
             1
@@ -474,6 +635,16 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_kapten",
+            "skelett_krigare",
+            "skelett_runprast",
+            "skelett_vakt"
+          ],
+          "level_range_derived": [
+            7,
+            9
           ]
         },
         {
@@ -484,10 +655,6 @@
             11
           ],
           "zone": "kyrkogarden",
-          "level_range": [
-            9,
-            9
-          ],
           "groups": [
             1,
             1
@@ -495,6 +662,16 @@
           "group_size": [
             1,
             2
+          ],
+          "subtypes": [
+            "skelett_kapten",
+            "skelett_krigare",
+            "skelett_runprast",
+            "skelett_vakt"
+          ],
+          "level_range_derived": [
+            7,
+            9
           ]
         }
       ],
@@ -530,6 +707,14 @@
             1,
             1
           ]
+        },
+        {
+          "enemy": "skelett_kapten",
+          "weight": 5,
+          "group": [
+            1,
+            1
+          ]
         }
       ],
       "note": "Ersätter de fasta spawns i portal_by.json med slumpade punkter. Zonerna begränsar urvalet via zone_tables. Portalgläntan och kapellet har inga punkter.",
@@ -556,6 +741,21 @@
           {
             "enemy": "skelett_bagskytt",
             "weight": 40
+          },
+          {
+            "enemy": "skelett_kapten",
+            "weight": 10,
+            "group": [
+              1,
+              1
+            ],
+            "escort": {
+              "enemy": "skelett_krigare",
+              "count": [
+                2,
+                3
+              ]
+            }
           }
         ],
         "vasterhus": [
@@ -610,6 +810,21 @@
           {
             "enemy": "skelett_krigare",
             "weight": 20
+          },
+          {
+            "enemy": "skelett_kapten",
+            "weight": 15,
+            "group": [
+              1,
+              1
+            ],
+            "escort": {
+              "enemy": "skelett_krigare",
+              "count": [
+                2,
+                3
+              ]
+            }
           }
         ]
       },
@@ -694,10 +909,6 @@
             16,
             25
           ],
-          "level_range": [
-            4,
-            4
-          ],
           "groups": [
             1,
             3
@@ -705,6 +916,28 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "taggsvin",
+              "weight": 30
+            },
+            {
+              "enemy": "skuggvarg",
+              "weight": 40,
+              "group": [
+                2,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "taggsvin",
+            "skuggvarg"
+          ],
+          "level_range_derived": [
+            4,
+            5
           ]
         },
         {
@@ -714,10 +947,6 @@
             6,
             18
           ],
-          "level_range": [
-            4,
-            5
-          ],
           "groups": [
             1,
             3
@@ -725,6 +954,28 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "taggsvin",
+              "weight": 30
+            },
+            {
+              "enemy": "skuggvarg",
+              "weight": 40,
+              "group": [
+                2,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "taggsvin",
+            "skuggvarg"
+          ],
+          "level_range_derived": [
+            4,
+            5
           ]
         },
         {
@@ -734,10 +985,6 @@
             26,
             18
           ],
-          "level_range": [
-            4,
-            5
-          ],
           "groups": [
             1,
             3
@@ -745,6 +992,28 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skuggvarg",
+              "weight": 40,
+              "group": [
+                2,
+                3
+              ]
+            },
+            {
+              "enemy": "taggsvin",
+              "weight": 30
+            }
+          ],
+          "subtypes": [
+            "skuggvarg",
+            "taggsvin"
+          ],
+          "level_range_derived": [
+            4,
+            5
           ]
         },
         {
@@ -754,10 +1023,6 @@
             16,
             15
           ],
-          "level_range": [
-            5,
-            6
-          ],
           "groups": [
             2,
             3
@@ -765,6 +1030,41 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "skuggvarg",
+              "weight": 40,
+              "group": [
+                2,
+                3
+              ]
+            },
+            {
+              "enemy": "gravargsledare",
+              "weight": 15,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "ruttbjorn",
+              "weight": 15,
+              "group": [
+                1,
+                1
+              ]
+            }
+          ],
+          "subtypes": [
+            "skuggvarg",
+            "gravargsledare",
+            "ruttbjorn"
+          ],
+          "level_range_derived": [
+            5,
+            6
           ]
         },
         {
@@ -774,10 +1074,6 @@
             16,
             9
           ],
-          "level_range": [
-            6,
-            6
-          ],
           "groups": [
             2,
             3
@@ -785,29 +1081,64 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "gravargsledare",
+              "weight": 15,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "ruttbjorn",
+              "weight": 15,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "skuggvarg",
+              "weight": 40,
+              "group": [
+                2,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "gravargsledare",
+            "ruttbjorn",
+            "skuggvarg"
+          ],
+          "level_range_derived": [
+            5,
+            6
           ]
         }
       ],
       "enemy_table": [
         {
-          "enemy": "skogsvarg",
-          "weight": 35,
-          "group": [
-            2,
-            4
-          ]
+          "enemy": "taggsvin",
+          "weight": 30
         },
         {
           "enemy": "skuggvarg",
-          "weight": 30,
+          "weight": 40,
           "group": [
-            1,
-            2
+            2,
+            3
           ]
         },
         {
-          "enemy": "taggsvin",
-          "weight": 20
+          "enemy": "gravargsledare",
+          "weight": 15,
+          "group": [
+            1,
+            1
+          ]
         },
         {
           "enemy": "ruttbjorn",
@@ -889,10 +1220,6 @@
             16,
             25
           ],
-          "level_range": [
-            11,
-            11
-          ],
           "groups": [
             1,
             3
@@ -900,6 +1227,23 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "dimgast",
+              "weight": 50,
+              "group": [
+                1,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "dimgast"
+          ],
+          "level_range_derived": [
+            11,
+            11
           ]
         },
         {
@@ -909,10 +1253,6 @@
             6,
             18
           ],
-          "level_range": [
-            11,
-            12
-          ],
           "groups": [
             1,
             3
@@ -920,6 +1260,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "dimgast",
+              "weight": 50,
+              "group": [
+                1,
+                3
+              ]
+            },
+            {
+              "enemy": "klagokvinna",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            }
+          ],
+          "subtypes": [
+            "dimgast",
+            "klagokvinna"
+          ],
+          "level_range_derived": [
+            11,
+            12
           ]
         },
         {
@@ -929,10 +1295,6 @@
             26,
             18
           ],
-          "level_range": [
-            11,
-            12
-          ],
           "groups": [
             1,
             3
@@ -940,6 +1302,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "dimgast",
+              "weight": 50,
+              "group": [
+                1,
+                3
+              ]
+            },
+            {
+              "enemy": "klagokvinna",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            }
+          ],
+          "subtypes": [
+            "dimgast",
+            "klagokvinna"
+          ],
+          "level_range_derived": [
+            11,
+            12
           ]
         },
         {
@@ -949,10 +1337,6 @@
             16,
             15
           ],
-          "level_range": [
-            12,
-            14
-          ],
           "groups": [
             2,
             3
@@ -960,6 +1344,41 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "klagokvinna",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "trasknacken",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "dimgast",
+              "weight": 50,
+              "group": [
+                1,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "klagokvinna",
+            "trasknacken",
+            "dimgast"
+          ],
+          "level_range_derived": [
+            11,
+            13
           ]
         },
         {
@@ -969,10 +1388,6 @@
             16,
             9
           ],
-          "level_range": [
-            14,
-            14
-          ],
           "groups": [
             2,
             3
@@ -980,6 +1395,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "trasknacken",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "klagokvinna",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            }
+          ],
+          "subtypes": [
+            "trasknacken",
+            "klagokvinna"
+          ],
+          "level_range_derived": [
+            12,
+            13
           ]
         }
       ],
@@ -993,7 +1434,7 @@
           ]
         },
         {
-          "enemy": "trasknacken",
+          "enemy": "klagokvinna",
           "weight": 25,
           "group": [
             1,
@@ -1001,7 +1442,7 @@
           ]
         },
         {
-          "enemy": "klagokvinna",
+          "enemy": "trasknacken",
           "weight": 25,
           "group": [
             1,
@@ -1021,7 +1462,7 @@
       },
       "level_range": [
         11,
-        14
+        13
       ],
       "spawn_states": {
         "besatt": true,
@@ -1076,10 +1517,6 @@
             16,
             25
           ],
-          "level_range": [
-            15,
-            15
-          ],
           "groups": [
             1,
             3
@@ -1087,6 +1524,23 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "gruvspindel",
+              "weight": 50,
+              "group": [
+                3,
+                5
+              ]
+            }
+          ],
+          "subtypes": [
+            "gruvspindel"
+          ],
+          "level_range_derived": [
+            15,
+            15
           ]
         },
         {
@@ -1096,10 +1550,6 @@
             6,
             18
           ],
-          "level_range": [
-            15,
-            16
-          ],
           "groups": [
             1,
             3
@@ -1107,6 +1557,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "gruvspindel",
+              "weight": 50,
+              "group": [
+                3,
+                5
+              ]
+            },
+            {
+              "enemy": "syrabagge",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            }
+          ],
+          "subtypes": [
+            "gruvspindel",
+            "syrabagge"
+          ],
+          "level_range_derived": [
+            15,
+            16
           ]
         },
         {
@@ -1116,10 +1592,6 @@
             26,
             18
           ],
-          "level_range": [
-            15,
-            16
-          ],
           "groups": [
             1,
             3
@@ -1127,6 +1599,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "gruvspindel",
+              "weight": 50,
+              "group": [
+                3,
+                5
+              ]
+            },
+            {
+              "enemy": "syrabagge",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            }
+          ],
+          "subtypes": [
+            "gruvspindel",
+            "syrabagge"
+          ],
+          "level_range_derived": [
+            15,
+            16
           ]
         },
         {
@@ -1136,10 +1634,6 @@
             16,
             15
           ],
-          "level_range": [
-            16,
-            18
-          ],
           "groups": [
             2,
             3
@@ -1147,6 +1641,41 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "syrabagge",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            },
+            {
+              "enemy": "kitinvakt",
+              "weight": 20,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "gruvspindel",
+              "weight": 50,
+              "group": [
+                3,
+                5
+              ]
+            }
+          ],
+          "subtypes": [
+            "syrabagge",
+            "kitinvakt",
+            "gruvspindel"
+          ],
+          "level_range_derived": [
+            15,
+            18
           ]
         },
         {
@@ -1156,10 +1685,6 @@
             16,
             9
           ],
-          "level_range": [
-            18,
-            18
-          ],
           "groups": [
             2,
             3
@@ -1167,6 +1692,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "kitinvakt",
+              "weight": 20,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "syrabagge",
+              "weight": 30,
+              "group": [
+                1,
+                2
+              ]
+            }
+          ],
+          "subtypes": [
+            "kitinvakt",
+            "syrabagge"
+          ],
+          "level_range_derived": [
+            16,
+            18
           ]
         }
       ],
@@ -1263,10 +1814,6 @@
             16,
             25
           ],
-          "level_range": [
-            19,
-            19
-          ],
           "groups": [
             1,
             3
@@ -1274,6 +1821,23 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "askimp",
+              "weight": 45,
+              "group": [
+                2,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "askimp"
+          ],
+          "level_range_derived": [
+            19,
+            19
           ]
         },
         {
@@ -1283,10 +1847,6 @@
             6,
             18
           ],
-          "level_range": [
-            19,
-            21
-          ],
           "groups": [
             1,
             3
@@ -1294,6 +1854,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "askimp",
+              "weight": 45,
+              "group": [
+                2,
+                3
+              ]
+            },
+            {
+              "enemy": "eldpiska_demon",
+              "weight": 30,
+              "group": [
+                1,
+                1
+              ]
+            }
+          ],
+          "subtypes": [
+            "askimp",
+            "eldpiska_demon"
+          ],
+          "level_range_derived": [
+            19,
+            21
           ]
         },
         {
@@ -1303,10 +1889,6 @@
             26,
             18
           ],
-          "level_range": [
-            19,
-            21
-          ],
           "groups": [
             1,
             3
@@ -1314,6 +1896,32 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "askimp",
+              "weight": 45,
+              "group": [
+                2,
+                3
+              ]
+            },
+            {
+              "enemy": "eldpiska_demon",
+              "weight": 30,
+              "group": [
+                1,
+                1
+              ]
+            }
+          ],
+          "subtypes": [
+            "askimp",
+            "eldpiska_demon"
+          ],
+          "level_range_derived": [
+            19,
+            21
           ]
         },
         {
@@ -1323,10 +1931,6 @@
             16,
             15
           ],
-          "level_range": [
-            21,
-            23
-          ],
           "groups": [
             2,
             3
@@ -1334,6 +1938,41 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "eldpiska_demon",
+              "weight": 30,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "hornslaktare",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "askriddare",
+              "weight": 15,
+              "group": [
+                1,
+                1
+              ]
+            }
+          ],
+          "subtypes": [
+            "eldpiska_demon",
+            "hornslaktare",
+            "askriddare"
+          ],
+          "level_range_derived": [
+            21,
+            23
           ]
         },
         {
@@ -1343,10 +1982,6 @@
             16,
             9
           ],
-          "level_range": [
-            23,
-            23
-          ],
           "groups": [
             2,
             3
@@ -1354,6 +1989,41 @@
           "group_size": [
             1,
             3
+          ],
+          "enemy_table": [
+            {
+              "enemy": "hornslaktare",
+              "weight": 25,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "askriddare",
+              "weight": 15,
+              "group": [
+                1,
+                1
+              ]
+            },
+            {
+              "enemy": "askimp",
+              "weight": 45,
+              "group": [
+                2,
+                3
+              ]
+            }
+          ],
+          "subtypes": [
+            "hornslaktare",
+            "askriddare",
+            "askimp"
+          ],
+          "level_range_derived": [
+            19,
+            23
           ]
         }
       ],
@@ -1377,6 +2047,14 @@
         {
           "enemy": "hornslaktare",
           "weight": 25,
+          "group": [
+            1,
+            1
+          ]
+        },
+        {
+          "enemy": "askriddare",
+          "weight": 15,
           "group": [
             1,
             1

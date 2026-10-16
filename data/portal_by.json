@@ -1,7 +1,7 @@
 {
   "meta": {
     "id": "portal_by",
-    "version": "4.0",
+    "version": "5.0",
     "game": "runornas_kall",
     "baseline_from_demo": {
       "player_hp": 100,
@@ -34,7 +34,8 @@
     "family": "ododa",
     "changes_v2": "Mana ersatt med uthållighet för spelaren. Mörk magi behålls för Runpräst och Benkungen. Skadetyper och familj tillagda. Spelarens nivåtillväxt flyttad till klasser.json.",
     "changes_v3": "Sällsynthet och loot ersatta av D2 lootsystemet (loot_*.json).",
-    "changes_v4": "Byn är nu nivå 7 till 9, Benkungen nivå 10. Monster har ref_level 2 (boss 4) och skalas med monster_niva.json."
+    "changes_v4": "Byn är nu nivå 7 till 9, Benkungen nivå 10. Monster har ref_level 2 (boss 4) och skalas med monster_niva.json.",
+    "changes_v5": "Fasta stats per typ (monsterfamiljer.json är källa). Skelettkapten tillagd. Skada är fast värde."
   },
   "portal": {
     "id": "rod_portal",
@@ -82,25 +83,19 @@
     {
       "id": "skelett_krigare",
       "name": "Skelettkrigare",
-      "hp": 60,
-      "damage": [
-        9,
-        13
-      ],
-      "defense": 2,
+      "hp": 97,
+      "damage": 15,
+      "defense": 4,
       "speed": 3.4,
       "attack_cd": 1.0,
       "attack_range": 1.8,
       "aggro_range": 10,
-      "xp": 20,
+      "xp": 111,
       "ai": "Samma som skogsmonstret: vandrar, jagar inom 10, närstrid.",
       "attacks": [
         {
           "id": "svardshugg",
-          "damage": [
-            9,
-            13
-          ],
+          "damage": 15,
           "cd": 1.0
         }
       ],
@@ -111,30 +106,24 @@
       "resist": [
         "stick"
       ],
-      "ref_level": 2
+      "level": 7
     },
     {
       "id": "skelett_bagskytt",
       "name": "Skelettbågskytt",
-      "hp": 40,
-      "damage": [
-        7,
-        10
-      ],
-      "defense": 0,
+      "hp": 71,
+      "damage": 13,
+      "defense": 2,
       "speed": 3.0,
       "attack_cd": 1.8,
       "attack_range": 12,
       "aggro_range": 14,
-      "xp": 25,
+      "xp": 170,
       "ai": "Håller avstånd 6 till 10, backar om spelaren är närmare än 5, skjuter pil (projektil fart 14).",
       "attacks": [
         {
           "id": "benpil",
-          "damage": [
-            7,
-            10
-          ],
+          "damage": 13,
           "cd": 1.8,
           "projectile_speed": 14
         }
@@ -146,31 +135,25 @@
       "resist": [
         "stick"
       ],
-      "ref_level": 2
+      "level": 8
     },
     {
       "id": "skelett_vakt",
-      "name": "Gravvakt",
-      "hp": 120,
-      "damage": [
-        14,
-        20
-      ],
-      "defense": 6,
+      "name": "Skelettväktare",
+      "hp": 234,
+      "damage": 27,
+      "defense": 9,
       "speed": 2.4,
       "attack_cd": 1.6,
       "attack_range": 2.0,
       "aggro_range": 8,
-      "xp": 45,
+      "xp": 364,
       "knockback_resist": 0.7,
       "ai": "Långsam tank. Sköldblock: 50 % mindre skada framifrån. Patrullerar fast rutt.",
       "attacks": [
         {
           "id": "skoldstot",
-          "damage": [
-            14,
-            20
-          ],
+          "damage": 27,
           "cd": 1.6,
           "knockback": 6
         }
@@ -182,22 +165,19 @@
       "resist": [
         "stick"
       ],
-      "ref_level": 2
+      "level": 9
     },
     {
       "id": "skelett_hund",
       "name": "Benhund",
-      "hp": 30,
-      "damage": [
-        5,
-        8
-      ],
-      "defense": 0,
+      "hp": 48,
+      "damage": 9,
+      "defense": 2,
       "speed": 5.0,
       "attack_cd": 0.6,
       "attack_range": 1.4,
       "aggro_range": 12,
-      "xp": 12,
+      "xp": 67,
       "pack_size": [
         2,
         4
@@ -206,10 +186,7 @@
       "attacks": [
         {
           "id": "bett",
-          "damage": [
-            5,
-            8
-          ],
+          "damage": 9,
           "cd": 0.6
         }
       ],
@@ -220,30 +197,24 @@
       "resist": [
         "stick"
       ],
-      "ref_level": 2
+      "level": 7
     },
     {
       "id": "skelett_runprast",
       "name": "Runpräst",
-      "hp": 50,
-      "damage": [
-        12,
-        16
-      ],
-      "defense": 1,
+      "hp": 89,
+      "damage": 21,
+      "defense": 3,
       "speed": 2.8,
       "attack_cd": 3.0,
       "attack_range": 10,
       "aggro_range": 12,
-      "xp": 35,
+      "xp": 238,
       "ai": "Stödjer: återupplivar ett dött skelett inom 8 var 10:e sekund (max 2 gånger), annars kastar röd eldboll. Teleporterar 5 bort om träffad i närstrid (cd 6).",
       "attacks": [
         {
           "id": "rod_eldboll",
-          "damage": [
-            12,
-            16
-          ],
+          "damage": 21,
           "cd": 3.0,
           "projectile_speed": 9
         },
@@ -262,17 +233,53 @@
         "stick"
       ],
       "uses_dark_magic": true,
-      "ref_level": 2
+      "level": 8
+    },
+    {
+      "id": "skelett_kapten",
+      "name": "Skelettkapten",
+      "level": 9,
+      "hp": 187,
+      "damage": 22,
+      "defense": 7,
+      "speed": 3.4,
+      "attack_cd": 1.0,
+      "aggro_range": 10,
+      "xp": 324,
+      "ai": "Leder 2 till 3 skelettkrigare. Ropar order: krigarna i närheten får +15 % skada. Hugger i båge.",
+      "attacks": [
+        {
+          "id": "kaptenshugg",
+          "damage": 22,
+          "cd": 1.0,
+          "arc_deg": 120
+        },
+        {
+          "id": "order",
+          "cd": 10,
+          "buff": {
+            "damage_pct": 0.15,
+            "radius": 8
+          }
+        }
+      ],
+      "family": "ododa",
+      "weak": [
+        "kross"
+      ],
+      "resist": [
+        "stick"
+      ]
     }
   ],
   "boss": {
     "id": "benkungen_valdemar",
     "name": "Benkungen Valdemar",
-    "hp": 900,
-    "defense": 5,
+    "hp": 1594,
+    "defense": 7,
     "speed": 3.0,
     "aggro_range": 14,
-    "xp": 400,
+    "xp": 3795,
     "arena_tiles": [
       [
         12,
@@ -297,20 +304,14 @@
         "attacks": [
           {
             "id": "liehugg",
-            "damage": [
-              18,
-              24
-            ],
+            "damage": 32,
             "cd": 1.4,
             "range": 2.6,
             "arc_deg": 120
           },
           {
             "id": "benstorm",
-            "damage": [
-              6,
-              8
-            ],
+            "damage": 11,
             "cd": 8,
             "desc": "Kastar 8 benspjut i cirkel, projektil fart 10."
           }
@@ -326,10 +327,7 @@
         "attacks": [
           {
             "id": "liehugg",
-            "damage": [
-              20,
-              26
-            ],
+            "damage": 35,
             "cd": 1.2,
             "range": 2.6,
             "arc_deg": 120
@@ -344,10 +342,7 @@
           },
           {
             "id": "gravslag",
-            "damage": [
-              25,
-              30
-            ],
+            "damage": 41,
             "cd": 10,
             "radius": 4,
             "telegraph_s": 1.2,
@@ -366,27 +361,21 @@
         "attacks": [
           {
             "id": "liehugg",
-            "damage": [
-              22,
-              28
-            ],
+            "damage": 38,
             "cd": 1.0,
             "range": 2.8,
             "arc_deg": 160
           },
           {
             "id": "rod_runcirkel",
-            "damage_per_s": 10,
+            "damage_per_s": 15,
             "cd": 12,
             "duration": 5,
             "desc": "Tre röda runcirklar på golvet som skadar tills spelaren står på dem i turordning."
           },
           {
             "id": "benstorm",
-            "damage": [
-              6,
-              8
-            ],
+            "damage": 11,
             "cd": 6
           }
         ],
@@ -402,7 +391,6 @@
     ],
     "uses_dark_magic": true,
     "lore": "En gång byns hövding, återuppväckt av demonernas runor. Hans krona höll byn bunden till döden.",
-    "ref_level": 4,
     "level": 10
   },
   "loot_tables": {
