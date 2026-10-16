@@ -1,0 +1,59 @@
+{
+  "akt_1": {
+    "namn": "Act I: Forest of Runes",
+    "tema": "Forest, wolves and the village of the dead. The hero wakes the runes and learns of the Fall.",
+    "regioner": {
+      "startlagret": { "namn": "Camp at the Forest's Edge", "beskrivning": "Camp of the Remnant. Safe zone and starting point." },
+      "startskogen": { "namn": "Wildwood", "beskrivning": "The three runestones, with the Red Portal at their heart." },
+      "vargstigen": { "namn": "The Wolf Trail", "beskrivning": "The road east to Wolfstead, lined with abandoned charcoal huts." },
+      "vargaby": { "namn": "Wolfstead" },
+      "ulvhilds_ide": { "namn": "Ulvhild's Den", "beskrivning": "The Greybear's den. Bones and chains." },
+      "gamla_byn": { "namn": "The Old Village", "beskrivning": "Reached through the Red Portal, or on foot across Barrow Ridge." },
+      "gravasen": { "namn": "Barrow Ridge", "beskrivning": "Footpath from Wolfstead to the Old Village, for those who shun the portal." },
+      "kapellets_krypta": {
+        "namn": "The Chapel Crypt",
+        "beskrivning": "Throne hall of the Bone King, where the Gravewardens made their last stand."
+      }
+    }
+  },
+  "akt_2": {
+    "namn": "Act II: The Misted Coast",
+    "tema": "Coast, bog and the drowned. Bells that toll beneath the water.",
+    "regioner": {
+      "dimvagen": { "namn": "The Mist Road" },
+      "dimmerstrand": { "namn": "Mistshore" },
+      "korpholmarna": { "namn": "The Raven Isles", "beskrivning": "Home of the Raven Mother, reached by paths bared at low tide." },
+      "sjunkna_kyrkan": { "namn": "The Sunken Church", "beskrivning": "Here the bells toll. Throne of the Bog Queen." }
+    }
+  },
+  "akt_3": {
+    "namn": "Act III: The Copper Mountain",
+    "tema": "Mines, cloister and the deep. What waited beneath the mountain.",
+    "regioner": {
+      "bergsvagen": { "namn": "The Mountain Road" },
+      "kopparberg": { "namn": "Copperfell" },
+      "jarnklostret": { "namn": "The Iron Cloister", "beskrivning": "The brothers who locked themselves in. The Iron Monk's Girdle." },
+      "gruvdjupen": { "namn": "The Mine Depths", "beskrivning": "The Broodmother's chamber, at the very bottom." }
+    }
+  },
+  "akt_4": {
+    "namn": "Act IV: Ashenhold",
+    "tema": "Ash fields, a burning city and a cult. The Rift in the sky.",
+    "regioner": {
+      "askfalten": { "namn": "The Ash Fields", "beskrivning": "Rask's hideout in a ruin." },
+      "askeborg": { "namn": "Ashenhold" },
+      "kultens_katakomber": { "namn": "Catacombs of the Cult", "beskrivning": "Rites of the Children of Ash around the Fourth Stone." },
+      "katedralen": { "namn": "The Burnt Cathedral", "beskrivning": "Seat of Morvath." }
+    }
+  },
+  "akt_5": {
+    "namn": "Act V: Heart of the Blight",
+    "tema": "The Rotmarch and the Rift's Floor. Where the Blight was born.",
+    "regioner": {
+      "sista_ljuset": { "namn": "Last Light", "beskrivning": "The last stronghold of men before the Rotmarch." },
+      "ruttmarken": { "namn": "The Rotmarch", "beskrivning": "Final domain of the Twisted." },
+      "smittans_katedral": { "namn": "Cathedral of the Blight" },
+      "sprickans_botten": { "namn": "The Rift's Floor", "beskrivning": "Where the runes were once snuffed out." }
+    }
+  }
+}
