@@ -24,7 +24,6 @@ for (const k of [
 
 const { EventBus } = await import('../src/core/EventBus');
 const { DATA } = await import('../src/data/index');
-const { heroOf, heroWriter } = await import('../src/core/context.ext');
 const { MemoryStore } = await import('../src/core/storage');
 const { AudioModule } = await import('../src/audio/AudioModule');
 const { AudioEventBinder } = await import('../src/audio/AudioEventBinder');
@@ -34,14 +33,15 @@ const { MenuModule } = await import('../src/menu/MenuModule');
 const { MapModule } = await import('../src/map/MapModule');
 const { FogRepository } = await import('../src/map/FogRepository');
 import type { GameEvents } from '../src/core/events';
-import type { GameContext } from '../src/core/GameContext';
+import type { GameContext, HeroState } from '../src/core/GameContext';
+import type { HeroGateway } from '../src/save/HeroGateway';
 
 const bus = new EventBus<GameEvents>();
 const store = new MemoryStore();
 // legacy-data för engångsmigrering
 store.set('rk_inv_barbar', JSON.stringify({ inv: [{ base: 'langsvard' }], equip: {}, gold: 42 }));
 
-// Skelettets HeroState/ZoneView (#18) + valfria fält från context.ext.ts
+// HeroState/ZoneView enligt #18
 const zoneExtras = {
   circle: 45,
   colliders: [],
@@ -54,18 +54,76 @@ const zoneExtras = {
 };
 const ctx: GameContext = {
   bus,
-  hero: { id: null, name: '', cls: 'riddare', level: 1, xp: 0, gold: 0, hp: 1, maxHp: 1, stamina: 1, maxStamina: 1, pos: { x: 0, y: 0 } },
+  hero: {
+    id: null,
+    name: '',
+    cls: 'riddare',
+    level: 1,
+    xp: 0,
+    gold: 0,
+    hp: 1,
+    maxHp: 1,
+    stamina: 1,
+    maxStamina: 1,
+    pos: { x: 0, y: 0 },
+    inv: [],
+    equip: {},
+    stage: 0,
+    runes: 0,
+    city: 'besatt',
+    zone: 'forest',
+    facing: 0,
+    playing: false,
+    resumePos: null,
+    fresh: false,
+  },
   zone: { name: 'forest', areaId: 'startskogen', width: 44, height: 44, ...zoneExtras } as GameContext['zone'],
   session: { seed: 1, killed: new Set() },
   data: DATA,
 };
-const H = heroWriter(ctx);
+// Motorstub: hjälten är skrivbar bara här (som i Game), moduler ser Readonly<HeroState>
+const H = ctx.hero as HeroState;
+// Gateway-stub med samma semantik som Game.loadHero/getSnapshot (#18)
+const gateway: HeroGateway = {
+  loadHero(s) {
+    Object.assign(H, s.hero);
+    const g = s.game;
+    H.stage = g?.stage ?? 0;
+    H.runes = g?.runes ?? 0;
+    H.city = g?.city ?? 'besatt';
+    H.zone = g?.zone ?? 'forest';
+    H.resumePos = g?.pos ? { ...g.pos } : null;
+    H.playing = false;
+    ctx.session.seed = g?.seed ?? 1;
+    ctx.session.killed.clear();
+    for (const id of g?.killed ?? []) ctx.session.killed.add(id);
+    if (H.id) bus.emit('hero_loaded', { heroId: H.id });
+  },
+  getSnapshot() {
+    return {
+      hero: { id: H.id, name: H.name, cls: H.cls, level: H.level, xp: H.xp, gold: H.gold, inv: H.inv, equip: H.equip, fresh: H.fresh },
+      game: {
+        seed: ctx.session.seed,
+        killed: [...ctx.session.killed],
+        zone: H.zone,
+        pos: { ...H.pos },
+        stage: H.stage,
+        runes: H.runes,
+        city: H.city,
+      },
+    };
+  },
+};
+// förväntan på motorn: huvudmenyn öppnas -> spelet pausas
+bus.on('ui_open', ({ panel }) => {
+  if (panel === 'menu') H.playing = false;
+});
 // motorstub: new_game -> bygg zon -> zone_enter (asynkront, som en riktig laddning)
 const log: string[] = [];
 bus.on('new_game', ({ seed }) => {
   log.push(`new_game:${seed}`);
   setTimeout(() => {
-    const zone = H.zone ?? 'forest';
+    const zone = H.zone;
     ctx.zone = { ...ctx.zone, name: zone };
     H.pos = H.resumePos ?? { x: 0, y: 0 };
     H.playing = true;
@@ -91,7 +149,7 @@ offs.forEach((o) => o());
 
 // --- moduler
 const audio = new AudioModule(store);
-const save = new SaveModule(store);
+const save = new SaveModule(gateway, store);
 const menu = new MenuModule(save);
 const map = new MapModule(store, () => document.body, false);
 for (const m of [audio, save, menu, map]) m.init(ctx);
@@ -132,7 +190,7 @@ input.value = 'Ragnar';
 assert.equal(menu.isOpen, false);
 await new Promise((r) => setTimeout(r, 60));
 assert.equal(ctx.hero.name, 'Ragnar');
-assert.equal(heroOf(ctx).playing, true);
+assert.equal(ctx.hero.playing, true);
 assert.ok(log.length === 1, 'new_game emit:at en gång');
 assert.equal(store.get('rk_inv_riddare'), null, 'rk_inv_ skrivs inte längre');
 const ragnarId = ctx.hero.id!;
@@ -167,7 +225,7 @@ assert.ok(store.get(FogRepository.key(ragnarId, 'forest')));
 
 // tillbaka till menyn + fortsätt: återupptar position
 menu.show();
-assert.equal(heroOf(ctx).playing, false);
+assert.equal(ctx.hero.playing, false);
 (document.getElementById('hmCont') as HTMLButtonElement).click();
 await new Promise((r) => setTimeout(r, 60));
 assert.deepEqual(ctx.hero.pos, { x: 5, y: 5 });
