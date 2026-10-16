@@ -1,5 +1,4 @@
 import { Disposables } from '../core/Disposables';
-import { heroOf, zoneOf } from '../core/context.ext';
 import type { GameContext, GameModule } from '../core/GameContext';
 import { LocalStore, type KeyValueStore } from '../core/storage';
 import { FogOfWar } from './FogOfWar';
@@ -93,7 +92,7 @@ export class MapModule implements GameModule {
   }
 
   private playing(): boolean {
-    return !!this.ctx && !!heroOf(this.ctx).playing && !this.input?.panelOpen;
+    return !!this.ctx && !!this.ctx.hero.playing && !this.input?.panelOpen;
   }
 
   toggle(force?: boolean): void {
@@ -106,7 +105,7 @@ export class MapModule implements GameModule {
 
   reveal(): void {
     const ctx = this.ctx;
-    if (!ctx || !heroOf(ctx).playing) return;
+    if (!ctx || !ctx.hero.playing) return;
     if (this.fog.reveal(ctx.zone.name, ctx.hero.pos.x, ctx.hero.pos.y) && !this.saveTimer) {
       this.saveTimer = setTimeout(() => this.flush(), MapModule.SAVE_MS);
     }
@@ -137,8 +136,8 @@ export class MapModule implements GameModule {
       if (this.open) this.toggle(false);
       return;
     }
-    const z = zoneOf(ctx);
-    const h = heroOf(ctx);
+    const z = ctx.zone;
+    const h = ctx.hero;
     v.mini.draw(z, h, t);
     if (this.open) v.big.draw(z, h, t);
   }
