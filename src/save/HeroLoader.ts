@@ -6,14 +6,16 @@ import { newGameRecord, newSeed, type SaveFile } from './types';
 
 /**
  * Startar en hjälte via Game.loadHero (skriver hjälte + session, skickar hero_loaded),
- * emit:ar new_game och väntar på zone_enter för startzonen (riktig signal i stället för wait(1300)).
+ * startar autosparning direkt (så att ett avbrott under laddningen inte tappar `game`),
+ * emit:ar new_game och väntar sedan på att zonen är redo: zone_enter för startzonen, eller
+ * att Game redan har zonen laddad (ctx.zone.name === hero.zone). Ingen fast fördröjning som wait(1300).
  */
 export class HeroLoader {
   constructor(
     private readonly ctx: GameContext,
     private readonly game: HeroGateway,
     private readonly autosave: AutoSaveService,
-    private readonly zoneTimeoutMs = 10_000,
+    private readonly zoneTimeoutMs = 2_000,
   ) {}
 
   async start(save: SaveFile, resume: boolean): Promise<void> {
@@ -45,15 +47,24 @@ export class HeroLoader {
       },
     });
     if (fresh) delete h.fresh;
+    this.autosave.begin(save);
+    this.autosave.saveNow('start');
     const zone = this.ctx.hero.zone;
     const ready = nextEvent(this.ctx.bus, 'zone_enter', (p) => p.name === zone, this.zoneTimeoutMs);
     this.ctx.bus.emit('new_game', { seed: g.seed });
+    if (this.zoneLoaded(zone)) {
+      ready.catch(() => undefined);
+      return;
+    }
     try {
       await ready;
     } catch (e) {
       console.warn('[HeroLoader] zone_enter uteblev', e);
     }
-    this.autosave.begin(save);
-    this.autosave.saveNow('start');
+  }
+
+  /** Game har redan zonen laddad (t.ex. när motorn inte emit:ar zone_enter för startzonen). */
+  private zoneLoaded(zone: string): boolean {
+    return this.ctx.zone.name === zone;
   }
 }
