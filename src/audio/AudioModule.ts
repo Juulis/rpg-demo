@@ -25,6 +25,7 @@ export class AudioModule implements GameModule {
   }
 
   init(ctx: GameContext): void {
+    this.engine.useRandom(() => ctx.rng.next());
     for (const off of new AudioEventBinder(this.engine).bind(ctx.bus)) this.d.add(off);
     const unlock = (): void => this.engine.unlock();
     for (const t of ['pointerdown', 'keydown', 'touchstart'] as const) this.d.listen(window, t, unlock, { capture: true, passive: true });

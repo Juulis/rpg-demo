@@ -40,8 +40,9 @@ function must<T>(v: T | null | undefined, what: string): T {
   return v;
 }
 import type { HeroGateway } from '../src/save/HeroGateway';
-import { KeyValueSaveBackend } from '../src/save/backend/KeyValueSaveBackend';
+import { LocalStorageSaveBackend } from '../src/save/backend/LocalStorageSaveBackend';
 import { HeroLoader } from '../src/save/HeroLoader';
+import { Rng } from '../src/core/Rng';
 import type { AutoSaveService } from '../src/save/AutoSaveService';
 
 const bus = new EventBus<GameEvents>();
@@ -88,6 +89,7 @@ const ctx: GameContext = {
   zone: { name: 'forest', areaId: 'startskogen', width: 44, height: 44, ...zoneExtras } as GameContext['zone'],
   session: { seed: 1, killed: new Set() },
   data: DATA,
+  rng: new Rng(42),
 };
 // Motorstub: hjälten är skrivbar bara här (som i Game), moduler ser Readonly<HeroState>
 const H = ctx.hero as HeroState;
@@ -157,7 +159,7 @@ offs.forEach((o) => o());
 
 // --- moduler
 const audio = new AudioModule(store);
-const save = new SaveModule(gateway, new KeyValueSaveBackend(store), true, () => 123456789);
+const save = new SaveModule(gateway, new LocalStorageSaveBackend(store), true, () => 123456789);
 const menu = new MenuModule(save);
 const map = new MapModule(store, () => document.body, false);
 for (const m of [audio, save, menu, map]) m.init(ctx);
@@ -298,12 +300,38 @@ for (const m of [map, menu, save, audio]) m.dispose();
     'save/HeroRoster.ts',
     'save/AutoSaveService.ts',
     'save/HeroLoader.ts',
-    'save/LegacyImporter.ts',
+    'save/convert.ts',
   ])
     assert.doesNotMatch(src(f), /\b(window|document|localStorage)\b/, `${f} ska vara DOM-fri`);
   for (const dir of ['audio', 'save', 'save/backend', 'map', 'menu'])
     for (const f of readdirSync(new URL(`../src/${dir}`, import.meta.url)).filter((n) => n.endsWith('.ts')))
       assert.doesNotMatch(src(`${dir}/${f}`), /Math\.random/, `${dir}/${f} använder Math.random`);
+}
+
+// --- LocalStorageSaveBackend implementerar core-SaveBackend: rundtur, senast sparad först, radering
+{
+  const kv = new MemoryStore();
+  const be = new LocalStorageSaveBackend(kv);
+  const mk = (id: string, name: string, gold: number) => ({
+    hero: { id, name, cls: 'barbar', level: 2, xp: 5, gold, inv: [], equip: {}, fresh: false },
+    game: { seed: 9, killed: ['k1'], zone: 'forest', pos: { x: 1.234, y: 2 }, stage: 0, runes: 1, city: 'besatt' },
+  });
+  await be.save('a', mk('a', 'Alva', 1));
+  await new Promise((r) => setTimeout(r, 5));
+  await be.save('b', mk('b', 'Bror', 2));
+  assert.deepEqual(
+    (await be.list()).map((h) => h.id),
+    ['b', 'a'],
+  );
+  const a = must(await be.load('a'), 'a');
+  assert.deepEqual(a.game?.pos, { x: 1.23, y: 2 });
+  assert.deepEqual(a.game?.killed, ['k1']);
+  await be.remove('b');
+  assert.deepEqual(
+    (await be.list()).map((h) => h.id),
+    ['a'],
+  );
+  assert.equal(await be.load('b'), null);
 }
 
 console.log('HEADLESS_OK');
