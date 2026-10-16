@@ -66,5 +66,3 @@ export const newGameRecord = (seed: number): GameRecord => ({
   runes: 0,
   city: 'besatt',
 });
-
-export const newSeed = (): number => (Math.random() * 0x7fffffff) >>> 0 || 1;

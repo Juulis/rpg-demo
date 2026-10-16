@@ -79,7 +79,7 @@ export class SfxLibrary {
     return assetUrl(`sfx/${variant}.ogg`);
   }
 
-  pickVariant(name: SoundName, rnd: () => number = Math.random): string {
+  pickVariant(name: SoundName, rnd: () => number): string {
     const v = this.def(name).variants;
     return v[Math.floor(rnd() * v.length)] ?? v[0] ?? name;
   }
