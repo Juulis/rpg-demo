@@ -1,36 +1,37 @@
 /** Typad event-bus. Eventnamn och payloads definieras i GameEvents (core/events.ts). Ersätter window.__rpg.on/emit. */
 export type Listener<P> = (payload: P) => void;
 
-export class EventBus<Events extends object> {
-  private readonly listeners = new Map<keyof Events, Set<Listener<never>>>();
+export class EventBus<M extends Record<string, unknown>> {
+  private readonly listeners = new Map<keyof M, Set<Listener<never>>>();
 
-  on<K extends keyof Events>(event: K, fn: Listener<Events[K]>): () => void {
-    let set = this.listeners.get(event);
-    if (!set) this.listeners.set(event, (set = new Set()));
+  /** Prenumerera. Returnerar en funktion som avregistrerar lyssnaren. */
+  on<K extends keyof M>(k: K, fn: (p: M[K]) => void): () => void {
+    let set = this.listeners.get(k);
+    if (!set) this.listeners.set(k, (set = new Set()));
     set.add(fn as Listener<never>);
-    return () => this.off(event, fn);
+    return () => this.off(k, fn);
   }
 
-  once<K extends keyof Events>(event: K, fn: Listener<Events[K]>): () => void {
-    const off = this.on(event, (p) => {
+  once<K extends keyof M>(k: K, fn: (p: M[K]) => void): () => void {
+    const off = this.on(k, (p) => {
       off();
       fn(p);
     });
     return off;
   }
 
-  off<K extends keyof Events>(event: K, fn: Listener<Events[K]>): void {
-    this.listeners.get(event)?.delete(fn as Listener<never>);
+  off<K extends keyof M>(k: K, fn: (p: M[K]) => void): void {
+    this.listeners.get(k)?.delete(fn as Listener<never>);
   }
 
-  emit<K extends keyof Events>(event: K, payload: Events[K]): void {
-    const set = this.listeners.get(event);
+  emit<K extends keyof M>(k: K, p: M[K]): void {
+    const set = this.listeners.get(k);
     if (!set) return;
     for (const fn of [...set]) {
       try {
-        (fn as Listener<Events[K]>)(payload);
+        (fn as Listener<M[K]>)(p);
       } catch (err) {
-        console.error(`[EventBus] ${String(event)}`, err);
+        console.error(`[EventBus] ${String(k)}`, err);
       }
     }
   }

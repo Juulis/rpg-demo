@@ -1,27 +1,29 @@
-import type { EliteKind } from '../data/types';
+/* eslint-disable @typescript-eslint/no-invalid-void-type -- void = event utan payload (godkänt kontrakt) */
+/**
+ * Alla spelhändelser med payload (godkänt kontrakt mellan Utvecklare 1 och 2).
+ * EN namnform per händelse – inga alias (t.ex. inget death/rune_activate). Nya events läggs till här.
+ */
+export type UiPanel = 'inventory' | 'map' | 'lore' | 'menu' | 'settings';
 
-/** Alla spelhändelser med payload. Lägg till nya här så att emit/on typkontrolleras. */
-export interface GameEvents {
-  hit: { monsterUid: string; monsterId: string; damage: number; crit: boolean; strong: boolean };
-  miss: { monsterUid: string };
-  kill: { uid: string; monsterId: string; area: string; level: number; elite: EliteKind | null; boss: boolean };
-  hero_hurt: { damage: number; blocked: boolean };
-  hero_death: Record<string, never>;
-  loot_drop: { quality: string; base?: string; gold?: number };
+// `type` (inte interface) så att den uppfyller Record<string, unknown> i EventBus.
+export type GameEvents = {
+  hit: { target: string; dmg: number; crit: boolean };
+  kill: { id: string; area: string; lvl: number; champion: boolean; unique: boolean; boss: boolean };
+  loot_drop: { quality: string };
   pickup: { itemId: string; first: boolean };
-  gold: { amount: number; total: number };
-  bag_full: Record<string, never>;
-  rune: { activated: number; total: number };
-  portal_open: Record<string, never>;
-  portal_sealed: { message: string };
-  zone_enter: { zone: string; area: string };
-  boss_start: { uid: string; monsterId: string };
-  boss_phase: { phase: number; name: string };
-  step: Record<string, never>;
+  gold: { amount: number };
+  rune: { n: number };
+  portal_open: void;
+  zone_enter: { name: string };
+  boss_start: void;
+  boss_phase: { phase: number };
+  step: void;
   level_up: { level: number };
-  xp: { xp: number; level: number };
-  equip: { slot: string; itemId: string | null };
   new_game: { seed: number };
+  hero_loaded: { heroId: string };
+  hero_deleted: { heroId: string };
   lore_unlock: { id: string };
-  save: { reason: string };
-}
+  map_toggle: { open: boolean };
+  ui_open: { panel: UiPanel };
+  ui_close: { panel: UiPanel };
+};
