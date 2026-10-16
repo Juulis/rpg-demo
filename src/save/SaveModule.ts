@@ -1,12 +1,11 @@
-import { cryptoSeed, type SeedSource } from '../core/entropy';
+import { Rng } from '../core/Rng';
+import type { SaveBackend } from '../core/SaveBackend';
 import type { GameContext, GameModule } from '../core/GameContext';
 import { AutoSaveService } from './AutoSaveService';
-import type { SaveBackend } from './backend/SaveBackend';
 import { LocalStorageSaveBackend } from './backend/LocalStorageSaveBackend';
 import type { HeroGateway } from './HeroGateway';
 import { HeroLoader } from './HeroLoader';
 import { HeroRoster } from './HeroRoster';
-import { LegacyImporter } from './LegacyImporter';
 import { PageLifecycleSaver } from './PageLifecycleSaver';
 import { SaveIndicator } from './SaveIndicator';
 import { SaveRepository } from './SaveRepository';
@@ -33,8 +32,8 @@ export class SaveModule implements GameModule {
     private readonly game: HeroGateway,
     backend: SaveBackend = new LocalStorageSaveBackend(),
     private readonly withDom = true,
-    /** Plattformens slumpkälla för seeds och id:n (crypto.getRandomValues). */
-    private readonly entropy: SeedSource = cryptoSeed,
+    /** Slumpkälla för seeds och id:n (core: Rng.newSeed, crypto). */
+    private readonly entropy: () => number = Rng.newSeed,
   ) {
     this.repo = new SaveRepository(backend);
   }
@@ -51,7 +50,6 @@ export class SaveModule implements GameModule {
     lifecycle?.start();
     this.parts = { roster, loader: new HeroLoader(ctx, this.game, autosave, this.entropy), autosave, lifecycle, indicator };
     this.readyP = (async () => {
-      await new LegacyImporter(this.repo, roster).run();
       await roster.refresh();
       this.loaded = true;
     })();
