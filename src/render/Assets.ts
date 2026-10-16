@@ -1,4 +1,5 @@
 import { Assets as PixiAssets, Rectangle, Texture } from 'pixi.js';
+import { HeroSprites } from './HeroSprites';
 
 const BASE = import.meta.env.BASE_URL + 'assets/';
 export const assetUrl = (p: string): string => BASE + p;
@@ -18,8 +19,10 @@ export interface Anim {
   single?: boolean;
   /** Extra skala för just den här animationen (t.ex. hjältens gång- och vilark har olika upplösning). */
   scale?: number;
+  /** Icke-loopande attack: träff på denna bildruta (0-baserad). */
+  hitFrame?: number;
 }
-export type AnimName = 'idle' | 'gang' | 'attack' | 'dod';
+export type AnimName = 'idle' | 'gang' | 'run' | 'attack' | 'dod';
 export type AnimSet = Partial<Record<AnimName, Anim>>;
 
 interface SheetAnim {
@@ -83,7 +86,7 @@ export class AssetStore {
   readonly decor = new Map<string, { tex: Texture; size: Size }>();
   readonly monsters = new Map<string, AnimSet>();
   readonly npcs = new Map<string, Anim>();
-  hero: AnimSet = {};
+  readonly heroes = new HeroSprites();
   readonly backgrounds = new Map<string, Texture>();
   readonly effects = new Map<string, Texture>();
   iconIndex: Record<string, string> = {};
@@ -112,26 +115,7 @@ export class AssetStore {
     );
   }
   private async loadHero(): Promise<void> {
-    const walk = await json<{ frameW: number; frameH: number; frames: number; fps: number; anchor: [number, number] }>(
-      '2d/sprites/hero/knight_walk_8dir.json',
-    );
-    const idle = await json<{
-      frameW: number;
-      frameH: number;
-      anchor: [number, number];
-      rects: { x: number; y: number; w: number; h: number }[];
-    }>('2d/sprites/hero/riddare_idle_8dir.json');
-    const [wt, it] = await Promise.all([tex('2d/sprites/hero/knight_walk_8dir.png'), tex('2d/sprites/hero/riddare_idle_8dir.png')]);
-    this.hero.gang = { ...sheet(wt, { file: '', ...walk }), scale: 1.25 };
-    this.hero.idle = {
-      frames: idle.rects.map((r) => [cut(it, r.x, r.y, r.w, r.h)]),
-      anchor: idle.anchor,
-      w: idle.frameW,
-      h: idle.frameH,
-      fps: 1,
-      loop: true,
-      scale: 0.55,
-    };
+    await this.heroes.load();
   }
   private async loadMonsters(): Promise<void> {
     // Datadrivet: index.json listar alla ark (<id>/<id>.json), monster.json alla enkelbilder.

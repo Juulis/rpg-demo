@@ -22,9 +22,13 @@ export class DirSprite extends Container {
     this.apply();
   }
 
-  play(name: AnimName): void {
-    const n = this.set[name] ? name : 'idle';
-    if (n === this.anim) return;
+  play(name: AnimName, restart = false): void {
+    let n: AnimName = name;
+    if (!this.set[n]) {
+      if (n === 'run') n = this.set.gang ? 'gang' : 'idle';
+      else n = this.set.idle ? 'idle' : 'gang';
+    }
+    if (n === this.anim && !restart) return;
     this.anim = n;
     this.t = 0;
     this.done = false;
@@ -42,7 +46,20 @@ export class DirSprite extends Container {
   }
 
   private cur(): Anim | undefined {
-    return this.set[this.anim] ?? this.set.idle ?? this.set.gang;
+    return this.set[this.anim] ?? this.set.idle ?? this.set.gang ?? this.set.run;
+  }
+
+  /** Aktuell animation (för träffsynk). */
+  currentAnim(): Anim | undefined {
+    return this.cur();
+  }
+
+  hasAnim(name: AnimName): boolean {
+    return !!this.set[name];
+  }
+
+  getAnim(name: AnimName): Anim | undefined {
+    return this.set[name];
   }
 
   private apply(): void {

@@ -283,7 +283,7 @@ export class Game {
     r.ground.addChild(built.ground);
     for (const d of built.decor) r.objects.addChild(d);
     const hs = this.heroState;
-    const heroView = new DirSprite(this.assets.hero, 1, 26);
+    const heroView = new DirSprite(this.assets.heroes.setFor(hs.cls), 1, 26);
     heroView.sprite.tint = CLASS_TINT[hs.cls] ?? 0xffffff;
     r.objects.addChild(heroView);
     const hero =
@@ -556,8 +556,18 @@ export class Game {
     }
     const len = Math.hypot(vx, vy);
     h.moving = len > 0 && h.atkT <= 0;
+    const sprintCfg = DATA.classes.meta.sprint;
+    const wantSprint =
+      (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) && h.moving && !h.blocking && !!sprintCfg;
+    let sprinting = false;
+    if (wantSprint && h.s.stamina > 0) {
+      sprinting = true;
+      h.s.stamina = Math.max(0, h.s.stamina - sprintCfg.stamina_per_s * dt);
+      h.stDelay = DATA.classes.meta.resource?.regen_delay_s ?? 1;
+    }
     if (h.moving) {
-      const sp = h.stats.speed * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
+      const runMult = sprinting && sprintCfg ? sprintCfg.speed_mult : 1;
+      const sp = h.stats.speed * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
       const step = Math.min(
         sp * dt,
         h.moveTarget && !this.targetMonster ? Math.hypot(h.moveTarget.x - h.pos.x, h.moveTarget.y - h.pos.y) : Infinity,
@@ -570,12 +580,16 @@ export class Game {
       if (h.moveTarget && Math.hypot(before.x - h.pos.x, before.y - h.pos.y) > step * 0.9) h.moveTarget = null;
       if (Math.floor(w.time * 3) !== Math.floor((w.time - dt) * 3)) this.bus.emit('step', undefined);
     }
+    if (h.atkPendingHit && h.atkHitT <= 0) this.combat.resolveAttackHit();
     const v = h.view;
     v.dir = dirIndex(Math.sin(s.facing), Math.cos(s.facing));
-    v.play(h.moving ? 'gang' : 'idle');
+    if (h.atkT > 0 && v.hasAnim('attack')) v.play('attack');
+    else if (h.moving) v.play(sprinting && v.hasAnim('run') ? 'run' : 'gang');
+    else v.play('idle');
     v.update(dt);
     v.sprite.tint = h.blocking ? 0xa0c8ff : (CLASS_TINT[s.cls] ?? 0xffffff);
-    if (h.atkT > 0) v.sprite.y = -Math.sin((h.atkT / 0.3) * Math.PI) * 6;
+    v.sprite.x = 0;
+    if (h.atkT > 0 && !v.hasAnim('attack')) v.sprite.y = -Math.sin((h.atkT / 0.3) * Math.PI) * 6;
     else v.sprite.y = 0;
     const sp = Iso.worldToScreen(h.pos.x, h.pos.y);
     v.position.set(sp.x, sp.y);

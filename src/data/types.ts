@@ -127,7 +127,12 @@ export interface HeroClass {
   skills: Skill[];
 }
 export interface Classes {
-  meta: { crit_multiplier: number; max_level?: number };
+  meta: {
+    crit_multiplier: number;
+    max_level?: number;
+    sprint?: { speed_mult: number; stamina_per_s: number };
+    resource?: { regen_delay_s: number };
+  };
   classes: HeroClass[];
 }
 

@@ -185,9 +185,27 @@ export class CombatSystem {
 
   attack(): void {
     const h = this.w().hero;
-    if (!h.s.playing || h.atkCd > 0) return;
+    if (!h.s.playing || h.atkCd > 0 || h.atkT > 0) return;
+    const attackAnim = h.view.getAnim('attack');
     h.atkCd = 0.5 / h.stats.atkSpeed;
+    if (attackAnim?.hitFrame !== undefined && attackAnim.frames[0]?.length) {
+      const n = attackAnim.frames[0].length;
+      h.atkT = n / attackAnim.fps;
+      h.atkHitT = attackAnim.hitFrame / attackAnim.fps;
+      h.atkPendingHit = true;
+      h.view.play('attack', true);
+      return;
+    }
+    h.atkPendingHit = false;
     h.atkT = 0.3;
+    this.arcHit(h.stats.reach, 0.3, 1);
+  }
+
+  /** Träfffas i attackanimationen (anropas från Game när atkHitT når 0). */
+  resolveAttackHit(): void {
+    const h = this.w().hero;
+    if (!h.atkPendingHit) return;
+    h.atkPendingHit = false;
     this.arcHit(h.stats.reach, 0.3, 1);
   }
 

@@ -75,6 +75,7 @@ export class Input {
         return;
       }
     }
+    if (e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') e.preventDefault();
     if ((e.target as HTMLElement | null)?.closest?.('input,textarea')) return;
     this.keys.add(e.code);
     if (e.repeat) return;
