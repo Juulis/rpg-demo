@@ -191,5 +191,9 @@
   "move_speed": {
     "formula": "fart = klass_fart × (1 + move_speed_pct − summa fartstraff)",
     "penalty_cap": 0.2
+  },
+  "damage": {
+    "formula": "slagskada = klassens skadebonus (base.damage + tillväxt × (nivå − 1)) + vapnets skada (slumpad min till max), sedan krit, familjsmultiplikator och mottagarens försvar.",
+    "ref": "klasser.json"
   }
 }
