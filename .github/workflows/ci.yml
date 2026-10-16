@@ -17,3 +17,8 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run build
+      - name: Sätt ihop Pages-artefakten (3D på roten, TS under next/)
+        run: node scripts/assemble-pages.mjs
+      - run: npx playwright install --with-deps chromium
+      - name: Röktest – roten spelbar, next/ laddar
+        run: npm run smoke
