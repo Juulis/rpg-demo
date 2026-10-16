@@ -71,6 +71,32 @@ export class AudioEngine {
       this.synth(ctx, master, name, rate, gain);
       return;
     }
+    this.playBuffer(ctx, master, buf, rate, gain);
+  }
+
+  /** Spelar en URL (t.ex. NPC-röst). Tyst vid 404/decode-fel. */
+  playUrl(url: string, opts: PlayOptions = {}): void {
+    const ctx = this.ctx;
+    const master = this.master;
+    if (!ctx || !master || !this.volume.audible) return;
+    if (ctx.state === 'suspended') void ctx.resume();
+    const rate = (opts.rate ?? 1) * (1 + (this.rnd() * 2 - 1) * (opts.vary ?? 0.05));
+    const gain = (opts.gain ?? 1) * 0.9;
+    const cached = this.buffers.get(url);
+    if (cached) {
+      this.playBuffer(ctx, master, cached, rate, gain);
+      return;
+    }
+    void this.fetcher(url)
+      .then((ab) => ctx.decodeAudioData(ab))
+      .then((b) => {
+        this.buffers.set(url, b);
+        this.playBuffer(ctx, master, b, rate, gain);
+      })
+      .catch(() => undefined);
+  }
+
+  private playBuffer(ctx: AudioContext, master: GainNode, buf: AudioBuffer, rate: number, gain: number): void {
     const src = ctx.createBufferSource();
     const g = ctx.createGain();
     src.buffer = buf;

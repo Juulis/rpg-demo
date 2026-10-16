@@ -2,8 +2,11 @@ import { Disposables } from '../core/Disposables';
 import type { GameContext, GameModule } from '../core/GameContext';
 import { isTypingTarget } from '../core/keys';
 import { LocalStore, type KeyValueStore } from '../core/storage';
+import type { LocaleManager } from '../i18n/LocaleManager';
+import { VoiceResolver } from '../i18n/VoiceResolver';
 import { AudioEngine } from './AudioEngine';
 import { AudioEventBinder } from './AudioEventBinder';
+import { NpcVoicePlayer } from './NpcVoicePlayer';
 import { SfxLibrary } from './SfxLibrary';
 import { VolumeControl } from './VolumeControl';
 import { VolumeWidget } from './VolumeWidget';
@@ -12,26 +15,30 @@ import { VolumeWidget } from './VolumeWidget';
 export class AudioModule implements GameModule {
   readonly volume: VolumeControl;
   readonly engine: AudioEngine;
+  readonly npcVoice: NpcVoicePlayer;
   private readonly d = new Disposables();
   private widget: VolumeWidget | null = null;
 
   constructor(
+    private readonly i18n: LocaleManager,
     store: KeyValueStore = new LocalStore(),
     private readonly widgetHost: () => HTMLElement | null = () => document.getElementById('plate'),
     engine?: AudioEngine,
   ) {
     this.volume = new VolumeControl(store);
     this.engine = engine ?? new AudioEngine(new SfxLibrary(), this.volume);
+    this.npcVoice = new NpcVoicePlayer(this.engine, new VoiceResolver(this.i18n));
   }
 
   init(ctx: GameContext): void {
     for (const off of new AudioEventBinder(this.engine).bind(ctx.bus)) this.d.add(off);
+    this.d.add(ctx.bus.on('npc_voice', ({ npc, lineId }) => void this.npcVoice.play(npc, lineId)));
     const unlock = (): void => this.engine.unlock();
     for (const t of ['pointerdown', 'keydown', 'touchstart'] as const) this.d.listen(window, t, unlock, { capture: true, passive: true });
     this.d.listen(window, 'keydown', (e) => this.onKey(e));
     const host = this.widgetHost();
     if (host) {
-      this.widget = new VolumeWidget(this.volume, {
+      this.widget = new VolumeWidget(this.volume, this.i18n, {
         onInteract: unlock,
         onToggle: () => this.toggleMute(),
         onCommit: () => this.engine.play('click'),

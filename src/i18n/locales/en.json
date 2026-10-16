@@ -1,0 +1,202 @@
+{
+  "common": {
+    "title": "Call of the Runes",
+    "cancel": "Cancel",
+    "back": "Back"
+  },
+  "lang": {
+    "label": "Language",
+    "sv": "Svenska",
+    "en": "English"
+  },
+  "classes": {
+    "amazonkrigare": "Amazon Warrior",
+    "barbar": "Barbarian",
+    "riddare": "Knight"
+  },
+  "menu": {
+    "choose_hero": "Choose hero",
+    "new_hero": "New hero",
+    "continue": "Continue",
+    "new_game": "New game",
+    "create_hero": "New hero",
+    "delete_hero": "Delete hero",
+    "delete_confirm": "Delete {name} forever?",
+    "delete_yes": "Yes, delete",
+    "slot_info": "{cls} · Level {level}",
+    "unnamed": "Nameless",
+    "slots_free": {
+      "one": "{count} free slot",
+      "other": "{count} free slots"
+    },
+    "create_play": "Create and play",
+    "name_placeholder": "Name ({min}–{max} characters)"
+  },
+  "errors": {
+    "name_length": "The name must be {min}–{max} characters.",
+    "name_chars": "Only letters, digits, spaces, - and _.",
+    "name_taken": "A hero with that name already exists.",
+    "slots_full": "All hero slots are taken."
+  },
+  "save": {
+    "saved": "Saved"
+  },
+  "audio": {
+    "volume": "Volume",
+    "sound_on": "Sound on (M)",
+    "sound_off": "Sound off (M)"
+  },
+  "map": {
+    "zones": {
+      "forest": "The Misty Forest",
+      "village": "The Old Village"
+    },
+    "areas": {
+      "portalgladet": "Portal Glade",
+      "byporten": "Village Gate",
+      "torget": "The Square",
+      "vasterhus": "West Houses",
+      "osterhus": "East Houses",
+      "kyrkogarden": "The Graveyard",
+      "benkungens_kapell": "Chapel of the Bone King"
+    },
+    "goal_rune": "Next goal: runestone",
+    "goal_portal": "Next goal: the portal",
+    "portal_to_village": "Portal → The Old Village",
+    "portal_to_forest": "Portal → The Forest",
+    "legend": "Tab: close map · ◆ runestone · ● portal · ▲ you · ◯ next goal",
+    "north": "N"
+  },
+  "hud": {
+    "level": "Level {level}",
+    "xp": "XP {xp} / {need}",
+    "hp": "Life",
+    "stamina": "Stamina",
+    "potions": "{count} left",
+    "help": "Click: move/attack · Right-click/Q: skill · E: rune · B/I: gear · Alt/Z: items · 3/4: potions"
+  },
+  "msg": {
+    "rune_awake": "The rune awakens! ({n}/3)",
+    "portal_open": "A red portal opens in the glade…",
+    "zone_forest": "The Misty Forest",
+    "zone_village": "The Old Village",
+    "found": "Found: {name}",
+    "fell": "{name} has fallen!",
+    "bag_full": "Your bag is full",
+    "need_level": "Requires a higher level",
+    "no_stamina": "Not enough stamina…",
+    "no_potions": "No potions left",
+    "level_up": "Level {level}!",
+    "boss_wakes": "{name} awakens!",
+    "boss_vulnerable": "{name} is vulnerable!",
+    "court": "The court of the dead is summoned!",
+    "boss_dead": "{name} is defeated! The village is free.",
+    "died": "You have fallen. Click to restart at the portal.",
+    "gold": "+{amount} gold"
+  },
+  "fx": {
+    "miss": "Miss",
+    "dodge": "Dodged",
+    "block": "Block",
+    "immune": "Immune",
+    "strong": "Crushing blow",
+    "thorns": "-{n} thorns"
+  },
+  "tooltip": {
+    "rune": "Runestone",
+    "rune_inactive": "Step close to awaken the rune (20 stamina)",
+    "rune_active": "The rune is awake",
+    "portal": "Red portal",
+    "portal_to_village": "Leads to the old village",
+    "portal_to_forest": "Leads back to the forest",
+    "level": "Level {level}",
+    "hit_chance": "Hit chance {pct}",
+    "damage": "Damage: {min}–{max}",
+    "two_handed": "two-handed",
+    "defense": "Defense: {n}",
+    "block": "Block: {pct}",
+    "heals": "Heals {n} life",
+    "heals_pct": "Heals {pct} life and stamina",
+    "gives_stamina": "Grants {n} stamina",
+    "move_penalty": "Speed penalty {pct}",
+    "requires_level": "Requires level {level}",
+    "compare": "Compared to",
+    "empty_slot": "empty slot",
+    "no_diff": "No difference",
+    "cannot_wear": "Cannot be worn yet",
+    "rclick_drink": "Right-click: drink",
+    "rclick_equip": "Right-click: equip",
+    "rclick_unequip": "Right-click: unequip",
+    "set_parts": "{n} pieces",
+    "set_class_only": "bonuses only for {cls}",
+    "gold": "{n} gold"
+  },
+  "monster": {
+    "champion": "Champion",
+    "unique": "Unique",
+    "minion": "Minion",
+    "boss": "Boss",
+    "phase": "Phase {n}: {name}"
+  },
+  "inv": {
+    "title": "Equipment",
+    "hint": "B / I to open · Esc to close",
+    "gold": "Gold"
+  },
+  "stat": {
+    "life": "Life",
+    "stamina": "Stamina",
+    "damage": "Damage",
+    "damage_avg": "Damage (avg)",
+    "defense": "Defense",
+    "block": "Block",
+    "hit": "Hit chance",
+    "ar": "Attack rating",
+    "strong": "Crushing blow",
+    "crit": "Crit",
+    "mf": "Magic find",
+    "speed": "Speed"
+  },
+  "slot": {
+    "hjalm": "Helm",
+    "amulett": "Amulet",
+    "brost": "Chest",
+    "vapen": "Weapon",
+    "offhand": "Shield / off-hand",
+    "handskar": "Gloves",
+    "balte": "Belt",
+    "stovlar": "Boots",
+    "ring1": "Ring",
+    "ring2": "Ring"
+  },
+  "affix_stat": {
+    "damage_pct": "% damage",
+    "damage_flat": "damage",
+    "attack_rating": "attack rating (AR)",
+    "defense_pct": "% defense",
+    "defense": "defense",
+    "block_chance": "% block",
+    "magic_find": "% Magic Find",
+    "lifesteal": "% life steal",
+    "vs_demoner_damage_pct": "% damage vs demons",
+    "vs_ododa_damage_pct": "% damage vs undead",
+    "vs_bestar_damage_pct": "% damage vs beasts",
+    "life": "life",
+    "stamina": "stamina",
+    "stamina_regen_pct": "% stamina regen",
+    "attack_speed_pct": "% attack speed",
+    "move_speed_pct": "% move speed",
+    "strong_hit_chance": "% crushing blow",
+    "bleed_dps": "bleed/s",
+    "thorns": "thorns (reflect)",
+    "gold_find": "% more gold",
+    "life_regen": "life/s",
+    "crit_chance": "% crit",
+    "damage_reduction_flat": "damage reduction",
+    "life_on_hit": "life per hit",
+    "range_bonus": "range",
+    "resist_dark_magic": "% resist dark magic",
+    "max_hp_bonus": "life",
+    "speed_bonus": "% move speed"
+  }
+}

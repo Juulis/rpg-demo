@@ -23,7 +23,10 @@ for (const k of [
 }
 
 const { EventBus } = await import('../src/core/EventBus');
+const { Rng } = await import('../src/core/Rng');
 const { DATA } = await import('../src/data/index');
+const { readdirSync, readFileSync } = await import('node:fs');
+const { DataOverlayLoader } = await import('../src/i18n/DataOverlayLoader');
 const { MemoryStore } = await import('../src/core/storage');
 const { AudioModule } = await import('../src/audio/AudioModule');
 const { AudioEventBinder } = await import('../src/audio/AudioEventBinder');
@@ -32,6 +35,7 @@ const { SaveMigrator } = await import('../src/save/SaveMigrator');
 const { MenuModule } = await import('../src/menu/MenuModule');
 const { MapModule } = await import('../src/map/MapModule');
 const { FogRepository } = await import('../src/map/FogRepository');
+const { LocaleManager, LocalizedTextResolver, DataLocalizer, VoiceResolver } = await import('../src/i18n/index');
 import type { GameEvents } from '../src/core/events';
 import type { GameContext, HeroState } from '../src/core/GameContext';
 
@@ -40,7 +44,7 @@ function must<T>(v: T | null | undefined, what: string): T {
   return v;
 }
 import type { HeroGateway } from '../src/save/HeroGateway';
-import { KeyValueSaveBackend } from '../src/save/backend/KeyValueSaveBackend';
+import { LocalStorageSaveBackend } from '../src/save/backend/LocalStorageSaveBackend';
 import { HeroLoader } from '../src/save/HeroLoader';
 import type { AutoSaveService } from '../src/save/AutoSaveService';
 
@@ -88,11 +92,13 @@ const ctx: GameContext = {
   zone: { name: 'forest', areaId: 'startskogen', width: 44, height: 44, ...zoneExtras } as GameContext['zone'],
   session: { seed: 1, killed: new Set() },
   data: DATA,
+  rng: new Rng(1),
 };
 // Motorstub: hjälten är skrivbar bara här (som i Game), moduler ser Readonly<HeroState>
 const H = ctx.hero as HeroState;
 // Gateway-stub med samma semantik som Game.loadHero/getSnapshot (#18)
 const gateway: HeroGateway = {
+  setSaveBackend() {},
   loadHero(s) {
     Object.assign(H, s.hero);
     const g = s.game;
@@ -156,11 +162,16 @@ assert.deepEqual(played, ['boss', 'drop_rare', 'pickup_first', 'step', 'step']);
 offs.forEach((o) => o());
 
 // --- moduler
-const audio = new AudioModule(store);
-const save = new SaveModule(gateway, new KeyValueSaveBackend(store), true, () => 123456789);
-const menu = new MenuModule(save);
-const map = new MapModule(store, () => document.body, false);
-for (const m of [audio, save, menu, map]) m.init(ctx);
+const backend = new LocalStorageSaveBackend(store);
+const warnings: string[] = [];
+const i18n = new LocaleManager({ dev: true, warn: (m) => warnings.push(m) });
+const locales: string[] = [];
+bus.on('locale_changed', (p) => locales.push(p.locale));
+const audio = new AudioModule(i18n, store);
+const save = new SaveModule(i18n, gateway, backend, true, () => 123456789);
+const menu = new MenuModule(save, i18n);
+const map = new MapModule(i18n, store, () => document.body, false);
+for (const m of [i18n, audio, save, menu, map]) m.init(ctx);
 await save.ready;
 await new Promise((r) => setTimeout(r, 0));
 
@@ -182,9 +193,91 @@ assert.equal(migrated.hero.inv[0]?.base, 'rostig_kortsvard', 'gammalt startgear 
 // meny visas, validering
 assert.equal(menu.isOpen, true);
 assert.equal(document.querySelectorAll('.hslot').length, 8);
-assert.match(save.roster.validName('x'), /2–16/);
-assert.match(save.roster.validName('Barbar'), /redan/);
-assert.equal(save.roster.validName('Åsa_1'), '');
+assert.equal(save.roster.validName('x')?.key, 'errors.name_length');
+assert.equal(save.roster.validName('Barbar')?.key, 'errors.name_taken');
+assert.equal(save.roster.validName('Åsa_1'), null);
+
+// --- i18n: standard svenska, språkbyte uppdaterar menytexten och sparas
+const txt = (id: string): string => document.getElementById(id)?.textContent ?? '';
+assert.equal(i18n.locale, 'sv');
+assert.equal(txt('hmCont'), 'Fortsätt');
+assert.equal(document.querySelector('.hero-menu .rubrik')?.textContent, 'Välj hjälte');
+assert.equal(document.querySelector('.slots-free')?.textContent, '7 lediga platser');
+(document.querySelector('.lang-picker [data-locale="en"]') as HTMLButtonElement).click();
+await new Promise((r) => setTimeout(r, 20));
+assert.equal(i18n.locale, 'en');
+assert.equal(store.get('rpg_locale'), 'en', 'valet sparas');
+assert.deepEqual(locales, ['en'], 'locale_changed på bussen');
+assert.equal(txt('hmCont'), 'Continue');
+assert.equal(txt('hmNewHero'), 'New hero');
+assert.equal(document.querySelector('.hero-menu .rubrik')?.textContent, 'Choose hero');
+assert.equal(document.querySelector('.slots-free')?.textContent, '7 free slots');
+assert.match(document.querySelector('.hslot small')?.textContent ?? '', /^Barbarian · Level 1$/);
+assert.equal(document.querySelector('.lang-picker .sel')?.getAttribute('data-locale'), 'en');
+assert.equal(i18n.t('menu.slots_free', { count: 1 }), '1 free slot', 'pluralisering');
+// nytt LocaleManager läser sparat val via SaveBackend
+const i18n2 = new LocaleManager();
+await i18n2.bindSettings(backend);
+assert.equal(i18n2.locale, 'en');
+// fallback till svenska med varning (dev)
+const fb = new LocaleManager({
+  dev: true,
+  warn: (m) => warnings.push(m),
+  dicts: { sv: { a: { b: 'Hej {n}' } }, en: {} },
+});
+await fb.setLocale('en');
+assert.equal(fb.t('a.b' as never, { n: 1 }), 'Hej 1');
+assert.ok(
+  warnings.some((w) => w.includes('a.b')),
+  'varning i dev-läge',
+);
+// LocalizedText
+const lt = new LocalizedTextResolver(i18n);
+assert.equal(lt.resolve({ sv: 'Svärd', en: 'Sword' }), 'Sword');
+assert.equal(lt.resolve({ sv: 'Sköld' }), 'Sköld');
+assert.equal(lt.resolve({ key: 'menu.continue' }), 'Continue');
+// DataLocalizer: en-overlay per fil och id, fallback svenska
+const dl = new DataLocalizer(i18n);
+dl.addOverlay('en', 'foremal_bas.json', { ristarens_mejsel: { namn: "The Carver's Chisel" } });
+const item = dl.localize('foremal_bas', 'ristarens_mejsel', {
+  id: 'ristarens_mejsel',
+  namn: 'Ristarens mejsel',
+  beskrivning: 'Vass.',
+  niva: 3,
+});
+assert.equal(item.namn, "The Carver's Chisel");
+assert.equal(item.beskrivning, 'Vass.');
+assert.equal(item.niva, 3);
+assert.equal(dl.field('foremal_bas', 'okand', 'namn', 'Okänd'), 'Okänd');
+// VoiceResolver: en om filen finns, annars sv; BASE_URL-prefix
+const vr = new VoiceResolver(i18n, async (u) => u.includes('/en/tor_kolare/tor_bark_01'), '/rpg-demo/next/');
+assert.equal(await vr.resolve('tor_kolare', 'tor_bark_01'), '/rpg-demo/next/assets/audio/npc/en/tor_kolare/tor_bark_01.ogg');
+assert.equal(await vr.resolve('tor_kolare', 'tor_avsked_01'), null, 'null om ingen fil finns');
+const vrSv = new VoiceResolver(i18n, async (u) => u.includes('/npc/tor_kolare/tor_avsked_01'), '/rpg-demo/next/');
+assert.equal(await vrSv.resolve('tor_kolare', 'tor_avsked_01'), '/rpg-demo/next/assets/audio/npc/tor_kolare/tor_avsked_01.ogg');
+bus.emit('npc_voice', { npc: 'tor_kolare', lineId: 'saknas' });
+// Speldesigns en-overlays (src/data/i18n/en) ovanpå riktig speldata: föremål och monster
+const dir = new URL('../src/data/i18n/en/', import.meta.url);
+const files = Object.fromEntries(
+  readdirSync(dir)
+    .filter((f) => f.endsWith('.json') && !f.startsWith('_'))
+    .map((f) => [`../data/i18n/en/${f}`, JSON.parse(readFileSync(new URL(f, dir), 'utf8')) as unknown]),
+);
+const real = new DataLocalizer(i18n);
+assert.ok(new DataOverlayLoader(real).load(files) >= 15, 'overlays laddade (utan _glossary)');
+const sword = DATA.items.weapons.find((w) => w.id === 'rostig_kortsvard');
+assert.ok(sword);
+assert.equal(real.localize('foremal_bas', sword.id, sword).name, 'Rusty Short Sword');
+const wolf = DATA.families.monsters.find((m) => m.id === 'skogsvarg');
+assert.ok(wolf);
+assert.equal(real.localize('monsterfamiljer', wolf.id, wolf).name, 'Wolf');
+assert.equal(real.localize('monsterfamiljer', wolf.id, wolf).hp, wolf.hp, 'siffror orörda');
+assert.equal(real.field('monsterfamiljer', 'skogsvarg', 'name', wolf.name), 'Wolf');
+// tillbaka till svenska för resten av testet
+(document.querySelector('.lang-picker [data-locale="sv"]') as HTMLButtonElement).click();
+await new Promise((r) => setTimeout(r, 20));
+assert.equal(txt('hmCont'), 'Fortsätt');
+assert.equal(store.get('rpg_locale'), 'sv');
 
 // Tab när menyn är öppen: släpps igenom
 const tab = (): KeyboardEvent => new dom.window.KeyboardEvent('keydown', { key: 'Tab', cancelable: true }) as unknown as KeyboardEvent;
@@ -256,7 +349,7 @@ const mig = new SaveMigrator();
 assert.equal(mig.migrate({ version: 99, hero: { id: 'a' } }), null);
 assert.equal(mig.migrate({ id: 'a', name: 'A', cls: 'barbar', seed: 5, killed: ['k'] })?.game?.seed, 5);
 
-for (const m of [map, menu, save, audio]) m.dispose();
+for (const m of [map, menu, save, audio, i18n]) m.dispose();
 
 // --- HeroLoader: autosparning startar före väntan, och väntan hänger inte utan zone_enter
 {
@@ -298,10 +391,11 @@ for (const m of [map, menu, save, audio]) m.dispose();
     'save/HeroRoster.ts',
     'save/AutoSaveService.ts',
     'save/HeroLoader.ts',
-    'save/LegacyImporter.ts',
+    'save/GlobalFoundMigration.ts',
+    'save/convert.ts',
   ])
     assert.doesNotMatch(src(f), /\b(window|document|localStorage)\b/, `${f} ska vara DOM-fri`);
-  for (const dir of ['audio', 'save', 'save/backend', 'map', 'menu'])
+  for (const dir of ['audio', 'save', 'save/backend', 'map', 'menu', 'i18n'])
     for (const f of readdirSync(new URL(`../src/${dir}`, import.meta.url)).filter((n) => n.endsWith('.ts')))
       assert.doesNotMatch(src(`${dir}/${f}`), /Math\.random/, `${dir}/${f} använder Math.random`);
 }

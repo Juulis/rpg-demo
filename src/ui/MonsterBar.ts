@@ -1,5 +1,4 @@
 import type { Monster } from '../entities/Monster';
-import { MODIFIER_NAME } from '../systems/SpawnSystem';
 import type { Text } from '../text/Text';
 
 /** Monstermätare överst (D2): namn i elitfärg, modifierare och exakt HP för monstret under pekaren / senast träffat. */
@@ -37,7 +36,7 @@ export class MonsterBar {
     const nameEl = this.el.querySelector('.mbName') as HTMLElement;
     const label = `${this.name(m)} · ${t.t('tooltip.level', { level: m.lvl })}${kind ? ' · ' + kind : ''} — ${Math.max(0, Math.ceil(m.hp))} / ${m.max}`;
     if (nameEl.textContent !== label) nameEl.textContent = label;
-    const mods = m.mods.map((x) => t.data('monster_niva', x, 'name', MODIFIER_NAME[x] ?? x)).join(', ');
+    const mods = m.mods.map((x) => t.data('monster_niva', x, 'name', x)).join(', ');
     const modEl = this.el.querySelector('.mbMods') as HTMLElement;
     if (modEl.textContent !== mods) modEl.textContent = mods;
   }

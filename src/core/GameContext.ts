@@ -2,6 +2,7 @@ import type { EventBus } from './EventBus';
 import type { GameEvents } from './events';
 import type { Session } from './Session';
 import type { Rng } from './Rng';
+import type { FoundEntry } from './SaveBackend';
 import type { GameData, VillageZoneDef } from '../data/types';
 
 /**
@@ -99,6 +100,8 @@ export interface HeroSave {
     runes: number;
     city: string;
   } | null;
+  /** Per-hjälte fynd (lorebok); sätts av SaveBackend vid load, inte av Game.getSnapshot(). */
+  foundItems?: Record<string, FoundEntry>;
 }
 
 /** Delas ut till varje modul via init(). Inga globaler. */

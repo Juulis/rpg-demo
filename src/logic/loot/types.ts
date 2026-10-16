@@ -128,15 +128,3 @@ export type Drop = { item: Item; gold?: undefined } | { gold: number; item?: und
 export const SLOTS = ['hjalm', 'amulett', 'brost', 'vapen', 'offhand', 'handskar', 'balte', 'stovlar', 'ring1', 'ring2'] as const;
 export type Slot = (typeof SLOTS)[number];
 export type Equip = Partial<Record<Slot, Item | null>>;
-export const SLOT_NAME: Readonly<Record<Slot, string>> = {
-  hjalm: 'Hjälm',
-  amulett: 'Amulett',
-  brost: 'Bröst',
-  vapen: 'Vapen',
-  offhand: 'Sköld / offhand',
-  handskar: 'Handskar',
-  balte: 'Bälte',
-  stovlar: 'Stövlar',
-  ring1: 'Ring',
-  ring2: 'Ring',
-};

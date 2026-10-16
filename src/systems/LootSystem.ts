@@ -82,7 +82,7 @@ export class LootSystem {
   }
 
   /** Plockar upp. Returnerar false om väskan är full. */
-  pickup(g: GroundDrop): boolean {
+  async pickup(g: GroundDrop): Promise<boolean> {
     const w = this.w();
     const h = w.hero;
     if (g.data.gold) {
@@ -98,15 +98,16 @@ export class LootSystem {
       w.fb.flash(w.text.t('msg.bag_full'));
       return false;
     }
-    w.bus.emit('pickup', { itemId: w.L.foundId(it), first: this.recordFound(it) });
+    const first = await this.recordFound(it);
+    w.bus.emit('pickup', { itemId: w.L.foundId(it), first });
     w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
     this.remove(g);
     return true;
   }
 
   /** Första upplock per föremåls-id registreras via FoundRegistry (SaveBackend), aldrig direkt i localStorage. */
-  private recordFound(it: Item): boolean {
-    return this.found().markFound(this.w().L.foundId(it), {
+  private async recordFound(it: Item): Promise<boolean> {
+    return await this.found().markFound(this.w().L.foundId(it), {
       first: new Date().toISOString(),
       quality: it.quality,
       base: it.base,
