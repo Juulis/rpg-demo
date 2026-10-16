@@ -1,5 +1,5 @@
 import type { Equipment, ItemInstance } from '../core/GameContext';
-import { isRecord } from '../core/storage';
+import { isRecord } from '../core/json';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
 const num = (v: unknown, d: number): number => (typeof v === 'number' && Number.isFinite(v) ? v : d);

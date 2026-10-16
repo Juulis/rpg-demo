@@ -1,8 +1,8 @@
-import { isRecord, readJson } from '../core/storage';
+import { isRecord } from '../core/json';
+import type { Equipment, ItemInstance } from '../core/GameContext';
 import type { HeroRoster } from './HeroRoster';
 import type { SaveRepository } from './SaveRepository';
 import { HERO_CLASSES } from './types';
-import type { ItemInstance, Equipment } from '../core/GameContext';
 
 /**
  * Engångsmigrering: äldre sparningar per klass ('rk_inv_<klass>') blir hjältar, men bara om inget hjälteindex finns.
@@ -16,20 +16,20 @@ export class LegacyImporter {
     private readonly roster: HeroRoster,
   ) {}
 
-  run(): number {
-    if (this.repo.hasIndex()) return 0;
-    this.repo.writeIndex([]);
+  async run(): Promise<number> {
+    if (await this.repo.hasIndex()) return 0;
+    await this.repo.writeIndex([]);
     let n = 0;
     for (const c of HERO_CLASSES) {
-      const o = readJson(this.repo.store, LegacyImporter.PREFIX + c.id);
+      const o = await this.repo.loadRaw(LegacyImporter.PREFIX + c.id);
       if (!isRecord(o) || !Array.isArray(o.inv)) continue;
       try {
-        const d = this.roster.create(c.name, c.id);
+        const d = await this.roster.create(c.name, c.id);
         d.hero.inv = o.inv as ItemInstance[];
         d.hero.equip = isRecord(o.equip) ? (o.equip as Equipment) : {};
         d.hero.gold = typeof o.gold === 'number' ? o.gold : 0;
         delete d.hero.fresh;
-        this.repo.save(d, false);
+        await this.roster.store(d);
         n++;
       } catch {
         /* hoppa över trasig post */
