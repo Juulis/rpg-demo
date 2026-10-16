@@ -1,0 +1,53 @@
+import { assetUrl } from '../core/assets';
+import { classById } from '../save/types';
+import { el } from './dom';
+
+/** Menygrafik som filer i public/assets/ui (tidigare base64 i js/menu-data.js). */
+export class MenuAssets {
+  static readonly FILES = ['bg', 'titel', 'plats', 'tom', 'knapp', 'textfalt', 'save', 'amazonkrigare', 'barbar', 'riddare'] as const;
+
+  url(name: (typeof MenuAssets.FILES)[number] | string): string {
+    return assetUrl(`ui/${name}.webp`);
+  }
+
+  portrait(cls: string): HTMLDivElement {
+    const p = el('div', { class: 'portrait' }, classById(cls)?.icon ?? '❔');
+    if (classById(cls)) {
+      const img = el('img', { src: this.url(cls), alt: '' });
+      img.addEventListener('error', () => img.remove()); // reserv: ikon
+      p.append(img);
+    }
+    return p;
+  }
+
+  title(): HTMLImageElement {
+    return el('img', { class: 'titel', src: this.url('titel'), alt: 'Runornas kall' });
+  }
+
+  css(): string {
+    const u = (n: string): string => `url(${this.url(n)})`;
+    return `.save-icon{position:fixed;right:14px;top:12px;z-index:30;width:24px;height:24px;background:center/contain no-repeat;opacity:0;transition:opacity .3s;pointer-events:none;filter:drop-shadow(0 0 4px #000)}.save-icon.on{opacity:.95}
+.hero-menu{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;background:#000 ${u('bg')} center/cover;gap:8px;overflow:auto}
+.hero-menu.hidden{display:none}
+.hero-menu .titel{width:min(34vw,420px);margin-top:1vh;filter:drop-shadow(0 0 18px rgba(192,24,42,.35))}
+.hero-menu .rubrik{font:26px Cinzel,serif;color:#e6dfcc;letter-spacing:2px;margin:2px 0}
+.hero-slots{display:grid;grid-template-columns:repeat(2,min(44vw,420px));gap:6px 14px}
+.hslot{position:relative;height:76px;background:${u('plats')} 0 0/100% 100% no-repeat;cursor:pointer;text-align:left;color:#cbb994}
+.hslot .portrait{position:absolute;left:7.8%;top:23.6%;width:9.96%;height:52.1%;border:0;background:#120f0b;font-size:20px}
+.hslot .info{position:absolute;left:24%;top:50%;transform:translateY(-50%)}
+.hslot b{display:block;color:#efe7d2;font:20px Cinzel,serif}.hslot small{font-size:13px;color:#a89a80}
+.hslot.sel{filter:drop-shadow(0 0 10px rgba(199,163,90,.8))}.hslot.sel b{color:#e0b060}
+.hslot.empty{background-image:${u('tom')};cursor:default}
+.portrait{width:48px;height:48px;flex:none;position:relative;display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;background:radial-gradient(#3a3226,#120f0b)}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-menu .btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:8px;color:#e6dfcc}
+.hero-menu button{border-style:solid;border-width:16px 44px;border-image:${u('knapp')} 20 60 fill / 16px 44px stretch;background:none;color:#e6dfcc;font:18px Cinzel,serif;padding:0 6px;min-width:170px;cursor:pointer;text-shadow:0 1px 2px #000}
+.hero-menu button:hover:not(:disabled){color:#fff;filter:brightness(1.25) drop-shadow(0 0 6px rgba(199,163,90,.5))}.hero-menu button:disabled{opacity:.4;cursor:default}
+.hero-new{display:flex;flex-direction:column;gap:10px;align-items:center}.hero-new .clsrow{display:flex;gap:22px}
+.hero-new .clsbtn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:.6;color:#cbb994;font:18px Cinzel,serif}
+.hero-new .clsbtn .portrait{width:120px;height:120px;border:3px solid #3a3f45}.hero-new .clsbtn.sel{opacity:1;color:#e0b060}.hero-new .clsbtn.sel .portrait{border-color:#c7a35a;box-shadow:0 0 24px 4px rgba(199,163,90,.5)}
+.hero-name{width:400px;height:56px;box-sizing:border-box;border-style:solid;border-width:16px 44px;border-image:${u('textfalt')} 20 55 fill / 16px 44px stretch;background:none;color:#e6dfcc;font:18px Cinzel,serif;text-align:center;outline:none}
+.hero-err{color:#e06060;min-height:18px;font-size:14px;text-shadow:0 1px 2px #000}
+.sfx-ctl{display:inline-flex;align-items:center;gap:4px}.sfx-ctl button{font-size:12px;padding:2px 6px;border-color:#6b5a3e;background:#2a2420}.sfx-ctl input{width:70px;accent-color:#f2c46b}`;
+  }
+}
