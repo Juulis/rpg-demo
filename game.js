@@ -805,7 +805,7 @@ setQuality(quality);
 tick();
 
 // ---------- debug ----------
-window.__rpg = {
+window.__rpg = Object.defineProperties(window.__rpg || {}, Object.getOwnPropertyDescriptors({ // behåll session/on/emit (js/save.js m.fl.), getters intakta
   state: S, hero, get zone() { return Z; }, get stats() { return stats; }, attack, skill, newGame, DEFS,
   setCamera(y, p) { yaw = y; yawVel = 0; if (p !== undefined) pitch = p; },
   activateAll() { hero.position.set(0, 0, 6); hero.rotation.y = Math.PI; yaw = 0; zones.forest.runes.forEach(r => activate(r, true)); },
@@ -828,4 +828,4 @@ window.__rpg = {
   sim(id, n = 1000, mf = 0) { const c = {}; for (let i = 0; i < n; i++) for (const d of L.rollDrops({ id, mlvl: L.monsterLevel(id), mf }).drops) { const k = d.gold ? 'guld' : d.item.quality; c[k] = (c[k] || 0) + 1; } return c; },
   get alt() { return altDown; },
   god(on = true) { S.god = on; }
-};
+}));
