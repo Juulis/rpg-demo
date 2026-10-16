@@ -1,6 +1,7 @@
 import type { EventBus } from './EventBus';
 import type { GameEvents } from './events';
 import type { Session } from './Session';
+import type { Rng } from './Rng';
 import type { GameData, VillageZoneDef } from '../data/types';
 
 /**
@@ -107,6 +108,8 @@ export interface GameContext {
   zone: Readonly<ZoneView>;
   session: Session;
   data: GameData;
+  /** Seedad slumptjänst (Math.random är förbjudet via ESLint). */
+  rng: Rng;
 }
 
 /** En utbytbar del av spelet (AudioManager, SaveManager, MapUI, StartMenu, Lorebook …). Registreras i src/main.ts. */

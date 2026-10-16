@@ -1,0 +1,66 @@
+{
+ "id": "gravgast",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 140,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 180,
+   "frameH": 171,
+   "anchor": [
+    90,
+    149
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 182,
+   "frameH": 171,
+   "anchor": [
+    91,
+    150
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 215,
+   "frameH": 178,
+   "anchor": [
+    107,
+    146
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 250,
+   "frameH": 213,
+   "anchor": [
+    125,
+    149
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_ghost.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}

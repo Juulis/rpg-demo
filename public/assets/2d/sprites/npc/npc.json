@@ -1,0 +1,148 @@
+{
+ "not": "Skala relativt riddaren (riddare_idle_8dir ritas ca 155 px hög). Vuxna NPC ca 150 px höga; barn mindre i proportion. Riktning SV. Porträtt 96x96 för dialog. Ankare = fotpunkt nederkant mitt.",
+ "npc": {
+  "gamla_ylva": {
+   "fil": "gamla_ylva.png",
+   "w": 55,
+   "h": 139,
+   "anchor": [
+    27,
+    137
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/gamla_ylva.png"
+  },
+  "tor_kolare": {
+   "fil": "tor_kolare.png",
+   "w": 83,
+   "h": 158,
+   "anchor": [
+    41,
+    156
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/tor_kolare.png"
+  },
+  "sigrun_helare": {
+   "fil": "sigrun_helare.png",
+   "w": 56,
+   "h": 155,
+   "anchor": [
+    28,
+    153
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/sigrun_helare.png"
+  },
+  "bror_vakt": {
+   "fil": "bror_vakt.png",
+   "w": 65,
+   "h": 163,
+   "anchor": [
+    32,
+    161
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/bror_vakt.png"
+  },
+  "lilla_mira": {
+   "fil": "lilla_mira.png",
+   "w": 46,
+   "h": 108,
+   "anchor": [
+    23,
+    106
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/lilla_mira.png"
+  },
+  "viskaren": {
+   "fil": "viskaren.png",
+   "w": 57,
+   "h": 155,
+   "anchor": [
+    28,
+    153
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/viskaren.png"
+  },
+  "hedda_jagare": {
+   "fil": "hedda_jagare.png",
+   "w": 73,
+   "h": 162,
+   "anchor": [
+    36,
+    160
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/hedda_jagare.png"
+  },
+  "gravvaktaren_ebbe": {
+   "fil": "gravvaktaren_ebbe.png",
+   "w": 74,
+   "h": 138,
+   "anchor": [
+    37,
+    136
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/gravvaktaren_ebbe.png"
+  },
+  "marta_torghandlare": {
+   "fil": "marta_torghandlare.png",
+   "w": 72,
+   "h": 139,
+   "anchor": [
+    36,
+    137
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/marta_torghandlare.png"
+  },
+  "gunnar_jarnhand": {
+   "fil": "gunnar_jarnhand.png",
+   "w": 65,
+   "h": 147,
+   "anchor": [
+    32,
+    145
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/gunnar_jarnhand.png"
+  },
+  "vaktkapten_ingrid": {
+   "fil": "vaktkapten_ingrid.png",
+   "w": 82,
+   "h": 163,
+   "anchor": [
+    41,
+    161
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/vaktkapten_ingrid.png"
+  },
+  "olle_vardshus": {
+   "fil": "olle_vardshus.png",
+   "w": 70,
+   "h": 138,
+   "anchor": [
+    35,
+    136
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/olle_vardshus.png"
+  },
+  "sara_benlasare": {
+   "fil": "sara_benlasare.png",
+   "w": 69,
+   "h": 146,
+   "anchor": [
+    34,
+    144
+   ],
+   "riktning": "SV",
+   "portratt": "portratt/sara_benlasare.png"
+  }
+ }
+}

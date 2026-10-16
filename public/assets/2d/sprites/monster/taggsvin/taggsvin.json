@@ -1,0 +1,66 @@
+{
+ "id": "taggsvin",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 108,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 116,
+   "frameH": 115,
+   "anchor": [
+    58,
+    110
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 116,
+   "frameH": 122,
+   "anchor": [
+    58,
+    113
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 141,
+   "frameH": 124,
+   "anchor": [
+    70,
+    116
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 224,
+   "frameH": 164,
+   "anchor": [
+    112,
+    122
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_pig.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}
