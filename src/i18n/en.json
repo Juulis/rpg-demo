@@ -1,0 +1,67 @@
+{
+  "common": {
+    "title": "Call of the Runes",
+    "cancel": "Cancel",
+    "back": "Back"
+  },
+  "lang": {
+    "label": "Language",
+    "sv": "Svenska",
+    "en": "English"
+  },
+  "classes": {
+    "amazonkrigare": "Amazon Warrior",
+    "barbar": "Barbarian",
+    "riddare": "Knight"
+  },
+  "menu": {
+    "choose_hero": "Choose hero",
+    "new_hero": "New hero",
+    "continue": "Continue",
+    "new_game": "New game",
+    "create_hero": "New hero",
+    "delete_hero": "Delete hero",
+    "delete_confirm": "Delete {name} forever?",
+    "delete_yes": "Yes, delete",
+    "slot_info": "{cls} · Level {level}",
+    "unnamed": "Nameless",
+    "slots_free": { "one": "{count} free slot", "other": "{count} free slots" },
+    "create_play": "Create and play",
+    "name_placeholder": "Name ({min}–{max} characters)"
+  },
+  "errors": {
+    "name_length": "The name must be {min}–{max} characters.",
+    "name_chars": "Only letters, digits, spaces, - and _.",
+    "name_taken": "A hero with that name already exists.",
+    "slots_full": "All hero slots are taken."
+  },
+  "save": {
+    "saved": "Saved"
+  },
+  "audio": {
+    "volume": "Volume",
+    "sound_on": "Sound on (M)",
+    "sound_off": "Sound off (M)"
+  },
+  "map": {
+    "zones": {
+      "forest": "The Misty Forest",
+      "village": "The Old Village"
+    },
+    "areas": {
+      "portalgladet": "Portal Glade",
+      "byporten": "Village Gate",
+      "torget": "The Square",
+      "vasterhus": "West Houses",
+      "osterhus": "East Houses",
+      "kyrkogarden": "The Graveyard",
+      "benkungens_kapell": "Chapel of the Bone King"
+    },
+    "goal_rune": "Next goal: runestone",
+    "goal_portal": "Next goal: the portal",
+    "portal_to_village": "Portal → The Old Village",
+    "portal_to_forest": "Portal → The Forest",
+    "legend": "Tab: close map · ◆ runestone · ● portal · ▲ you · ◯ next goal",
+    "north": "N"
+  }
+}
