@@ -1,4 +1,4 @@
-import type { HeroState, ZoneView } from '../core/GameContext';
+import type { MapZone, PlayHero } from '../core/context.ext';
 import type { GoalTracker } from './GoalTracker';
 import type { MapModel } from './MapModel';
 import type { MapPainter } from './MapPainter';
@@ -14,14 +14,22 @@ export class MapView {
   ) {
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'karta';
-    Object.assign(this.canvas.style, { position: 'fixed', inset: '0', width: '100%', height: '100%', zIndex: '4', display: 'none', pointerEvents: 'none' });
+    Object.assign(this.canvas.style, {
+      position: 'fixed',
+      inset: '0',
+      width: '100%',
+      height: '100%',
+      zIndex: '4',
+      display: 'none',
+      pointerEvents: 'none',
+    });
   }
 
   setVisible(v: boolean): void {
     this.canvas.style.display = v ? 'block' : 'none';
   }
 
-  draw(z: ZoneView, h: HeroState, time: number): void {
+  draw(z: MapZone, h: Readonly<PlayHero>, time: number): void {
     const prep = this.painter.prepare(this.canvas);
     if (!prep) return;
     const { c, W, H } = prep;

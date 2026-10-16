@@ -1,5 +1,5 @@
 import type { EventBus } from '../core/EventBus';
-import type { GameEvents } from '../core/events';
+import type { GameEvents, UiPanel } from '../core/events';
 import type { HeroLoader } from '../save/HeroLoader';
 import type { HeroRoster } from '../save/HeroRoster';
 import { MAX_HEROES, classById, type SaveFile } from '../save/types';
@@ -10,7 +10,7 @@ import type { MenuAssets } from './MenuAssets';
 
 /** Hjälteval: 8 platser, Fortsätt / Nytt game / Ny hjälte / Radera (med bekräftelse). Dubbelklick startar. */
 export class HeroSelectMenu {
-  static readonly PANEL = 'hero_menu';
+  static readonly PANEL: UiPanel = 'menu';
   readonly root: HTMLDivElement;
   private selected: string | null = null;
   private open = false;
@@ -76,7 +76,12 @@ export class HeroSelectMenu {
         'div',
         { class: `hslot${h.id === this.selected ? ' sel' : ''}`, 'data-id': h.id },
         assets.portrait(h.cls),
-        el('div', { class: 'info' }, el('b', { text: h.name }), el('small', { text: `${classById(h.cls)?.name ?? h.cls} · Nivå ${h.level}` })),
+        el(
+          'div',
+          { class: 'info' },
+          el('b', { text: h.name }),
+          el('small', { text: `${classById(h.cls)?.name ?? h.cls} · Nivå ${h.level}` }),
+        ),
       );
       slot.addEventListener('click', () => {
         this.selected = h.id;

@@ -1,4 +1,4 @@
-import type { HeroState, ZoneView } from '../core/GameContext';
+import type { MapZone, PlayHero } from '../core/context.ext';
 import type { GoalTracker } from './GoalTracker';
 import type { MapPainter } from './MapPainter';
 
@@ -14,8 +14,17 @@ export class MiniMapView {
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'minikarta';
     Object.assign(this.canvas.style, {
-      position: 'fixed', top: '150px', right: '16px', width: '150px', height: '150px', zIndex: '3', display: 'none',
-      pointerEvents: 'none', border: '1px solid #4a6a7a', borderRadius: '8px', background: '#0d0f12cc',
+      position: 'fixed',
+      top: '150px',
+      right: '16px',
+      width: '150px',
+      height: '150px',
+      zIndex: '3',
+      display: 'none',
+      pointerEvents: 'none',
+      border: '1px solid #4a6a7a',
+      borderRadius: '8px',
+      background: '#0d0f12cc',
     });
   }
 
@@ -23,7 +32,7 @@ export class MiniMapView {
     this.canvas.style.display = v ? 'block' : 'none';
   }
 
-  draw(z: ZoneView, h: HeroState, time: number): void {
+  draw(z: MapZone, h: Readonly<PlayHero>, time: number): void {
     const prep = this.painter.prepare(this.canvas);
     if (!prep) return;
     const { c, W, H } = prep;
