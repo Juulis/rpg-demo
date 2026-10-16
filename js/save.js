@@ -27,6 +27,12 @@ export const newSeed = () => (Math.random() * 0x7fffffff) >>> 0 || 1;
 // ---------- lagring ----------
 const read = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch { return null; } };
 const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { console.warn('Sparning misslyckades', e); return false; } };
+// Gammalt startgear (före hotfix) hade nivåkrav över 1: byts mot nya Normal tier 1-startgearet om hjälten inte klarar kravet.
+const OLD_START = { langsvard: ['rostig_kortsvard', 6], ringbrynja: ['laderharnesk', 7], tvahands_klubba: ['knotpak', 5] };
+function fixOldStartGear(h) {
+  const fix = it => { const o = it && OLD_START[it.base]; if (o && (h.level || 1) < o[1] && (it.quality || 'normal') === 'normal' && !(it.affixes || []).length) { it.base = o[0]; it.ilvl = 1; } };
+  Object.values(h.equip).forEach(fix); h.inv.forEach(fix);
+}
 export function migrate(d) {
   if (!d || typeof d !== 'object') return null;
   if (!d.version) { // v0: platt objekt {cls, level, xp, gold, inv, equip, seed, killed, ...} -> v1
@@ -36,6 +42,7 @@ export function migrate(d) {
   if (d.version > SAVE_VERSION) return null; // nyare format än koden förstår
   // framtida: if (d.version === 1) { ...; d.version = 2; }
   d.hero.inv ||= []; d.hero.equip ||= {}; if (d.game) d.game.killed = Array.isArray(d.game.killed) ? d.game.killed : [...(d.game.killed || [])];
+  fixOldStartGear(d.hero);
   return d;
 }
 export const listHeroes = () => (read(K_INDEX) || []).filter(h => h && h.id);

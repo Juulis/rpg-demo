@@ -16,7 +16,10 @@
     "growth_note": "Ersätter generell tillväxt i portal_by.json: per klass nedan.",
     "crit_multiplier": 1.75,
     "max_level": 30,
-    "xp_curve_ref": "monster_niva.json hero_xp_curve"
+    "xp_curve_ref": "monster_niva.json hero_xp_curve",
+    "start_gear_rule": "Startutrustning: bara Normal kvalitet, tier 1 baser med nivåkrav 1, inga affix.",
+    "damage_formula": "slagskada = klassens skadebonus (base.damage + tillväxt × (nivå − 1)) + vapnets skada (slumpad min till max), sedan krit, familjsmultiplikator och mottagarens försvar.",
+    "damage_note": "base.damage är sänkt till en skadebonus (7 till 9) så att startvapnet dödar en varg nivå 1 på 3 till 4 slag."
   },
   "classes": [
     {
@@ -26,7 +29,7 @@
       "base": {
         "hp": 90,
         "stamina": 120,
-        "damage": 22,
+        "damage": 7,
         "defense": 2,
         "speed": 6.2,
         "crit_chance": 0.12
@@ -40,10 +43,30 @@
       },
       "main_damage_type": "stick",
       "start_gear": [
-        "jaktspjut",
-        "laderharnesk",
-        "kastspjut_x5",
-        "liten_halsodryck_x3"
+        {
+          "item": "jaktspjut",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "laderharnesk",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "kastspjut",
+          "count": 5,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "liten_halsodryck",
+          "count": 3,
+          "quality": "normal",
+          "affixes": []
+        }
       ],
       "skills": [
         {
@@ -100,7 +123,13 @@
           "cooldown_s": 15,
           "effect": "Kast som orsakar blödning 8 skada/s i 6 s och 30 % fartsänkning."
         }
-      ]
+      ],
+      "start_check": {
+        "weapon": "jaktspjut",
+        "hit_avg": 13.5,
+        "hits_vs_varg_lvl1": 3.7,
+        "note": "Varg nivå 1: 50 HP, försvar 0."
+      }
     },
     {
       "id": "barbar",
@@ -109,7 +138,7 @@
       "base": {
         "hp": 120,
         "stamina": 100,
-        "damage": 30,
+        "damage": 9,
         "defense": 1,
         "speed": 5.4,
         "crit_chance": 0.08
@@ -123,9 +152,30 @@
       },
       "main_damage_type": "kross",
       "start_gear": [
-        "tvahands_klubba",
-        "palsvast",
-        "liten_halsodryck_x3"
+        {
+          "item": "knotpak",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "palsvast",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "repbalte",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "liten_halsodryck",
+          "count": 3,
+          "quality": "normal",
+          "affixes": []
+        }
       ],
       "skills": [
         {
@@ -182,7 +232,13 @@
           "cooldown_s": 8,
           "effect": "Kastar vapnet 160 % skada, det studsar tillbaka."
         }
-      ]
+      ],
+      "start_check": {
+        "weapon": "knotpak",
+        "hit_avg": 14.5,
+        "hits_vs_varg_lvl1": 3.4,
+        "note": "Varg nivå 1: 50 HP, försvar 0."
+      }
     },
     {
       "id": "riddare",
@@ -191,7 +247,7 @@
       "base": {
         "hp": 110,
         "stamina": 100,
-        "damage": 25,
+        "damage": 8,
         "defense": 5,
         "speed": 5.2,
         "crit_chance": 0.05
@@ -205,10 +261,30 @@
       },
       "main_damage_type": "hugg",
       "start_gear": [
-        "langsvard",
-        "skold_ek",
-        "ringbrynja",
-        "liten_halsodryck_x3"
+        {
+          "item": "rostig_kortsvard",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "skold_ek",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "laderharnesk",
+          "count": 1,
+          "quality": "normal",
+          "affixes": []
+        },
+        {
+          "item": "liten_halsodryck",
+          "count": 2,
+          "quality": "normal",
+          "affixes": []
+        }
       ],
       "skills": [
         {
@@ -265,7 +341,13 @@
           "cooldown_s": 40,
           "effect": "Läker 25 % HP och ger +3 försvar i 10 s."
         }
-      ]
+      ],
+      "start_check": {
+        "weapon": "rostig_kortsvard",
+        "hit_avg": 13.0,
+        "hits_vs_varg_lvl1": 3.8,
+        "note": "Varg nivå 1: 50 HP, försvar 0."
+      }
     }
   ],
   "items_ref": "foremal_bas.json (start_gear id:n finns där)"

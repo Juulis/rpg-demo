@@ -15,7 +15,8 @@
     "elite_rule": "Se session_roll.champions och session_roll.uniques.",
     "elites_ref": "monster_niva.json elites",
     "removed": "Respawntider, max_alive, max_alive_area, state_spawn_multiplier, outskirts och runes_scaling är borttagna i version 2.0.",
-    "session_roll_rule": "session_roll per område: 1) välj antal aktiva spawnpunkter inom active_spawn_points (always_active ingår alltid), 2) per aktiv punkt antal grupper inom groups, 3) per grupp storlek inom radens group eller punktens group_size (monsters_per_group som standard), 4) champion per grupp med chance_per_group tills max nåtts, 5) unika med chance_per_game, högst max."
+    "session_roll_rule": "session_roll per område: 1) välj antal aktiva spawnpunkter inom active_spawn_points (always_active ingår alltid), 2) per aktiv punkt antal grupper inom groups, 3) per grupp storlek inom radens group eller punktens group_size (monsters_per_group som standard), 4) champion per grupp med chance_per_group tills max nåtts, 5) unika med chance_per_game, högst max.",
+    "design_rule": "Inga inträdeskrav. recommended_hero_level är ren information."
   },
   "areas": [
     {
@@ -888,7 +889,6 @@
           22
         ]
       },
-      "entry_requirement": "portalens_sigill (stader.json): vargaby rensad eller hjälte nivå 6",
       "recommended_hero_level": [
         6,
         8
