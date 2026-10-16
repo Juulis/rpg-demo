@@ -1,4 +1,4 @@
-import type { Equipment, ItemInstance } from '../core/context.ext';
+import type { Equipment, ItemInstance } from '../core/GameContext';
 import { isRecord } from '../core/storage';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 

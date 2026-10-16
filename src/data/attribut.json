@@ -1,0 +1,199 @@
+{
+  "magic_find": {
+    "desc": "Ökar chansen till bättre kvalitet. Påverkar inte guld eller drop/ingen drop.",
+    "formula": "eff_mf(kvalitet) = mf × k / (mf + k), mf i procentenheter",
+    "k": {
+      "magic": null,
+      "rare": 600,
+      "set": 500,
+      "legendary": 250
+    },
+    "note_magic": "Magisk använder full MF utan avtagande.",
+    "example": "MF 200 % ger magic 200, rare 150, set 143, legendary 111.",
+    "quality_chance": "p(q) = base_chance(q) × (1 + eff_mf(q)/100) × level_factor × boss_bonus(q)",
+    "level_factor": "1 + (monster_level − 1) × 0.03",
+    "cap_note": "Ingen hård gräns, avtagandet är taket."
+  },
+  "life": {
+    "formula": "max_hp = (klass_hp + tillvaxt × (lvl − 1) + life_flat) × (1 + life_pct)",
+    "cap": null
+  },
+  "stamina": {
+    "formula": "max_uth = (klass_uth + tillvaxt × (lvl − 1) + stamina_flat) × (1 + stamina_pct); regen = 8 × (1 + stamina_regen_pct − rustningsstraff)/s efter 1 s",
+    "regen_floor": 2
+  },
+  "mana": {
+    "status": "framtida_upplasning",
+    "desc": "Mana blir en separat resurs när magi låses upp via runorna. Uthållighet driver fortfarande vapenfärdigheter och undanmanöver; mana driver bara magi. Föremål med mana är vilande och visas grå tills dess (ger i stället hälften av värdet som uthållighet).",
+    "start_mana_on_unlock": 50
+  },
+  "defense": {
+    "formula": "skada_efter = max(1, skada − defense_flat_reduction); defense från utrustning ger reduction = defense_total × 0.5 och sänker fiendens träffchans via defense_rating = defense_total × 10",
+    "note": "Två roller: platt reduktion och svårare att träffas."
+  },
+  "block_chance": {
+    "formula": "block = (skold_block + affix + set) × (1 − 0.5 om spelaren springer)",
+    "cap": 0.75,
+    "effect": "Blockerad träff ger 0 skada, kostar 5 uthållighet, Riddarens sköldblock lägger till enligt färdigheten. Ingen block på slag bakifrån."
+  },
+  "hit_chance": {
+    "formula": "hit = clamp(0,80 × 2 × AR / (AR + DR) + nivaterm, 0,05, 0,95)",
+    "nivaterm": "d = anfallarens level − försvararens level; d < 0: 0,067 × d (cirka −6,7 % per nivå), d ≥ 0: 0,033 × d (cirka +3,3 % per nivå)",
+    "floor": 0.05,
+    "cap": 0.95,
+    "player_AR": "AR = 15 + 8 × level + attack_rating_bonus",
+    "player_DR": "DR = 15 + 8 × level + försvar × 2",
+    "monster_AR": "AR = 15 + 8 × level",
+    "monster_DR": "DR = 15 + 8 × level + försvar(L) × 2",
+    "design": "Vid jämn nivå och utan försvar är AR = DR, vilket ger 80 %. Försvar sänker träffen gradvis.",
+    "table_equal_AR_DR": [
+      {
+        "anfallare_minus_forsvarare": -9,
+        "hit_pct": 20
+      },
+      {
+        "anfallare_minus_forsvarare": -8,
+        "hit_pct": 26
+      },
+      {
+        "anfallare_minus_forsvarare": -7,
+        "hit_pct": 33
+      },
+      {
+        "anfallare_minus_forsvarare": -6,
+        "hit_pct": 40
+      },
+      {
+        "anfallare_minus_forsvarare": -5,
+        "hit_pct": 46
+      },
+      {
+        "anfallare_minus_forsvarare": -4,
+        "hit_pct": 53
+      },
+      {
+        "anfallare_minus_forsvarare": -3,
+        "hit_pct": 60
+      },
+      {
+        "anfallare_minus_forsvarare": -2,
+        "hit_pct": 67
+      },
+      {
+        "anfallare_minus_forsvarare": -1,
+        "hit_pct": 73
+      },
+      {
+        "anfallare_minus_forsvarare": 0,
+        "hit_pct": 80
+      },
+      {
+        "anfallare_minus_forsvarare": 1,
+        "hit_pct": 83
+      },
+      {
+        "anfallare_minus_forsvarare": 2,
+        "hit_pct": 87
+      },
+      {
+        "anfallare_minus_forsvarare": 3,
+        "hit_pct": 90
+      },
+      {
+        "anfallare_minus_forsvarare": 4,
+        "hit_pct": 93
+      },
+      {
+        "anfallare_minus_forsvarare": 5,
+        "hit_pct": 95
+      },
+      {
+        "anfallare_minus_forsvarare": 6,
+        "hit_pct": 95
+      },
+      {
+        "anfallare_minus_forsvarare": 7,
+        "hit_pct": 95
+      },
+      {
+        "anfallare_minus_forsvarare": 8,
+        "hit_pct": 95
+      },
+      {
+        "anfallare_minus_forsvarare": 9,
+        "hit_pct": 95
+      }
+    ],
+    "examples_riddare": [
+      {
+        "hjalte_lvl": 1,
+        "monster": "skogsvarg",
+        "monster_lvl": 1,
+        "hjalten_traffar": "80 %",
+        "monstret_traffar": "54 %"
+      },
+      {
+        "hjalte_lvl": 3,
+        "monster": "skuggvarg",
+        "monster_lvl": 5,
+        "hjalten_traffar": "51 %",
+        "monstret_traffar": "80 %"
+      },
+      {
+        "hjalte_lvl": 6,
+        "monster": "skelett_krigare",
+        "monster_lvl": 7,
+        "hjalten_traffar": "64 %",
+        "monstret_traffar": "72 %"
+      },
+      {
+        "hjalte_lvl": 7,
+        "monster": "skelett_krigare",
+        "monster_lvl": 8,
+        "hjalten_traffar": "65 %",
+        "monstret_traffar": "72 %"
+      },
+      {
+        "hjalte_lvl": 1,
+        "monster": "skelett_krigare",
+        "monster_lvl": 8,
+        "hjalten_traffar": "5 %",
+        "monstret_traffar": "95 %"
+      },
+      {
+        "hjalte_lvl": 8,
+        "monster": "benkungen_valdemar",
+        "monster_lvl": 10,
+        "hjalten_traffar": "54 %",
+        "monstret_traffar": "79 %"
+      },
+      {
+        "hjalte_lvl": 10,
+        "monster": "skelett_krigare",
+        "monster_lvl": 8,
+        "hjalten_traffar": "90 %",
+        "monstret_traffar": "46 %"
+      }
+    ],
+    "examples_note": "Riddare med försvar 5 + 1 per nivå + 6 från utrustning, utan attack_rating_bonus."
+  },
+  "strong_hit": {
+    "name": "Krosslag (Strong hit)",
+    "formula": "vid träff: chans = strong_hit_chance; extra skada = fiendens nuvarande HP × 0.25 (vanlig) eller × 0.10 (boss)",
+    "chance_cap": 0.5,
+    "boss_cap_per_hit": "högst 3 % av bossens max HP",
+    "note": "Som Crushing Blow i D2, reduceras mot bossar."
+  },
+  "crit": {
+    "formula": "chans = klass_krit + affix, skada × 1.75",
+    "cap": 0.5
+  },
+  "move_speed": {
+    "formula": "fart = klass_fart × (1 + move_speed_pct − summa fartstraff)",
+    "penalty_cap": 0.2
+  },
+  "damage": {
+    "formula": "slagskada = klassens skadebonus (base.damage + tillväxt × (nivå − 1)) + vapnets skada (slumpad min till max), sedan krit, familjsmultiplikator och mottagarens försvar.",
+    "ref": "klasser.json"
+  }
+}

@@ -1,4 +1,4 @@
-import type { Equipment, ItemInstance } from '../core/context.ext';
+import type { Equipment, ItemInstance } from '../core/GameContext';
 
 export const SAVE_VERSION = 1;
 export const MAX_HEROES = 8;

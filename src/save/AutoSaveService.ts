@@ -1,7 +1,7 @@
 import { Disposables } from '../core/Disposables';
-import { heroOf } from '../core/context.ext';
 import type { GameEvents } from '../core/events';
 import type { GameContext } from '../core/GameContext';
+import type { HeroGateway } from './HeroGateway';
 import type { SaveRepository } from './SaveRepository';
 import { SAVE_VERSION, newSeed, type SaveFile } from './types';
 
@@ -31,6 +31,7 @@ export class AutoSaveService {
 
   constructor(
     private readonly ctx: GameContext,
+    private readonly game: HeroGateway,
     private readonly repo: SaveRepository,
     private readonly onSaved: () => void = () => undefined,
     private readonly debounceMs = 150,
@@ -40,12 +41,8 @@ export class AutoSaveService {
     const bus = this.ctx.bus;
     for (const e of AutoSaveService.TRIGGERS) this.d.add(bus.on(e, () => this.saveSoon(e)));
     this.d.add(
-      bus.on('new_game', ({ seed }) => {
-        // nytt game startat av motorn (t.ex. "Spela igen"): ny seed, tom dödlista
-        if (this.current && this.ctx.session.seed !== seed) {
-          this.ctx.session.seed = seed;
-          this.ctx.session.killed.clear();
-        }
+      bus.on('new_game', () => {
+        // nytt game (även från motorns "Spela igen"): Game har redan bytt session, spara snapshot
         this.saveSoon('new_game');
       }),
     );
@@ -97,32 +94,24 @@ export class AutoSaveService {
     return true;
   }
 
+  /** Sparfil från Game.getSnapshot(); behåller id/namn från sparfilen och lägger till riktning. */
   private snapshot(cur: SaveFile): SaveFile {
-    const { session: s, zone } = this.ctx;
-    const h = heroOf(this.ctx);
-    const prev = cur.game;
+    const snap = this.game.getSnapshot();
+    const g = snap.game;
     const r2 = (n: number, k: number): number => Number(n.toFixed(k));
+    const h = snap.hero;
     return {
       version: SAVE_VERSION,
-      hero: {
-        id: cur.hero.id,
-        name: cur.hero.name,
-        cls: h.cls,
-        level: h.level,
-        xp: h.xp,
-        gold: h.gold,
-        inv: h.inv ?? cur.hero.inv,
-        equip: h.equip ?? cur.hero.equip,
-      },
+      hero: { id: cur.hero.id, name: cur.hero.name, cls: h.cls, level: h.level, xp: h.xp, gold: h.gold, inv: h.inv, equip: h.equip },
       game: {
-        seed: s.seed || cur.game?.seed || newSeed(),
-        killed: [...s.killed],
-        zone: zone.name || cur.game?.zone || 'forest',
-        pos: [r2(h.pos.x, 2), r2(h.pos.y, 2)],
-        rot: r2(h.facing ?? 0, 3),
-        stage: h.stage ?? prev?.stage ?? 0,
-        runes: h.runes ?? prev?.runes ?? 0,
-        city: h.city ?? prev?.city ?? 'besatt',
+        seed: g?.seed || cur.game?.seed || newSeed(),
+        killed: g?.killed ?? [],
+        zone: g?.zone || this.ctx.zone.name || 'forest',
+        pos: g?.pos ? [r2(g.pos.x, 2), r2(g.pos.y, 2)] : null,
+        rot: r2(this.ctx.hero.facing, 3),
+        stage: g?.stage ?? 0,
+        runes: g?.runes ?? 0,
+        city: g?.city ?? 'besatt',
       },
       found: this.repo.foundCount(),
       savedAt: Date.now(),

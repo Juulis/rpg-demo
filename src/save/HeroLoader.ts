@@ -1,16 +1,17 @@
-import { nextEvent } from '../core/nextEvent';
-import { heroWriter } from '../core/context.ext';
 import type { GameContext } from '../core/GameContext';
+import { nextEvent } from '../core/nextEvent';
 import type { AutoSaveService } from './AutoSaveService';
+import type { HeroGateway } from './HeroGateway';
 import { newGameRecord, newSeed, type SaveFile } from './types';
 
 /**
- * Startar en hjälte: skriver hjältens data till ctx.hero och ctx.session (ersätter rk_inv_<klass>),
- * emit:ar hero_loaded + new_game och väntar på zone_enter för startzonen (riktig signal i stället för wait(1300)).
+ * Startar en hjälte via Game.loadHero (skriver hjälte + session, skickar hero_loaded),
+ * emit:ar new_game och väntar på zone_enter för startzonen (riktig signal i stället för wait(1300)).
  */
 export class HeroLoader {
   constructor(
     private readonly ctx: GameContext,
+    private readonly game: HeroGateway,
     private readonly autosave: AutoSaveService,
     private readonly zoneTimeoutMs = 10_000,
   ) {}
@@ -20,30 +21,32 @@ export class HeroLoader {
     const g = resume && save.game ? save.game : newGameRecord(newSeed());
     if (!resume || !save.game) save.game = g;
     const h = save.hero;
-    const hero = heroWriter(this.ctx);
-    // sessionen muteras på plats (Game äger objektet, som i Game.newGame)
-    this.ctx.session.seed = g.seed;
-    this.ctx.session.killed = new Set(g.killed);
-    Object.assign(hero, {
-      id: h.id,
-      name: h.name,
-      cls: h.cls,
-      level: h.level,
-      xp: h.xp,
-      gold: h.gold,
-      inv: h.fresh ? [] : h.inv,
-      equip: h.fresh ? {} : h.equip,
-      fresh: !!h.fresh,
-      stage: resume ? g.stage : 0,
-      runes: resume ? g.runes : 0,
-      city: resume ? g.city : 'besatt',
-      zone: resume ? g.zone : 'forest',
-      resumePos: resume && g.pos ? { x: g.pos[0], y: g.pos[1] } : null,
-      facing: resume ? (g.rot ?? 0) : 0,
+    const fresh = !!h.fresh;
+    this.game.loadHero({
+      hero: {
+        id: h.id,
+        name: h.name,
+        cls: h.cls,
+        level: h.level,
+        xp: h.xp,
+        gold: h.gold,
+        inv: fresh ? [] : h.inv,
+        equip: fresh ? {} : h.equip,
+        fresh,
+      },
+      game: {
+        seed: g.seed,
+        killed: g.killed,
+        zone: resume ? g.zone : 'forest',
+        pos: resume && g.pos ? { x: g.pos[0], y: g.pos[1] } : null,
+        stage: resume ? g.stage : 0,
+        runes: resume ? g.runes : 0,
+        city: resume ? g.city : 'besatt',
+      },
     });
-    if (h.fresh) delete h.fresh;
-    this.ctx.bus.emit('hero_loaded', { heroId: h.id });
-    const ready = nextEvent(this.ctx.bus, 'zone_enter', (p) => p.name === (hero.zone ?? 'forest'), this.zoneTimeoutMs);
+    if (fresh) delete h.fresh;
+    const zone = this.ctx.hero.zone;
+    const ready = nextEvent(this.ctx.bus, 'zone_enter', (p) => p.name === zone, this.zoneTimeoutMs);
     this.ctx.bus.emit('new_game', { seed: g.seed });
     try {
       await ready;
