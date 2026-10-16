@@ -2,6 +2,7 @@ import { Disposables } from '../core/Disposables';
 import type { GameContext, GameModule } from '../core/GameContext';
 import { isTypingTarget } from '../core/keys';
 import { LocalStore, type KeyValueStore } from '../core/storage';
+import type { LocaleManager } from '../i18n/LocaleManager';
 import { AudioEngine } from './AudioEngine';
 import { AudioEventBinder } from './AudioEventBinder';
 import { SfxLibrary } from './SfxLibrary';
@@ -16,6 +17,7 @@ export class AudioModule implements GameModule {
   private widget: VolumeWidget | null = null;
 
   constructor(
+    private readonly i18n: LocaleManager,
     store: KeyValueStore = new LocalStore(),
     private readonly widgetHost: () => HTMLElement | null = () => document.getElementById('plate'),
     engine?: AudioEngine,
@@ -31,7 +33,7 @@ export class AudioModule implements GameModule {
     this.d.listen(window, 'keydown', (e) => this.onKey(e));
     const host = this.widgetHost();
     if (host) {
-      this.widget = new VolumeWidget(this.volume, {
+      this.widget = new VolumeWidget(this.volume, this.i18n, {
         onInteract: unlock,
         onToggle: () => this.toggleMute(),
         onCommit: () => this.engine.play('click'),
