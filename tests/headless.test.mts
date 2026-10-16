@@ -40,6 +40,7 @@ function must<T>(v: T | null | undefined, what: string): T {
   return v;
 }
 import type { HeroGateway } from '../src/save/HeroGateway';
+import { KeyValueSaveBackend } from '../src/save/backend/KeyValueSaveBackend';
 import { HeroLoader } from '../src/save/HeroLoader';
 import type { AutoSaveService } from '../src/save/AutoSaveService';
 
@@ -156,10 +157,12 @@ offs.forEach((o) => o());
 
 // --- moduler
 const audio = new AudioModule(store);
-const save = new SaveModule(gateway, store);
+const save = new SaveModule(gateway, new KeyValueSaveBackend(store), true, () => 123456789);
 const menu = new MenuModule(save);
 const map = new MapModule(store, () => document.body, false);
 for (const m of [audio, save, menu, map]) m.init(ctx);
+await save.ready;
+await new Promise((r) => setTimeout(r, 0));
 
 // M-mute
 assert.equal(audio.volume.isMuted, false);
@@ -194,8 +197,8 @@ assert.equal(ev.defaultPrevented, false, 'Tab ska släppas igenom när menyn är
 const input = document.querySelector('.hero-name') as HTMLInputElement;
 input.value = 'Ragnar';
 (document.getElementById('hnOk') as HTMLButtonElement).click();
+await new Promise((r) => setTimeout(r, 60)); // skapandet går via async SaveBackend
 assert.equal(menu.isOpen, false);
-await new Promise((r) => setTimeout(r, 60));
 assert.equal(ctx.hero.name, 'Ragnar');
 assert.equal(ctx.hero.playing, true);
 assert.ok(log.length === 1, 'new_game emit:at en gång');
@@ -244,6 +247,7 @@ menu.show();
 (document.getElementById('hmDel') as HTMLButtonElement).click();
 assert.match(must(document.querySelector('.confirm span')?.textContent, 'bekräftelsetext'), /Radera Ragnar för alltid\?/);
 (document.getElementById('hmYes') as HTMLButtonElement).click();
+await new Promise((r) => setTimeout(r, 20));
 assert.equal(store.get(`rpg_hero_${ragnarId}`), null);
 assert.equal(store.get(FogRepository.key(ragnarId, 'forest')), null);
 
@@ -261,24 +265,45 @@ for (const m of [map, menu, save, audio]) m.dispose();
     isPlaying: false,
     end: () => calls.push('end'),
     begin: () => calls.push('begin'),
-    saveNow: (why: string) => calls.push(`save:${why}`),
+    saveNow: (why: string) => {
+      calls.push(`save:${why}`);
+      return Promise.resolve(true);
+    },
   } as unknown as AutoSaveService;
   const noop: HeroGateway = { loadHero: () => undefined, getSnapshot: () => gateway.getSnapshot() };
   const rec = structuredClone(migrated);
   // 1) zonen redan laddad (ctx.zone.name === hero.zone), ingen zone_enter: löses direkt
   ctx.zone = { ...ctx.zone, name: ctx.hero.zone };
   let t0 = Date.now();
-  await new HeroLoader(ctx, noop, fakeAutosave, 5_000).start(rec, true);
+  await new HeroLoader(ctx, noop, fakeAutosave, () => 7, 5_000).start(rec, true);
   assert.ok(Date.now() - t0 < 1_000, 'HeroLoader ska inte vänta när zonen redan är laddad');
   assert.deepEqual(calls.slice(0, 3), ['end', 'begin', 'save:start']);
   // 2) zon ej laddad och ingen zone_enter: autosparning redan igång, timeout löser ut
   calls.length = 0;
   ctx.zone = { ...ctx.zone, name: '__ingen__' };
   t0 = Date.now();
-  const p = new HeroLoader(ctx, noop, fakeAutosave, 50).start(rec, true);
+  const p = new HeroLoader(ctx, noop, fakeAutosave, () => 7, 50).start(rec, true);
   assert.deepEqual(calls, ['end', 'begin', 'save:start'], 'start-sparning sker före väntan');
   await p;
   assert.ok(Date.now() - t0 < 1_000);
+}
+
+// --- arkitekturvakter: spar-logiken är DOM-fri, och inget Math.random i mina moduler
+{
+  const { readFileSync, readdirSync } = await import('node:fs');
+  const src = (f: string): string => readFileSync(new URL(`../src/${f}`, import.meta.url), 'utf8');
+  for (const f of [
+    'save/SaveRepository.ts',
+    'save/SaveMigrator.ts',
+    'save/HeroRoster.ts',
+    'save/AutoSaveService.ts',
+    'save/HeroLoader.ts',
+    'save/LegacyImporter.ts',
+  ])
+    assert.doesNotMatch(src(f), /\b(window|document|localStorage)\b/, `${f} ska vara DOM-fri`);
+  for (const dir of ['audio', 'save', 'save/backend', 'map', 'menu'])
+    for (const f of readdirSync(new URL(`../src/${dir}`, import.meta.url)).filter((n) => n.endsWith('.ts')))
+      assert.doesNotMatch(src(`${dir}/${f}`), /Math\.random/, `${dir}/${f} använder Math.random`);
 }
 
 console.log('HEADLESS_OK');
