@@ -29,7 +29,7 @@
         23
       ]
     },
-    "ilvl_rule": "ilvl = monster_level (champion och unik inklusive levelbonus, unik +1), boss +2. Se monster_niva.json.",
+    "ilvl_rule": "ilvl = undertypens fasta nivå. Champion: nivå + 1. Unik: nivå + 3, ilvl + 1 extra. Boss: nivå + 2.",
     "guld_category_note": "Kategorin guld i category_weights ger en extra guldhög (×2 mot vanligt guldbelopp) utöver gold_chance.",
     "removed": "Ädelstenar och hylsor borttagna tills vidare; deras vikt fördelad 40 % dryck, 20 % amulett, 20 % ring, 20 % guld."
   },
@@ -124,60 +124,45 @@
   "monsters": {
     "skelett_krigare": {
       "family": "ododa",
-      "monster_level": [
-        7,
-        9
-      ],
+      "monster_level": 7,
       "table": "ododa",
       "weapon_type": "svard",
       "weapon_drop": {
         "chance": 0.25,
-        "weapon_type": "svard",
-        "note": "Rullas separat före familjetabellen; bastyp ur samma vapentyp efter nivå."
+        "weapon_type": "svard"
       },
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 7
     },
     "skelett_bagskytt": {
       "family": "ododa",
-      "monster_level": [
-        7,
-        9
-      ],
+      "monster_level": 8,
       "table": "ododa",
       "weapon_type": "bage",
       "weapon_drop": {
         "chance": 0.25,
-        "weapon_type": "bage",
-        "note": "Rullas separat före familjetabellen; bastyp ur samma vapentyp efter nivå."
+        "weapon_type": "bage"
       },
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 8
     },
     "skelett_vakt": {
       "family": "ododa",
-      "monster_level": [
-        7,
-        9
-      ],
+      "monster_level": 9,
       "table": "ododa",
       "weapon_type": "klubba",
       "weapon_drop": {
         "chance": 0.25,
-        "weapon_type": "klubba",
-        "note": "Rullas separat före familjetabellen; bastyp ur samma vapentyp efter nivå."
+        "weapon_type": "klubba"
       },
       "shield_drop": {
         "chance": 0.12,
         "weapon_type": "skold"
       },
       "drop_chance_override": 0.6,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 9
     },
     "skelett_hund": {
       "family": "ododa",
-      "monster_level": [
-        7,
-        9
-      ],
+      "monster_level": 7,
       "table": "ododa",
       "weapon_type": null,
       "table_override": {
@@ -189,193 +174,189 @@
         }
       },
       "note": "Vapenlöst odött djur.",
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 7
     },
     "skelett_runprast": {
       "family": "ododa",
-      "monster_level": [
-        7,
-        9
-      ],
+      "monster_level": 8,
       "table": "ododa",
       "weapon_type": "dolk",
       "weapon_drop": {
         "chance": 0.25,
-        "weapon_type": "dolk",
-        "note": "Rullas separat före familjetabellen; bastyp ur samma vapentyp efter nivå."
+        "weapon_type": "dolk"
       },
       "drop_chance_override": 0.55,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 8
     },
     "skogsvarg": {
       "family": "bestar",
-      "monster_level": [
-        1,
-        4
-      ],
+      "monster_level": 1,
       "table": "bestar",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 1
     },
     "skuggvarg": {
       "family": "bestar",
-      "monster_level": [
-        2,
-        6
-      ],
+      "monster_level": 5,
       "table": "bestar",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 5
     },
     "taggsvin": {
       "family": "bestar",
-      "monster_level": [
-        1,
-        6
-      ],
+      "monster_level": 4,
       "table": "bestar",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 4
     },
     "ruttbjorn": {
       "family": "bestar",
-      "monster_level": [
-        4,
-        6
-      ],
+      "monster_level": 6,
       "table": "bestar",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 6
     },
     "dimgast": {
       "family": "gastar",
-      "monster_level": [
-        11,
-        14
-      ],
+      "monster_level": 11,
       "table": "gastar",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 11
     },
     "trasknacken": {
       "family": "gastar",
-      "monster_level": [
-        11,
-        14
-      ],
+      "monster_level": 13,
       "table": "gastar",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 13
     },
     "klagokvinna": {
       "family": "gastar",
-      "monster_level": [
-        11,
-        14
-      ],
+      "monster_level": 12,
       "table": "gastar",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 12
     },
     "gruvspindel": {
       "family": "insekter",
-      "monster_level": [
-        15,
-        18
-      ],
+      "monster_level": 15,
       "table": "insekter",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 15
     },
     "syrabagge": {
       "family": "insekter",
-      "monster_level": [
-        15,
-        18
-      ],
+      "monster_level": 16,
       "table": "insekter",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 16
     },
     "kitinvakt": {
       "family": "insekter",
-      "monster_level": [
-        15,
-        18
-      ],
+      "monster_level": 18,
       "table": "insekter",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 18
     },
     "askimp": {
       "family": "demoner",
-      "monster_level": [
-        19,
-        23
-      ],
+      "monster_level": 19,
       "table": "demoner",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 19
     },
     "hornslaktare": {
       "family": "demoner",
-      "monster_level": [
-        19,
-        23
-      ],
+      "monster_level": 22,
       "table": "demoner",
       "weapon_type": "yxa",
       "weapon_drop": {
         "chance": 0.25,
-        "weapon_type": "yxa",
-        "note": "Rullas separat före familjetabellen; bastyp ur samma vapentyp efter nivå."
+        "weapon_type": "yxa"
       },
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 22
     },
     "eldpiska_demon": {
       "family": "demoner",
-      "monster_level": [
-        19,
-        23
-      ],
+      "monster_level": 21,
       "table": "demoner",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 21
     },
     "smittbarare": {
       "family": "forvridna",
-      "monster_level": [
-        24,
-        28
-      ],
+      "monster_level": 24,
       "table": "forvridna",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 24
     },
     "kottklump": {
       "family": "forvridna",
-      "monster_level": [
-        24,
-        28
-      ],
+      "monster_level": 27,
       "table": "forvridna",
       "weapon_type": null,
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 27
     },
     "galen_munk": {
       "family": "forvridna",
-      "monster_level": [
-        24,
-        28
-      ],
+      "monster_level": 25,
       "table": "forvridna",
       "weapon_type": "klubba",
       "weapon_drop": {
         "chance": 0.25,
-        "weapon_type": "klubba",
-        "note": "Rullas separat före familjetabellen; bastyp ur samma vapentyp efter nivå."
+        "weapon_type": "klubba"
       },
-      "note_level": "Faktisk level kommer från spawnpunkten; detta är spannet där monstret förekommer."
+      "ilvl": 25
+    },
+    "vargbest": {
+      "family": "bestar",
+      "table": "bestar",
+      "monster_level": 3,
+      "ilvl": 3,
+      "weapon_type": null
+    },
+    "gravargsledare": {
+      "family": "bestar",
+      "table": "bestar",
+      "monster_level": 6,
+      "ilvl": 6,
+      "weapon_type": null,
+      "drop_chance_override": 0.55
+    },
+    "skelett_kapten": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 9,
+      "ilvl": 9,
+      "weapon_type": "svard",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "svard"
+      },
+      "drop_chance_override": 0.6
+    },
+    "askriddare": {
+      "family": "demoner",
+      "table": "demoner",
+      "monster_level": 23,
+      "ilvl": 23,
+      "weapon_type": "svard",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "svard"
+      },
+      "drop_chance_override": 0.65,
+      "table_override": {
+        "category_weights": {
+          "vapen": 25,
+          "rustning": 25,
+          "dryck": 25,
+          "amulett": 10,
+          "ring": 10,
+          "guld": 5
+        },
+        "note": "Beväpnad och bepansrad, släpper även rustning."
+      }
     }
   },
   "bosses": {
@@ -699,7 +680,8 @@
         "spinnmodern"
       ],
       "pilgrimens_sista_svard": [
-        "askeborg"
+        "askeborg",
+        "askriddare (vapendrop)"
       ],
       "tystnadens_stilett": [
         "askeborg",
