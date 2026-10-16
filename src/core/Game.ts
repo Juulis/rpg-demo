@@ -1,7 +1,7 @@
 import { Graphics, Text } from 'pixi.js';
 import { EventBus } from './EventBus';
 import type { GameEvents } from './events';
-import type { GameContext, GameModule, HeroState, ZoneView } from './GameContext';
+import type { GameContext, GameModule, HeroSave, HeroState, ZoneView } from './GameContext';
 import { createSession } from './Session';
 import { DATA, validateData } from '../data';
 import { Iso } from '../render/Iso';
@@ -18,7 +18,7 @@ export class Game {
   readonly bus = new EventBus<GameEvents>();
   readonly renderer = new Renderer();
   readonly spawn = new SpawnSystem();
-  readonly hero: HeroState = {
+  private readonly hero: HeroState = {
     id: null,
     name: '',
     cls: 'riddare',
@@ -30,8 +30,28 @@ export class Game {
     stamina: 1,
     maxStamina: 1,
     pos: { x: 0, y: 0 },
+    inv: [],
+    equip: {},
+    stage: 0,
+    runes: 0,
+    city: 'besatt',
+    zone: 'forest',
+    facing: 0,
+    playing: false,
+    resumePos: null,
+    fresh: true,
   };
-  readonly zone: ZoneView = { name: 'forest', areaId: 'startskogen', width: 44, height: 44 };
+  private readonly zone: ZoneView = {
+    name: 'forest',
+    areaId: 'startskogen',
+    width: 90,
+    height: 90,
+    circle: 45,
+    colliders: [],
+    runes: [],
+    portals: [],
+    cleared: {},
+  };
   readonly ctx: GameContext;
 
   constructor(private readonly modules: GameModule[] = []) {
@@ -48,6 +68,54 @@ export class Game {
     await this.renderer.init(host);
     for (const m of this.modules) m.init(this.ctx);
     this.preview();
+  }
+
+  /**
+   * Laddar en hjälte (från SaveManager/StartMenu). Enda sättet för moduler att ändra hjältens tillstånd.
+   * Med save.game sätts sessionen (seed + killed) och återupptagningsposition; utan game startas en ny session.
+   */
+  loadHero(save: HeroSave): void {
+    const h = this.hero;
+    Object.assign(h, save.hero);
+    const g = save.game;
+    h.stage = g?.stage ?? 0;
+    h.runes = g?.runes ?? 0;
+    h.city = g?.city ?? 'besatt';
+    h.zone = g?.zone ?? 'forest';
+    h.resumePos = g?.pos ? { ...g.pos } : null;
+    h.playing = false;
+    const s = g ? createSession(g.seed, g.killed) : createSession();
+    this.ctx.session.seed = s.seed;
+    this.ctx.session.killed.clear();
+    for (const id of s.killed) this.ctx.session.killed.add(id);
+    if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
+  }
+
+  /** Sparbar ögonblicksbild (för SaveManager). */
+  getSnapshot(): HeroSave {
+    const h = this.hero;
+    return {
+      hero: {
+        id: h.id,
+        name: h.name,
+        cls: h.cls,
+        level: h.level,
+        xp: h.xp,
+        gold: h.gold,
+        inv: structuredClone(h.inv),
+        equip: structuredClone(h.equip),
+        fresh: h.fresh,
+      },
+      game: {
+        seed: this.ctx.session.seed,
+        killed: [...this.ctx.session.killed],
+        zone: h.zone,
+        pos: { ...h.pos },
+        stage: h.stage,
+        runes: h.runes,
+        city: h.city,
+      },
+    };
   }
 
   /** Stänger ner moduler och lyssnare (t.ex. vid HMR). */
@@ -79,9 +147,8 @@ export class Game {
       }
     r.ground.addChild(g);
     const specs = this.spawn.roll(this.spawn.area(this.zone.areaId), this.session);
-    const scale = 0.25; // världsenheter → rutor i förhandsvisningen
     for (const s of specs) {
-      const { x, y } = Iso.toScreen(s.pos[0] * scale, s.pos[1] * scale);
+      const { x, y } = Iso.worldToScreen(s.pos[0], s.pos[1]);
       const c = s.elite === 'unik' ? 0xc7a35a : s.elite ? 0x6a6aff : 0xb8323c;
       const dot = new Graphics().ellipse(0, 0, 14, 7).fill({ color: 0x000000, alpha: 0.4 }).circle(0, -14, 9).fill(c);
       dot.position.set(x, y);

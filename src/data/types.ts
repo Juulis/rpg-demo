@@ -138,13 +138,31 @@ export interface StartGear {
   quality: string;
   affixes: string[];
 }
+/** Ett område i byn, i rutor ([[x0, y0], [x1, y1]] inklusive) på byns rutnät (grid × tile_size världsenheter). */
+export interface VillageZoneDef {
+  id: string;
+  tiles: [[number, number], [number, number]];
+  safe?: boolean;
+  boss_arena?: boolean;
+}
+export interface VillageDef {
+  id: string;
+  name: string;
+  grid: [number, number];
+  tile_size: number;
+  zones: VillageZoneDef[];
+  ascii_map?: string[];
+}
 export interface PortalVillage {
   portal: {
     /** Inga spärrar: portalen öppnas enbart av att alla runor är aktiva. */
     trigger: { type: 'all_runes_active'; required_runes: number; delay_s: number };
     recommended_level?: string;
     interaction_radius: number;
+    /** Portalens plats i skogen, världsenheter [x, y]. */
+    forest_position: [number, number];
   };
+  village: VillageDef;
   boss: { id?: string; hp: number; level: number; phases: { name: string; damage_mult?: number }[] };
   progression: { max_level: number };
 }
