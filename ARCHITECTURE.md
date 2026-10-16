@@ -86,3 +86,11 @@ Gameplay emit:ar events (`kill`, `loot_drop`, `pickup` …) som ljud, sparning, 
 ## Kommandon
 
 `npm run dev` · `npm run build` (→ dist/next) · `npm run pages` (+ 3D på roten) · `npm run smoke` · `npm run typecheck` · `npm run lint` · `npm run format`
+
+## Spellogik, auktoritet och slump (permanent princip)
+
+- **Ren logik i `src/logic/`**: strid (`CombatRules`), loot-rull (`loot/Loot`), XP och progression (`HeroModel`), guld och inventarie (`Inventory`). Ingen DOM, Pixi eller canvas. Allt ska kunna köras på en server. ESLint förbjuder import av pixi/render/ui/input/entities/systems samt `document`/`window`/`localStorage` i `src/logic/**`.
+- **`GameAuthority`** (`src/core/GameAuthority.ts`): klienten frågar alltid via detta interface om utfall (träff, skada, block, XP och droppar). Nu används `LocalAuthority` (`src/logic/LocalAuthority.ts`), som kör logiken lokalt. En serverimplementation kan senare läggas bakom samma interface. Ingen backend byggs nu.
+- **`SaveBackend`** (`src/core/SaveBackend.ts`): bara ett interface (list/load/save/remove av `HeroSave`). Utvecklare 2 äger sparningen och implementerar det (localStorage nu). Motorn sparar inte själv; den ger `Game.getSnapshot()` och tar emot `Game.loadHero()`.
+- **Seedad slump**: `Rng` (`src/core/Rng.ts`) delas ut som `ctx.rng` i GameContext. `Math.random` är förbjudet via ESLint (`no-restricted-properties`). Loot-rullar seedas från rng, och varje drop bär sitt seed för felsökning.
+- **Klienten** (`systems/`, `entities/`, `render/`, `ui/`) sköter rörelse, AI-rörelser, effekter och visning, och anropar `GameAuthority` för alla utfall.

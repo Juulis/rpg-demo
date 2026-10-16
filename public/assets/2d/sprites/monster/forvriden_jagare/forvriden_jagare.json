@@ -1,0 +1,66 @@
+{
+ "id": "forvriden_jagare",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 155,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 116,
+   "frameH": 164,
+   "anchor": [
+    58,
+    162
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 111,
+   "frameH": 168,
+   "anchor": [
+    55,
+    159
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 177,
+   "frameH": 162,
+   "anchor": [
+    88,
+    159
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 322,
+   "frameH": 224,
+   "anchor": [
+    161,
+    167
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_rogue.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}

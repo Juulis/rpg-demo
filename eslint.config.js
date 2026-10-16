@@ -21,6 +21,10 @@ export default tseslint.config(
           message: 'Skriv inte globala variabler på window.',
         },
       ],
+      'no-restricted-properties': [
+        'error',
+        { object: 'Math', property: 'random', message: 'Använd den seedade Rng-tjänsten (ctx.rng / src/core/Rng.ts).' },
+      ],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
@@ -28,6 +32,18 @@ export default tseslint.config(
     files: ['src/main.ts', 'vite.config.ts', 'eslint.config.js', 'scripts/**'],
     rules: { 'no-restricted-syntax': 'off' },
     languageOptions: { globals: { ...globals.node } },
+  },
+  {
+    // Ren spellogik: körbar på server, inget DOM/Pixi/canvas.
+    files: ['src/logic/**'],
+    languageOptions: { globals: {} },
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: ['pixi.js', '**/render/**', '**/ui/**', '**/input/**', '**/entities/**', '**/systems/**'] },
+      ],
+      'no-restricted-globals': ['error', 'document', 'window', 'localStorage', 'HTMLElement'],
+    },
   },
   prettier,
 );

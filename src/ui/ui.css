@@ -1,0 +1,434 @@
+/* 2D-motorns UI (HUD, tooltips, inventory, etiketter). Cinzel, mörk D2-stil. */
+.hidden {
+  display: none !important;
+}
+#fade {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s;
+  z-index: 40;
+}
+#fade.on {
+  opacity: 1;
+}
+#hud {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+#hud .bars {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: min(520px, 70vw);
+  display: grid;
+  gap: 4px;
+}
+#hud .bar {
+  position: relative;
+  height: 16px;
+  background: #120e0bcc;
+  border: 1px solid #6a5a40;
+  overflow: hidden;
+}
+#hud .bar.xp {
+  height: 8px;
+}
+#hud .bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: block;
+  transition: width 0.1s;
+}
+#hud .bar.hp i {
+  background: linear-gradient(#c0303a, #6e1218);
+}
+#hud .bar.st i {
+  background: linear-gradient(#d8b048, #7a5a18);
+}
+#hud .bar.xp i {
+  background: linear-gradient(#9a8ad8, #4a3a88);
+}
+#hud .bar span {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  font-size: 12px;
+  line-height: 16px;
+  color: #f0e8d8;
+  text-shadow: 0 1px 2px #000;
+}
+#hud .bar.xp span {
+  font-size: 9px;
+  line-height: 8px;
+}
+#hud .lvl {
+  position: absolute;
+  left: 50%;
+  bottom: 66px;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #e6dfcc;
+  text-shadow: 0 1px 3px #000;
+}
+#hud .pots {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  display: flex;
+  gap: 8px;
+}
+#hud .pot {
+  width: 54px;
+  height: 44px;
+  border: 1px solid #6a5a40;
+  background: #120e0bcc;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+}
+#hud .pot b {
+  font-size: 13px;
+}
+#hud .pot.hp b {
+  color: #e05a5a;
+}
+#hud .pot.st b {
+  color: #e0b24a;
+}
+#hud .help {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  font-size: 11px;
+  color: #b8ad94;
+  max-width: 28vw;
+  text-shadow: 0 1px 2px #000;
+}
+#hud .bossbar {
+  position: fixed;
+  top: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, 80vw);
+  text-align: center;
+}
+#hud .bbName {
+  color: #c7a35a;
+  font-size: 16px;
+  text-shadow: 0 1px 3px #000;
+}
+#hud .bbTrack {
+  height: 14px;
+  border: 1px solid #8a6a3a;
+  background: #120e0bcc;
+}
+#hud .bbTrack i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(#b82a30, #5a0e12);
+}
+#hud .bbPhase {
+  font-size: 12px;
+  color: #e6dfcc;
+}
+#msg {
+  position: fixed;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  text-shadow: 0 2px 4px #000;
+  z-index: 20;
+  pointer-events: none;
+}
+.dmg {
+  position: fixed;
+  left: 0;
+  top: 0;
+  font:
+    700 16px Cinzel,
+    Georgia,
+    serif;
+  color: #f4ecd8;
+  text-shadow: 0 1px 3px #000;
+  pointer-events: none;
+  z-index: 15;
+  white-space: nowrap;
+}
+.dmg.hurt {
+  color: #ff5a5a;
+}
+.dmg.weak {
+  color: #ffd060;
+}
+.dmg.res {
+  color: #9a9aa8;
+}
+.dmg.crit {
+  color: #ffb030;
+  font-size: 20px;
+}
+.dmg.gold {
+  color: #f2c46b;
+}
+#monbar {
+  position: fixed;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(420px, 70vw);
+  height: 22px;
+  border: 1px solid #6a5a40;
+  background: #120e0bdd;
+  z-index: 12;
+  pointer-events: none;
+  text-align: center;
+}
+#monbar .mbFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: #6e1218;
+}
+#monbar .mbName {
+  position: relative;
+  font-size: 13px;
+  line-height: 22px;
+  color: #f0e8d8;
+}
+#monbar[data-elite='champion'] .mbName {
+  color: #8a8aff;
+}
+#monbar[data-elite='unik'] .mbName {
+  color: #c7a35a;
+}
+#monbar .mbMods {
+  position: relative;
+  font-size: 11px;
+  color: #c7a35a;
+  margin-top: 4px;
+}
+.rk-tip {
+  position: fixed;
+  z-index: 60;
+  max-width: 320px;
+  padding: 8px 12px;
+  background: #0c0a08f0;
+  border: 1px solid #6a5a40;
+  font-size: 13px;
+  line-height: 1.35;
+  pointer-events: none;
+  text-align: center;
+}
+.rk-tip[data-q='set'] {
+  border-color: #00c400;
+}
+.rk-tip[data-q='legendary'] {
+  border-color: #c7a35a;
+}
+.rk-tip[data-q='rare'] {
+  border-color: #ffff64;
+}
+.rk-tip[data-q='magic'] {
+  border-color: #6a6aff;
+}
+.rk-tip .tn {
+  font-size: 15px;
+  font-weight: 700;
+}
+.rk-tip .tb {
+  color: #9a9080;
+  font-size: 12px;
+}
+.rk-tip .af {
+  color: #8a8aff;
+}
+.rk-tip .bad {
+  color: #e05050;
+}
+.rk-tip .good {
+  color: #60d060;
+}
+.rk-tip .cmpH,
+.rk-tip .setH {
+  margin-top: 6px;
+  border-top: 1px solid #3a3020;
+  padding-top: 4px;
+  color: #c8bca0;
+}
+.rk-tip .setP,
+.rk-tip .setB {
+  color: #6a6a6a;
+  font-size: 12px;
+}
+.rk-tip .setP.on,
+.rk-tip .setB.on {
+  color: #00c400;
+}
+#lootLabels {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 14;
+  display: none;
+}
+#lootLabels.on {
+  display: block;
+}
+.lootLabel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1px 6px;
+  background: #000000c0;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.lootLabel:hover {
+  outline: 1px solid #c8bca0;
+}
+#invWin {
+  position: fixed;
+  right: 18px;
+  top: 60px;
+  width: 620px;
+  background: #14100cf2;
+  border: 1px solid #6a5a40;
+  z-index: 30;
+  user-select: none;
+}
+#invWin .iwHead {
+  padding: 6px 10px;
+  border-bottom: 1px solid #3a3020;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#invWin .iwHead small {
+  color: #8a8070;
+  font-size: 11px;
+  flex: 1;
+}
+#invWin .iwClose {
+  background: none;
+  border: 1px solid #6a5a40;
+  color: #e6dfcc;
+  cursor: pointer;
+}
+#invWin .iwBody {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+#invWin .doll {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+#invWin .dollFig {
+  position: absolute;
+  left: 90px;
+  top: 30px;
+  width: 120px;
+  height: 230px;
+  background: 0 0 / 800% 100% no-repeat;
+  opacity: 0.55;
+}
+#invWin .eqSlot {
+  position: absolute;
+  background: #0a0806;
+  border: 1px solid #3a3020;
+  box-sizing: border-box;
+}
+#invWin .eqSlot::before {
+  content: attr(data-ph);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  color: #4a4030;
+}
+#invWin .eqSlot.filled::before {
+  content: none;
+}
+#invWin .eqSlot.can {
+  border-color: #60d060;
+}
+#invWin .eqSlot.blocked {
+  opacity: 0.4;
+}
+#invWin .bag {
+  position: relative;
+  margin-top: 8px;
+  background:
+    repeating-linear-gradient(90deg, #2a2218 0 1px, transparent 1px 34px), repeating-linear-gradient(#2a2218 0 1px, transparent 1px 34px),
+    #0a0806;
+  border: 1px solid #3a3020;
+}
+#invWin .statBox {
+  flex: 1;
+  font-size: 12px;
+}
+#invWin .statBox h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+#invWin .statBox div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #241c14;
+  padding: 2px 0;
+}
+#invWin .statBox .gold b {
+  color: #f2c46b;
+}
+.itm {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  background: #00000060 var(--ram) center/100% 100% no-repeat;
+  box-shadow: inset 0 0 0 1px var(--qc);
+  cursor: pointer;
+  overflow: hidden;
+}
+.itm.inSlot {
+  inset: 1px;
+  width: auto !important;
+  height: auto !important;
+}
+.itm .ico {
+  display: block;
+  background: center/contain no-repeat;
+  pointer-events: none;
+}
+.itm .ico.emo {
+  font-style: normal;
+  font-size: 18px;
+}
+.itm em {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-size: 11px;
+  font-style: normal;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+}
+.handItem {
+  position: fixed;
+  z-index: 70;
+  pointer-events: none;
+}
+.handItem .itm {
+  position: relative;
+}

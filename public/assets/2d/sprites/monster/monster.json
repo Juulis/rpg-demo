@@ -1,0 +1,45 @@
+{
+ "not": "Skala relativt riddaren (sprites/riddare_idle_8dir ritas ca 155 px hög). Vargbest större än vanlig varg (skogsvarg ca 95 px hög). Ritas i 1:1. 8 riktningar och animationer kommer senare via Blender-rendering (se 2d/README.md).",
+ "monster": {
+  "vargbest": {
+   "fil": "vargbest.png",
+   "w": 174,
+   "h": 150,
+   "anchor": [
+    87,
+    147
+   ],
+   "riktning": "SV"
+  },
+  "gravargsledare": {
+   "fil": "gravargsledare.png",
+   "w": 183,
+   "h": 170,
+   "anchor": [
+    91,
+    167
+   ],
+   "riktning": "SV"
+  },
+  "skelett_kapten": {
+   "fil": "skelett_kapten.png",
+   "w": 156,
+   "h": 165,
+   "anchor": [
+    78,
+    162
+   ],
+   "riktning": "SV"
+  },
+  "askriddare": {
+   "fil": "askriddare.png",
+   "w": 180,
+   "h": 185,
+   "anchor": [
+    90,
+    182
+   ],
+   "riktning": "SV"
+  }
+ }
+}
