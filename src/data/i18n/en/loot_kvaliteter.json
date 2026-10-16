@@ -1,0 +1,11 @@
+{
+  "normal": { "name": "Normal" },
+  "magic": { "name": "Magic" },
+  "rare": { "name": "Rare" },
+  "set": { "name": "Set" },
+  "legendary": { "name": "Legendary" },
+  "rare_names": {
+    "forsta": ["Grave", "Ash", "Blood", "Shadow", "Corpse", "Raven", "Wolf", "Mist", "Bone", "Oblivion"],
+    "andra": ["Claw", "Bite", "Hand", "Song", "Ward", "Thorn", "Cry", "Oath", "Burden", "Kiss"]
+  }
+}

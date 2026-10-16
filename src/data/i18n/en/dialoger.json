@@ -1,0 +1,691 @@
+{
+  "gamla_ylva": {
+    "namn": "Old Ylva",
+    "repliker": {
+      "ylva_halsning_01": {
+        "text": "The runes sleep, child. But they dream."
+      },
+      "ylva_halsning_02": {
+        "text": "You woke them. I felt it in my bones."
+      },
+      "ylva_halsning_03": {
+        "text": "The Fourth Stone, child. It all comes back to that."
+      },
+      "ylva_rykte_01": {
+        "text": "The runes in the forest sleep. But they dream."
+      },
+      "ylva_rykte_02": {
+        "text": "Someone has woken the runes. The Red Portal stands open at the heart of the forest."
+      },
+      "ylva_rykte_03": {
+        "text": "Little Mira has stopped waiting by the road. She helps Sigrun now."
+      },
+      "ylva_rykte_04": {
+        "text": "The Whisperer sits by Ylva's fire now. He whispers no more."
+      },
+      "ylva_rykte_05": {
+        "text": "Bror buried his son in the bear's pelt. There is a new cross by the camp."
+      },
+      "ylva_rykte_06": {
+        "text": "Ylva says the Runecarver snuffed out the Fourth Stone himself. She talks of lighting it again."
+      },
+      "ylva_rykte_07": {
+        "text": "Ylva tells of the Runecarver, a hero who died in battle."
+      },
+      "ylva_rykte_08": {
+        "text": "They say there was a fourth runestone. It lies on the Rift's Floor."
+      },
+      "ylva_quest_01": {
+        "text": "No one remembers who carved the stones. But the stones remember. Look at them by moonlight, child."
+      },
+      "ylva_quest_02": {
+        "text": "Look at the stones by moonlight, child."
+      },
+      "ylva_quest_03": {
+        "text": "He snuffed it out himself? Then he's the one waiting down there. Then someone must light it again."
+      },
+      "ylva_quest_04": {
+        "text": "A hero, then. I knew it. The runes were made by someone brave."
+      },
+      "ylva_bark_01": {
+        "text": "The stones dream tonight."
+      },
+      "ylva_bark_02": {
+        "text": "Keep the fire alive."
+      },
+      "ylva_bark_03": {
+        "text": "The ash, child. Don't breathe the ash."
+      },
+      "ylva_bark_04": {
+        "text": "I remember the bells."
+      },
+      "ylva_bark_05": {
+        "text": "He put it out himself. Himself."
+      },
+      "ylva_avsked_01": {
+        "text": "Tread softly, child."
+      },
+      "ylva_avsked_02": {
+        "text": "The runes see you."
+      }
+    }
+  },
+  "tor_kolare": {
+    "namn": "Tor the Collier",
+    "repliker": {
+      "tor_halsning_01": {
+        "text": "Got gold? Then I've got goods."
+      },
+      "tor_halsning_02": {
+        "text": "Ah, my best customer! Almost."
+      },
+      "tor_rykte_01": {
+        "text": "There are more wolves every night."
+      },
+      "tor_rykte_02": {
+        "text": "The Greybear of Wolfstead is dead. They say Hedda wept for joy."
+      },
+      "tor_rykte_03": {
+        "text": "Ulvhild's pelt hangs in Hedda's hunting lodge. She sleeps through the night now."
+      },
+      "tor_bark_01": {
+        "text": "Bones! Buying bones!"
+      },
+      "tor_bark_02": {
+        "text": "Cheap today. Almost."
+      },
+      "tor_bark_03": {
+        "text": "Anyone seen my horse?"
+      },
+      "tor_bark_04": {
+        "text": "Blood never hurt gold."
+      },
+      "tor_avsked_01": {
+        "text": "Come back with gold!"
+      },
+      "tor_avsked_02": {
+        "text": "Good luck. You'll need it."
+      }
+    }
+  },
+  "sigrun_helare": {
+    "namn": "Sigrun",
+    "repliker": {
+      "sigrun_halsning_01": {
+        "text": "Sit down. Let me look at you."
+      },
+      "sigrun_halsning_02": {
+        "text": "Mira has gentle hands. She does me good."
+      },
+      "sigrun_rykte_01": {
+        "text": "The Blight is spreading. A bite that turns green is a death sentence."
+      },
+      "sigrun_rykte_02": {
+        "text": "Little Mira has stopped waiting by the road. She helps Sigrun now."
+      },
+      "sigrun_rykte_03": {
+        "text": "Bror buried his son in the bear's pelt. There is a new cross by the camp."
+      },
+      "sigrun_bark_01": {
+        "text": "Water, someone. Clean water."
+      },
+      "sigrun_bark_02": {
+        "text": "Bites turning green? Come here."
+      },
+      "sigrun_bark_03": {
+        "text": "Breathe slowly."
+      },
+      "sigrun_bark_04": {
+        "text": "The herbs won't last."
+      },
+      "sigrun_avsked_01": {
+        "text": "Come back in one piece."
+      },
+      "sigrun_avsked_02": {
+        "text": "Breathe through cloth."
+      }
+    }
+  },
+  "bror_vakt": {
+    "namn": "Bror",
+    "repliker": {
+      "bror_halsning_01": {
+        "text": "Keep to the path. The forest is hungry."
+      },
+      "bror_halsning_02": {
+        "text": "You chose the huntress. Be on your way."
+      },
+      "bror_halsning_03": {
+        "text": "He rests now. Thanks to you."
+      },
+      "bror_rykte_01": {
+        "text": "There are more wolves every night."
+      },
+      "bror_rykte_02": {
+        "text": "Skeletons have been seen by the cairns to the north."
+      },
+      "bror_rykte_03": {
+        "text": "The Whisperer sits by Ylva's fire now. He whispers no more."
+      },
+      "bror_rykte_04": {
+        "text": "Bror buried his son in the bear's pelt. There is a new cross by the camp."
+      },
+      "bror_quest_01": {
+        "text": "My boy lies somewhere in her den. I want to bury him in the thing that took him."
+      },
+      "bror_quest_02": {
+        "text": "Ulvhild still lives. I can feel it."
+      },
+      "bror_quest_03": {
+        "text": "Thank you. He can rest now. Take the axe. I can't bear to look at it."
+      },
+      "bror_bark_01": {
+        "text": "Torch is lit. All quiet."
+      },
+      "bror_bark_02": {
+        "text": "Wolves to the north tonight."
+      },
+      "bror_bark_03": {
+        "text": "Stay on the path."
+      },
+      "bror_bark_04": {
+        "text": "I see you, forest."
+      },
+      "bror_bark_05": {
+        "text": "My boy's still out there."
+      },
+      "bror_bark_06": {
+        "text": "A good night for the watch."
+      },
+      "bror_avsked_01": {
+        "text": "Travel by daylight."
+      },
+      "bror_avsked_02": {
+        "text": "Spear first."
+      }
+    }
+  },
+  "lilla_mira": {
+    "namn": "Little Mira",
+    "repliker": {
+      "mira_halsning_01": {
+        "text": "Have you seen my brother?"
+      },
+      "mira_halsning_02": {
+        "text": "I help Sigrun now."
+      },
+      "mira_halsning_03": {
+        "text": "He isn't here. You said he was here."
+      },
+      "mira_rykte_01": {
+        "text": "A child fled toward Wolfstead in new sandals. He never got there."
+      },
+      "mira_rykte_02": {
+        "text": "Little Mira says someone saw her brother in Wolfstead. She wants to go there."
+      },
+      "mira_quest_01": {
+        "text": "Have you seen my brother? He ran toward Wolfstead. He had new sandals. Will you look for him?"
+      },
+      "mira_quest_02": {
+        "text": "Did you find him? His sandals were new."
+      },
+      "mira_quest_03": {
+        "text": "They're his. I knew it. Take the doll. He'd want someone to have it."
+      },
+      "mira_quest_04": {
+        "text": "He's alive? I knew it! I'll go there one day."
+      },
+      "mira_bark_01": {
+        "text": "He was always the fastest."
+      },
+      "mira_bark_02": {
+        "text": "The wolves sang that night."
+      },
+      "mira_bark_03": {
+        "text": "I'm waiting."
+      },
+      "mira_bark_04": {
+        "text": "Have you seen him?"
+      },
+      "mira_bark_05": {
+        "text": "Sigrun! I brought more water!"
+      },
+      "mira_bark_06": {
+        "text": "Has anyone seen a boy in new sandals?"
+      },
+      "mira_avsked_01": {
+        "text": "Tell me if you see him."
+      },
+      "mira_avsked_02": {
+        "text": "Bye."
+      }
+    }
+  },
+  "viskaren": {
+    "namn": "The Whisperer",
+    "repliker": {
+      "viskaren_halsning_01": {
+        "text": "Do you hear them? No. You never hear."
+      },
+      "viskaren_halsning_02": {
+        "text": "It's quiet now. I'd forgotten what quiet sounds like."
+      },
+      "viskaren_halsning_03": {
+        "text": "The skull talks to you now. Not to me."
+      },
+      "viskaren_rykte_01": {
+        "text": "A hermit whispers to bones by a cairn in the northwest."
+      },
+      "viskaren_rykte_02": {
+        "text": "The Whisperer laughs at night. He says the skull has chosen."
+      },
+      "viskaren_quest_01": {
+        "text": "My brother whispers. Every night. He's still in the house in Wolfstead. Bring him to me."
+      },
+      "viskaren_quest_02": {
+        "text": "He's still whispering. Can't you hear?"
+      },
+      "viskaren_quest_03": {
+        "text": "Silence. At last, silence. Thank you. Take the fingers. They no longer point at you."
+      },
+      "viskaren_quest_04": {
+        "text": "He chose you. Do you hear him now? No. But you will."
+      },
+      "viskaren_bark_01": {
+        "text": "The bones remember."
+      },
+      "viskaren_bark_02": {
+        "text": "Hush. They're talking."
+      },
+      "viskaren_bark_03": {
+        "text": "The wolves leave me be."
+      },
+      "viskaren_bark_04": {
+        "text": "Your turn will come."
+      },
+      "viskaren_bark_05": {
+        "text": "Warm yourself. The fire doesn't whisper."
+      },
+      "viskaren_bark_06": {
+        "text": "He chose you. He chose you."
+      },
+      "viskaren_avsked_01": {
+        "text": "They follow you."
+      },
+      "viskaren_avsked_02": {
+        "text": "Listen now."
+      }
+    }
+  },
+  "hedda_jagare": {
+    "namn": "Hedda",
+    "repliker": {
+      "hedda_halsning_01": {
+        "text": "Fur, bone, arrows. That's all Wolfstead has."
+      },
+      "hedda_halsning_02": {
+        "text": "Wolfstead has nothing left for me."
+      },
+      "hedda_rykte_01": {
+        "text": "The Greybear of Wolfstead is dead. They say Hedda wept for joy."
+      },
+      "hedda_rykte_02": {
+        "text": "A grey wolf with a chain around its neck leads the packs."
+      },
+      "hedda_rykte_03": {
+        "text": "Little Mira says someone saw her brother in Wolfstead. She wants to go there."
+      },
+      "hedda_rykte_04": {
+        "text": "Ulvhild's pelt hangs in Hedda's hunting lodge. She sleeps through the night now."
+      },
+      "hedda_quest_01": {
+        "text": "Ulvhild ate my husband. I want her pelt on my wall."
+      },
+      "hedda_quest_02": {
+        "text": "Ulvhild still lives. I can feel it."
+      },
+      "hedda_quest_03": {
+        "text": "There she hangs. Now I can sleep."
+      },
+      "hedda_bark_01": {
+        "text": "Fresh meat tomorrow."
+      },
+      "hedda_bark_02": {
+        "text": "The grey wolves are moving south."
+      },
+      "hedda_bark_03": {
+        "text": "Keep your knife sharp."
+      },
+      "hedda_bark_04": {
+        "text": "Choke on it, Ulvhild."
+      },
+      "hedda_avsked_01": {
+        "text": "Good hunting."
+      },
+      "hedda_avsked_02": {
+        "text": "Bring fur next time."
+      }
+    }
+  },
+  "gravvaktaren_ebbe": {
+    "namn": "Ebbe the Gravewarden",
+    "repliker": {
+      "ebbe_halsning_01": {
+        "text": "No one should come here. Yet here you are."
+      },
+      "ebbe_halsning_02": {
+        "text": "The children want the Chronicle again."
+      },
+      "ebbe_halsning_03": {
+        "text": "You again. The dead remember what you did."
+      },
+      "ebbe_rykte_01": {
+        "text": "Chieftain Valdemar wears a crown that binds the whole village."
+      },
+      "ebbe_rykte_02": {
+        "text": "The Bone King has fallen. The dead of the Old Village lie still."
+      },
+      "ebbe_rykte_03": {
+        "text": "The Gravewardens' gear still lies where they fell."
+      },
+      "ebbe_rykte_04": {
+        "text": "Ebbe reads the Gravewardens' Chronicle to the children by the portal."
+      },
+      "ebbe_rykte_05": {
+        "text": "Valdemar rests in the chieftain's grave with his signet. The graveyard is still."
+      },
+      "ebbe_rykte_06": {
+        "text": "Sara Bonereader has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
+      },
+      "ebbe_quest_01": {
+        "text": "My brothers fell down there. I heard them singing. Then nothing. Find out how they died."
+      },
+      "ebbe_quest_02": {
+        "text": "The crypt waits. My brothers wait."
+      },
+      "ebbe_quest_03": {
+        "text": "They held. All of them. To the last man. Take the lid. It was our captain's."
+      },
+      "ebbe_quest_04": {
+        "text": "My grandfather? He held the door? Then I will hold the gate."
+      },
+      "ebbe_quest_05": {
+        "text": "The crown rules him, not his own will. Bring him down, and let us bury a chieftain, not a monster."
+      },
+      "ebbe_quest_06": {
+        "text": "Valdemar is waiting for his grave."
+      },
+      "ebbe_quest_07": {
+        "text": "Rest, Valdemar. The village is yours again."
+      },
+      "ebbe_quest_08": {
+        "text": "Wear it well. It weighed on him too."
+      },
+      "ebbe_quest_09": {
+        "text": "You gave him to the bonereader? Then let him talk to her."
+      },
+      "ebbe_bark_01": {
+        "text": "Crush the bones. Don't pierce."
+      },
+      "ebbe_bark_02": {
+        "text": "The lantern burns for the dead."
+      },
+      "ebbe_bark_03": {
+        "text": "Two hundred years. Then nothing."
+      },
+      "ebbe_bark_04": {
+        "text": "Rest, brothers."
+      },
+      "ebbe_bark_05": {
+        "text": "And Ebbe's brothers held, to the last man."
+      },
+      "ebbe_avsked_01": {
+        "text": "May the dead lie still."
+      },
+      "ebbe_avsked_02": {
+        "text": "Walk with the light."
+      }
+    }
+  },
+  "marta_torghandlare": {
+    "namn": "Marta",
+    "repliker": {
+      "marta_halsning_01": {
+        "text": "New faces! New faces at last!"
+      },
+      "marta_halsning_02": {
+        "text": "The hero in the flesh! Come, come, have a look!"
+      },
+      "marta_rykte_01": {
+        "text": "People are moving back to the Old Village. It smells of bread again."
+      },
+      "marta_rykte_02": {
+        "text": "The bells of Mistshore toll beneath the water."
+      },
+      "marta_rykte_03": {
+        "text": "Ebbe reads the Gravewardens' Chronicle to the children by the portal."
+      },
+      "marta_rykte_04": {
+        "text": "The Bone King has fallen. The dead of the Old Village lie still."
+      },
+      "marta_rykte_05": {
+        "text": "Valdemar rests in the chieftain's grave with his signet. The graveyard is still."
+      },
+      "marta_bark_01": {
+        "text": "Pots! Cloth! Potions!"
+      },
+      "marta_bark_02": {
+        "text": "Heard the latest?"
+      },
+      "marta_bark_03": {
+        "text": "Bread tomorrow, maybe."
+      },
+      "marta_bark_04": {
+        "text": "Come and look!"
+      },
+      "marta_avsked_01": {
+        "text": "Come back soon!"
+      },
+      "marta_avsked_02": {
+        "text": "Tell your friends!"
+      }
+    }
+  },
+  "gunnar_jarnhand": {
+    "namn": "Gunnar Ironhand",
+    "repliker": {
+      "gunnar_halsning_01": {
+        "text": "I don't forge anymore. But I sell."
+      },
+      "gunnar_halsning_02": {
+        "text": "Good steel you're wearing. Not mine, but good."
+      },
+      "gunnar_rykte_01": {
+        "text": "The smith who forged the Runeforged Blade died that same night."
+      },
+      "gunnar_rykte_02": {
+        "text": "Ashenhold still burns, thirty years on."
+      },
+      "gunnar_bark_01": {
+        "text": "No forge. Never again."
+      },
+      "gunnar_bark_02": {
+        "text": "Steel is steel."
+      },
+      "gunnar_bark_03": {
+        "text": "Buying weapons. Anything you pry off the dead."
+      },
+      "gunnar_bark_04": {
+        "text": "Hm."
+      },
+      "gunnar_avsked_01": {
+        "text": "Hm. Go."
+      },
+      "gunnar_avsked_02": {
+        "text": "Come back with steel."
+      }
+    }
+  },
+  "vaktkapten_ingrid": {
+    "namn": "Captain Ingrid",
+    "repliker": {
+      "ingrid_halsning_01": {
+        "text": "This village is under my protection."
+      },
+      "ingrid_halsning_02": {
+        "text": "The Gravewardens live on in us now."
+      },
+      "ingrid_halsning_03": {
+        "text": "Ebbe is dead. Someone must guard the gate."
+      },
+      "ingrid_rykte_01": {
+        "text": "People are moving back to the Old Village. It smells of bread again."
+      },
+      "ingrid_rykte_02": {
+        "text": "The village has guards now. Farmers with spears, but they hold."
+      },
+      "ingrid_rykte_03": {
+        "text": "Captain Ingrid wears her grandfather's Gravewarden crest. The guards drill every dawn now."
+      },
+      "ingrid_rykte_04": {
+        "text": "{hjalte} wears the chieftain's signet. Some say the village has a new chieftain."
+      },
+      "ingrid_bark_01": {
+        "text": "The watch stands!"
+      },
+      "ingrid_bark_02": {
+        "text": "Torches up at the gate."
+      },
+      "ingrid_bark_03": {
+        "text": "Graveyard. Eyes open."
+      },
+      "ingrid_bark_04": {
+        "text": "Shields up!"
+      },
+      "ingrid_bark_05": {
+        "text": "Dawn drill! Shields up!"
+      },
+      "ingrid_bark_06": {
+        "text": "The lantern will burn again. One day."
+      },
+      "ingrid_avsked_01": {
+        "text": "Stay vigilant."
+      },
+      "ingrid_avsked_02": {
+        "text": "The village thanks you."
+      }
+    }
+  },
+  "olle_vardshus": {
+    "namn": "Olle",
+    "repliker": {
+      "olle_halsning_01": {
+        "text": "Sit! First tankard's on me."
+      },
+      "olle_halsning_02": {
+        "text": "There you are! Everyone's talking about you."
+      },
+      "olle_rykte_01": {
+        "text": "The bells of Mistshore toll beneath the water."
+      },
+      "olle_rykte_02": {
+        "text": "Someone has seen light in Ashenhold again. Not fire. Something else."
+      },
+      "olle_rykte_03": {
+        "text": "{hjalte} has slain {antal_bossar} of the lords of darkness. People are starting to hope."
+      },
+      "olle_rykte_04": {
+        "text": "The Greybear of Wolfstead is dead. They say Hedda wept for joy."
+      },
+      "olle_rykte_05": {
+        "text": "Ulvhild's pelt hangs in Hedda's hunting lodge. She sleeps through the night now."
+      },
+      "olle_rykte_06": {
+        "text": "Ylva says the Runecarver snuffed out the Fourth Stone himself. She talks of lighting it again."
+      },
+      "olle_rykte_07": {
+        "text": "Captain Ingrid wears her grandfather's Gravewarden crest. The guards drill every dawn now."
+      },
+      "olle_rykte_08": {
+        "text": "The Bone King has fallen. The dead of the Old Village lie still."
+      },
+      "olle_rykte_09": {
+        "text": "Valdemar rests in the chieftain's grave with his signet. The graveyard is still."
+      },
+      "olle_rykte_10": {
+        "text": "{hjalte} wears the chieftain's signet. Some say the village has a new chieftain."
+      },
+      "olle_rykte_11": {
+        "text": "Sara Bonereader has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
+      },
+      "olle_bark_01": {
+        "text": "Ale! Warm ale!"
+      },
+      "olle_bark_02": {
+        "text": "Half of it's lies, the other half's worse!"
+      },
+      "olle_bark_03": {
+        "text": "Heard about Mistshore?"
+      },
+      "olle_bark_04": {
+        "text": "To the hero!"
+      },
+      "olle_avsked_01": {
+        "text": "Next round's yours!"
+      },
+      "olle_avsked_02": {
+        "text": "Come back with a story!"
+      }
+    }
+  },
+  "sara_benlasare": {
+    "namn": "Sara Bonereader",
+    "repliker": {
+      "sara_halsning_01": {
+        "text": "Bones tell. Trinkets listen."
+      },
+      "sara_halsning_02": {
+        "text": "Valdemar speaks to me now. He is angry."
+      },
+      "sara_rykte_01": {
+        "text": "A hermit whispers to bones by a cairn in the northwest."
+      },
+      "sara_rykte_02": {
+        "text": "Folk say {hjalte} carries {foremal}. No one has seen the like in thirty years."
+      },
+      "sara_rykte_03": {
+        "text": "The Whisperer laughs at night. He says the skull has chosen."
+      },
+      "sara_rykte_04": {
+        "text": "Sara Bonereader has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
+      },
+      "sara_bark_01": {
+        "text": "The bones speak clearer at night."
+      },
+      "sara_bark_02": {
+        "text": "Trinkets from the dead."
+      },
+      "sara_bark_03": {
+        "text": "The Whisperer was my teacher."
+      },
+      "sara_bark_04": {
+        "text": "Come closer."
+      },
+      "sara_avsked_01": {
+        "text": "The bones are waiting."
+      },
+      "sara_avsked_02": {
+        "text": "Come at night."
+      },
+      "sara_quest_01": {
+        "text": "Valdemar's bones are speaking. Give them to me, and I will listen."
+      },
+      "sara_quest_02": {
+        "text": "The bones are waiting. The signet too."
+      },
+      "sara_quest_03": {
+        "text": "He is mine now. He is very angry. Thank you."
+      }
+    }
+  }
+}
