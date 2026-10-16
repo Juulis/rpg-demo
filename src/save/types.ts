@@ -1,4 +1,4 @@
-import type { Equipment, ItemInstance } from '../core/GameContext';
+import type { Equipment, ItemInstance } from '../core/context.ext';
 
 export const SAVE_VERSION = 1;
 export const MAX_HEROES = 8;
@@ -58,7 +58,13 @@ export const HERO_CLASSES: readonly HeroClass[] = [
 export const classById = (id: string): HeroClass | undefined => HERO_CLASSES.find((c) => c.id === id);
 
 export const newGameRecord = (seed: number): GameRecord => ({
-  seed, killed: [], zone: 'forest', pos: null, stage: 0, runes: 0, city: 'besatt',
+  seed,
+  killed: [],
+  zone: 'forest',
+  pos: null,
+  stage: 0,
+  runes: 0,
+  city: 'besatt',
 });
 
 export const newSeed = (): number => (Math.random() * 0x7fffffff) >>> 0 || 1;

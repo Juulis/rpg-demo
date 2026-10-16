@@ -7,11 +7,24 @@ import assert from 'node:assert/strict';
 
 const dom = new JSDOM('<!doctype html><body><div id="plate"></div></body>', { url: 'http://localhost/', pretendToBeVisual: true });
 const g = globalThis as unknown as Record<string, unknown>;
-for (const k of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Node', 'KeyboardEvent', 'Event', 'localStorage', 'requestAnimationFrame', 'cancelAnimationFrame']) {
+for (const k of [
+  'window',
+  'document',
+  'HTMLElement',
+  'HTMLInputElement',
+  'Node',
+  'KeyboardEvent',
+  'Event',
+  'localStorage',
+  'requestAnimationFrame',
+  'cancelAnimationFrame',
+]) {
   g[k] = (dom.window as unknown as Record<string, unknown>)[k];
 }
 
 const { EventBus } = await import('../src/core/EventBus');
+const { DATA } = await import('../src/data/index');
+const { heroOf, heroWriter } = await import('../src/core/context.ext');
 const { MemoryStore } = await import('../src/core/storage');
 const { AudioModule } = await import('../src/audio/AudioModule');
 const { AudioEventBinder } = await import('../src/audio/AudioEventBinder');
@@ -28,22 +41,35 @@ const store = new MemoryStore();
 // legacy-data för engångsmigrering
 store.set('rk_inv_barbar', JSON.stringify({ inv: [{ base: 'langsvard' }], equip: {}, gold: 42 }));
 
+// Skelettets HeroState/ZoneView (#18) + valfria fält från context.ext.ts
+const zoneExtras = {
+  circle: 45,
+  colliders: [],
+  runes: [
+    { x: 10, y: 0, active: false },
+    { x: -20, y: 5, active: false },
+  ],
+  portals: [],
+  cleared: {},
+};
 const ctx: GameContext = {
   bus,
-  hero: { id: null, name: '', cls: 'riddare', level: 1, xp: 0, gold: 0, inv: [], equip: {}, stage: 0, runes: 0, city: 'besatt', zone: 'forest', pos: { x: 0, y: 0 }, facing: 0, playing: false },
-  zone: { name: 'forest', circle: 45, colliders: [], runes: [{ x: 10, y: 0, active: false }, { x: -20, y: 5, active: false }], portals: [], cleared: {} },
+  hero: { id: null, name: '', cls: 'riddare', level: 1, xp: 0, gold: 0, hp: 1, maxHp: 1, stamina: 1, maxStamina: 1, pos: { x: 0, y: 0 } },
+  zone: { name: 'forest', areaId: 'startskogen', width: 44, height: 44, ...zoneExtras } as GameContext['zone'],
   session: { seed: 1, killed: new Set() },
-  data: { portalVillage: { portal: { forest_position: [0, 0] }, village: { zones: [] } } },
+  data: DATA,
 };
+const H = heroWriter(ctx);
 // motorstub: new_game -> bygg zon -> zone_enter (asynkront, som en riktig laddning)
 const log: string[] = [];
 bus.on('new_game', ({ seed }) => {
   log.push(`new_game:${seed}`);
   setTimeout(() => {
-    ctx.zone = { ...ctx.zone, name: ctx.hero.zone };
-    ctx.hero.pos = ctx.hero.resumePos ?? { x: 0, y: 0 };
-    ctx.hero.playing = true;
-    bus.emit('zone_enter', { name: ctx.hero.zone });
+    const zone = H.zone ?? 'forest';
+    ctx.zone = { ...ctx.zone, name: zone };
+    H.pos = H.resumePos ?? { x: 0, y: 0 };
+    H.playing = true;
+    bus.emit('zone_enter', { name: zone });
   }, 20);
 });
 
@@ -55,7 +81,11 @@ const offs = binder.bind(bus);
 bus.emit('kill', { id: 'x', area: 'a', lvl: 1, champion: false, unique: false, boss: true });
 bus.emit('loot_drop', { quality: 'rare' });
 bus.emit('pickup', { itemId: 'i', first: true });
-bus.emit('step', undefined); t = 100; bus.emit('step', undefined); t = 500; bus.emit('step', undefined);
+bus.emit('step', undefined);
+t = 100;
+bus.emit('step', undefined);
+t = 500;
+bus.emit('step', undefined);
 assert.deepEqual(played, ['boss', 'drop_rare', 'pickup_first', 'step', 'step']);
 offs.forEach((o) => o());
 
@@ -90,7 +120,8 @@ assert.equal(save.roster.validName('Åsa_1'), '');
 
 // Tab när menyn är öppen: släpps igenom
 const tab = (): KeyboardEvent => new dom.window.KeyboardEvent('keydown', { key: 'Tab', cancelable: true }) as unknown as KeyboardEvent;
-let ev = tab(); window.dispatchEvent(ev);
+let ev = tab();
+window.dispatchEvent(ev);
 assert.equal(ev.defaultPrevented, false, 'Tab ska släppas igenom när menyn är öppen');
 
 // skapa hjälte via UI
@@ -101,17 +132,18 @@ input.value = 'Ragnar';
 assert.equal(menu.isOpen, false);
 await new Promise((r) => setTimeout(r, 60));
 assert.equal(ctx.hero.name, 'Ragnar');
-assert.equal(ctx.hero.playing, true);
+assert.equal(heroOf(ctx).playing, true);
 assert.ok(log.length === 1, 'new_game emit:at en gång');
 assert.equal(store.get('rk_inv_riddare'), null, 'rk_inv_ skrivs inte längre');
 const ragnarId = ctx.hero.id!;
 assert.ok(store.get(`rpg_hero_${ragnarId}`), 'sparad vid start');
 
 // spela: steg avslöjar fog, kill sparar via bussen (debounce)
-ctx.hero.pos = { x: 5, y: 5 };
+H.pos = { x: 5, y: 5 };
 bus.emit('step', undefined);
 assert.ok(map.fogOfWar.isRevealed('forest', 5, 5));
-ctx.hero.gold = 99; ctx.session.killed.add('m1');
+H.gold = 99;
+ctx.session.killed.add('m1');
 bus.emit('kill', { id: 'm1', area: 'a', lvl: 1, champion: false, unique: false, boss: false });
 await new Promise((r) => setTimeout(r, 200));
 const saved = JSON.parse(store.get(`rpg_hero_${ragnarId}`)!);
@@ -120,11 +152,13 @@ assert.deepEqual(saved.game.killed, ['m1']);
 assert.deepEqual(saved.game.pos, [5, 5]);
 
 // Tab under spel: växlar karta, preventDefault
-ev = tab(); window.dispatchEvent(ev);
+ev = tab();
+window.dispatchEvent(ev);
 assert.equal(ev.defaultPrevented, true);
 assert.equal(map.isOpen, true);
 map.render(0);
-ev = tab(); window.dispatchEvent(ev);
+ev = tab();
+window.dispatchEvent(ev);
 assert.equal(map.isOpen, false);
 
 // fog sparas per hjälte-id vid zonbyte
@@ -133,7 +167,7 @@ assert.ok(store.get(FogRepository.key(ragnarId, 'forest')));
 
 // tillbaka till menyn + fortsätt: återupptar position
 menu.show();
-assert.equal(ctx.hero.playing, false);
+assert.equal(heroOf(ctx).playing, false);
 (document.getElementById('hmCont') as HTMLButtonElement).click();
 await new Promise((r) => setTimeout(r, 60));
 assert.deepEqual(ctx.hero.pos, { x: 5, y: 5 });

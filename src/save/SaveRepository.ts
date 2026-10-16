@@ -28,13 +28,15 @@ export class SaveRepository {
     if (!Array.isArray(raw)) return [];
     return raw.filter(isRecord).flatMap((h): HeroIndexEntry[] =>
       typeof h.id === 'string' && h.id
-        ? [{
-            id: h.id,
-            name: typeof h.name === 'string' ? h.name : h.id,
-            cls: typeof h.cls === 'string' ? h.cls : 'riddare',
-            level: typeof h.level === 'number' ? h.level : 1,
-            ...(typeof h.savedAt === 'number' ? { savedAt: h.savedAt } : {}),
-          }]
+        ? [
+            {
+              id: h.id,
+              name: typeof h.name === 'string' ? h.name : h.id,
+              cls: typeof h.cls === 'string' ? h.cls : 'riddare',
+              level: typeof h.level === 'number' ? h.level : 1,
+              ...(typeof h.savedAt === 'number' ? { savedAt: h.savedAt } : {}),
+            },
+          ]
         : [],
     );
   }
@@ -50,7 +52,13 @@ export class SaveRepository {
   /** Skriver sparfilen och uppdaterar index + senast spelad. */
   save(d: SaveFile, markLast = true): boolean {
     if (!writeJson(this.store, SaveRepository.heroKey(d.hero.id), d)) return false;
-    const entry: HeroIndexEntry = { id: d.hero.id, name: d.hero.name, cls: d.hero.cls, level: d.hero.level, ...(d.savedAt ? { savedAt: d.savedAt } : {}) };
+    const entry: HeroIndexEntry = {
+      id: d.hero.id,
+      name: d.hero.name,
+      cls: d.hero.cls,
+      level: d.hero.level,
+      ...(d.savedAt ? { savedAt: d.savedAt } : {}),
+    };
     const idx = this.index();
     const i = idx.findIndex((x) => x.id === d.hero.id);
     if (i >= 0) idx[i] = entry;

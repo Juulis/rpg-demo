@@ -1,13 +1,15 @@
-import type { Equipment, ItemInstance } from '../core/GameContext';
+import type { Equipment, ItemInstance } from '../core/context.ext';
 import { isRecord } from '../core/storage';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
 const num = (v: unknown, d: number): number => (typeof v === 'number' && Number.isFinite(v) ? v : d);
 const str = (v: unknown, d: string): string => (typeof v === 'string' ? v : d);
-const items = (v: unknown): ItemInstance[] => (Array.isArray(v) ? v.filter(isRecord).filter((i): i is Record<string, unknown> & ItemInstance => typeof i.base === 'string') : []);
+const items = (v: unknown): ItemInstance[] =>
+  Array.isArray(v) ? v.filter(isRecord).filter((i): i is Record<string, unknown> & ItemInstance => typeof i.base === 'string') : [];
 const equip = (v: unknown): Equipment => {
   const out: Equipment = {};
-  if (isRecord(v)) for (const [k, it] of Object.entries(v)) out[k] = isRecord(it) && typeof it.base === 'string' ? (it as unknown as ItemInstance) : null;
+  if (isRecord(v))
+    for (const [k, it] of Object.entries(v)) out[k] = isRecord(it) && typeof it.base === 'string' ? (it as unknown as ItemInstance) : null;
   return out;
 };
 
@@ -59,7 +61,10 @@ export class SaveMigrator {
     if (!isRecord(g) || typeof g.seed !== 'number') return null;
     const killedRaw = g.killed;
     const killed = Array.isArray(killedRaw) ? killedRaw : killedRaw instanceof Set ? [...(killedRaw as Set<unknown>)] : [];
-    const pos = Array.isArray(g.pos) && g.pos.length >= 2 && g.pos.every((n) => typeof n === 'number') ? ([g.pos[0], g.pos[1]] as [number, number]) : null;
+    const pos =
+      Array.isArray(g.pos) && g.pos.length >= 2 && g.pos.every((n) => typeof n === 'number')
+        ? ([g.pos[0], g.pos[1]] as [number, number])
+        : null;
     const rec: GameRecord = {
       seed: g.seed,
       killed: killed.filter((k): k is string => typeof k === 'string'),
