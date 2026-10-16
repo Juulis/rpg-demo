@@ -1,5 +1,5 @@
 import type { Equipment, ItemInstance } from '../core/GameContext';
-import { isRecord } from '../core/storage';
+import { isRecord } from '../core/json';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
 const num = (v: unknown, d: number): number => (typeof v === 'number' && Number.isFinite(v) ? v : d);
@@ -33,7 +33,7 @@ export class SaveMigrator {
     if (!isRecord(h) || typeof h.id !== 'string') return null;
     const hero: HeroRecord = {
       id: h.id,
-      name: str(h.name, ''),
+      name: str(h.name, 'Namnlös'),
       cls: str(h.cls, 'riddare'),
       level: num(h.level, 1),
       xp: num(h.xp, 0),

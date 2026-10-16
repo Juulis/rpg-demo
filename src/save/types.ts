@@ -44,19 +44,16 @@ export interface HeroIndexEntry {
   savedAt?: number;
 }
 
-export const HERO_CLASS_IDS = ['amazonkrigare', 'barbar', 'riddare'] as const;
-export type HeroClassId = (typeof HERO_CLASS_IDS)[number];
-
-/** Klass-id + ikon. Visningsnamn: i18n-nyckeln `classes.<id>`. */
 export interface HeroClass {
-  id: HeroClassId;
+  id: string;
+  name: string;
   icon: string;
 }
 
 export const HERO_CLASSES: readonly HeroClass[] = [
-  { id: 'amazonkrigare', icon: '🔱' },
-  { id: 'barbar', icon: '💥' },
-  { id: 'riddare', icon: '🛡️' },
+  { id: 'amazonkrigare', name: 'Amazonkrigare', icon: '🔱' },
+  { id: 'barbar', name: 'Barbar', icon: '💥' },
+  { id: 'riddare', name: 'Riddare', icon: '🛡️' },
 ];
 export const classById = (id: string): HeroClass | undefined => HERO_CLASSES.find((c) => c.id === id);
 
@@ -69,5 +66,3 @@ export const newGameRecord = (seed: number): GameRecord => ({
   runes: 0,
   city: 'besatt',
 });
-
-export const newSeed = (): number => (Math.random() * 0x7fffffff) >>> 0 || 1;
