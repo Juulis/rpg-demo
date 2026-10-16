@@ -1,4 +1,4 @@
-import type { MapZone, PlayHero } from '../core/context.ext';
+import type { HeroState, ZoneView } from '../core/GameContext';
 import type { GoalTracker } from './GoalTracker';
 import type { MapPainter } from './MapPainter';
 
@@ -32,7 +32,7 @@ export class MiniMapView {
     this.canvas.style.display = v ? 'block' : 'none';
   }
 
-  draw(z: MapZone, h: Readonly<PlayHero>, time: number): void {
+  draw(z: ZoneView, h: Readonly<HeroState>, time: number): void {
     const prep = this.painter.prepare(this.canvas);
     if (!prep) return;
     const { c, W, H } = prep;

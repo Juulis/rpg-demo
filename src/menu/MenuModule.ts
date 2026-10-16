@@ -1,4 +1,3 @@
-import { heroWriter } from '../core/context.ext';
 import type { GameContext, GameModule } from '../core/GameContext';
 import type { SaveModule } from '../save/SaveModule';
 import { ConfirmDialog } from './ConfirmDialog';
@@ -28,7 +27,6 @@ export class MenuModule implements GameModule {
       loader: this.save.loader,
       onLeaveGame: () => {
         if (this.save.autosave.isPlaying) this.save.autosave.end(true);
-        heroWriter(ctx).playing = false;
       },
       assets,
       create: new CreateHeroDialog(this.save.roster, assets),

@@ -1,4 +1,4 @@
-import type { MapZone, PlayHero } from '../core/context.ext';
+import type { HeroState, ZoneView } from '../core/GameContext';
 import { FogOfWar, type Rgba } from './FogOfWar';
 import type { Goal } from './GoalTracker';
 import type { MapModel } from './MapModel';
@@ -37,7 +37,7 @@ export class MapPainter {
     return { c, W, H };
   }
 
-  world(c: CanvasRenderingContext2D, z: MapZone, p: Projection, fogColor: Rgba): void {
+  world(c: CanvasRenderingContext2D, z: ZoneView, p: Projection, fogColor: Rgba): void {
     const X = (x: number): number => p.ox + x * p.s;
     const Y = (y: number): number => p.oy + y * p.s;
     const s = p.s;
@@ -142,9 +142,9 @@ export class MapPainter {
   }
 
   /** Spelarpil; framåt = (sin, cos) av facing. */
-  hero(c: CanvasRenderingContext2D, h: Readonly<PlayHero>, p: Projection): void {
-    const fx = Math.sin(h.facing ?? 0);
-    const fy = Math.cos(h.facing ?? 0);
+  hero(c: CanvasRenderingContext2D, h: Readonly<HeroState>, p: Projection): void {
+    const fx = Math.sin(h.facing);
+    const fy = Math.cos(h.facing);
     const sz = p.mini ? 7 : 10;
     const X = p.ox + h.pos.x * p.s;
     const Y = p.oy + h.pos.y * p.s;
