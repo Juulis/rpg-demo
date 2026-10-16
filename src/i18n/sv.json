@@ -1,0 +1,67 @@
+{
+  "common": {
+    "title": "Runornas kall",
+    "cancel": "Avbryt",
+    "back": "Tillbaka"
+  },
+  "lang": {
+    "label": "Språk",
+    "sv": "Svenska",
+    "en": "English"
+  },
+  "classes": {
+    "amazonkrigare": "Amazonkrigare",
+    "barbar": "Barbar",
+    "riddare": "Riddare"
+  },
+  "menu": {
+    "choose_hero": "Välj hjälte",
+    "new_hero": "Ny hjälte",
+    "continue": "Fortsätt",
+    "new_game": "Nytt game",
+    "create_hero": "Ny hjälte",
+    "delete_hero": "Radera hjälte",
+    "delete_confirm": "Radera {name} för alltid?",
+    "delete_yes": "Ja, radera",
+    "slot_info": "{cls} · Nivå {level}",
+    "unnamed": "Namnlös",
+    "slots_free": { "one": "{count} ledig plats", "other": "{count} lediga platser" },
+    "create_play": "Skapa och spela",
+    "name_placeholder": "Namn ({min}–{max} tecken)"
+  },
+  "errors": {
+    "name_length": "Namnet måste vara {min}–{max} tecken.",
+    "name_chars": "Bara bokstäver, siffror, mellanslag, - och _.",
+    "name_taken": "Det finns redan en hjälte med det namnet.",
+    "slots_full": "Alla hjälteplatser är upptagna."
+  },
+  "save": {
+    "saved": "Sparat"
+  },
+  "audio": {
+    "volume": "Volym",
+    "sound_on": "Ljud på (M)",
+    "sound_off": "Ljud av (M)"
+  },
+  "map": {
+    "zones": {
+      "forest": "Den dimmiga skogen",
+      "village": "Den gamla byn"
+    },
+    "areas": {
+      "portalgladet": "Portalgläntan",
+      "byporten": "Byporten",
+      "torget": "Torget",
+      "vasterhus": "Västerhusen",
+      "osterhus": "Österhusen",
+      "kyrkogarden": "Kyrkogården",
+      "benkungens_kapell": "Benkungens kapell"
+    },
+    "goal_rune": "Nästa mål: runsten",
+    "goal_portal": "Nästa mål: portalen",
+    "portal_to_village": "Portal → Den gamla byn",
+    "portal_to_forest": "Portal → Skogen",
+    "legend": "Tab: stäng karta · ◆ runsten · ● portal · ▲ du · ◯ nästa mål",
+    "north": "N"
+  }
+}
