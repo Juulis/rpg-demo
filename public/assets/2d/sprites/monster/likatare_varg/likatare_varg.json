@@ -1,0 +1,66 @@
+{
+ "id": "likatare_varg",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 108,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 144,
+   "frameH": 123,
+   "anchor": [
+    72,
+    122
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 133,
+   "frameH": 127,
+   "anchor": [
+    66,
+    119
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 162,
+   "frameH": 130,
+   "anchor": [
+    81,
+    122
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 187,
+   "frameH": 150,
+   "anchor": [
+    93,
+    122
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_husky.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}

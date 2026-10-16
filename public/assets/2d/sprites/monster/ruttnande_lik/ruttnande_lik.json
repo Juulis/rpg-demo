@@ -1,0 +1,66 @@
+{
+ "id": "ruttnande_lik",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 155,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 299,
+   "frameH": 204,
+   "anchor": [
+    149,
+    157
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 212,
+   "frameH": 202,
+   "anchor": [
+    106,
+    181
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 280,
+   "frameH": 211,
+   "anchor": [
+    140,
+    192
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 417,
+   "frameH": 283,
+   "anchor": [
+    208,
+    196
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_zombie_b.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}

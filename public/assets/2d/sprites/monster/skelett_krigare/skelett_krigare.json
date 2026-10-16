@@ -1,0 +1,66 @@
+{
+ "id": "skelett_krigare",
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "px_h": 155,
+ "anims": {
+  "idle": {
+   "file": "idle.png",
+   "frames": 4,
+   "frameW": 239,
+   "frameH": 195,
+   "anchor": [
+    119,
+    166
+   ],
+   "fps": 6,
+   "loop": true
+  },
+  "gang": {
+   "file": "gang.png",
+   "frames": 8,
+   "frameW": 280,
+   "frameH": 247,
+   "anchor": [
+    140,
+    214
+   ],
+   "fps": 10,
+   "loop": true
+  },
+  "attack": {
+   "file": "attack.png",
+   "frames": 8,
+   "frameW": 307,
+   "frameH": 288,
+   "anchor": [
+    153,
+    267
+   ],
+   "fps": 12,
+   "loop": true
+  },
+  "dod": {
+   "file": "dod.png",
+   "frames": 6,
+   "frameW": 532,
+   "frameH": 337,
+   "anchor": [
+    266,
+    247
+   ],
+   "fps": 8,
+   "loop": false
+  }
+ },
+ "source": "q_skeleton_axe.glb",
+ "not": "ankare = fotpunkt (nederkant mitt) i varje ruta; rutstorlek per animation"
+}
