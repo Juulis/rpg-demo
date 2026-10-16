@@ -25,7 +25,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/main.ts', 'vite.config.ts', 'eslint.config.js'],
+    files: ['src/main.ts', 'vite.config.ts', 'eslint.config.js', 'scripts/**'],
     rules: { 'no-restricted-syntax': 'off' },
     languageOptions: { globals: { ...globals.node } },
   },
