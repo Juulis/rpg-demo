@@ -318,6 +318,8 @@ export class Game {
     zone.collide(hs.pos, 0.5);
     hs.zone = name;
     if (name === 'village' && hs.stage < 2) hs.stage = 2;
+    hero.clearAttack();
+    hero.view.playbackRate = 1;
     hero.moveTarget = null;
     this.targetMonster = null;
     this.targetDrop = null;
@@ -379,6 +381,7 @@ export class Game {
     this.hud.flash(this.text.t('msg.boss_dead', { name: this.bossName(m) }), '#c7a35a');
   }
   private heroDied(): void {
+    this.mustWorld().hero.clearAttack();
     this.dead = true;
     this.hud.flash(this.text.t('msg.died'), '#ff6060');
   }
@@ -586,11 +589,10 @@ export class Game {
     if (h.atkT > 0 && v.hasAnim('attack')) v.play('attack');
     else if (h.moving) v.play(sprinting && v.hasAnim('run') ? 'run' : 'gang');
     else v.play('idle');
+    v.bobY = h.atkT > 0 && !v.hasAnim('attack') ? -Math.sin((h.atkT / 0.3) * Math.PI) * 6 : 0;
     v.update(dt);
+    if (h.atkT <= 0) v.playbackRate = 1;
     v.sprite.tint = h.blocking ? 0xa0c8ff : (CLASS_TINT[s.cls] ?? 0xffffff);
-    v.sprite.x = 0;
-    if (h.atkT > 0 && !v.hasAnim('attack')) v.sprite.y = -Math.sin((h.atkT / 0.3) * Math.PI) * 6;
-    else v.sprite.y = 0;
     const sp = Iso.worldToScreen(h.pos.x, h.pos.y);
     v.position.set(sp.x, sp.y);
     v.zIndex = h.pos.x + h.pos.y;

@@ -1,29 +1,8 @@
 import { Assets as PixiAssets, Rectangle, Texture } from 'pixi.js';
 import { HeroSprites } from './HeroSprites';
+import { assetUrl, DIRS, type Anim, type AnimName, type AnimSet } from './spriteAnim';
 
-const BASE = import.meta.env.BASE_URL + 'assets/';
-export const assetUrl = (p: string): string => BASE + p;
-
-/** Riktningar i spritearken (en rad per riktning). Skärmvinkel 90° = S (nedåt). */
-export const DIRS = ['S', 'SV', 'V', 'NV', 'N', 'NO', 'O', 'SO'] as const;
-
-export interface Anim {
-  /** frames[dir][frame] */
-  frames: Texture[][];
-  anchor: [number, number];
-  w: number;
-  h: number;
-  fps: number;
-  loop: boolean;
-  /** En enda SV-bild (speglas för östliga riktningar). */
-  single?: boolean;
-  /** Extra skala för just den här animationen (t.ex. hjältens gång- och vilark har olika upplösning). */
-  scale?: number;
-  /** Icke-loopande attack: träff på denna bildruta (0-baserad). */
-  hitFrame?: number;
-}
-export type AnimName = 'idle' | 'gang' | 'run' | 'attack' | 'dod';
-export type AnimSet = Partial<Record<AnimName, Anim>>;
+export { assetUrl, DIRS, type Anim, type AnimName, type AnimSet };
 
 interface SheetAnim {
   file: string;
@@ -115,7 +94,7 @@ export class AssetStore {
     );
   }
   private async loadHero(): Promise<void> {
-    await this.heroes.load();
+    await this.heroes.load((p) => tex(p));
   }
   private async loadMonsters(): Promise<void> {
     // Datadrivet: index.json listar alla ark (<id>/<id>.json), monster.json alla enkelbilder.

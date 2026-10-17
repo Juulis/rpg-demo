@@ -189,10 +189,12 @@ export class CombatSystem {
     const attackAnim = h.view.getAnim('attack');
     h.atkCd = 0.5 / h.stats.atkSpeed;
     if (attackAnim?.hitFrame !== undefined && attackAnim.frames[0]?.length) {
+      const spd = Math.max(0.25, h.stats.atkSpeed);
       const n = attackAnim.frames[0].length;
-      h.atkT = n / attackAnim.fps;
-      h.atkHitT = attackAnim.hitFrame / attackAnim.fps;
+      h.atkT = n / attackAnim.fps / spd;
+      h.atkHitT = attackAnim.hitFrame / attackAnim.fps / spd;
       h.atkPendingHit = true;
+      h.view.playbackRate = spd;
       h.view.play('attack', true);
       return;
     }

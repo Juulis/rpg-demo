@@ -1,11 +1,12 @@
 import { Rectangle, Texture } from 'pixi.js';
-import type { Anim, AnimSet } from './Assets';
-import { assetUrl } from './Assets';
+import type { Anim, AnimSet } from './spriteAnim';
+import { assetUrl } from './spriteAnim';
 
 const HERO_SCALE = 0.55;
 
 interface HeroSheetJson {
   image: string;
+  imageWebp?: string;
   frameW: number;
   frameH: number;
   anchor: [number, number];
@@ -14,8 +15,12 @@ interface HeroSheetJson {
   fps?: number;
   loop?: boolean;
   hitFrame?: number;
+  alignX?: number[][];
+  alignY?: number[][];
   rects: { dir: string; frame?: number; x: number; y: number; w: number; h: number }[];
 }
+
+type TexLoader = (url: string) => Promise<Texture>;
 
 async function json<T>(p: string): Promise<T> {
   const r = await fetch(assetUrl(p));
@@ -23,20 +28,26 @@ async function json<T>(p: string): Promise<T> {
   return (await r.json()) as T;
 }
 
-async function tex(p: string): Promise<Texture> {
-  const { Assets: PixiAssets } = await import('pixi.js');
-  return PixiAssets.load<Texture>(assetUrl(p));
-}
-
 function cut(src: Texture, x: number, y: number, w: number, h: number): Texture {
   return new Texture({ source: src.source, frame: new Rectangle(x, y, w, h) });
 }
 
-/** Bygger en 8-riktningsanimation från riddare_* JSON (idle, walk, run, attack). */
-async function loadSheet(dir: string, name: string): Promise<Anim> {
-  const rel = `${dir}/${name}.json`;
-  const meta = await json<HeroSheetJson>(rel);
-  const src = await tex(`${dir}/${meta.image}`);
+async function loadImage(tex: TexLoader, dir: string, meta: HeroSheetJson): Promise<Texture> {
+  const names = [meta.imageWebp, meta.image].filter((n): n is string => !!n);
+  for (const file of names) {
+    try {
+      return await tex(`${dir}/${file}`);
+    } catch {
+      /* prova nästa format */
+    }
+  }
+  throw new Error(`Kunde inte ladda bild för ${meta.image}`);
+}
+
+/** Bygger en 8-riktningsanimation från riddare_* JSON. */
+async function loadSheet(tex: TexLoader, dir: string, name: string): Promise<Anim> {
+  const meta = await json<HeroSheetJson>(`${dir}/${name}.json`);
+  const src = await loadImage(tex, dir, meta);
   const nDir = meta.dirs.length;
   const nFrame = meta.frames ?? 1;
   const frames: Texture[][] = [];
@@ -57,14 +68,16 @@ async function loadSheet(dir: string, name: string): Promise<Anim> {
     fps: meta.fps ?? 1,
     loop: meta.loop ?? true,
     hitFrame: meta.hitFrame,
+    alignX: meta.alignX,
+    alignY: meta.alignY,
     scale: HERO_SCALE,
   };
 }
 
 function withFallbacks(set: AnimSet): AnimSet {
-  const idle = set.idle;
-  if (!idle) throw new Error('Hjältesprite saknar idle');
-  const gang = set.gang ?? idle;
+  const gang = set.gang ?? set.run ?? set.attack ?? set.idle;
+  const idle = set.idle ?? gang;
+  if (!idle) throw new Error('Hjältesprites saknar alla ark');
   return {
     idle,
     gang,
@@ -79,20 +92,27 @@ export class HeroSprites {
   private readonly byClass = new Map<string, AnimSet>();
   private fallback: AnimSet | null = null;
 
-  async load(): Promise<void> {
+  async load(tex: TexLoader): Promise<void> {
     const base = '2d/sprites/hero';
+    const trySheet = async (id: string): Promise<Anim | undefined> => {
+      try {
+        return await loadSheet(tex, base, id);
+      } catch (e) {
+        console.warn(`[HeroSprites] kunde inte ladda ${id}:`, e);
+        return undefined;
+      }
+    };
     const riddare: AnimSet = {
-      idle: await loadSheet(base, 'riddare_idle_8dir'),
-      gang: await loadSheet(base, 'riddare_walk_8dir'),
-      run: await loadSheet(base, 'riddare_run_8dir'),
-      attack: await loadSheet(base, 'riddare_attack_8dir'),
+      idle: await trySheet('riddare_idle_8dir'),
+      gang: await trySheet('riddare_walk_8dir'),
+      run: await trySheet('riddare_run_8dir'),
+      attack: await trySheet('riddare_attack_8dir'),
     };
     const full = withFallbacks(riddare);
     this.byClass.set('riddare', full);
     this.fallback = full;
   }
 
-  /** Animationsark för klass; okända klasser faller tillbaka till riddaren. */
   setFor(cls: string): AnimSet {
     if (!this.fallback) throw new Error('Hjältesprites ej laddade');
     return this.byClass.get(cls) ?? this.fallback;

@@ -19,6 +19,13 @@ export class HeroModel {
   /** Träff i attackanimation väntar på atkHitT (synkad med hitFrame). */
   atkPendingHit = false;
   atkHitT = 0;
+
+  /** Avbryt pågående attackträff (död, zonbyte). */
+  clearAttack(): void {
+    this.atkPendingHit = false;
+    this.atkHitT = 0;
+    this.atkT = 0;
+  }
   skillCd = 0;
   curse = 0;
   readonly maxLevel = (DATA.portalVillage as unknown as { progression: { max_level: number } }).progression.max_level;
