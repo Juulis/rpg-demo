@@ -82,7 +82,7 @@ export class LootSystem {
   }
 
   /** Plockar upp. Returnerar false om väskan är full. */
-  pickup(g: GroundDrop): boolean {
+  async pickup(g: GroundDrop): Promise<boolean> {
     const w = this.w();
     const h = w.hero;
     if (g.data.gold) {
@@ -94,19 +94,40 @@ export class LootSystem {
     }
     const it = g.data.item as Item;
     const name = this.label(g.data);
-    if (!h.inv.add(it)) {
+    if (g.picking) return false;
+    if (!h.inv.findSpot(it)) {
       w.fb.flash(w.text.t('msg.bag_full'));
       return false;
     }
-    w.bus.emit('pickup', { itemId: w.L.foundId(it), first: this.recordFound(it) });
-    w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
-    this.remove(g);
-    return true;
+    g.picking = true;
+    const foundId = w.L.foundId(it);
+    try {
+      const first = await this.recordFound(it);
+      try {
+        if (!h.inv.add(it)) {
+          if (first) await this.found().unmarkFound(foundId);
+          w.fb.flash(w.text.t('msg.bag_full'));
+          return false;
+        }
+        this.remove(g);
+        w.bus.emit('pickup', { itemId: foundId, first });
+        w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
+        return true;
+      } catch (e) {
+        if (first) await this.found().unmarkFound(foundId);
+        throw e;
+      }
+    } catch (e) {
+      console.warn('LootSystem: upplock misslyckades', e);
+      return false;
+    } finally {
+      if (w.drops.includes(g)) g.picking = false;
+    }
   }
 
   /** Första upplock per föremåls-id registreras via FoundRegistry (SaveBackend), aldrig direkt i localStorage. */
-  private recordFound(it: Item): boolean {
-    return this.found().markFound(this.w().L.foundId(it), {
+  private async recordFound(it: Item): Promise<boolean> {
+    return await this.found().markFound(this.w().L.foundId(it), {
       first: new Date().toISOString(),
       quality: it.quality,
       base: it.base,
@@ -120,7 +141,7 @@ export class LootSystem {
       g.t += dt;
       const top = g.view.children.at(-1);
       if (top) top.y = Math.sin(g.t * 3) * 2;
-      if (g.data.gold && Math.hypot(g.pos.x - w.hero.pos.x, g.pos.y - w.hero.pos.y) < 1.2) this.pickup(g);
+      if (g.data.gold && Math.hypot(g.pos.x - w.hero.pos.x, g.pos.y - w.hero.pos.y) < 1.2) void this.pickup(g);
     }
   }
 }

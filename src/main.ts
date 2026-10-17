@@ -12,8 +12,9 @@ import { AudioModule, MapModule, MenuModule, SaveModule } from './index';
 const save = new SaveModule({
   loadHero: (s) => game.loadHero(s),
   getSnapshot: () => game.getSnapshot(),
+  setSaveBackend: (b) => game.setSaveBackend(b),
 });
-const modules: GameModule[] = [save, new MenuModule(save), new AudioModule(), new MapModule()]; // save före menu
+const modules: GameModule[] = [save, new MenuModule(save), new AudioModule(save), new MapModule(save)]; // save före menu
 
 const host = document.getElementById('app');
 if (!host) throw new Error('#app saknas');

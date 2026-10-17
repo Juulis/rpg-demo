@@ -1,10 +1,12 @@
 import type { Equipment, ItemInstance } from '../core/GameContext';
 import { isRecord } from '../core/json';
+import { parseFogMap } from './fog';
+import { parseFoundItemsMap } from './foundItems';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
 const num = (v: unknown, d: number): number => (typeof v === 'number' && Number.isFinite(v) ? v : d);
 const str = (v: unknown, d: string): string => (typeof v === 'string' ? v : d);
-const items = (v: unknown): ItemInstance[] =>
+const parseInv = (v: unknown): ItemInstance[] =>
   Array.isArray(v) ? v.filter(isRecord).filter((i): i is Record<string, unknown> & ItemInstance => typeof i.base === 'string') : [];
 const equip = (v: unknown): Equipment => {
   const out: Equipment = {};
@@ -38,13 +40,19 @@ export class SaveMigrator {
       level: num(h.level, 1),
       xp: num(h.xp, 0),
       gold: num(h.gold, 0),
-      inv: items(h.inv),
+      inv: parseInv(h.inv),
       equip: equip(h.equip),
       ...(h.fresh === true ? { fresh: true } : {}),
     };
     this.fixOldStartGear(hero);
     const out: SaveFile = { version: SAVE_VERSION, hero, game: this.game(d.game) };
-    if (typeof d.found === 'number') out.found = d.found;
+    const found = parseFoundItemsMap(d.foundItems);
+    if (found) {
+      out.foundItems = found;
+      out.found = Object.keys(found).length;
+    } else if (typeof d.found === 'number') out.found = d.found;
+    const fog = parseFogMap(d.fog);
+    if (fog) out.fog = fog;
     if (typeof d.savedAt === 'number') out.savedAt = d.savedAt;
     return out;
   }

@@ -62,6 +62,7 @@ export class AutoSaveService {
   }
 
   begin(save: SaveFile): void {
+    this.repo.backend.setActiveHero(save.hero.id);
     this.current = save;
     this.playing = true;
   }
@@ -72,6 +73,7 @@ export class AutoSaveService {
     clearTimeout(this.pending);
     this.playing = false;
     this.current = null;
+    this.repo.backend.setActiveHero(null);
   }
 
   saveSoon(reason: string): void {
@@ -85,7 +87,7 @@ export class AutoSaveService {
     const snap = this.snapshot(this.current);
     this.current = snap;
     // köas direkt (före ev. radering), så att en sen sparning aldrig återskapar en raderad hjälte
-    if (!(await this.repo.save(snap, true, true))) return false;
+    if (!(await this.repo.save(snap))) return false;
     this.lastSave = { reason, at: snap.savedAt ?? Date.now() };
     this.onSaved(snap);
     return true;

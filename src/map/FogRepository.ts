@@ -1,15 +1,25 @@
-import type { KeyValueStore } from '../core/storage';
+import type { SaveBackend } from '../core/SaveBackend';
 
-/** Fog per hjälte-id och zon i localStorage: rpg_karta_<hjälteId>_<zon> = base64 av bytes (samma format som js/map.js). */
+/** Kartfog per hjälte via SaveBackend (lagras i hjältefilen). */
 export class FogRepository {
-  static readonly PREFIX = 'rpg_karta_';
-  static key = (heroId: string, zone: string): string => `${FogRepository.PREFIX}${heroId}_${zone}`;
+  private heroId: string | null = null;
+  private readonly cache = new Map<string, string>();
 
-  constructor(private readonly store: KeyValueStore) {}
+  constructor(private readonly backend: SaveBackend) {}
+
+  /** Läser in fog för en hjälte (async) innan synkron FogOfWar-laddning. */
+  async prepare(heroId: string | null): Promise<void> {
+    this.heroId = heroId;
+    this.cache.clear();
+    if (!heroId) return;
+    const map = await this.backend.getFogMap(heroId);
+    for (const [zone, data] of Object.entries(map)) this.cache.set(zone, data);
+  }
 
   load(heroId: string, zone: string): Uint8Array | null {
+    if (heroId !== this.heroId) return null;
     try {
-      const s = this.store.get(FogRepository.key(heroId, zone));
+      const s = this.cache.get(zone);
       if (!s) return null;
       const b = atob(s);
       const out = new Uint8Array(b.length);
@@ -21,18 +31,23 @@ export class FogRepository {
   }
 
   save(heroId: string, zone: string, cells: Uint8Array): void {
+    if (heroId !== this.heroId) return;
     try {
       let s = '';
       for (const v of cells) s += String.fromCharCode(v);
-      this.store.set(FogRepository.key(heroId, zone), btoa(s));
+      const b64 = btoa(s);
+      this.cache.set(zone, b64);
+      void this.backend.setFog(heroId, zone, b64);
     } catch {
       /* full lagring: fog är inte kritisk */
     }
   }
 
-  /** Raderar all fog för en hjälte (vid hero_deleted, i stället för polling mot rpg_heroes). */
   deleteHero(heroId: string): void {
-    const p = `${FogRepository.PREFIX}${heroId}_`;
-    for (const k of this.store.keys()) if (k.startsWith(p)) this.store.remove(k);
+    if (this.heroId === heroId) {
+      this.cache.clear();
+      this.heroId = null;
+    }
+    void this.backend.clearFog(heroId);
   }
 }
