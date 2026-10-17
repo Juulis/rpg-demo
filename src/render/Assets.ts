@@ -1,5 +1,6 @@
-import { Assets as PixiAssets, Rectangle, Texture } from 'pixi.js';
+import { Rectangle, Texture } from 'pixi.js';
 import { HeroSprites } from './HeroSprites';
+import { fetchJsonResilient, loadTextureResilient } from './resilientAssets';
 import { assetUrl, DIRS, type Anim, type AnimName, type AnimSet } from './spriteAnim';
 
 export { assetUrl, DIRS, type Anim, type AnimName, type AnimSet };
@@ -36,12 +37,8 @@ export const TILES = [
 export const DECOR = ['dod_ek', 'gran', 'stubbe', 'ormbunkar', 'runsten', 'stenhog', 'ruinmur', 'rod_portal'] as const;
 export type DecorId = (typeof DECOR)[number];
 
-async function json<T>(p: string): Promise<T> {
-  const r = await fetch(assetUrl(p));
-  if (!r.ok) throw new Error(`Kunde inte ladda ${p}`);
-  return (await r.json()) as T;
-}
-const tex = (p: string): Promise<Texture> => PixiAssets.load<Texture>(assetUrl(p));
+const tex = (p: string): Promise<Texture> => loadTextureResilient(p);
+
 function cut(src: Texture, x: number, y: number, w: number, h: number): Texture {
   return new Texture({ source: src.source, frame: new Rectangle(x, y, w, h) });
 }
@@ -85,11 +82,12 @@ export class AssetStore {
     await Promise.all(TILES.map(async (t) => this.tiles.set(t, await tex(`2d/tiles/${t}.png`))));
   }
   private async loadDecor(): Promise<void> {
-    const meta = await json<Record<string, Size>>('2d/dekor/dekor.json');
+    const meta = await fetchJsonResilient<Record<string, Size>>('2d/dekor/dekor.json', {});
     await Promise.all(
       DECOR.map(async (d) => {
         const size = meta[d];
-        if (size) this.decor.set(d, { tex: await tex(`2d/dekor/${d}.png`), size });
+        if (!size) return;
+        this.decor.set(d, { tex: await tex(`2d/dekor/${d}.png`), size });
       }),
     );
   }
@@ -101,48 +99,64 @@ export class AssetStore {
     }
   }
   private async loadMonsters(): Promise<void> {
-    // Datadrivet: index.json listar alla ark (<id>/<id>.json), monster.json alla enkelbilder.
-    const index = await json<{ sheets: string[] }>('2d/sprites/monster/index.json');
+    const index = await fetchJsonResilient<{ sheets: string[] }>('2d/sprites/monster/index.json', { sheets: [] });
     await Promise.all(
       index.sheets.map(async (id) => {
-        const m = await json<{ anims: Record<AnimName, SheetAnim> }>(`2d/sprites/monster/${id}/${id}.json`);
-        const set: AnimSet = {};
-        await Promise.all(
-          (Object.entries(m.anims) as [AnimName, SheetAnim][]).map(async ([k, a]) => {
-            set[k] = sheet(await tex(`2d/sprites/monster/${id}/${a.file}`), a);
-          }),
-        );
-        this.monsters.set(id, set);
+        try {
+          const m = await fetchJsonResilient<{ anims: Record<AnimName, SheetAnim> }>(`2d/sprites/monster/${id}/${id}.json`, {
+            anims: {} as Record<AnimName, SheetAnim>,
+          });
+          const set: AnimSet = {};
+          await Promise.all(
+            (Object.entries(m.anims) as [AnimName, SheetAnim][]).map(async ([k, a]) => {
+              if (!a?.file) return;
+              set[k] = sheet(await tex(`2d/sprites/monster/${id}/${a.file}`), a);
+            }),
+          );
+          if (Object.keys(set).length) this.monsters.set(id, set);
+        } catch (e) {
+          console.warn(`[AssetStore] monster ${id}:`, e);
+        }
       }),
     );
-    const meta = await json<{ monster: Record<string, Size & { fil: string }> }>('2d/sprites/monster/monster.json');
+    const meta = await fetchJsonResilient<{ monster: Record<string, Size & { fil: string }> }>('2d/sprites/monster/monster.json', {
+      monster: {},
+    });
     await Promise.all(
       Object.entries(meta.monster).map(async ([id, s]) => {
         if (this.monsters.has(id)) return;
-        const a = single(await tex(`2d/sprites/monster/${s.fil}`), s);
-        this.monsters.set(id, { idle: a, gang: a, attack: a });
+        try {
+          const a = single(await tex(`2d/sprites/monster/${s.fil}`), s);
+          this.monsters.set(id, { idle: a, gang: a, attack: a });
+        } catch (e) {
+          console.warn(`[AssetStore] monsterbild ${id}:`, e);
+        }
       }),
     );
   }
   private async loadNpcs(): Promise<void> {
-    const meta = await json<{ npc: Record<string, Size & { fil: string }> }>('2d/sprites/npc/npc.json');
-    await Promise.all(Object.entries(meta.npc).map(async ([id, s]) => this.npcs.set(id, single(await tex(`2d/sprites/npc/${s.fil}`), s))));
+    const meta = await fetchJsonResilient<{ npc: Record<string, Size & { fil: string }> }>('2d/sprites/npc/npc.json', { npc: {} });
+    await Promise.all(
+      Object.entries(meta.npc).map(async ([id, s]) => {
+        try {
+          this.npcs.set(id, single(await tex(`2d/sprites/npc/${s.fil}`), s));
+        } catch (e) {
+          console.warn(`[AssetStore] npc ${id}:`, e);
+        }
+      }),
+    );
   }
   private async loadBg(): Promise<void> {
     const list = ['himmel.jpg', 'fjarran_skog.png', 'fjarran_portalby.png', 'fjarran_stad.png'];
     await Promise.all(list.map(async (f) => this.backgrounds.set(f.replace(/\..*/, ''), await tex(`2d/bakgrund/${f}`))));
     await Promise.all(
       ['glod_rare', 'glod_set', 'glod_legendary'].map(async (f) => {
-        try {
-          this.effects.set(f, await tex(`effekter/${f}.png`));
-        } catch {
-          /* valfri effekt */
-        }
+        this.effects.set(f, await tex(`effekter/${f}.png`));
       }),
     );
   }
   private async loadIcons(): Promise<void> {
-    const idx = await json<Record<string, unknown>>('ikoner/index.json');
+    const idx = await fetchJsonResilient<Record<string, unknown>>('ikoner/index.json', {});
     for (const [k, v] of Object.entries(idx)) if (!k.startsWith('_') && typeof v === 'string') this.iconIndex[k] = v;
   }
   /** URL till föremålsikon (DOM), eller null. Sökordning: legendarisk, setdel, set.bas, bas. */
