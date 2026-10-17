@@ -77,6 +77,7 @@ export class Input {
     }
     if ((e.target as HTMLElement | null)?.closest?.('input,textarea')) return;
     this.keys.add(e.code);
+    if (e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') e.preventDefault();
     if (e.repeat) return;
     if (e.code === 'KeyZ') this.labelsToggled = !this.labelsToggled;
     (this.handlers.get(e.code) ?? this.handlers.get(e.key.toLowerCase()))?.(e);

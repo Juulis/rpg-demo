@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
-import type { Anim, AnimName, AnimSet } from './Assets';
+import type { Anim, AnimName, AnimSet } from './spriteAnim';
 
 /** Animerad 8-riktningsfigur med skugga. Fotpunkt = containerns origo. */
 export class DirSprite extends Container {
@@ -9,6 +9,10 @@ export class DirSprite extends Container {
   private t = 0;
   dir = 0;
   done = false;
+  /** Attackfart m.m. (1 = normal). */
+  playbackRate = 1;
+  /** Extra vertikal offset (t.ex. gammal attack-nick). */
+  bobY = 0;
 
   constructor(
     private readonly set: AnimSet,
@@ -22,16 +26,20 @@ export class DirSprite extends Container {
     this.apply();
   }
 
-  play(name: AnimName): void {
-    const n = this.set[name] ? name : 'idle';
-    if (n === this.anim) return;
+  play(name: AnimName, restart = false): void {
+    let n: AnimName = name;
+    if (!this.set[n]) {
+      if (n === 'run') n = this.set.gang ? 'gang' : 'idle';
+      else n = this.set.idle ? 'idle' : 'gang';
+    }
+    if (n === this.anim && !restart) return;
     this.anim = n;
     this.t = 0;
     this.done = false;
   }
 
   update(dt: number): void {
-    this.t += dt;
+    this.t += dt * this.playbackRate;
     this.apply();
   }
 
@@ -42,7 +50,20 @@ export class DirSprite extends Container {
   }
 
   private cur(): Anim | undefined {
-    return this.set[this.anim] ?? this.set.idle ?? this.set.gang;
+    return this.set[this.anim] ?? this.set.idle ?? this.set.gang ?? this.set.run;
+  }
+
+  /** Aktuell animation (för träffsynk). */
+  currentAnim(): Anim | undefined {
+    return this.cur();
+  }
+
+  hasAnim(name: AnimName): boolean {
+    return !!this.set[name];
+  }
+
+  getAnim(name: AnimName): Anim | undefined {
+    return this.set[name];
   }
 
   private apply(): void {
@@ -59,10 +80,13 @@ export class DirSprite extends Container {
     }
     const tex = row[f];
     if (tex) this.sprite.texture = tex;
-    // En enda SV-bild speglas för östliga riktningar (NO, O, SO) och N.
     const mirror = single && this.mirrorSingle && this.dir >= 4;
+    const ax = a.alignX?.[single ? 0 : this.dir]?.[f] ?? 0;
+    const ay = a.alignY?.[single ? 0 : this.dir]?.[f] ?? 0;
     this.sprite.anchor.set(a.anchor[0] / a.w, a.anchor[1] / a.h);
     const k = this.scaleK * (a.scale ?? 1);
     this.sprite.scale.set(mirror ? -k : k, k);
+    this.sprite.x = ax * k * (mirror ? -1 : 1);
+    this.sprite.y = ay * k + this.bobY;
   }
 }
