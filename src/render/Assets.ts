@@ -103,10 +103,9 @@ export class AssetStore {
     await Promise.all(
       index.sheets.map(async (id) => {
         try {
-          const m = await fetchJsonResilient<{ anims: Record<AnimName, SheetAnim> }>(
-            `2d/sprites/monster/${id}/${id}.json`,
-            { anims: {} as Record<AnimName, SheetAnim> },
-          );
+          const m = await fetchJsonResilient<{ anims: Record<AnimName, SheetAnim> }>(`2d/sprites/monster/${id}/${id}.json`, {
+            anims: {} as Record<AnimName, SheetAnim>,
+          });
           const set: AnimSet = {};
           await Promise.all(
             (Object.entries(m.anims) as [AnimName, SheetAnim][]).map(async ([k, a]) => {
