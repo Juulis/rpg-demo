@@ -1,6 +1,5 @@
 {
  "image": "riddare_idle_8dir.png",
- "imageWebp": "riddare_idle_8dir.webp",
  "frameW": 142,
  "frameH": 145,
  "anchor": [
@@ -187,35 +186,35 @@
  "alignY": [
   [
    0,
-   -1
+   1
   ],
   [
    0,
-   -1
+   1
   ],
   [
    0,
-   -1
+   1
   ],
   [
    0,
-   -1
+   1
   ],
   [
    0,
-   -1
+   1
   ],
   [
    0,
-   -1
+   1
   ],
   [
    0,
-   -1
+   1
   ],
   [
    0,
-   -1
+   1
   ]
  ]
 }

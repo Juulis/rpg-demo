@@ -1,7 +1,6 @@
 /**
- * Bygger riddarens ark: idle från walk f0 (2-frame andning), halverad upplösning,
- * WebP + PNG, per-frame fotjustering (alignX/Y) mot walk f0 per riktning.
- * Kör: node scripts/build-hero-sprites.mjs
+ * Bygger riddarens ark: idle från walk f0, halverad upplösning, PNG,
+ * per-frame fotjustering (alignX/Y) mot walk f0 per riktning.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,37 +11,47 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HERO = path.join(__dirname, '../public/assets/2d/sprites/hero');
 const DIRS = ['S', 'SV', 'V', 'NV', 'N', 'NO', 'O', 'SO'];
 const SCALE = 0.5;
-const MAX_ALIGN = 2;
 
 function readJson(name) {
   return JSON.parse(fs.readFileSync(path.join(HERO, name), 'utf8'));
 }
 
 function writeJson(name, data) {
+  delete data.imageWebp;
   fs.writeFileSync(path.join(HERO, name), JSON.stringify(data, null, 1) + '\n');
 }
 
-/** Fotcentrum (x) och bbox-botten från RGBA-ruta. */
+/** Fotcentrum från nedersta raderna, bara mittbandet av fotbredden (mantel utesluten). */
 function footMetrics(rgba, w, h) {
-  let minY = h;
   let maxY = -1;
-  const footXs = [];
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const a = rgba[(y * w + x) * 4 + 3];
-      if (a < 30) continue;
-      if (y > maxY) maxY = y;
-      if (y < minY) minY = y;
+      if (rgba[(y * w + x) * 4 + 3] >= 30) maxY = Math.max(maxY, y);
     }
   }
   if (maxY < 0) return { footX: w / 2, footY: h - 1 };
   const y0 = Math.max(0, Math.floor(maxY - h * 0.06));
+  let minX = w;
+  let maxX = -1;
   for (let y = y0; y <= maxY; y++) {
     for (let x = 0; x < w; x++) {
-      if (rgba[(y * w + x) * 4 + 3] >= 30) footXs.push(x);
+      if (rgba[(y * w + x) * 4 + 3] < 30) continue;
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x);
     }
   }
-  const footX = footXs.length ? footXs.reduce((a, b) => a + b, 0) / footXs.length : w / 2;
+  if (maxX < minX) return { footX: w / 2, footY: maxY };
+  const span = maxX - minX + 1;
+  const xLo = minX + span * 0.3;
+  const xHi = minX + span * 0.7;
+  const xs = [];
+  for (let y = y0; y <= maxY; y++) {
+    for (let x = 0; x < w; x++) {
+      if (x < xLo || x > xHi) continue;
+      if (rgba[(y * w + x) * 4 + 3] >= 30) xs.push(x);
+    }
+  }
+  const footX = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : (minX + maxX) / 2;
   return { footX, footY: maxY };
 }
 
@@ -72,8 +81,7 @@ function cropRgba(src, sw, sh, x, y, w, h) {
 
 async function scaleSheet(jsonName) {
   const meta = readJson(jsonName);
-  const pngName = meta.image;
-  const srcPath = path.join(HERO, pngName);
+  const srcPath = path.join(HERO, meta.image);
   const { data: src, w: sw, h: sh } = await loadRgba(srcPath);
   const nDir = meta.dirs.length;
   const nFrame = meta.frames ?? 1;
@@ -111,25 +119,20 @@ async function scaleSheet(jsonName) {
     }
   }
 
-  const base = pngName.replace(/\.png$/i, '');
-  const outPng = `${base}.png`;
-  const outWebp = `${base}.webp`;
+  const outPng = meta.image.replace(/\.png$/i, '') + '.png';
   await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
     .png({ compressionLevel: 9 })
     .toFile(path.join(HERO, outPng));
-  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
-    .webp({ quality: 88 })
-    .toFile(path.join(HERO, outWebp));
 
   const next = {
     ...meta,
     image: outPng,
-    imageWebp: outWebp,
     frameW: FW,
     frameH: FH,
     anchor: [ax, ay],
     rects,
   };
+  delete next.imageWebp;
   if (meta.hitFrame !== undefined) next.hitFrame = meta.hitFrame;
   writeJson(jsonName, next);
   return next;
@@ -142,25 +145,23 @@ async function buildIdleFromWalk(walkMeta) {
   const FH = walkMeta.frameH;
   const ax = walkMeta.anchor[0];
   const ay = walkMeta.anchor[1];
-  const nDir = DIRS.length;
   const nFrame = 2;
   const sheetW = FW * nFrame;
-  const sheetH = FH * nDir;
+  const sheetH = FH * DIRS.length;
   const out = Buffer.alloc(sheetW * sheetH * 4, 0);
-
   const rects = [];
-  for (let d = 0; d < nDir; d++) {
+
+  for (let d = 0; d < DIRS.length; d++) {
     const dir = DIRS[d];
     const r0 = walkMeta.rects.find((q) => q.dir === dir && (q.frame ?? 0) === 0);
     if (!r0) throw new Error(`walk saknar ${dir} f0`);
     const crop = cropRgba(src, sw, sh, r0.x, r0.y, r0.w, r0.h);
     for (let f = 0; f < nFrame; f++) {
-      const dy = f === 1 ? -1 : 0;
       const frameBuf = Buffer.from(crop);
-      if (dy !== 0) {
+      if (f === 1) {
         const shifted = Buffer.alloc(FW * FH * 4, 0);
         for (let row = 0; row < FH; row++) {
-          const sr = row - dy;
+          const sr = row - 1;
           if (sr < 0 || sr >= FH) continue;
           for (let col = 0; col < FW; col++) {
             const si = (sr * FW + col) * 4;
@@ -190,17 +191,12 @@ async function buildIdleFromWalk(walkMeta) {
   }
 
   const outPng = 'riddare_idle_8dir.png';
-  const outWebp = 'riddare_idle_8dir.webp';
   await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
     .png({ compressionLevel: 9 })
     .toFile(path.join(HERO, outPng));
-  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
-    .webp({ quality: 88 })
-    .toFile(path.join(HERO, outWebp));
 
-  const idle = {
+  writeJson('riddare_idle_8dir.json', {
     image: outPng,
-    imageWebp: outWebp,
     frameW: FW,
     frameH: FH,
     anchor: [ax, ay],
@@ -209,9 +205,7 @@ async function buildIdleFromWalk(walkMeta) {
     fps: 2,
     loop: true,
     rects,
-  };
-  writeJson('riddare_idle_8dir.json', idle);
-  return idle;
+  });
 }
 
 async function addAlignFields(jsonName, refFootX, refFootY) {
@@ -227,18 +221,15 @@ async function addAlignFields(jsonName, refFootX, refFootY) {
       const r = meta.rects.find((q) => meta.dirs.indexOf(q.dir) === d && (q.frame ?? 0) === f);
       const crop = cropRgba(data, sw, sh, r.x, r.y, r.w, r.h);
       const { footX, footY } = footMetrics(crop, r.w, r.h);
-      let dx = Math.round(footX - refFootX[d]);
-      let dy = Math.round(footY - refFootY[d]);
-      dx = Math.max(-MAX_ALIGN, Math.min(MAX_ALIGN, dx));
-      dy = Math.max(-MAX_ALIGN, Math.min(MAX_ALIGN, dy));
-      rowX.push(dx);
-      rowY.push(dy);
+      rowX.push(Math.round(footX - refFootX[d]));
+      rowY.push(Math.round(footY - refFootY[d]));
     }
     alignX.push(rowX);
     alignY.push(rowY);
   }
   meta.alignX = alignX;
   meta.alignY = alignY;
+  delete meta.imageWebp;
   writeJson(jsonName, meta);
 }
 
@@ -262,6 +253,8 @@ async function main() {
 
   for (const s of ['riddare_idle_8dir.json', ...sheets]) await addAlignFields(s, refFootX, refFootY);
 
+  for (const f of fs.readdirSync(HERO).filter((n) => n.endsWith('.webp'))) fs.unlinkSync(path.join(HERO, f));
+
   for (const f of fs.readdirSync(HERO).filter((n) => n.endsWith('.png'))) {
     const p = path.join(HERO, f);
     const tmp = p + '.tmp';
@@ -275,16 +268,13 @@ async function main() {
     if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
   }
 
-  let webpSum = 0;
   let pngSum = 0;
-  for (const f of fs.readdirSync(HERO).filter((n) => n.endsWith('.png') || n.endsWith('.webp'))) {
+  for (const f of fs.readdirSync(HERO).filter((n) => n.endsWith('.png'))) {
     const sz = fs.statSync(path.join(HERO, f)).size;
-    if (f.endsWith('.webp')) webpSum += sz;
-    else pngSum += sz;
+    pngSum += sz;
     console.log(`  ${f}: ${(sz / 1024).toFixed(0)} KiB`);
   }
-  console.log(`  WebP (primär): ${(webpSum / 1024 / 1024).toFixed(2)} MiB`);
-  console.log(`  PNG (fallback): ${(pngSum / 1024 / 1024).toFixed(2)} MiB`);
+  console.log(`  PNG totalt: ${(pngSum / 1024 / 1024).toFixed(2)} MiB`);
 }
 
 main().catch((e) => {

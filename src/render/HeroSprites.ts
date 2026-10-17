@@ -6,7 +6,6 @@ const HERO_SCALE = 0.55;
 
 interface HeroSheetJson {
   image: string;
-  imageWebp?: string;
   frameW: number;
   frameH: number;
   anchor: [number, number];
@@ -33,15 +32,20 @@ function cut(src: Texture, x: number, y: number, w: number, h: number): Texture 
 }
 
 async function loadImage(tex: TexLoader, dir: string, meta: HeroSheetJson): Promise<Texture> {
-  const names = [meta.imageWebp, meta.image].filter((n): n is string => !!n);
-  for (const file of names) {
-    try {
-      return await tex(`${dir}/${file}`);
-    } catch {
-      /* prova nästa format */
+  return tex(`${dir}/${meta.image}`);
+}
+
+/** NV/NO i run-arket är profil — använd walk-rader, snabbare fps i run. */
+function patchRunDiagonals(run: Anim, walk: Anim): void {
+  for (const d of [3, 5]) {
+    if (walk.frames[d]?.length) run.frames[d] = walk.frames[d];
+    if (walk.alignX?.[d]) {
+      run.alignX ??= walk.alignX.map((row) => [...row]);
+      run.alignY ??= walk.alignY?.map((row) => [...row]) ?? [];
+      run.alignX[d] = [...walk.alignX[d]];
+      if (walk.alignY?.[d]) run.alignY[d] = [...walk.alignY[d]];
     }
   }
-  throw new Error(`Kunde inte ladda bild för ${meta.image}`);
 }
 
 /** Bygger en 8-riktningsanimation från riddare_* JSON. */
@@ -116,10 +120,13 @@ export class HeroSprites {
         return undefined;
       }
     };
+    const walk = await trySheet('riddare_walk_8dir');
+    const run = await trySheet('riddare_run_8dir');
+    if (run && walk) patchRunDiagonals(run, walk);
     const riddare: AnimSet = {
       idle: await trySheet('riddare_idle_8dir'),
-      gang: await trySheet('riddare_walk_8dir'),
-      run: await trySheet('riddare_run_8dir'),
+      gang: walk,
+      run,
       attack: await trySheet('riddare_attack_8dir'),
     };
     const full = withFallbacks(riddare) ?? (await emergencySet(tex));
