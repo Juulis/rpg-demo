@@ -208,9 +208,15 @@ async function buildIdleFromWalk(walkMeta) {
   });
 }
 
-async function addAlignFields(jsonName, refFootX, refFootY) {
+async function addAlignFields(jsonName, walkMeta, refFootX, refFootY) {
   const meta = readJson(jsonName);
   const { data, w: sw, h: sh } = await loadRgba(path.join(HERO, meta.image));
+  const walkAx = walkMeta.anchor[0];
+  const walkAy = walkMeta.anchor[1];
+  const ax = meta.anchor[0];
+  const ay = meta.anchor[1];
+  const targetX = refFootX.map((x) => x - walkAx);
+  const targetY = refFootY.map((y) => y - walkAy);
   const alignX = [];
   const alignY = [];
   for (let d = 0; d < meta.dirs.length; d++) {
@@ -221,8 +227,8 @@ async function addAlignFields(jsonName, refFootX, refFootY) {
       const r = meta.rects.find((q) => meta.dirs.indexOf(q.dir) === d && (q.frame ?? 0) === f);
       const crop = cropRgba(data, sw, sh, r.x, r.y, r.w, r.h);
       const { footX, footY } = footMetrics(crop, r.w, r.h);
-      rowX.push(Math.round(footX - refFootX[d]));
-      rowY.push(Math.round(footY - refFootY[d]));
+      rowX.push(Math.round(targetX[d] - (footX - ax)));
+      rowY.push(Math.round(targetY[d] - (footY - ay)));
     }
     alignX.push(rowX);
     alignY.push(rowY);
@@ -231,6 +237,36 @@ async function addAlignFields(jsonName, refFootX, refFootY) {
   meta.alignY = alignY;
   delete meta.imageWebp;
   writeJson(jsonName, meta);
+}
+
+/** Efter justering: |(foot−anchor)+align − (refFoot−walkAnchor)| ska vara liten. */
+async function verifyAlign(jsonName, walkMeta, refFootX, refFootY, maxErr, attackLoose) {
+  const meta = readJson(jsonName);
+  const { data, w: sw, h: sh } = await loadRgba(path.join(HERO, meta.image));
+  const walkAx = walkMeta.anchor[0];
+  const walkAy = walkMeta.anchor[1];
+  const ax = meta.anchor[0];
+  const ay = meta.anchor[1];
+  let worst = 0;
+  let worstAt = '';
+  for (let d = 0; d < meta.dirs.length; d++) {
+    const nFrame = meta.frames ?? 1;
+    for (let f = 0; f < nFrame; f++) {
+      const limit = jsonName.includes('attack') && f >= (meta.hitFrame ?? 3) ? attackLoose : maxErr;
+      const r = meta.rects.find((q) => meta.dirs.indexOf(q.dir) === d && (q.frame ?? 0) === f);
+      const crop = cropRgba(data, sw, sh, r.x, r.y, r.w, r.h);
+      const { footX, footY } = footMetrics(crop, r.w, r.h);
+      const adjX = footX - ax + (meta.alignX[d][f] ?? 0);
+      const adjY = footY - ay + (meta.alignY[d][f] ?? 0);
+      const err = Math.max(Math.abs(adjX - (refFootX[d] - walkAx)), Math.abs(adjY - (refFootY[d] - walkAy)));
+      if (err > worst) {
+        worst = err;
+        worstAt = `${jsonName} ${meta.dirs[d]} f${f}`;
+      }
+      if (err > limit) throw new Error(`align-fel ${err}px > ${limit} @ ${worstAt}`);
+    }
+  }
+  return { worst, worstAt };
 }
 
 async function main() {
@@ -251,7 +287,15 @@ async function main() {
     refFootY.push(m.footY);
   }
 
-  for (const s of ['riddare_idle_8dir.json', ...sheets]) await addAlignFields(s, refFootX, refFootY);
+  const allJson = ['riddare_idle_8dir.json', ...sheets];
+  for (const s of allJson) await addAlignFields(s, walkMeta, refFootX, refFootY);
+
+  const report = [];
+  for (const s of allJson) {
+    const { worst, worstAt } = await verifyAlign(s, walkMeta, refFootX, refFootY, 3, 8);
+    report.push({ sheet: s, worst, worstAt });
+  }
+  console.log('Align verify (max residual px):', JSON.stringify(report));
 
   for (const f of fs.readdirSync(HERO).filter((n) => n.endsWith('.webp'))) fs.unlinkSync(path.join(HERO, f));
 

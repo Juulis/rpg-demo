@@ -86,7 +86,7 @@ export class DirSprite extends Container {
     this.sprite.anchor.set(a.anchor[0] / a.w, a.anchor[1] / a.h);
     const k = this.scaleK * (a.scale ?? 1);
     this.sprite.scale.set(mirror ? -k : k, k);
-    this.sprite.x = -ax * k * (mirror ? -1 : 1);
-    this.sprite.y = -ay * k + this.bobY;
+    this.sprite.x = ax * k * (mirror ? -1 : 1);
+    this.sprite.y = ay * k + this.bobY;
   }
 }
