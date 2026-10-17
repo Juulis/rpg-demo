@@ -31,7 +31,6 @@ const { SaveModule } = await import('../src/save/SaveModule');
 const { SaveMigrator } = await import('../src/save/SaveMigrator');
 const { MenuModule } = await import('../src/menu/MenuModule');
 const { MapModule } = await import('../src/map/MapModule');
-const { FogRepository } = await import('../src/map/FogRepository');
 import type { GameEvents } from '../src/core/events';
 import type { GameContext, HeroState } from '../src/core/GameContext';
 
@@ -158,19 +157,20 @@ assert.deepEqual(played, ['boss', 'drop_rare', 'pickup_first', 'step', 'step']);
 offs.forEach((o) => o());
 
 // --- moduler
-const audio = new AudioModule(store);
 const save = new SaveModule(gateway, new SerializedSaveBackend(new LocalStorageSaveBackend(store)), true, () => 123456789);
+const audio = new AudioModule(save);
 const menu = new MenuModule(save);
-const map = new MapModule(store, () => document.body, false);
+const map = new MapModule(save, () => document.body, false);
 for (const m of [audio, save, menu, map]) m.init(ctx);
 await save.ready;
-await new Promise((r) => setTimeout(r, 0));
+await new Promise((r) => setTimeout(r, 30));
 
 // M-mute
 assert.equal(audio.volume.isMuted, false);
 window.dispatchEvent(new dom.window.KeyboardEvent('keydown', { code: 'KeyM' }));
 assert.equal(audio.volume.isMuted, true);
-assert.equal(store.get('rpg_mute'), '1');
+await new Promise((r) => setTimeout(r, 50));
+assert.equal(store.get(`${LocalStorageSaveBackend.SETTING_PREFIX}mute`), '1');
 assert.ok(document.querySelector('#plate .sfx-ctl'), 'volymreglage monterat');
 
 // engångsmigrering rk_inv_
@@ -233,7 +233,9 @@ assert.equal(map.isOpen, false);
 
 // fog sparas per hjälte-id vid zonbyte
 map.flush();
-assert.ok(store.get(FogRepository.key(ragnarId, 'forest')));
+await new Promise((r) => setTimeout(r, 30));
+const fogSaved = JSON.parse(must(store.get(`rpg_hero_${ragnarId}`), 'sparfil efter fog'));
+assert.ok(fogSaved.fog?.forest, 'fog i hjältefilen');
 
 // tillbaka till menyn + fortsätt: återupptar position
 menu.show();
@@ -251,7 +253,7 @@ assert.match(must(document.querySelector('.confirm span')?.textContent, 'bekräf
 (document.getElementById('hmYes') as HTMLButtonElement).click();
 await new Promise((r) => setTimeout(r, 20));
 assert.equal(store.get(`rpg_hero_${ragnarId}`), null);
-assert.equal(store.get(FogRepository.key(ragnarId, 'forest')), null);
+assert.equal(store.get(`rpg_hero_${ragnarId}`), null);
 
 // migrering: nyare version avvisas, v0 uppgraderas
 const mig = new SaveMigrator();

@@ -100,20 +100,28 @@ export class LootSystem {
       return false;
     }
     g.picking = true;
+    const foundId = w.L.foundId(it);
     try {
       const first = await this.recordFound(it);
-      this.remove(g);
-      if (!h.inv.add(it)) {
-        console.warn('LootSystem: väska blev full efter reserverat fynd');
-        return false;
+      try {
+        if (!h.inv.add(it)) {
+          if (first) await this.found().unmarkFound(foundId);
+          w.fb.flash(w.text.t('msg.bag_full'));
+          return false;
+        }
+        this.remove(g);
+        w.bus.emit('pickup', { itemId: foundId, first });
+        w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
+        return true;
+      } catch (e) {
+        if (first) await this.found().unmarkFound(foundId);
+        throw e;
       }
-      w.bus.emit('pickup', { itemId: w.L.foundId(it), first });
-      w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
-      return true;
     } catch (e) {
-      g.picking = false;
       console.warn('LootSystem: upplock misslyckades', e);
       return false;
+    } finally {
+      if (w.drops.includes(g)) g.picking = false;
     }
   }
 

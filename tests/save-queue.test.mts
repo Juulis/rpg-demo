@@ -48,6 +48,24 @@ class DelayingSaveBackend implements SaveBackend {
   lastPlayedHeroId(): Promise<string | null> {
     return this.inner.lastPlayedHeroId();
   }
+  unmarkFound(id: string): Promise<void> {
+    return this.inner.unmarkFound(id);
+  }
+  getSetting(key: string): Promise<string | null> {
+    return this.inner.getSetting(key);
+  }
+  setSetting(key: string, value: string): Promise<void> {
+    return this.inner.setSetting(key, value);
+  }
+  getFogMap(heroId: string): Promise<Record<string, string>> {
+    return this.inner.getFogMap(heroId);
+  }
+  setFog(heroId: string, zone: string, base64: string): Promise<void> {
+    return this.inner.setFog(heroId, zone, base64);
+  }
+  clearFog(heroId: string): Promise<void> {
+    return this.inner.clearFog(heroId);
+  }
 }
 
 const store = new MemoryStore();

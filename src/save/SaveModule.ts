@@ -4,6 +4,7 @@ import type { SaveBackend } from '../core/SaveBackend';
 import { AutoSaveService } from './AutoSaveService';
 import { LocalStorageSaveBackend } from './backend/LocalStorageSaveBackend';
 import { SerializedSaveBackend } from './backend/SerializedSaveBackend';
+import type { SaveBackendSource } from './SaveBackendSource';
 import type { HeroGateway } from './HeroGateway';
 import { HeroLoader } from './HeroLoader';
 import { HeroRoster } from './HeroRoster';
@@ -23,8 +24,12 @@ interface Parts {
  * Sparmodulen (issue #9). Komponerar spar-logiken (DOM-fri, bakom core SaveBackend) med DOM-delarna
  * (sparikon, sidans livscykel). Exponerar roster/loader/autosave till menyn via konstruktorinjektion, inga globaler.
  */
-export class SaveModule implements GameModule {
+export class SaveModule implements GameModule, SaveBackendSource {
   readonly repo: SaveRepository;
+
+  get backend(): SaveBackend {
+    return this.repo.backend;
+  }
   private parts: Parts | null = null;
   private readyP: Promise<void> = Promise.resolve();
   private loaded = false;

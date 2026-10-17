@@ -9,4 +9,8 @@ export class NoOpFoundRegistry implements FoundRegistry {
   async markFound(_id: string, _entry: FoundEntry): Promise<boolean> {
     return false;
   }
+
+  async unmarkFound(_id: string): Promise<void> {
+    /* noop */
+  }
 }

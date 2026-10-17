@@ -14,7 +14,7 @@ const save = new SaveModule({
   getSnapshot: () => game.getSnapshot(),
   setSaveBackend: (b) => game.setSaveBackend(b),
 });
-const modules: GameModule[] = [save, new MenuModule(save), new AudioModule(), new MapModule()]; // save före menu
+const modules: GameModule[] = [save, new MenuModule(save), new AudioModule(save), new MapModule(save)]; // save före menu
 
 const host = document.getElementById('app');
 if (!host) throw new Error('#app saknas');

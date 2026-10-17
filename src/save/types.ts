@@ -37,6 +37,8 @@ export interface SaveFile {
   found?: number;
   /** Per-hjälte fyndregister (lorebok), ersätter globalt rpg_found i 2D. */
   foundItems?: Record<string, FoundEntry>;
+  /** Kartfog per zon (base64-bytes, samma som legacy rpg_karta_<id>_<zon>). */
+  fog?: Record<string, string>;
   savedAt?: number;
 }
 

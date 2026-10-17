@@ -1,6 +1,6 @@
 import { Disposables } from '../core/Disposables';
 import type { GameContext, GameModule } from '../core/GameContext';
-import { LocalStore, type KeyValueStore } from '../core/storage';
+import type { SaveBackendSource } from '../save/SaveBackendSource';
 import { FogOfWar } from './FogOfWar';
 import { FogRepository } from './FogRepository';
 import { GoalTracker } from './GoalTracker';
@@ -12,7 +12,6 @@ import { MiniMapView } from './MiniMapView';
 
 /**
  * Karta (issue #6): Tab-karta, minikarta, målmarkör och fog of war per hjälte-id.
- * Hjälte-id kommer från hero_loaded, radering från hero_deleted, avslöjande på step/zone_enter. Inga globaler, ingen polling.
  */
 export class MapModule implements GameModule {
   static readonly SAVE_MS = 5000;
@@ -28,11 +27,11 @@ export class MapModule implements GameModule {
   private input: MapInput | null = null;
 
   constructor(
-    store: KeyValueStore = new LocalStore(),
+    saves: SaveBackendSource,
     private readonly host: () => HTMLElement = () => document.body,
     private readonly animate = true,
   ) {
-    this.fogRepo = new FogRepository(store);
+    this.fogRepo = new FogRepository(saves.backend);
   }
 
   get isOpen(): boolean {
@@ -47,7 +46,7 @@ export class MapModule implements GameModule {
     const model = new MapModel(ctx.data);
     const goals = new GoalTracker(model);
     const bus = ctx.bus;
-    this.resetFog(ctx.hero.id);
+    void this.fogRepo.prepare(ctx.hero.id).then(() => this.resetFog(ctx.hero.id));
     const painter = new MapPainter(model, () => this.fog);
     this.views = { big: new MapView(painter, model, goals), mini: new MiniMapView(painter, goals) };
     this.host().append(this.views.big.canvas, this.views.mini.canvas);
@@ -59,7 +58,7 @@ export class MapModule implements GameModule {
     this.d.add(
       bus.on('hero_loaded', ({ heroId }) => {
         this.flush();
-        this.resetFog(heroId);
+        void this.fogRepo.prepare(heroId).then(() => this.resetFog(heroId));
       }),
     );
     this.d.add(
@@ -111,7 +110,6 @@ export class MapModule implements GameModule {
     }
   }
 
-  /** Sparar fog direkt (vid zonbyte, hjältebyte, stängning) eller efter debounce. */
   flush(): void {
     clearTimeout(this.saveTimer);
     this.saveTimer = undefined;
@@ -120,7 +118,6 @@ export class MapModule implements GameModule {
     for (const [zone, cells] of this.fog.takeDirty()) this.fogRepo.save(id, zone, cells);
   }
 
-  /** Ritning per bildruta (bara rendering; state kommer via bussen och ctx). */
   private frame(t: number): void {
     this.raf = requestAnimationFrame((n) => this.frame(n));
     this.render(t);

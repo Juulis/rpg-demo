@@ -11,6 +11,8 @@ export interface FoundEntry {
 export interface FoundRegistry {
   setActiveHero(heroId: string | null): void;
   markFound(id: string, entry: FoundEntry): Promise<boolean>;
+  /** Tar bort ett fynd (t.ex. vid rollback av misslyckat upplock). */
+  unmarkFound(id: string): Promise<void>;
 }
 
 /**
@@ -23,4 +25,11 @@ export interface SaveBackend extends FoundRegistry {
   save(id: string, data: HeroSave): Promise<void>;
   remove(id: string): Promise<void>;
   lastPlayedHeroId(): Promise<string | null>;
+  /** App-inställningar (nycklar utan prefix; lagras som rpg_setting_<key>). */
+  getSetting(key: string): Promise<string | null>;
+  setSetting(key: string, value: string): Promise<void>;
+  /** Kartfog per hjälte (zon → base64, samma format som legacy js/map.js). */
+  getFogMap(heroId: string): Promise<Record<string, string>>;
+  setFog(heroId: string, zone: string, base64: string): Promise<void>;
+  clearFog(heroId: string): Promise<void>;
 }

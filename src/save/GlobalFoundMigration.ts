@@ -1,6 +1,7 @@
 import { isRecord, parseJson } from '../core/json';
 import type { KeyValueStore } from '../core/storage';
 import { parseGlobalFoundMap } from './foundItems';
+import { parseHeroIndex } from './heroIndex';
 import { SaveMigrator } from './SaveMigrator';
 import type { HeroIndexEntry } from './types';
 
@@ -67,21 +68,7 @@ export class GlobalFoundMigration {
   }
 
   private index(): HeroIndexEntry[] {
-    const raw = parseJson(this.kv.get(K_INDEX));
-    if (!Array.isArray(raw)) return [];
-    return raw.filter(isRecord).flatMap((h): HeroIndexEntry[] =>
-      typeof h.id === 'string' && h.id
-        ? [
-            {
-              id: h.id,
-              name: typeof h.name === 'string' ? h.name : h.id,
-              cls: typeof h.cls === 'string' ? h.cls : 'riddare',
-              level: typeof h.level === 'number' ? h.level : 1,
-              ...(typeof h.savedAt === 'number' ? { savedAt: h.savedAt } : {}),
-            },
-          ]
-        : [],
-    );
+    return parseHeroIndex(parseJson(this.kv.get(K_INDEX)));
   }
 
   private lastHeroId(): string | null {

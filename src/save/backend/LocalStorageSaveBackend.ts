@@ -5,6 +5,7 @@ import type { FoundEntry, SaveBackend } from '../../core/SaveBackend';
 import { LocalStore, type KeyValueStore } from '../../core/storage';
 import { fromHeroSave, readFoundItemsFromSave, toHeroSave } from '../convert';
 import { GlobalFoundMigration } from '../GlobalFoundMigration';
+import { parseHeroIndex } from '../heroIndex';
 import { SaveMigrator } from '../SaveMigrator';
 import { HERO_CLASSES, SAVE_VERSION, type HeroIndexEntry, type SaveFile } from '../types';
 
@@ -12,12 +13,15 @@ type ListEntry = Awaited<ReturnType<SaveBackend['list']>>[number];
 
 /**
  * core-SaveBackend ovanpå KeyValueStore (LocalStore i webbläsaren, MemoryStore i tester).
- * Fynd lagras endast i rpg_hero_<id>.foundItems (inte globalt rpg_found i 2D).
  */
 export class LocalStorageSaveBackend implements SaveBackend {
   static readonly K_INDEX = 'rpg_heroes';
   static readonly K_LAST = 'rpg_save';
+  static readonly SETTING_PREFIX = 'rpg_setting_';
+  static readonly LEGACY_FOG_PREFIX = 'rpg_karta_';
   static readonly LEGACY_PREFIX = 'rk_inv_';
+  static readonly LEGACY_VOL = 'rpg_vol';
+  static readonly LEGACY_MUTE = 'rpg_mute';
   static heroKey = (id: string): string => `rpg_hero_${id}`;
 
   private imported = false;
@@ -47,6 +51,77 @@ export class LocalStorageSaveBackend implements SaveBackend {
     return true;
   }
 
+  async unmarkFound(id: string): Promise<void> {
+    const heroId = this.activeHeroId;
+    if (!heroId || this.removed.has(heroId) || !this.heroExists(heroId)) return;
+    const map = await this.foundMapFor(heroId);
+    if (!map[id]) return;
+    const next: Record<string, FoundEntry> = {};
+    for (const [k, v] of Object.entries(map)) if (k !== id) next[k] = v;
+    this.foundCache.set(heroId, next);
+    this.persistFoundItems(heroId, next);
+  }
+
+  async getSetting(key: string): Promise<string | null> {
+    this.ensureReady();
+    const v = this.kv.get(LocalStorageSaveBackend.SETTING_PREFIX + key);
+    if (v !== null) return v;
+    if (key === 'vol') {
+      const leg = this.kv.get(LocalStorageSaveBackend.LEGACY_VOL);
+      if (leg !== null) {
+        await this.setSetting('vol', leg);
+        return leg;
+      }
+    }
+    if (key === 'mute') {
+      const leg = this.kv.get(LocalStorageSaveBackend.LEGACY_MUTE);
+      if (leg !== null) {
+        await this.setSetting('mute', leg);
+        return leg;
+      }
+    }
+    return null;
+  }
+
+  async setSetting(key: string, value: string): Promise<void> {
+    this.ensureReady();
+    this.kv.set(LocalStorageSaveBackend.SETTING_PREFIX + key, value);
+  }
+
+  async getFogMap(heroId: string): Promise<Record<string, string>> {
+    this.ensureReady();
+    if (this.removed.has(heroId)) return {};
+    const file = this.readSaveFile(heroId);
+    if (!file) return {};
+    const merged = this.mergeLegacyFog(heroId, file.fog ?? {});
+    if (merged !== file.fog) {
+      file.fog = merged;
+      file.savedAt = Date.now();
+      this.write(LocalStorageSaveBackend.heroKey(heroId), file);
+    }
+    return merged;
+  }
+
+  async setFog(heroId: string, zone: string, base64: string): Promise<void> {
+    this.ensureReady();
+    if (this.removed.has(heroId) || !this.heroExists(heroId)) return;
+    const file = this.readSaveFile(heroId);
+    if (!file) return;
+    file.fog = { ...(file.fog ?? {}), [zone]: base64 };
+    file.savedAt = Date.now();
+    this.write(LocalStorageSaveBackend.heroKey(heroId), file);
+  }
+
+  async clearFog(heroId: string): Promise<void> {
+    this.ensureReady();
+    const file = this.readSaveFile(heroId);
+    if (!file?.fog) return;
+    const { fog, ...rest } = file;
+    void fog;
+    const cleared: SaveFile = { ...rest, savedAt: Date.now() };
+    this.write(LocalStorageSaveBackend.heroKey(heroId), cleared);
+  }
+
   list(): Promise<ListEntry[]> {
     this.ensureReady();
     const idx = this.index();
@@ -62,7 +137,7 @@ export class LocalStorageSaveBackend implements SaveBackend {
 
   async load(id: string): Promise<HeroSave | null> {
     this.ensureReady();
-    const d = this.migrator.migrate(this.read(LocalStorageSaveBackend.heroKey(id)));
+    const d = this.readSaveFile(id);
     if (!d) return null;
     const items = d.foundItems ?? (await this.foundMapFor(id));
     if (items) {
@@ -81,9 +156,11 @@ export class LocalStorageSaveBackend implements SaveBackend {
       if (this.removed.has(id)) {
         return Promise.reject(new Error('hjälten finns inte'));
       }
-      const items = this.foundCache.get(id) ?? readFoundItemsFromSave(this.read(LocalStorageSaveBackend.heroKey(id)));
+      const prev = this.readSaveFile(id);
+      const items = this.foundCache.get(id) ?? readFoundItemsFromSave(prev);
       const d: SaveFile = fromHeroSave(data, items);
       d.hero.id = id;
+      if (prev?.fog) d.fog = prev.fog;
       d.savedAt = Date.now();
       this.writeFile(d);
       if (d.game && id === this.activeHeroId) {
@@ -125,6 +202,22 @@ export class LocalStorageSaveBackend implements SaveBackend {
     return this.index().some((h) => h.id === id);
   }
 
+  private readSaveFile(id: string): SaveFile | null {
+    return this.migrator.migrate(this.read(LocalStorageSaveBackend.heroKey(id)));
+  }
+
+  private mergeLegacyFog(heroId: string, fog: Record<string, string>): Record<string, string> {
+    const out = { ...fog };
+    const prefix = `${LocalStorageSaveBackend.LEGACY_FOG_PREFIX}${heroId}_`;
+    for (const k of this.kv.keys()) {
+      if (!k.startsWith(prefix)) continue;
+      const zone = k.slice(prefix.length);
+      const data = this.kv.get(k);
+      if (data && !out[zone]) out[zone] = data;
+    }
+    return out;
+  }
+
   private async foundMapFor(heroId: string): Promise<Record<string, FoundEntry>> {
     const cached = this.foundCache.get(heroId);
     if (cached) return cached;
@@ -135,14 +228,12 @@ export class LocalStorageSaveBackend implements SaveBackend {
   }
 
   private persistFoundItems(heroId: string, map: Record<string, FoundEntry>): void {
-    if (!this.heroExists(heroId)) return;
-    const key = LocalStorageSaveBackend.heroKey(heroId);
-    const file = this.migrator.migrate(this.read(key));
+    const file = this.readSaveFile(heroId);
     if (!file) return;
     file.foundItems = map;
     file.found = Object.keys(map).length;
     file.savedAt = Date.now();
-    this.write(key, file);
+    this.write(LocalStorageSaveBackend.heroKey(heroId), file);
   }
 
   private read(key: string): unknown {
@@ -153,6 +244,8 @@ export class LocalStorageSaveBackend implements SaveBackend {
   }
 
   private writeFile(d: SaveFile): void {
+    const prev = this.readSaveFile(d.hero.id);
+    if (prev?.fog && !d.fog) d.fog = prev.fog;
     this.write(LocalStorageSaveBackend.heroKey(d.hero.id), d);
     const entry: HeroIndexEntry = { id: d.hero.id, name: d.hero.name, cls: d.hero.cls, level: d.hero.level };
     if (d.savedAt) entry.savedAt = d.savedAt;
@@ -164,21 +257,7 @@ export class LocalStorageSaveBackend implements SaveBackend {
   }
 
   private index(): HeroIndexEntry[] {
-    const raw = this.read(LocalStorageSaveBackend.K_INDEX);
-    if (!Array.isArray(raw)) return [];
-    return raw.filter(isRecord).flatMap((h): HeroIndexEntry[] =>
-      typeof h.id === 'string' && h.id
-        ? [
-            {
-              id: h.id,
-              name: typeof h.name === 'string' ? h.name : h.id,
-              cls: typeof h.cls === 'string' ? h.cls : 'riddare',
-              level: typeof h.level === 'number' ? h.level : 1,
-              ...(typeof h.savedAt === 'number' ? { savedAt: h.savedAt } : {}),
-            },
-          ]
-        : [],
-    );
+    return parseHeroIndex(this.read(LocalStorageSaveBackend.K_INDEX));
   }
 
   private lastId(): string | null {
@@ -186,7 +265,6 @@ export class LocalStorageSaveBackend implements SaveBackend {
     return isRecord(r) && typeof r.last === 'string' ? r.last : null;
   }
 
-  /** Engångsmigrering: rk_inv_<klass> blir hjältar, bara om inget hjälteindex finns. */
   private importLegacy(): void {
     if (this.imported) return;
     this.imported = true;

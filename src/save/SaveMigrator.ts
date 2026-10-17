@@ -1,5 +1,6 @@
 import type { Equipment, ItemInstance } from '../core/GameContext';
 import { isRecord } from '../core/json';
+import { parseFogMap } from './fog';
 import { parseFoundItemsMap } from './foundItems';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
@@ -50,6 +51,8 @@ export class SaveMigrator {
       out.foundItems = found;
       out.found = Object.keys(found).length;
     } else if (typeof d.found === 'number') out.found = d.found;
+    const fog = parseFogMap(d.fog);
+    if (fog) out.fog = fog;
     if (typeof d.savedAt === 'number') out.savedAt = d.savedAt;
     return out;
   }
