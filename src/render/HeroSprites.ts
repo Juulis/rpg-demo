@@ -74,10 +74,10 @@ async function loadSheet(tex: TexLoader, dir: string, name: string): Promise<Ani
   };
 }
 
-function withFallbacks(set: AnimSet): AnimSet {
+function withFallbacks(set: AnimSet): AnimSet | null {
   const gang = set.gang ?? set.run ?? set.attack ?? set.idle;
   const idle = set.idle ?? gang;
-  if (!idle) throw new Error('Hjältesprites saknar alla ark');
+  if (!idle) return null;
   return {
     idle,
     gang,
@@ -85,6 +85,20 @@ function withFallbacks(set: AnimSet): AnimSet {
     attack: set.attack ?? gang,
     dod: set.dod ?? idle,
   };
+}
+
+async function emergencySet(tex: TexLoader): Promise<AnimSet> {
+  const t = await tex('2d/tiles/gras_1.png');
+  const stub: Anim = {
+    frames: Array.from({ length: 8 }, () => [t]),
+    anchor: [16, 32],
+    w: 32,
+    h: 32,
+    fps: 1,
+    loop: true,
+    scale: 1,
+  };
+  return { idle: stub, gang: stub, run: stub, attack: stub, dod: stub };
 }
 
 /** Laddar hjältesprites per klass; saknade klasser får riddarens ark med klass-tint i Game. */
@@ -108,7 +122,7 @@ export class HeroSprites {
       run: await trySheet('riddare_run_8dir'),
       attack: await trySheet('riddare_attack_8dir'),
     };
-    const full = withFallbacks(riddare);
+    const full = withFallbacks(riddare) ?? (await emergencySet(tex));
     this.byClass.set('riddare', full);
     this.fallback = full;
   }

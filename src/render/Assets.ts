@@ -94,7 +94,11 @@ export class AssetStore {
     );
   }
   private async loadHero(): Promise<void> {
-    await this.heroes.load((p) => tex(p));
+    try {
+      await this.heroes.load((p) => tex(p));
+    } catch (e) {
+      console.warn('[AssetStore] hjältesprites:', e);
+    }
   }
   private async loadMonsters(): Promise<void> {
     // Datadrivet: index.json listar alla ark (<id>/<id>.json), monster.json alla enkelbilder.

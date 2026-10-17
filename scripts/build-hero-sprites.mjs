@@ -114,8 +114,12 @@ async function scaleSheet(jsonName) {
   const base = pngName.replace(/\.png$/i, '');
   const outPng = `${base}.png`;
   const outWebp = `${base}.webp`;
-  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } }).png({ compressionLevel: 9 }).toFile(path.join(HERO, outPng));
-  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } }).webp({ quality: 88 }).toFile(path.join(HERO, outWebp));
+  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(HERO, outPng));
+  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
+    .webp({ quality: 88 })
+    .toFile(path.join(HERO, outWebp));
 
   const next = {
     ...meta,
@@ -187,8 +191,12 @@ async function buildIdleFromWalk(walkMeta) {
 
   const outPng = 'riddare_idle_8dir.png';
   const outWebp = 'riddare_idle_8dir.webp';
-  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } }).png({ compressionLevel: 9 }).toFile(path.join(HERO, outPng));
-  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } }).webp({ quality: 88 }).toFile(path.join(HERO, outWebp));
+  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(HERO, outPng));
+  await sharp(out, { raw: { width: sheetW, height: sheetH, channels: 4 } })
+    .webp({ quality: 88 })
+    .toFile(path.join(HERO, outWebp));
 
   const idle = {
     image: outPng,
@@ -253,15 +261,30 @@ async function main() {
   }
 
   for (const s of ['riddare_idle_8dir.json', ...sheets]) await addAlignFields(s, refFootX, refFootY);
-  console.log('Hero sprites rebuilt. Total PNG:');
-  const files = fs.readdirSync(HERO).filter((f) => f.endsWith('.png') || f.endsWith('.webp'));
-  let total = 0;
-  for (const f of files) {
+
+  for (const f of fs.readdirSync(HERO).filter((n) => n.endsWith('.png'))) {
+    const p = path.join(HERO, f);
+    const tmp = p + '.tmp';
+    await sharp(p).png({ compressionLevel: 9 }).toFile(tmp);
+    try {
+      const { execSync } = await import('node:child_process');
+      execSync(`pngquant --quality=45-78 --speed 1 --force --output "${p}" "${tmp}"`, { stdio: 'ignore' });
+    } catch {
+      fs.renameSync(tmp, p);
+    }
+    if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
+  }
+
+  let webpSum = 0;
+  let pngSum = 0;
+  for (const f of fs.readdirSync(HERO).filter((n) => n.endsWith('.png') || n.endsWith('.webp'))) {
     const sz = fs.statSync(path.join(HERO, f)).size;
-    total += sz;
+    if (f.endsWith('.webp')) webpSum += sz;
+    else pngSum += sz;
     console.log(`  ${f}: ${(sz / 1024).toFixed(0)} KiB`);
   }
-  console.log(`  sum: ${(total / 1024 / 1024).toFixed(2)} MiB`);
+  console.log(`  WebP (primär): ${(webpSum / 1024 / 1024).toFixed(2)} MiB`);
+  console.log(`  PNG (fallback): ${(pngSum / 1024 / 1024).toFixed(2)} MiB`);
 }
 
 main().catch((e) => {

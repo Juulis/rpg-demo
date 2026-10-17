@@ -560,8 +560,7 @@ export class Game {
     const len = Math.hypot(vx, vy);
     h.moving = len > 0 && h.atkT <= 0;
     const sprintCfg = DATA.classes.meta.sprint;
-    const wantSprint =
-      (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) && h.moving && !h.blocking && !!sprintCfg;
+    const wantSprint = (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) && h.moving && !h.blocking && !!sprintCfg;
     let sprinting = false;
     if (wantSprint && h.s.stamina > 0) {
       sprinting = true;
