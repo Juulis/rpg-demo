@@ -34,10 +34,7 @@ export class NpcSystem {
     this.barkNear.clear();
     this.clear(w);
     const areaId = w.zone.areaId;
-    const defs = [
-      ...npcsForZone(w.zone.name as 'forest' | 'village', areaId),
-      ...backgroundVillagerDefs(areaId, this.worldState.get()),
-    ];
+    const defs = [...npcsForZone(w.zone.name as 'forest' | 'village', areaId), ...backgroundVillagerDefs(areaId, this.worldState.get())];
     const state = this.worldState.get();
     const ctx: NpcPlacementContext = { zoneAreaId: areaId, worldTime: this.worldTime };
     for (const def of defs) {

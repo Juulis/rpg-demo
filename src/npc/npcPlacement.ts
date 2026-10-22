@@ -28,11 +28,7 @@ export function resolveNpcPosition(def: NpcDef): Vec2 {
   return { x: pos[0], y: pos[1] };
 }
 
-export function resolveNpc(
-  def: NpcDef,
-  world: Readonly<WorldState>,
-  ctx?: NpcPlacementContext,
-): ResolvedNpc {
+export function resolveNpc(def: NpcDef, world: Readonly<WorldState>, ctx?: NpcPlacementContext): ResolvedNpc {
   const state = world.npc_states[def.id] ?? 'levande';
   const variant = def.tillstand_varianter?.[state];
   let hidden = !!variant?.hidden;

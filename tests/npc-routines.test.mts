@@ -6,12 +6,7 @@ import assert from 'node:assert/strict';
 import { SECONDS_PER_HOUR } from '../src/world/GameClock';
 import { inTimeWindow } from '../src/quest/questTime';
 import { anchorPosition, parseNpcLocationKey, routineAreaId } from '../src/npc/routineAnchors';
-import {
-  activeRoutineSegment,
-  isTradeActivity,
-  merchantInTradeHours,
-  resolveRoutinePlacement,
-} from '../src/npc/resolveRoutine';
+import { activeRoutineSegment, isTradeActivity, merchantInTradeHours, resolveRoutinePlacement } from '../src/npc/resolveRoutine';
 import { resolveNpc } from '../src/npc/npcPlacement';
 import { createEmptyWorldState } from '../src/world/worldStateTypes';
 import { npcById } from '../src/npc/npcCatalog';
