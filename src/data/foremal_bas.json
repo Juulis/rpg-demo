@@ -1127,6 +1127,39 @@
       "visual": "Slitna läderremmar med torkat blod, en liten tygbit med ett barns namn knuten runt hälen."
     },
     {
+      "id": "miras_docka",
+      "name": "Miras docka",
+      "base": "bensmycke",
+      "type": "amulett",
+      "level": 2,
+      "item_level": 2,
+      "requirements": { "level": 2 },
+      "fixed": { "life": 15, "life_regen": 1, "magic_find": 0.1 },
+      "visual": "Liten trasdocka med knappögon och en flätad tofs av ett barns hår, sydd i en kedja."
+    },
+    {
+      "id": "viskarens_skalle",
+      "name": "Viskarens skalle",
+      "base": "bensmycke",
+      "type": "hjalm",
+      "level": 5,
+      "item_level": 5,
+      "requirements": { "level": 4 },
+      "fixed": { "life": 20, "magic_find": 0.12, "vs_ododa_damage_pct": 0.15 },
+      "visual": "Gulnad skalle med runor i tinnband runt pannan; viskar svagt på natten."
+    },
+    {
+      "id": "viskarens_fingrar",
+      "name": "Viskarens fingrar",
+      "base": "bensmycke",
+      "type": "ring",
+      "level": 5,
+      "item_level": 5,
+      "requirements": { "level": 4 },
+      "fixed": { "attack_rating": 40, "crit_chance": 0.05, "vs_ododa_damage_pct": 0.2 },
+      "visual": "Fem bleka fingerben på en silverkedja, pekar alltid bort från bäraren."
+    },
+    {
       "id": "vargtandens_kniv",
       "name": "Vargtandens kniv",
       "base": "kniv",
