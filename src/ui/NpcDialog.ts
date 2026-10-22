@@ -2,6 +2,7 @@ import type { EventBus } from '../core/EventBus';
 import type { GameEvents } from '../core/events';
 import { setDialogLocale } from '../npc/dialogText';
 import { npcName, setNpcLocale } from '../npc/npcText';
+import { setRumorLocale } from '../rumor/rumorText';
 import type { ResolvedNpc } from '../npc/npcPlacement';
 import type { Text } from '../text/Text';
 
@@ -40,6 +41,7 @@ export class NpcDialog {
     bus.on('locale_changed', ({ locale }) => {
       setNpcLocale(locale);
       setDialogLocale(locale);
+      setRumorLocale(locale);
       if (this.open && this.current) this.render(this.current, this.portraitUrl, this.bodyText);
     });
   }

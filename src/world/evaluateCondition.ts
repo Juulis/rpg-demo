@@ -25,13 +25,34 @@ function readOne(cond: Record<string, unknown>, ctx: ConditionContext): boolean 
   if ('runes_active_gte' in cond) return ctx.world.runes_active >= Number(cond.runes_active_gte);
   if ('runes_active_lt' in cond) return ctx.world.runes_active < Number(cond.runes_active_lt);
   if ('city_state_gte' in cond && isRecord(cond.city_state_gte)) {
-    const city = String(cond.city_state_gte.city ?? 'gamla_byn');
-    const min = String(cond.city_state_gte.min ?? cond.city_state_gte.state ?? 'besatt');
-    const cur = ctx.world.city_states[city] ?? 'besatt';
-    return cityRank(cur) >= cityRank(min);
+    if ('city' in cond.city_state_gte || 'min' in cond.city_state_gte || 'state' in cond.city_state_gte) {
+      const city = String(cond.city_state_gte.city ?? 'gamla_byn');
+      const min = String(cond.city_state_gte.min ?? cond.city_state_gte.state ?? 'besatt');
+      const cur = ctx.world.city_states[city] ?? 'besatt';
+      return cityRank(cur) >= cityRank(min);
+    }
+    const entries = Object.entries(cond.city_state_gte);
+    if (entries.length === 1) {
+      const pair = entries[0];
+      if (!pair) return false;
+      const [city, min] = pair;
+      const cur = ctx.world.city_states[city] ?? 'besatt';
+      return cityRank(cur) >= cityRank(String(min));
+    }
+    return false;
   }
   if ('event' in cond) {
     const id = String(cond.event);
+    if (id === 'legendary_found') {
+      const day = ctx.day ?? 0;
+      for (let i = ctx.world.last_events.length - 1; i >= 0; i--) {
+        const e = ctx.world.last_events[i];
+        if (!e?.id.startsWith('legendary_found')) continue;
+        const eventDay = e.day ?? 0;
+        return day - eventDay < 3;
+      }
+      return false;
+    }
     return ctx.world.last_events.some((e) => e.id === id || e.id.endsWith(`:${id}`) || e.id.includes(id));
   }
   if ('npc_state' in cond && isRecord(cond.npc_state)) {

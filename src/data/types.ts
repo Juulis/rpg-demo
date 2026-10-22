@@ -216,4 +216,5 @@ export interface GameData {
   lorebook: Lorebook;
   npc: import('./npcTypes').NpcDataFile;
   dialoger: import('./dialogTypes').DialogDataFile;
+  rykten: import('./rumorTypes').RumorDataFile;
 }

@@ -11,6 +11,9 @@ export const SV = {
     potions: '{count} st',
     help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: drycker',
   },
+  rumor: {
+    unknown_item: 'ett legendariskt föremål',
+  },
   msg: {
     rune_awake: 'Runan vaknar! ({n}/3)',
     portal_open: 'En röd portal öppnar sig i gläntan…',
