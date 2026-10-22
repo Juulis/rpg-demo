@@ -1,5 +1,6 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
 import type { Anim, AnimName, AnimSet } from './spriteAnim';
+import { animDisplayScale, animSetRefHeight } from './spriteLayout';
 
 /** Animerad 8-riktningsfigur med skugga. Fotpunkt = containerns origo. */
 export class DirSprite extends Container {
@@ -14,6 +15,8 @@ export class DirSprite extends Container {
   /** Extra vertikal offset (t.ex. gammal attack-nick). */
   bobY = 0;
 
+  private readonly refH: number;
+
   constructor(
     private readonly set: AnimSet,
     private readonly scaleK: number,
@@ -21,6 +24,7 @@ export class DirSprite extends Container {
     private readonly mirrorSingle = true,
   ) {
     super();
+    this.refH = animSetRefHeight(set);
     this.shadow.ellipse(0, 0, shadowR, shadowR / 2).fill({ color: 0x000000, alpha: 0.35 });
     this.addChild(this.shadow, this.sprite);
     this.apply();
@@ -33,8 +37,15 @@ export class DirSprite extends Container {
       else n = this.set.idle ? 'idle' : 'gang';
     }
     if (n === this.anim && !restart) return;
+    const locomotion = (a: AnimName, b: AnimName) => (a === 'gang' && b === 'run') || (a === 'run' && b === 'gang');
+    const keepPhase = locomotion(this.anim, n);
+    const prev = this.cur();
     this.anim = n;
-    this.t = 0;
+    if (!keepPhase) this.t = 0;
+    else if (prev) {
+      const next = this.cur();
+      if (next && prev.fps > 0) this.t *= next.fps / prev.fps;
+    }
     this.done = false;
   }
 
@@ -46,7 +57,9 @@ export class DirSprite extends Container {
   /** Visuell höjd i px (för etiketter och träffytor). */
   get height2(): number {
     const a = this.cur();
-    return a ? a.anchor[1] * this.scaleK * (a.scale ?? 1) : 60;
+    if (!a) return 60;
+    const k = animDisplayScale(this.scaleK, this.refH, a);
+    return a.anchor[1] * k;
   }
 
   private cur(): Anim | undefined {
@@ -84,7 +97,7 @@ export class DirSprite extends Container {
     const ax = a.alignX?.[single ? 0 : this.dir]?.[f] ?? 0;
     const ay = a.alignY?.[single ? 0 : this.dir]?.[f] ?? 0;
     this.sprite.anchor.set(a.anchor[0] / a.w, a.anchor[1] / a.h);
-    const k = this.scaleK * (a.scale ?? 1);
+    const k = animDisplayScale(this.scaleK, this.refH, a);
     this.sprite.scale.set(mirror ? -k : k, k);
     this.sprite.x = ax * k * (mirror ? -1 : 1);
     this.sprite.y = ay * k + this.bobY;
