@@ -484,8 +484,7 @@ export class Game {
     this.npcSys.sync(this.world);
     this.worldAmbientSys.sync(this.world, this.ctx.session.seed);
     this.worldFighterSys.sync(this.world, this.ctx.session.seed);
-    const zoneMsg =
-      name === 'village' ? 'msg.zone_village' : name === 'wolfstead' ? 'msg.zone_wolfstead' : 'msg.zone_forest';
+    const zoneMsg = name === 'village' ? 'msg.zone_village' : name === 'wolfstead' ? 'msg.zone_wolfstead' : 'msg.zone_forest';
     this.hud.flash(this.text.t(zoneMsg));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
