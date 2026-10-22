@@ -561,6 +561,25 @@
   color: #9a9080;
   text-align: right;
 }
+.npc-bark {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 22;
+  max-width: 220px;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #f0e8d8;
+  background: #1a1612e0;
+  border: 1px solid #6a5a40;
+  border-radius: 8px;
+  pointer-events: none;
+  text-shadow: 0 1px 2px #000;
+}
+.npc-bark.hidden {
+  display: none;
+}
 /* Karta öppen (map_toggle): rubrik (topp) och legend (botten) får inte krocka med HUD. */
 body.map-open #hud .bars,
 body.map-open #hud .lvl,

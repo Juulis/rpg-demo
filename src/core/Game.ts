@@ -34,6 +34,8 @@ import { InventoryUI } from '../ui/InventoryUI';
 import { ItemText } from '../ui/ItemText';
 import { LootLabels } from '../ui/LootLabels';
 import { MonsterBar } from '../ui/MonsterBar';
+import { resolveDialogText } from '../npc/dialogResolve';
+import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
 import { NpcLabels } from '../ui/NpcLabels';
 import { NpcSystem } from '../systems/NpcSystem';
@@ -115,6 +117,7 @@ export class Game {
   private monBar!: MonsterBar;
   private npcSys!: NpcSystem;
   private npcDialog!: NpcDialog;
+  private npcBark!: NpcBark;
   private npcLabels!: NpcLabels;
   private switching = false;
   private targetMonster: Monster | null = null;
@@ -165,6 +168,7 @@ export class Game {
     this.monBar = new MonsterBar(this.text);
     this.npcSys = new NpcSystem(this.assets, this.worldState);
     this.npcDialog = new NpcDialog(this.text, this.bus);
+    this.npcBark = new NpcBark();
     this.npcLabels = new NpcLabels(this.text);
     this.labels.onClick = (d) => this.goPickup(d);
     this.portals.onEnter = (z) => this.travel(z);
@@ -294,6 +298,7 @@ export class Game {
     this.labels.dispose();
     this.monBar.dispose();
     this.npcDialog.dispose();
+    this.npcBark.dispose();
     this.npcLabels.dispose();
     this.npcSys.dispose();
     this.bus.clear();
@@ -533,7 +538,9 @@ export class Game {
     w.hero.moveTarget = null;
     this.targetMonster = null;
     this.targetDrop = null;
-    this.npcDialog.show(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite));
+    const ctx = { world: this.worldState.get(), day: Math.floor(w.time / 90) };
+    const body = resolveDialogText(ent.resolved.def, 'halsning', ctx, w.text);
+    this.npcDialog.show(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite), body);
     this.bus.emit('ui_open', { panel: 'npc' });
   }
 
@@ -600,6 +607,8 @@ export class Game {
     this.labels.update(w.drops, this.input.altHeld || this.input.labelsToggled, this.camera);
     this.npcLabels.update(this.npcSys.entities(), this.camera);
     this.npcSys.update(dt);
+    this.npcSys.updateBarks(w, w.text, this.npcDialog.isOpen, (line, x, y) => this.npcBark.show(line, x, y));
+    this.npcBark.update(dt, this.camera);
     for (const a of this.decorAnims) a.update(dt);
     this.hoverUpdate();
     const boss = w.monsters.find((m) => m.boss && m.active && !m.dead);

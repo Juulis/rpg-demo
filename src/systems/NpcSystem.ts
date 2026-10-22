@@ -3,13 +3,20 @@ import type { AssetStore } from '../render/Assets';
 import { NpcEntity } from '../entities/NpcEntity';
 import { npcsForZone } from '../npc/npcCatalog';
 import { resolveNpc } from '../npc/npcPlacement';
+import { resolveDialogText } from '../npc/dialogResolve';
+import type { Text } from '../text/Text';
 import type { World } from './World';
 
 const TALK_RANGE = 2.8;
+const BARK_RANGE = 4.2;
+const BARK_MIN = 2.6;
+const BARK_COOLDOWN_S = 28;
 
 /** Spawnar och håller NPC:er för aktuell zon. */
 export class NpcSystem {
   private list: NpcEntity[] = [];
+  private readonly barkNear = new Set<string>();
+  private readonly barkCd = new Map<string, number>();
 
   constructor(
     private readonly assets: AssetStore,
@@ -17,6 +24,7 @@ export class NpcSystem {
   ) {}
 
   sync(w: World): void {
+    this.barkNear.clear();
     this.clear(w);
     const defs = npcsForZone(w.zone.name as 'forest' | 'village', w.zone.areaId);
     const state = this.worldState.get();
@@ -63,6 +71,32 @@ export class NpcSystem {
 
   update(dt: number): void {
     for (const n of this.list) n.update(dt);
+  }
+
+  /** Bark när hjälten går in i radie (inte under aktiv dialog). */
+  updateBarks(w: World, text: Text, dialogOpen: boolean, onBark: (line: string, x: number, y: number) => void): void {
+    if (dialogOpen) return;
+    const ctx = { world: this.worldState.get(), day: Math.floor(w.time / 90) };
+    const hx = w.hero.pos.x;
+    const hy = w.hero.pos.y;
+    for (const n of this.list) {
+      const id = n.resolved.def.id;
+      const d = Math.hypot(n.resolved.pos.x - hx, n.resolved.pos.y - hy);
+      const inBand = d < BARK_RANGE && d > BARK_MIN;
+      if (inBand) {
+        if (!this.barkNear.has(id)) {
+          this.barkNear.add(id);
+          const last = this.barkCd.get(id) ?? -1e9;
+          if (w.time - last >= BARK_COOLDOWN_S) {
+            const line = resolveDialogText(n.resolved.def, 'bark', ctx, text);
+            if (line) {
+              onBark(line, n.resolved.pos.x, n.resolved.pos.y);
+              this.barkCd.set(id, w.time);
+            }
+          }
+        }
+      } else this.barkNear.delete(id);
+    }
   }
 
   private clear(_w: World): void {

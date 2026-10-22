@@ -1,6 +1,7 @@
 import type { EventBus } from '../core/EventBus';
 import type { GameEvents } from '../core/events';
-import { npcLine, npcName, setNpcLocale } from '../npc/npcText';
+import { setDialogLocale } from '../npc/dialogText';
+import { npcName, setNpcLocale } from '../npc/npcText';
 import type { ResolvedNpc } from '../npc/npcPlacement';
 import type { Text } from '../text/Text';
 
@@ -16,6 +17,7 @@ export class NpcDialog {
   private open = false;
   private current: ResolvedNpc | null = null;
   private portraitUrl: string | null = null;
+  private bodyText: string | null = null;
 
   constructor(
     private readonly text: Text,
@@ -37,7 +39,8 @@ export class NpcDialog {
     document.body.appendChild(this.root);
     bus.on('locale_changed', ({ locale }) => {
       setNpcLocale(locale);
-      if (this.open && this.current) this.render(this.current, this.portraitUrl);
+      setDialogLocale(locale);
+      if (this.open && this.current) this.render(this.current, this.portraitUrl, this.bodyText);
     });
   }
 
@@ -45,25 +48,27 @@ export class NpcDialog {
     return this.open;
   }
 
-  show(npc: ResolvedNpc, portraitUrl: string | null = null): void {
+  show(npc: ResolvedNpc, portraitUrl: string | null = null, body: string | null = null): void {
     this.current = npc;
     this.portraitUrl = portraitUrl;
+    this.bodyText = body;
     this.open = true;
     this.root.classList.remove('hidden');
-    this.render(npc, portraitUrl);
+    this.render(npc, portraitUrl, body);
   }
 
   close(): void {
     this.open = false;
     this.current = null;
     this.portraitUrl = null;
+    this.bodyText = null;
     this.root.classList.add('hidden');
     this.portrait.classList.add('hidden');
   }
 
-  private render(npc: ResolvedNpc, portraitUrl: string | null): void {
+  private render(npc: ResolvedNpc, portraitUrl: string | null, body: string | null): void {
     this.title.textContent = npcName(this.text, npc.def);
-    this.body.textContent = npcLine(this.text, npc.def, npc.line);
+    this.body.textContent = body ?? npc.line;
     if (portraitUrl) {
       this.portrait.src = portraitUrl;
       this.portrait.classList.remove('hidden');
