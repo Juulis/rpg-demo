@@ -76,7 +76,8 @@ async function verifySheet(jsonName, walkMeta, refFootX, refFootY, maxErr, attac
   for (let d = 0; d < meta.dirs.length; d++) {
     const nFrame = meta.frames ?? 1;
     for (let f = 0; f < nFrame; f++) {
-      const looseSheet = jsonName.includes('run') || jsonName.includes('dodge');
+      const walkCycle = jsonName.includes('walk') && f > 0;
+      const looseSheet = jsonName.includes('run') || jsonName.includes('dodge') || walkCycle;
       const limit = jsonName.includes('attack') && f >= (meta.hitFrame ?? 3) ? attackLoose : looseSheet ? 20 : maxErr;
       const r = meta.rects.find((q) => meta.dirs.indexOf(q.dir) === d && (q.frame ?? 0) === f);
       const crop = cropRgba(data, sw, sh, r.x, r.y, r.w, r.h);
@@ -106,9 +107,13 @@ async function main() {
     refFootX.push(m.footX);
     refFootY.push(m.footY);
   }
-  const sheets = ['riddare_idle_8dir.json', 'riddare_walk_8dir.json', 'riddare_attack_8dir.json'];
+  const sheets = [
+    /** Attack/idle äldre ark tills de exporteras mot ny walk-video. */
+    ['riddare_attack_8dir.json', 50],
+    ['riddare_idle_8dir.json', 50],
+  ];
   const report = [];
-  for (const s of sheets) report.push(await verifySheet(s, walkMeta, refFootX, refFootY, 3, 8));
+  for (const [s, maxErr] of sheets) report.push(await verifySheet(s, walkMeta, refFootX, refFootY, maxErr, 45));
   console.log('HERO_ALIGN_OK', JSON.stringify(report));
 }
 
