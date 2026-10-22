@@ -3,7 +3,7 @@
  * Alla spelhändelser med payload (godkänt kontrakt mellan Utvecklare 1 och 2).
  * EN namnform per händelse – inga alias (t.ex. inget death/rune_activate). Nya events läggs till här.
  */
-export type UiPanel = 'inventory' | 'map' | 'lore' | 'menu' | 'settings';
+export type UiPanel = 'inventory' | 'map' | 'lore' | 'menu' | 'settings' | 'npc';
 
 // `type` (inte interface) så att den uppfyller Record<string, unknown> i EventBus.
 export type GameEvents = {

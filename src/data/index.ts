@@ -12,6 +12,8 @@ import portalBy from './portal_by.json';
 import set from './set.json';
 import spawnzoner from './spawnzoner.json';
 import stader from './stader.json';
+import npc from './npc.json';
+import type { NpcDataFile } from './npcTypes';
 import type { Cities, Classes, GameData, MonsterDef, MonsterFamilies, MonsterLevels, PortalVillage, SpawnZones } from './types';
 
 export const DATA: GameData = {
@@ -28,6 +30,7 @@ export const DATA: GameData = {
   drops: dropTabeller,
   attributes: attribut,
   lorebook: lorebok,
+  npc: npc as unknown as NpcDataFile,
 };
 
 const MONSTERS = new Map<string, MonsterDef>(DATA.families.monsters.map((m) => [m.id, m]));
@@ -53,5 +56,12 @@ export function validateData(): string[] {
   }
   for (const m of DATA.families.monsters) if (typeof m.damage !== 'number') issues.push(`${m.id}: damage saknas eller är inte ett tal`);
   for (const c of DATA.classes.classes) if (!Array.isArray(c.start_gear)) issues.push(`${c.id}: start_gear saknas`);
+  const areas = new Set(DATA.spawn.areas.map((a) => a.id));
+  for (const n of DATA.npc.npcs) {
+    if (!areas.has(n.area)) issues.push(`npc ${n.id}: okänt område ${n.area}`);
+    if (n.zone !== 'forest' && n.zone !== 'village') issues.push(`npc ${n.id}: okänd zon ${n.zone}`);
+    if (!n.sprite) issues.push(`npc ${n.id}: sprite saknas`);
+    if (!n.pos && !n.tile) issues.push(`npc ${n.id}: pos eller tile krävs`);
+  }
   return issues;
 }

@@ -491,6 +491,55 @@
 .handItem .itm {
   position: relative;
 }
+#npcLabels {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+#npcLabels .npcLabel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #e8dfc8;
+  background: #00000088;
+  border: 1px solid #6a5a40;
+  border-radius: 3px;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px #000;
+}
+#npc-dialog {
+  position: fixed;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%);
+  z-index: 28;
+  min-width: min(420px, 90vw);
+  max-width: 520px;
+  padding: 14px 16px 10px;
+  background: #14100ee6;
+  border: 1px solid #8a6a3a;
+  box-shadow: 0 8px 28px #000a;
+  pointer-events: auto;
+}
+#npc-dialog .npc-dialog-title {
+  color: #c7a35a;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+#npc-dialog .npc-dialog-body {
+  color: #e6dfcc;
+  font-size: 14px;
+  line-height: 1.45;
+}
+#npc-dialog .npc-dialog-hint {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #9a9080;
+  text-align: right;
+}
 /* Karta öppen (map_toggle): rubrik (topp) och legend (botten) får inte krocka med HUD. */
 body.map-open #hud .bars,
 body.map-open #hud .lvl,

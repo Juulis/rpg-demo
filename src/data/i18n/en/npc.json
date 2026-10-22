@@ -1,0 +1,38 @@
+{
+  "gamla_ylva": {
+    "name": "Old Ylva",
+    "default_line": "Stay close to the fire, child. The dark is listening."
+  },
+  "bror_vakt": {
+    "name": "Bror",
+    "default_line": "No one passes without leave. Not even you."
+  },
+  "sigrun_helare": {
+    "name": "Sigrun",
+    "default_line": "Sit. I will tend your wounds before they tend to you."
+  },
+  "gravvaktaren_ebbe": {
+    "name": "Ebbe",
+    "default_line": "The graves grow restless at night. I keep them still."
+  },
+  "marta_torghandlare": {
+    "name": "Märta",
+    "default_line": "Everything has a price. Sometimes two."
+  },
+  "gunnar_jarnhand": {
+    "name": "Gunnar",
+    "default_line": "Steel must hold. People too, if they are allowed."
+  },
+  "olle_vardshus": {
+    "name": "Olle",
+    "default_line": "The warmth is faint but honest. Drink before you go."
+  },
+  "sara_benlasare": {
+    "name": "Sara",
+    "default_line": "Bones tell truths people do not want to hear."
+  },
+  "vaktkapten_ingrid": {
+    "name": "Ingrid",
+    "default_line": "The guards remain even when hope runs."
+  }
+}
