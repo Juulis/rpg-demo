@@ -4,7 +4,10 @@ import { loadSheet8dir, type TexLoader } from './sheet8dir';
 const WORLD_SCALE = 0.8;
 
 export const WORLD_HUMAN_FIGURES = ['jagare', 'aventyrare', 'varld_vakt', 'handlare'] as const;
-export const WORLD_ANIMAL_FIGURES = ['bjorn', 'radjur'] as const;
+export const WORLD_ANIMAL_FIGURES = ['bjorn', 'radjur', 'hare', 'rav'] as const;
+
+const ANIMAL_RUN = new Set<WorldAnimalFigure>(['radjur', 'hare', 'rav']);
+const ANIMAL_ATTACK = new Set<WorldAnimalFigure>(['bjorn']);
 export type WorldHumanFigure = (typeof WORLD_HUMAN_FIGURES)[number];
 export type WorldAnimalFigure = (typeof WORLD_ANIMAL_FIGURES)[number];
 export type WorldFigureId = WorldHumanFigure | WorldAnimalFigure;
@@ -54,8 +57,8 @@ export class WorldFigureSprites {
     for (const id of WORLD_ANIMAL_FIGURES) {
       const walk = await tryAnim(id, 'walk');
       const idle = await tryAnim(id, 'idle');
-      const run = id === 'radjur' ? await tryAnim(id, 'run') : undefined;
-      const attack = id === 'bjorn' ? await tryAnim(id, 'attack') : undefined;
+      const run = ANIMAL_RUN.has(id) ? await tryAnim(id, 'run') : undefined;
+      const attack = ANIMAL_ATTACK.has(id) ? await tryAnim(id, 'attack') : undefined;
       const set = complete({ idle, gang: walk, run: run ?? walk, attack });
       if (set) this.byId.set(id, set);
     }

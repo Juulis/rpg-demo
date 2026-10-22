@@ -12,7 +12,7 @@ assert.deepEqual(
   b.map((s) => ({ figure: s.figure, x: Math.round(s.pos.x * 10), y: Math.round(s.pos.y * 10) })),
 );
 assert.ok(a.length >= 2);
-assert.ok(a.every((s) => ['jagare', 'aventyrare', 'varld_vakt', 'handlare', 'bjorn', 'radjur'].includes(s.figure)));
+assert.ok(a.every((s) => ['jagare', 'aventyrare', 'varld_vakt', 'handlare', 'bjorn', 'radjur', 'hare', 'rav'].includes(s.figure)));
 
 const village = new Zone('village', 'gamla_byn', 60, 60);
 assert.equal(worldAmbientSpawns(village, 42).length, 0);

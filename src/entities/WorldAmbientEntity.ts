@@ -33,7 +33,7 @@ export class WorldAmbientEntity {
     this.pos = { x: pos.x, y: pos.y };
     this.target = { x: pos.x, y: pos.y };
     this.isHandlare = figure === 'handlare';
-    this.canRun = figure === 'radjur';
+    this.canRun = figure === 'radjur' || figure === 'hare' || figure === 'rav';
     this.sprite = new DirSprite(set, 1, 20, false);
     this.sprite.play('idle');
     this.view.addChild(this.sprite);
