@@ -3,6 +3,12 @@ import { loadSheet8dir, type TexLoader } from './sheet8dir';
 
 const HERO_SCALE = 0.55;
 
+const HERO_CLASS_SHEETS: readonly { cls: string; folder: string; prefix: string }[] = [
+  { cls: 'riddare', folder: '', prefix: 'riddare' },
+  { cls: 'amazonkrigare', folder: 'amazon', prefix: 'amazon' },
+  { cls: 'barbar', folder: 'barbar', prefix: 'barbar' },
+];
+
 /** NV/NO i run-arket är profil — använd walk-rader, snabbare fps i run. */
 function patchRunDiagonals(run: Anim, walk: Anim): void {
   for (const d of [3, 5]) {
@@ -43,34 +49,42 @@ async function emergencySet(tex: TexLoader): Promise<AnimSet> {
   return { idle: stub, gang: stub, run: stub, attack: stub, dod: stub };
 }
 
-/** Laddar hjältesprites per klass; saknade klasser får riddarens ark med klass-tint i Game. */
+/** Laddar hjältesprites per klass från sprites/hero/<klass>/ (eller rot för riddare). */
 export class HeroSprites {
   private readonly byClass = new Map<string, AnimSet>();
   private fallback: AnimSet | null = null;
 
   async load(tex: TexLoader): Promise<void> {
-    const base = '2d/sprites/hero';
-    const trySheet = async (id: string): Promise<Anim | undefined> => {
-      try {
-        return await loadSheet8dir(tex, base, id, HERO_SCALE);
-      } catch (e) {
-        console.warn(`[HeroSprites] kunde inte ladda ${id}:`, e);
-        return undefined;
-      }
-    };
-    const walk = await trySheet('riddare_walk_8dir');
-    const run = await trySheet('riddare_run_8dir');
-    if (run && walk) patchRunDiagonals(run, walk);
-    const riddare: AnimSet = {
-      idle: await trySheet('riddare_idle_8dir'),
-      gang: walk,
-      run,
-      attack: await trySheet('riddare_attack_8dir'),
-      dod: await trySheet('riddare_dodge_8dir'),
-    };
-    const full = withFallbacks(riddare) ?? (await emergencySet(tex));
-    this.byClass.set('riddare', full);
-    this.fallback = full;
+    for (const { cls, folder, prefix } of HERO_CLASS_SHEETS) {
+      const base = folder ? `2d/sprites/hero/${folder}` : '2d/sprites/hero';
+      const trySheet = async (id: string): Promise<Anim | undefined> => {
+        try {
+          return await loadSheet8dir(tex, base, id, HERO_SCALE);
+        } catch (e) {
+          console.warn(`[HeroSprites] kunde inte ladda ${base}/${id}:`, e);
+          return undefined;
+        }
+      };
+      const walk = await trySheet(`${prefix}_walk_8dir`);
+      const run = await trySheet(`${prefix}_run_8dir`);
+      if (run && walk) patchRunDiagonals(run, walk);
+      const set: AnimSet = {
+        idle: await trySheet(`${prefix}_idle_8dir`),
+        gang: walk,
+        run,
+        attack: await trySheet(`${prefix}_attack_8dir`),
+        dod: await trySheet(`${prefix}_dodge_8dir`),
+      };
+      const full = withFallbacks(set);
+      if (full) this.byClass.set(cls, full);
+    }
+    const riddare = this.byClass.get('riddare');
+    this.fallback = riddare ?? (await emergencySet(tex));
+    if (!riddare) this.byClass.set('riddare', this.fallback);
+  }
+
+  hasDedicated(cls: string): boolean {
+    return this.byClass.has(cls);
   }
 
   setFor(cls: string): AnimSet {
