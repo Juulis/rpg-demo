@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "note": "Namngivna rutinankare per område. pos = världsenheter (skog) eller bytile [tx,ty]."
+  },
+  "anchors": [
+    { "id": "lagerelden", "areaId": "startskogen", "pos": [5, 11] },
+    { "id": "ylvas_talt", "areaId": "startskogen", "pos": [3, 13] },
+    { "id": "lagrets_karra", "areaId": "startskogen", "pos": [9, 12] },
+    { "id": "tors_talt", "areaId": "startskogen", "pos": [11, 14] },
+    { "id": "lagrets_palissad", "areaId": "startskogen", "pos": [2, 10] },
+    { "id": "brors_talt", "areaId": "startskogen", "pos": [0, 12] },
+    { "id": "lagrets_utkant", "areaId": "startskogen", "pos": [6, 16] },
+    { "id": "skog_nordvast_rose", "areaId": "startskogen", "pos": [-18, 12] },
+    { "id": "helartaltet", "areaId": "startskogen", "pos": [7, 13] },
+    { "id": "vargaby_jaktstuga", "areaId": "vargaby", "pos": [20, 28] },
+    { "id": "vargaby_skogskant", "areaId": "vargaby", "pos": [24, 32] },
+    { "id": "portalgladet", "areaId": "gamla_byn", "tile": [22, 20] },
+    { "id": "torget", "areaId": "gamla_byn", "tile": [12, 13] },
+    { "id": "osterhus", "areaId": "gamla_byn", "tile": [17, 12] },
+    { "id": "torget_hus", "areaId": "gamla_byn", "tile": [13, 14] },
+    { "id": "vasterhus", "areaId": "gamla_byn", "tile": [15, 13] },
+    { "id": "byporten", "areaId": "gamla_byn", "tile": [4, 19] },
+    { "id": "byporten_vakthus", "areaId": "gamla_byn", "tile": [3, 18] },
+    { "id": "osterhus_vardshus", "areaId": "gamla_byn", "tile": [18, 11] },
+    { "id": "kapellet", "areaId": "gamla_byn", "tile": [7, 16] },
+    { "id": "kapellet_krypta", "areaId": "gamla_byn", "tile": [6, 17] },
+    { "id": "helartaltet", "areaId": "gamla_byn", "tile": [9, 9] },
+    { "id": "lagrets_palissad", "areaId": "gamla_byn", "tile": [2, 17] },
+    { "id": "brors_talt", "areaId": "gamla_byn", "tile": [1, 16] },
+    { "id": "lagerelden", "areaId": "gamla_byn", "tile": [11, 12] }
+  ]
+}

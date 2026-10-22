@@ -1,0 +1,42 @@
+{
+  "night_default": "The merchant stirs and rubs their eyes. Trade is open if you have coin.",
+  "night": {
+    "tor_kolare": "Tor snores in his tent — but gold wakes anyone.",
+    "hedda_jagare": "Hedda keeps one eye open. She'll still trade.",
+    "marta_torghandlare": "Märta mumbles from her stall — business never sleeps for long.",
+    "gunnar_jarnhand": "Gunnar grunts but opens the forge chest.",
+    "sara_benlasare": "Sara lights another candle. Bones and bargains alike."
+  },
+  "activities": {
+    "berättar och lagar mat": "telling stories and cooking",
+    "sover, mumlar om runorna": "sleeping, mumbling about runes",
+    "köper och säljer": "buying and selling",
+    "dricker och skrävlar": "drinking and boasting",
+    "sover": "sleeping",
+    "läker och kokar örter": "healing and brewing herbs",
+    "sitter med Ylva": "sitting with Ylva",
+    "sover lätt": "sleeping lightly",
+    "håller vakt med fackla": "standing guard with a torch",
+    "äter, berättar om natten": "eating, telling tales of the night",
+    "sover hos Ylva": "sleeping at Ylva's tent",
+    "tittar mot vägen till Vargaby": "watching the road to Wolf Village",
+    "sitter vid ett vägröse och viskar till benen": "sitting by a cairn, whispering to the bones",
+    "jagar": "hunting",
+    "sover med kniven under kudden": "sleeping with a knife under the pillow",
+    "vaktar portalen, sover aldrig": "guarding the portal, never sleeping",
+    "säljer från ståndet": "selling from her stall",
+    "skvallrar på värdshuset": "gossiping at the inn",
+    "säljer vapen och rustning": "selling weapons and armor",
+    "putsar gamla vapen, säger inget": "polishing old weapons in silence",
+    "leder vakterna": "leading the guards",
+    "rundor med fackla": "patrolling with a torch",
+    "sover i rustningen": "sleeping in her armor",
+    "serverar och berättar": "serving and storytelling",
+    "sover bakom disken": "sleeping behind the counter",
+    "handlar vid ljus": "trading by candlelight",
+    "arbetar på åkern": "working the fields",
+    "leker": "playing",
+    "patrullerar": "patrolling",
+    "vaktar": "keeping watch"
+  }
+}

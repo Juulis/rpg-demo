@@ -1,0 +1,334 @@
+{
+  "meta": {
+    "version": "1"
+  },
+  "npcs": {
+    "gamla_ylva": {
+      "roll": "berattare",
+      "omrade": "startlagret",
+      "home": "lagerelden",
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "20:00",
+          "plats": "lagerelden",
+          "aktivitet": "berättar och lagar mat"
+        },
+        {
+          "from": "20:00",
+          "to": "06:00",
+          "plats": "ylvas_talt",
+          "aktivitet": "sover, mumlar om runorna"
+        }
+      ]
+    },
+    "tor_kolare": {
+      "roll": "handlare",
+      "omrade": "startlagret",
+      "home": "lagrets_karra",
+      "dygnsrutin": [
+        {
+          "from": "07:00",
+          "to": "19:00",
+          "plats": "lagrets_karra",
+          "aktivitet": "köper och säljer"
+        },
+        {
+          "from": "19:00",
+          "to": "22:00",
+          "plats": "lagerelden",
+          "aktivitet": "dricker och skrävlar"
+        },
+        {
+          "from": "22:00",
+          "to": "07:00",
+          "plats": "tors_talt",
+          "aktivitet": "sover"
+        }
+      ]
+    },
+    "sigrun_helare": {
+      "roll": "helare",
+      "omrade": "gamla_byn",
+      "home": "helartaltet",
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "21:00",
+          "plats": "helartaltet",
+          "aktivitet": "läker och kokar örter"
+        },
+        {
+          "from": "21:00",
+          "to": "23:00",
+          "plats": "lagerelden",
+          "aktivitet": "sitter med Ylva"
+        },
+        {
+          "from": "23:00",
+          "to": "06:00",
+          "plats": "helartaltet",
+          "aktivitet": "sover lätt"
+        }
+      ]
+    },
+    "bror_vakt": {
+      "roll": "vakt",
+      "omrade": "gamla_byn",
+      "home": "lagrets_palissad",
+      "dygnsrutin": [
+        {
+          "from": "18:00",
+          "to": "06:00",
+          "plats": "lagrets_palissad",
+          "aktivitet": "håller vakt med fackla"
+        },
+        {
+          "from": "06:00",
+          "to": "10:00",
+          "plats": "lagerelden",
+          "aktivitet": "äter, berättar om natten"
+        },
+        {
+          "from": "10:00",
+          "to": "18:00",
+          "plats": "brors_talt",
+          "aktivitet": "sover"
+        }
+      ]
+    },
+    "lilla_mira": {
+      "roll": "flykting",
+      "omrade": "startlagret",
+      "home": "lagrets_utkant",
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "18:00",
+          "plats": "lagrets_utkant",
+          "aktivitet": "tittar mot vägen till Vargaby"
+        },
+        {
+          "from": "18:00",
+          "to": "08:00",
+          "plats": "ylvas_talt",
+          "aktivitet": "sover hos Ylva"
+        }
+      ]
+    },
+    "viskaren": {
+      "roll": "berattare",
+      "omrade": "startskogen",
+      "home": "skog_nordvast_rose",
+      "dygnsrutin": [
+        {
+          "from": "00:00",
+          "to": "24:00",
+          "plats": "skog_nordvast_rose",
+          "aktivitet": "sitter vid ett vägröse och viskar till benen"
+        }
+      ]
+    },
+    "hedda_jagare": {
+      "roll": "handlare",
+      "omrade": "vargaby",
+      "home": "vargaby_jaktstuga",
+      "dygnsrutin": [
+        {
+          "from": "05:00",
+          "to": "10:00",
+          "plats": "vargaby_skogskant",
+          "aktivitet": "jagar"
+        },
+        {
+          "from": "10:00",
+          "to": "20:00",
+          "plats": "vargaby_jaktstuga",
+          "aktivitet": "köper och säljer"
+        },
+        {
+          "from": "20:00",
+          "to": "05:00",
+          "plats": "vargaby_jaktstuga",
+          "aktivitet": "sover med kniven under kudden"
+        }
+      ]
+    },
+    "gravvaktaren_ebbe": {
+      "roll": "berattare",
+      "omrade": "gamla_byn",
+      "home": "portalgladet",
+      "dygnsrutin": [
+        {
+          "from": "00:00",
+          "to": "24:00",
+          "plats": "portalgladet",
+          "aktivitet": "vaktar portalen, sover aldrig"
+        }
+      ]
+    },
+    "marta_torghandlare": {
+      "roll": "handlare",
+      "omrade": "gamla_byn",
+      "home": "torget",
+      "dygnsrutin": [
+        {
+          "from": "07:00",
+          "to": "19:00",
+          "plats": "torget",
+          "aktivitet": "säljer från ståndet"
+        },
+        {
+          "from": "19:00",
+          "to": "22:00",
+          "plats": "osterhus",
+          "aktivitet": "skvallrar på värdshuset"
+        },
+        {
+          "from": "22:00",
+          "to": "07:00",
+          "plats": "torget_hus",
+          "aktivitet": "sover"
+        }
+      ]
+    },
+    "gunnar_jarnhand": {
+      "roll": "handlare",
+      "omrade": "gamla_byn",
+      "home": "vasterhus",
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "18:00",
+          "plats": "vasterhus",
+          "aktivitet": "säljer vapen och rustning"
+        },
+        {
+          "from": "18:00",
+          "to": "20:00",
+          "plats": "vasterhus",
+          "aktivitet": "putsar gamla vapen, säger inget"
+        },
+        {
+          "from": "20:00",
+          "to": "08:00",
+          "plats": "vasterhus",
+          "aktivitet": "sover"
+        }
+      ]
+    },
+    "vaktkapten_ingrid": {
+      "roll": "vakt",
+      "omrade": "gamla_byn",
+      "home": "byporten",
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "18:00",
+          "plats": "byporten",
+          "aktivitet": "leder vakterna"
+        },
+        {
+          "from": "18:00",
+          "to": "22:00",
+          "plats": "torget",
+          "aktivitet": "rundor med fackla"
+        },
+        {
+          "from": "22:00",
+          "to": "06:00",
+          "plats": "byporten_vakthus",
+          "aktivitet": "sover i rustningen"
+        }
+      ]
+    },
+    "olle_vardshus": {
+      "roll": "berattare",
+      "omrade": "gamla_byn",
+      "home": "osterhus_vardshus",
+      "dygnsrutin": [
+        {
+          "from": "12:00",
+          "to": "02:00",
+          "plats": "osterhus_vardshus",
+          "aktivitet": "serverar och berättar"
+        },
+        {
+          "from": "02:00",
+          "to": "12:00",
+          "plats": "osterhus_vardshus",
+          "aktivitet": "sover bakom disken"
+        }
+      ]
+    },
+    "sara_benlasare": {
+      "roll": "handlare",
+      "omrade": "gamla_byn",
+      "home": "kapellet",
+      "dygnsrutin": [
+        {
+          "from": "20:00",
+          "to": "04:00",
+          "plats": "kapellet",
+          "aktivitet": "handlar vid ljus"
+        },
+        {
+          "from": "04:00",
+          "to": "20:00",
+          "plats": "kapellet_krypta",
+          "aktivitet": "sover"
+        }
+      ]
+    }
+  },
+  "templates": {
+    "bybo_bonde": {
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "20:00",
+          "plats": "torget",
+          "aktivitet": "arbetar på åkern"
+        },
+        {
+          "from": "20:00",
+          "to": "06:00",
+          "plats": "osterhus",
+          "aktivitet": "sover"
+        }
+      ]
+    },
+    "bybo_barn": {
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "18:00",
+          "plats": "torget",
+          "aktivitet": "leker"
+        },
+        {
+          "from": "18:00",
+          "to": "08:00",
+          "plats": "osterhus",
+          "aktivitet": "sover"
+        }
+      ]
+    },
+    "bybo_vakt": {
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "22:00",
+          "plats": "byporten",
+          "aktivitet": "patrullerar"
+        },
+        {
+          "from": "22:00",
+          "to": "06:00",
+          "plats": "byporten_vakthus",
+          "aktivitet": "vaktar"
+        }
+      ]
+    }
+  }
+}
