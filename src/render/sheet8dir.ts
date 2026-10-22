@@ -39,12 +39,20 @@ async function json<T>(p: string): Promise<T> {
   return (await r.json()) as T;
 }
 
+/** Antal bildrutor per riktning — från JSON, annars högsta frame-index i rects + 1. */
+export function sheet8FrameCount(meta: Pick<Sheet8Json, 'frames' | 'rects'>): number {
+  if (meta.frames != null && meta.frames > 0) return meta.frames;
+  let max = 0;
+  for (const r of meta.rects) max = Math.max(max, (r.frame ?? 0) + 1);
+  return max || 1;
+}
+
 /** 8-riktningsark (riddare_*, monster_*_8dir, npc_*_idle_8dir). */
 export async function loadSheet8dir(tex: TexLoader, dir: string, name: string, scale?: number): Promise<Anim> {
   const meta = await json<Sheet8Json>(`${dir}/${name}.json`);
   const src = await tex(`${dir}/${meta.image}`);
   const nDir = meta.dirs.length;
-  const nFrame = meta.frames ?? 1;
+  const nFrame = sheet8FrameCount(meta);
   const frames: Texture[][] = [];
   for (let d = 0; d < nDir; d++) {
     const row: Texture[] = [];
