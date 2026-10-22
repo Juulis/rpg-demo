@@ -2,13 +2,7 @@ import { isRecord } from '../core/json';
 import type { WorldState } from './worldStateTypes';
 
 /** Stadstillstånd i stigande ordning (för city_state_gte). */
-export const CITY_STATE_ORDER = [
-  'besatt',
-  'rensad',
-  'aterbefolkad_1',
-  'aterbefolkad_2',
-  'aterbefolkad_3',
-] as const;
+export const CITY_STATE_ORDER = ['besatt', 'rensad', 'aterbefolkad_1', 'aterbefolkad_2', 'aterbefolkad_3'] as const;
 
 export interface ConditionContext {
   world: Readonly<WorldState>;
