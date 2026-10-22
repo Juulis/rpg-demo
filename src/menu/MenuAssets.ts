@@ -1,9 +1,12 @@
 import { assetUrl } from '../core/assets';
+import type { LocaleManager } from '../i18n/LocaleManager';
 import { classById } from '../save/types';
 import { el } from './dom';
 
 /** Menygrafik som filer i public/assets/ui (tidigare base64 i js/menu-data.js). */
 export class MenuAssets {
+  constructor(private readonly i18n: LocaleManager) {}
+
   static readonly FILES = ['bg', 'titel', 'plats', 'tom', 'knapp', 'textfalt', 'save', 'amazonkrigare', 'barbar', 'riddare'] as const;
 
   url(name: (typeof MenuAssets.FILES)[number] | string): string {
@@ -21,7 +24,7 @@ export class MenuAssets {
   }
 
   title(): HTMLImageElement {
-    return el('img', { class: 'titel', src: this.url('titel'), alt: 'Runornas kall' });
+    return el('img', { class: 'titel', src: this.url('titel'), alt: this.i18n.t('common.title') });
   }
 
   css(): string {
@@ -47,6 +50,7 @@ export class MenuAssets {
 .hero-new .clsbtn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:.6;color:#cbb994;font:18px Cinzel,serif}
 .hero-new .clsbtn .portrait{width:120px;height:120px;border:3px solid #3a3f45}.hero-new .clsbtn.sel{opacity:1;color:#e0b060}.hero-new .clsbtn.sel .portrait{border-color:#c7a35a;box-shadow:0 0 24px 4px rgba(199,163,90,.5)}
 .hero-name{width:400px;height:56px;box-sizing:border-box;border-style:solid;border-width:16px 44px;border-image:${u('textfalt')} 20 55 fill / 16px 44px stretch;background:none;color:#e6dfcc;font:18px Cinzel,serif;text-align:center;outline:none}
+.lang-picker{display:flex;gap:6px;margin-top:6px}.hero-menu .lang-picker button.lang{min-width:0;border-width:10px 20px;font-size:14px;opacity:.6}.hero-menu .lang-picker button.lang.sel{opacity:1;color:#e0b060}.slots-free{color:#a89a80;font-size:13px}
 .hero-err{color:#e06060;min-height:18px;font-size:14px;text-shadow:0 1px 2px #000}
 .sfx-ctl{display:inline-flex;align-items:center;gap:4px}.sfx-ctl button{font-size:12px;padding:2px 6px;border-color:#6b5a3e;background:#2a2420}.sfx-ctl input{width:70px;accent-color:#f2c46b}`;
   }

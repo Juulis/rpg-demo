@@ -9,6 +9,7 @@ import type { HeroGateway } from './HeroGateway';
 import { HeroLoader } from './HeroLoader';
 import { HeroRoster } from './HeroRoster';
 import { PageLifecycleSaver } from './PageLifecycleSaver';
+import type { LocaleManager } from '../i18n/LocaleManager';
 import { SaveIndicator } from './SaveIndicator';
 import { SaveRepository } from './SaveRepository';
 
@@ -40,13 +41,14 @@ export class SaveModule implements GameModule, SaveBackendSource {
     private readonly withDom = true,
     /** Plattformens slumpkälla för seeds och id:n (crypto.getRandomValues). */
     private readonly entropy: SeedSource = cryptoSeed,
+    private readonly i18n?: LocaleManager,
   ) {
     this.repo = new SaveRepository(backend);
   }
 
   init(ctx: GameContext): void {
     this.game.setSaveBackend(this.repo.backend);
-    const indicator = this.withDom ? new SaveIndicator() : null;
+    const indicator = this.withDom ? new SaveIndicator(this.i18n) : null;
     const roster = new HeroRoster(this.repo, ctx.bus, this.entropy);
     const autosave = new AutoSaveService(ctx, this.game, this.repo, (d) => {
       roster.track(d, true);
@@ -57,6 +59,7 @@ export class SaveModule implements GameModule, SaveBackendSource {
     lifecycle?.start();
     this.parts = { roster, loader: new HeroLoader(ctx, this.game, autosave, this.entropy), autosave, lifecycle, indicator };
     this.readyP = (async () => {
+      if (this.i18n) await this.i18n.bindSettings(this.repo.backend);
       await roster.refresh();
       this.loaded = true;
     })();
