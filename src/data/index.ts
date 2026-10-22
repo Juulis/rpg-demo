@@ -13,6 +13,8 @@ import set from './set.json';
 import spawnzoner from './spawnzoner.json';
 import stader from './stader.json';
 import npc from './npc.json';
+import rykten from './rykten.json';
+import type { RumorDataFile } from './rumorTypes';
 import type { DialogDataFile } from './dialogTypes';
 import { DIALOG_DATA } from '../npc/designDialoger';
 import type { NpcDataFile } from './npcTypes';
@@ -34,6 +36,7 @@ export const DATA: GameData = {
   lorebook: lorebok,
   npc: npc as unknown as NpcDataFile,
   dialoger: DIALOG_DATA as DialogDataFile,
+  rykten: rykten as unknown as RumorDataFile,
 };
 
 const MONSTERS = new Map<string, MonsterDef>(DATA.families.monsters.map((m) => [m.id, m]));
@@ -69,6 +72,11 @@ export function validateData(): string[] {
   }
   for (const id of Object.keys(DATA.dialoger.npcs)) {
     if (!npcIds.has(id)) issues.push(`dialog ${id}: okänd npc`);
+  }
+  for (const r of DATA.rykten.rykten) {
+    if (r.ersatter && !DATA.rykten.rykten.some((x) => x.id === r.ersatter)) {
+      issues.push(`rykte ${r.id}: okänt ersatter ${r.ersatter}`);
+    }
   }
   return issues;
 }

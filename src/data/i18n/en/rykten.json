@@ -1,0 +1,125 @@
+{
+  "rykte_runorna_sover": {
+    "text": "The runes in the forest sleep. But they dream."
+  },
+  "rykte_portalen_oppen": {
+    "text": "Someone has woken the runes. The Red Portal stands open at the heart of the forest."
+  },
+  "rykte_vargarna_okar": {
+    "text": "There are more wolves every night."
+  },
+  "rykte_ulvhild_dod": {
+    "text": "The Greybear of Wolfstead is dead. They say Hedda wept for joy."
+  },
+  "rykte_gravargsledaren": {
+    "text": "A grey wolf with a chain around its neck leads the packs."
+  },
+  "rykte_skelett_vid_rosena": {
+    "text": "Skeletons have been seen by the cairns to the north."
+  },
+  "rykte_flyktingens_sandaler": {
+    "text": "A child fled toward Wolfstead in new sandals. He never got there."
+  },
+  "rykte_benviskaren": {
+    "text": "A hermit whispers to bones by a cairn in the northwest."
+  },
+  "rykte_benkungen": {
+    "text": "Chieftain Valdemar wears a crown that binds the whole village."
+  },
+  "rykte_benkungen_dod": {
+    "text": "The Bone King has fallen. The dead of the Old Village lie still."
+  },
+  "rykte_gravvaktarens_arv": {
+    "text": "The Gravewardens' gear still lies where they fell."
+  },
+  "rykte_byn_vaknar": {
+    "text": "People are moving back to the Old Village. It smells of bread again."
+  },
+  "rykte_vakter_i_byn": {
+    "text": "The village has guards now. Farmers with spears, but they hold."
+  },
+  "rykte_runsmidd_klinga": {
+    "text": "The smith who forged the Runeforged Blade died that same night."
+  },
+  "rykte_askeborg_brinner": {
+    "text": "Ashenhold still burns, thirty years on."
+  },
+  "rykte_dimmerstrand": {
+    "text": "The bells of Mistshore toll beneath the water."
+  },
+  "rykte_trasdrottningen_dod": {
+    "text": "The mist over Mistshore has lifted. The bells have fallen silent."
+  },
+  "rykte_korpmodern": {
+    "text": "The ravens on the rooftops wait for their mother."
+  },
+  "rykte_spinnmodern": {
+    "text": "Something vast is weaving in the depths of Copperfell."
+  },
+  "rykte_jarnmunkens_gordel": {
+    "text": "The strongest brother wore an iron girdle with a lock."
+  },
+  "rykte_smittan_sprider_sig": {
+    "text": "The Blight is spreading. A bite that turns green is a death sentence."
+  },
+  "rykte_askeborg_ljus": {
+    "text": "Someone has seen light in Ashenhold again. Not fire. Something else."
+  },
+  "rykte_askfursten": {
+    "text": "Morvath sits in the ruined cathedral and simply burns."
+  },
+  "rykte_askfursten_dod": {
+    "text": "The Ash Prince has fallen. For the first time in thirty years, rain fell on Ashenhold."
+  },
+  "rykte_fjarde_stenen": {
+    "text": "They say there was a fourth runestone. It lies on the Rift's Floor."
+  },
+  "rykte_legendariskt_hittat": {
+    "text": "Folk say {hjalte} carries {foremal}. No one has seen the like in thirty years."
+  },
+  "rykte_hjalten": {
+    "text": "{hjalte} has slain {antal_bossar} of the lords of darkness. People are starting to hope."
+  },
+  "rykte_mira_vet": {
+    "text": "Little Mira has stopped waiting by the road. She helps Sigrun now."
+  },
+  "rykte_mira_hoppas": {
+    "text": "Little Mira says someone saw her brother in Wolfstead. She wants to go there."
+  },
+  "rykte_viskaren_tyst": {
+    "text": "The Whisperer sits by Ylva's fire now. He whispers no more."
+  },
+  "rykte_viskaren_skrattar": {
+    "text": "The Whisperer laughs at night. He says the skull has chosen."
+  },
+  "rykte_hedda_palsen": {
+    "text": "Ulvhild's pelt hangs in Hedda's hunting lodge. She sleeps through the night now."
+  },
+  "rykte_bror_begraver": {
+    "text": "Bror buried his son in the bear's pelt. There is a new cross by the camp."
+  },
+  "rykte_ristaren_sanning": {
+    "text": "Ylva says the Runecarver snuffed out the Fourth Stone himself. She talks of lighting it again."
+  },
+  "rykte_ristaren_hjalte": {
+    "text": "Ylva tells of the Runecarver, a hero who died in battle."
+  },
+  "rykte_kronikan_ebbe": {
+    "text": "Ebbe reads the Gravewardens' Chronicle to the children by the portal."
+  },
+  "rykte_kronikan_ingrid": {
+    "text": "Captain Ingrid wears her grandfather's Gravewarden crest. The guards drill every dawn now."
+  },
+  "rykte_valdemar_vilar": {
+    "text": "Valdemar rests in the chieftain's grave with his signet. The graveyard is still."
+  },
+  "rykte_valdemar_signet": {
+    "text": "{hjalte} wears the chieftain's signet. Some say the village has a new chieftain."
+  },
+  "rykte_valdemar_sara": {
+    "text": "Sara Bonereader has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
+  },
+  "rykte_ebbe_dod": {
+    "text": "Ebbe the Gravewarden was found dead by the portal, his lantern dark. Ingrid guards the gate now."
+  }
+}

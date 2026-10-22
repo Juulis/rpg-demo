@@ -6,6 +6,8 @@ import { bossMonsterIds, isBossMonsterId } from './bossIds';
 export interface WorldStateLastEvent {
   id: string;
   at: number;
+  /** Speldygn när händelsen inträffade (för t.ex. legendary_found). */
+  day?: number;
 }
 
 export interface WorldStatePending {
@@ -33,6 +35,8 @@ export interface WorldState {
   quests: Record<string, unknown>;
   quest_excludes: string[];
   rumors_active: Record<string, { since_day?: number; until_day?: number }>;
+  /** Senaste ryktes-id per NPC (prat). */
+  rumors_last: Record<string, string>;
   pending: WorldStatePending[];
 }
 
@@ -55,6 +59,7 @@ export function createEmptyWorldState(): WorldState {
     quests: {},
     quest_excludes: [],
     rumors_active: {},
+    rumors_last: {},
     pending: [],
   };
 }
@@ -72,7 +77,13 @@ export function parseWorldState(raw: unknown): WorldState | null {
   if (typeof raw.runes_active === 'number' && Number.isFinite(raw.runes_active)) ws.runes_active = raw.runes_active;
   if (Array.isArray(raw.last_events)) {
     for (const e of raw.last_events) {
-      if (isRecord(e) && typeof e.id === 'string' && typeof e.at === 'number') ws.last_events.push({ id: e.id, at: e.at });
+      if (isRecord(e) && typeof e.id === 'string' && typeof e.at === 'number') {
+        ws.last_events.push({
+          id: e.id,
+          at: e.at,
+          ...(typeof e.day === 'number' ? { day: e.day } : {}),
+        });
+      }
     }
   }
   const boolMap = (v: unknown, target: Record<string, boolean>): void => {
@@ -96,6 +107,7 @@ export function parseWorldState(raw: unknown): WorldState | null {
   numMap(raw.town_growth, ws.town_growth);
   numMap(raw.merchant_mods, ws.merchant_mods);
   strMap(raw.area_changes, ws.area_changes);
+  strMap(raw.rumors_last, ws.rumors_last);
   if (isRecord(raw.quests)) ws.quests = { ...raw.quests };
   if (isRecord(raw.rumors_active)) {
     for (const [k, v] of Object.entries(raw.rumors_active)) {

@@ -35,6 +35,8 @@ import { ItemText } from '../ui/ItemText';
 import { LootLabels } from '../ui/LootLabels';
 import { MonsterBar } from '../ui/MonsterBar';
 import { resolveDialogText } from '../npc/dialogResolve';
+import { npcHasNewRumor, pickRumorForNpc } from '../rumor/pickRumor';
+import { formatRumorText } from '../rumor/rumorText';
 import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
 import { NpcLabels } from '../ui/NpcLabels';
@@ -527,6 +529,17 @@ export class Game {
     return null;
   }
 
+  private npcRumorSparks(w: World): Set<string> {
+    const day = Math.floor(w.time / 90);
+    const ctx = { world: this.worldState.get(), day };
+    const out = new Set<string>();
+    for (const n of this.npcSys.entities()) {
+      const id = n.resolved.def.id;
+      if (npcHasNewRumor(id, ctx, this.worldState.lastRumorForNpc(id))) out.add(id);
+    }
+    return out;
+  }
+
   private openNpcDialog(ent: NpcEntity): void {
     const w = this.world;
     if (!w) return;
@@ -538,8 +551,16 @@ export class Game {
     w.hero.moveTarget = null;
     this.targetMonster = null;
     this.targetDrop = null;
-    const ctx = { world: this.worldState.get(), day: Math.floor(w.time / 90) };
-    const body = resolveDialogText(ent.resolved.def, 'halsning', ctx, w.text);
+    const day = Math.floor(w.time / 90);
+    this.worldState.setGameDay(day);
+    const ctx = { world: this.worldState.get(), day };
+    const npcId = ent.resolved.def.id;
+    const last = this.worldState.lastRumorForNpc(npcId);
+    const rumor = pickRumorForNpc(npcId, ctx, last);
+    const greeting = resolveDialogText(ent.resolved.def, 'halsning', ctx, w.text);
+    const heroName = this.heroState.name.trim() || 'Hjälten';
+    const body = rumor ? formatRumorText(rumor, { heroName, text: w.text, world: ctx.world }) : greeting;
+    if (rumor) this.worldState.recordRumorSpoken(npcId, rumor.id);
     this.npcDialog.show(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite), body);
     this.bus.emit('ui_open', { panel: 'npc' });
   }
@@ -595,6 +616,7 @@ export class Game {
     const w = this.world;
     if (!w) return;
     w.time += dt;
+    this.worldState.setGameDay(Math.floor(w.time / 90));
     const h = w.hero;
     if (h.s.playing) this.heroUpdate(dt);
     this.ai.update(dt);
@@ -605,7 +627,7 @@ export class Game {
     this.parallax.update(this.camera.pos);
     this.hud.update(dt, h, this.camera);
     this.labels.update(w.drops, this.input.altHeld || this.input.labelsToggled, this.camera);
-    this.npcLabels.update(this.npcSys.entities(), this.camera);
+    this.npcLabels.update(this.npcSys.entities(), this.camera, this.npcRumorSparks(w));
     this.npcSys.update(dt);
     this.npcSys.updateBarks(w, w.text, this.npcDialog.isOpen, (line, x, y) => this.npcBark.show(line, x, y));
     this.npcBark.update(dt, this.camera);
