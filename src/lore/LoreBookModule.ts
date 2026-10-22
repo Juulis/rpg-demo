@@ -70,8 +70,7 @@ export class LoreBookModule implements GameModule {
     this.grid = this.root.querySelector('.loreGrid') as HTMLDivElement;
     this.detail = this.root.querySelector('.loreDetail') as HTMLDivElement;
     this.progressEl = this.root.querySelector('.loreProgress') as HTMLDivElement;
-    (this.root.querySelector('.loreTitle') as HTMLElement).textContent =
-      getNpcLocale() === 'en' ? 'Lorebook' : 'Lorebok';
+    (this.root.querySelector('.loreTitle') as HTMLElement).textContent = getNpcLocale() === 'en' ? 'Lorebook' : 'Lorebok';
     (this.root.querySelector('.loreClose') as HTMLButtonElement).onclick = () => this.close();
     document.body.appendChild(this.root);
     this.toast.id = 'loreToast';
@@ -100,8 +99,7 @@ export class LoreBookModule implements GameModule {
     const row = this.model.pieces.get(id);
     const name = row?.name ?? id;
     const loc = getNpcLocale();
-    const msg =
-      loc === 'en' ? `New entry in the lorebook (H): ${name}` : `Ny post i loreboken (H): ${name}`;
+    const msg = loc === 'en' ? `New entry in the lorebook (H): ${name}` : `Ny post i loreboken (H): ${name}`;
     this.toast.textContent = msg;
     this.toast.classList.remove('hidden');
     window.setTimeout(() => this.toast.classList.add('hidden'), 4500);
@@ -231,8 +229,7 @@ export class LoreBookModule implements GameModule {
     this.detail.replaceChildren();
     const id = this.selected;
     if (!id) {
-      this.detail.textContent =
-        getNpcLocale() === 'en' ? 'Select an entry.' : 'Välj en post i listan.';
+      this.detail.textContent = getNpcLocale() === 'en' ? 'Select an entry.' : 'Välj en post i listan.';
       return;
     }
     const row = this.model.pieces.get(id);
