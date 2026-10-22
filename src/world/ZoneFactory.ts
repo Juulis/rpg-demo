@@ -4,6 +4,7 @@ import { villageLayout } from '../core/GameContext';
 import { DATA } from '../data';
 import type { AssetStore, DecorId } from '../render/Assets';
 import { Iso, TILE_WORLD } from '../render/Iso';
+import { StripAnimSprite } from '../render/StripAnimSprite';
 import { Zone, type ZoneName } from './Zone';
 
 export const RUNE_POS: readonly [number, number][] = [
@@ -16,7 +17,8 @@ export const RUNE_POS: readonly [number, number][] = [
 export interface BuiltZone {
   zone: Zone;
   ground: Container;
-  decor: Sprite[];
+  decor: Container[];
+  decorAnims: StripAnimSprite[];
   /** Runornas sprites i samma ordning som zone.runes. */
   runeSprites: Sprite[];
 }
@@ -51,13 +53,24 @@ export class ZoneFactory {
     return s;
   }
 
+  private decorAnimSprite(id: string, x: number, y: number, k: number): StripAnimSprite | null {
+    const anim = this.assets.decorAnims.get(id);
+    if (!anim) return null;
+    const s = new StripAnimSprite(anim, k);
+    const p = Iso.worldToScreen(x, y);
+    s.position.set(p.x, p.y);
+    s.zIndex = x + y + 0.01;
+    return s;
+  }
+
   private forest(): BuiltZone {
     const R = new Rng(7);
     const zone = new Zone('forest', 'startskogen', 90, 90);
     zone.circle = 45;
     zone.safeRadius = 12;
     const ground = new Container();
-    const decor: Sprite[] = [];
+    const decor: Container[] = [];
+    const decorAnims: StripAnimSprite[] = [];
     const N = 30;
     for (let i = -N; i <= N; i++)
       for (let j = -N; j <= N; j++) {
@@ -111,7 +124,13 @@ export class ZoneFactory {
       decor.push(s);
     }
     zone.entry = { x: 0, y: 4 };
-    return { zone, ground, decor, runeSprites };
+    decor.push(this.decorSprite('eldstad_kall', -1.2, 2.6, 0.34));
+    const fire = this.decorAnimSprite('lagereld_anim', -1.2, 2.6, 0.34);
+    if (fire) {
+      decor.push(fire);
+      decorAnims.push(fire);
+    }
+    return { zone, ground, decor, decorAnims, runeSprites };
   }
 
   private village(): BuiltZone {
@@ -121,7 +140,8 @@ export class ZoneFactory {
     zone.tileCoords = true;
     const lay = villageLayout(DATA);
     const ground = new Container();
-    const decor: Sprite[] = [];
+    const decor: Container[] = [];
+    const decorAnims: StripAnimSprite[] = [];
     const zrect = (id: string): { x0: number; y0: number; x1: number; y1: number } | null => {
       const z = lay.zones.find((q) => q.id === id);
       if (!z) return null;
@@ -221,6 +241,6 @@ export class ZoneFactory {
     const e = Zone.T(...(DATA.portalVillage as unknown as { portal: { village_entry_tile: [number, number] } }).portal.village_entry_tile);
     zone.entry = { x: e.x, y: e.y - 3 };
     zone.portals.push({ x: e.x, y: e.y + 1, target: 'forest' });
-    return { zone, ground, decor, runeSprites: [] };
+    return { zone, ground, decor, decorAnims, runeSprites: [] };
   }
 }

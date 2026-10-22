@@ -142,7 +142,12 @@ export class CombatSystem {
       stamina: h.s.stamina,
       blocking: h.blocking && !!from,
     });
-    if (r.kind === 'dodge') return w.fb.float(h.pos, t.t('fx.dodge'), 'weak', 100);
+    if (r.kind === 'dodge') {
+      const dod = h.view.getAnim('dod');
+      if (dod?.frames[0]?.length) h.dodgeT = dod.frames[0].length / dod.fps;
+      h.view.play('dod', true);
+      return w.fb.float(h.pos, t.t('fx.dodge'), 'weak', 100);
+    }
     if (r.kind === 'block' || r.reduced) {
       h.s.stamina -= 5;
       h.stDelay = 1;

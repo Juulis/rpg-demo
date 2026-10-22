@@ -1,0 +1,13 @@
+{
+ "image": "lagereld_anim.png",
+ "frames": 8,
+ "frameW": 329,
+ "frameH": 364,
+ "anchor": [
+  167,
+  352
+ ],
+ "fps": 10,
+ "loop": true,
+ "not": "En rad med 8 frames. Flammorna har ljusbaserad alfa (opremultiplicerad), kan ritas med normal blandning; blendMode add på ett extra lager ger mer glöd. Kan ritas ovanpå eldstad_kall."
+}

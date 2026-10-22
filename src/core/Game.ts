@@ -18,6 +18,7 @@ import { Loot } from '../logic/loot/Loot';
 import { AssetStore, dirIndex } from '../render/Assets';
 import { Camera } from '../render/Camera';
 import { DirSprite } from '../render/DirSprite';
+import type { StripAnimSprite } from '../render/StripAnimSprite';
 import { Iso } from '../render/Iso';
 import { Parallax } from '../render/Parallax';
 import { Renderer } from '../render/Renderer';
@@ -119,6 +120,7 @@ export class Game {
   private targetMonster: Monster | null = null;
   private targetDrop: GroundDrop | null = null;
   private dead = false;
+  private decorAnims: StripAnimSprite[] = [];
 
   constructor(private readonly modules: GameModule[] = []) {
     this.ctx = {
@@ -325,6 +327,7 @@ export class Game {
     const built = this.zones.build(name);
     r.ground.addChild(built.ground);
     for (const d of built.decor) r.objects.addChild(d);
+    this.decorAnims = built.decorAnims;
     const hs = this.heroState;
     const heroView = new DirSprite(this.assets.heroes.setFor(hs.cls), 1, 26);
     heroView.sprite.tint = CLASS_TINT[hs.cls] ?? 0xffffff;
@@ -521,7 +524,7 @@ export class Game {
     w.hero.moveTarget = null;
     this.targetMonster = null;
     this.targetDrop = null;
-    this.npcDialog.show(ent.resolved);
+    this.npcDialog.show(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite));
     this.bus.emit('ui_open', { panel: 'npc' });
   }
 
@@ -574,6 +577,8 @@ export class Game {
     this.hud.update(dt, h, this.camera);
     this.labels.update(w.drops, this.input.altHeld || this.input.labelsToggled, this.camera);
     this.npcLabels.update(this.npcSys.entities(), this.camera);
+    this.npcSys.update(dt);
+    for (const a of this.decorAnims) a.update(dt);
     this.hoverUpdate();
     const boss = w.monsters.find((m) => m.boss && m.active && !m.dead);
     if (boss)
@@ -670,7 +675,8 @@ export class Game {
     if (h.atkPendingHit && h.atkHitT <= 0) this.combat.resolveAttackHit();
     const v = h.view;
     v.dir = dirIndex(Math.sin(s.facing), Math.cos(s.facing));
-    if (h.atkT > 0 && v.hasAnim('attack')) v.play('attack');
+    if (h.dodgeT > 0 && v.hasAnim('dod')) v.play('dod');
+    else if (h.atkT > 0 && v.hasAnim('attack')) v.play('attack');
     else if (h.moving) v.play(sprinting && v.hasAnim('run') ? 'run' : 'gang');
     else v.play('idle');
     v.bobY = h.atkT > 0 && !v.hasAnim('attack') ? -Math.sin((h.atkT / 0.3) * Math.PI) * 6 : 0;

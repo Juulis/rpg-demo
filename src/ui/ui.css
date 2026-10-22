@@ -517,12 +517,33 @@
   transform: translateX(-50%);
   z-index: 28;
   min-width: min(420px, 90vw);
-  max-width: 520px;
+  max-width: 560px;
   padding: 14px 16px 10px;
   background: #14100ee6;
   border: 1px solid #8a6a3a;
   box-shadow: 0 8px 28px #000a;
   pointer-events: auto;
+}
+#npc-dialog .npc-dialog-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+#npc-dialog .npc-dialog-portrait {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 1px solid #6a5a40;
+  border-radius: 4px;
+  image-rendering: pixelated;
+}
+#npc-dialog .npc-dialog-portrait.hidden {
+  display: none;
+}
+#npc-dialog .npc-dialog-text {
+  flex: 1;
+  min-width: 0;
 }
 #npc-dialog .npc-dialog-title {
   color: #c7a35a;

@@ -1,6 +1,7 @@
 import { Rectangle, Texture } from 'pixi.js';
 import { HeroSprites } from './HeroSprites';
 import { fetchJsonResilient, loadTextureResilient } from './resilientAssets';
+import { loadMonster8dirSet, loadSheet8dir, loadStripAnim } from './sheet8dir';
 import { assetUrl, DIRS, type Anim, type AnimName, type AnimSet } from './spriteAnim';
 
 export { assetUrl, DIRS, type Anim, type AnimName, type AnimSet };
@@ -25,16 +26,69 @@ export const TILES = [
   'gras_2',
   'gras_3',
   'gras_4',
+  'gras_blommor_1',
+  'gras_blommor_2',
+  'gras_till_kullersten',
+  'gras_till_kullersten_2',
+  'gras_till_kullersten_ov',
+  'gras_till_lera',
+  'gras_till_lera_ov',
+  'gras_till_lera_oh',
+  'gras_till_lera_oh_2',
+  'gras_till_lera_nh',
+  'gras_till_lera_nv',
+  'gras_till_skogsbotten',
   'lera_1',
   'lera_2',
   'lera_3',
   'kullersten',
   'kullersten_mossig',
+  'mossa_1',
+  'mossa_2',
+  'aska',
+  'ruin_grus',
   'skogsbotten_lov',
   'skogsbotten_ormbunke',
-  'gras_till_lera',
+  'skogsbotten_barr_1',
+  'skogsbotten_barr_2',
+  'skogsbotten_till_kullersten',
+  'skogsbotten_till_kullersten_2',
+  'skogsbotten_till_kullersten_ov',
+  'skogsbotten_till_kullersten_ov_2',
+  'skogsbotten_till_kullersten_oh',
+  'skogsbotten_till_kullersten_nh',
+  'skogsbotten_till_kullersten_nv',
+  'skogsbotten_till_lera',
+  'stengolv_sprucket_1',
+  'stengolv_sprucket_2',
 ] as const;
-export const DECOR = ['dod_ek', 'gran', 'stubbe', 'ormbunkar', 'runsten', 'stenhog', 'ruinmur', 'rod_portal'] as const;
+
+export const DECOR = [
+  'dod_ek',
+  'gran',
+  'gran_ung',
+  'stubbe',
+  'ormbunkar',
+  'runsten',
+  'stenhog',
+  'ruinmur',
+  'ruinmur_horn',
+  'ruinmur_rasad',
+  'rod_portal',
+  'vindfalle',
+  'buske',
+  'bjork',
+  'gras_tuva',
+  'pelare',
+  'pelare_liggande',
+  'talt',
+  'vedtrave',
+  'sittstock',
+  'gravkors_bjork',
+  'anslagstavla',
+  'barnsang',
+  'eldstad_kall',
+] as const;
 export type DecorId = (typeof DECOR)[number];
 
 const tex = (p: string): Promise<Texture> => loadTextureResilient(p);
@@ -56,15 +110,31 @@ function single(t: Texture, s: Size): Anim {
   return { frames: DIRS.map(() => [t]), anchor: s.anchor, w: s.w, h: s.h, fps: 1, loop: true, single: true };
 }
 
+function completeAnimSet(partial: Partial<AnimSet>): AnimSet {
+  const gang = partial.gang ?? partial.run ?? partial.attack ?? partial.idle;
+  const idle = partial.idle ?? gang;
+  if (!idle) throw new Error('Tomt animationset');
+  return {
+    idle,
+    gang,
+    run: partial.run ?? gang,
+    attack: partial.attack ?? gang,
+    dod: partial.dod ?? idle,
+  };
+}
+
 /** Laddar och äger alla 2D-texturer (tiles, dekor, hjälte, monster, NPC, bakgrunder, ikoner). */
 export class AssetStore {
   readonly tiles = new Map<string, Texture>();
   readonly decor = new Map<string, { tex: Texture; size: Size }>();
   readonly monsters = new Map<string, AnimSet>();
   readonly npcs = new Map<string, Anim>();
+  readonly npcPortraits = new Map<string, string>();
   readonly heroes = new HeroSprites();
   readonly backgrounds = new Map<string, Texture>();
   readonly effects = new Map<string, Texture>();
+  /** Animerad dekor (t.ex. lägereld). */
+  readonly decorAnims = new Map<string, Anim>();
   iconIndex: Record<string, string> = {};
 
   async load(): Promise<void> {
@@ -90,6 +160,11 @@ export class AssetStore {
         this.decor.set(d, { tex: await tex(`2d/dekor/${d}.png`), size });
       }),
     );
+    try {
+      this.decorAnims.set('lagereld_anim', await loadStripAnim(tex, '2d/dekor', 'lagereld_anim'));
+    } catch (e) {
+      console.warn('[AssetStore] lagereld_anim:', e);
+    }
   }
   private async loadHero(): Promise<void> {
     try {
@@ -99,10 +174,20 @@ export class AssetStore {
     }
   }
   private async loadMonsters(): Promise<void> {
-    const index = await fetchJsonResilient<{ sheets: string[] }>('2d/sprites/monster/index.json', { sheets: [] });
+    const index = await fetchJsonResilient<{ sheets: string[]; eightDir?: string[] }>('2d/sprites/monster/index.json', {
+      sheets: [],
+    });
+    const eightDir = new Set(index.eightDir ?? []);
     await Promise.all(
       index.sheets.map(async (id) => {
         try {
+          if (eightDir.has(id)) {
+            const eight = await loadMonster8dirSet(tex, id);
+            if (eight) {
+              this.monsters.set(id, completeAnimSet(eight));
+              return;
+            }
+          }
           const m = await fetchJsonResilient<{ anims: Record<AnimName, SheetAnim> }>(`2d/sprites/monster/${id}/${id}.json`, {
             anims: {} as Record<AnimName, SheetAnim>,
           });
@@ -113,7 +198,7 @@ export class AssetStore {
               set[k] = sheet(await tex(`2d/sprites/monster/${id}/${a.file}`), a);
             }),
           );
-          if (Object.keys(set).length) this.monsters.set(id, set);
+          if (Object.keys(set).length) this.monsters.set(id, completeAnimSet(set));
         } catch (e) {
           console.warn(`[AssetStore] monster ${id}:`, e);
         }
@@ -127,7 +212,7 @@ export class AssetStore {
         if (this.monsters.has(id)) return;
         try {
           const a = single(await tex(`2d/sprites/monster/${s.fil}`), s);
-          this.monsters.set(id, { idle: a, gang: a, attack: a });
+          this.monsters.set(id, completeAnimSet({ idle: a, gang: a, attack: a }));
         } catch (e) {
           console.warn(`[AssetStore] monsterbild ${id}:`, e);
         }
@@ -135,16 +220,29 @@ export class AssetStore {
     );
   }
   private async loadNpcs(): Promise<void> {
-    const meta = await fetchJsonResilient<{ npc: Record<string, Size & { fil: string }> }>('2d/sprites/npc/npc.json', { npc: {} });
+    const meta = await fetchJsonResilient<{
+      npc: Record<string, Size & { fil: string; portratt?: string }>;
+    }>('2d/sprites/npc/npc.json', { npc: {} });
     await Promise.all(
       Object.entries(meta.npc).map(async ([id, s]) => {
         try {
-          this.npcs.set(id, single(await tex(`2d/sprites/npc/${s.fil}`), s));
+          const dir = `2d/sprites/npc/${id}`;
+          try {
+            const anim = await loadSheet8dir(tex, dir, `${id}_idle_8dir`, 0.8);
+            this.npcs.set(id, anim);
+          } catch {
+            this.npcs.set(id, single(await tex(`2d/sprites/npc/${s.fil}`), s));
+          }
+          if (s.portratt) this.npcPortraits.set(id, `2d/sprites/npc/${s.portratt}`);
         } catch (e) {
           console.warn(`[AssetStore] npc ${id}:`, e);
         }
       }),
     );
+  }
+  npcPortraitUrl(spriteId: string): string | null {
+    const p = this.npcPortraits.get(spriteId);
+    return p ? assetUrl(p) : null;
   }
   private async loadBg(): Promise<void> {
     const list = ['himmel.jpg', 'fjarran_skog.png', 'fjarran_portalby.png', 'fjarran_stad.png'];
