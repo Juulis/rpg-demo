@@ -67,6 +67,7 @@ import { DayNightPresenter } from '../world/DayNightPresenter';
 import { clockPeriodLabel, setClockLocale } from '../world/clockText';
 import { WorldStateService } from '../world/WorldStateService';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
+import { locomotionPlaybackRate } from '../render/locomotionPlayback';
 import { ZoneFactory } from '../world/ZoneFactory';
 
 const CLASS_TINT: Record<string, number> = { riddare: 0xffffff, barbar: 0xffd2b8, amazonkrigare: 0xffe6c8 };
@@ -931,8 +932,16 @@ export class Game {
     else if (h.moving) v.play(sprinting && v.hasAnim('run') ? 'run' : 'gang');
     else v.play('idle');
     v.bobY = h.atkT > 0 && !v.hasAnim('attack') ? -Math.sin((h.atkT / 0.3) * Math.PI) * 6 : 0;
+    if (h.atkT <= 0) {
+      if (h.moving) {
+        const sprintMeta = DATA.classes.meta.sprint;
+        const runMult = sprinting && sprintMeta ? sprintMeta.speed_mult : 1;
+        const moveSp = h.stats.speed * h.moveSpeedMult() * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
+        const locomote = sprinting && v.hasAnim('run') ? 'run' : 'gang';
+        v.playbackRate = locomotionPlaybackRate(v.getAnim(locomote), moveSp);
+      } else v.playbackRate = 1;
+    }
     v.update(dt);
-    if (h.atkT <= 0) v.playbackRate = 1;
     v.sprite.tint = h.blocking || h.shieldDodge ? 0xa0c8ff : (CLASS_TINT[s.cls] ?? 0xffffff);
     const sp = Iso.worldToScreen(h.pos.x, h.pos.y);
     v.position.set(sp.x, sp.y);
