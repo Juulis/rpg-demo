@@ -92,6 +92,7 @@ export class ItemText {
     if (it.set) h += this.setHtml(it, hero);
     if (inBag && L.equipable(b)) h += this.compare(it, hero);
     if (b.category === 'mat' || b.category === 'dryck') h += `<div class="tb">${t.t('tooltip.rclick_use')}</div>`;
+    if (inBag) h += `<div class="tb">${t.t('tooltip.shift_drop')}</div>`;
     else if (L.equipable(b)) h += `<div class="tb">${t.t(inBag ? 'tooltip.rclick_equip' : 'tooltip.rclick_unequip')}</div>`;
     return h;
   }

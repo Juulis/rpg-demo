@@ -77,10 +77,16 @@ export class Inventory {
   }
   remove(it: Item): void {
     if (isQuestItemId(it.base)) return;
+    this.detach(it);
+  }
+
+  /** Tar bort föremål från väska/utrustning (t.ex. efter bekräftad slängning). */
+  detach(it: Item): void {
     const i = this.bag.indexOf(it);
     if (i >= 0) this.bag.splice(i, 1);
     const s = this.slotOfItem(it);
     if (s) this.equip[s] = null;
+    this.changed();
   }
   /** Tar på; det gamla (och offhand vid tvåhandsvapen) läggs i väskan, gärna där det nya låg. */
   equipTo(it: Item, slot: Slot): boolean {
@@ -162,8 +168,7 @@ export class Inventory {
   }
   /** Lyfter ett föremål ur väska/plats (till handen). */
   lift(it: Item): void {
-    this.remove(it);
-    this.changed();
+    this.detach(it);
   }
   findPotion(kind: 'hp' | 'st'): Item | undefined {
     return this.bag.find((i) => {

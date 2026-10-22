@@ -387,6 +387,42 @@
   font-size: 11px;
   flex: 1;
 }
+#invWin .iwDrop {
+  background: #3a2018;
+  border: 1px solid #8a5040;
+  color: #f0c8b8;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 8px;
+}
+#invWin .iwDrop.hidden {
+  display: none;
+}
+#invWin .iwConfirm {
+  padding: 8px 12px;
+  border-bottom: 1px solid #4a3020;
+  background: #201810;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+#invWin .iwConfirm.hidden {
+  display: none;
+}
+#invWin .iwConfirm p {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 13px;
+  color: #e6dfcc;
+}
+#invWin .iwConfirm button {
+  border: 1px solid #6a5a40;
+  background: #2a2218;
+  color: #e6dfcc;
+  cursor: pointer;
+  padding: 4px 10px;
+}
 #invWin .iwClose {
   background: none;
   border: 1px solid #6a5a40;
