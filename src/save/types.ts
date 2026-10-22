@@ -1,7 +1,8 @@
 import type { FoundEntry } from '../core/SaveBackend';
 import type { Equipment, ItemInstance } from '../core/GameContext';
+import type { WorldState } from '../world/worldStateTypes';
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 export const MAX_HEROES = 8;
 
 export interface HeroRecord {
@@ -39,6 +40,8 @@ export interface SaveFile {
   foundItems?: Record<string, FoundEntry>;
   /** Kartfog per zon (base64-bytes, samma som legacy rpg_karta_<id>_<zon>). */
   fog?: Record<string, string>;
+  /** Per-hjälte världstillstånd (#37). */
+  worldState?: WorldState;
   savedAt?: number;
 }
 

@@ -31,6 +31,8 @@ const { SaveModule } = await import('../src/save/SaveModule');
 const { SaveMigrator } = await import('../src/save/SaveMigrator');
 const { MenuModule } = await import('../src/menu/MenuModule');
 const { MapModule } = await import('../src/map/MapModule');
+const { Rng } = await import('../src/core/Rng');
+const { WorldStateService } = await import('../src/world/WorldStateService');
 import type { GameEvents } from '../src/core/events';
 import type { GameContext, HeroState } from '../src/core/GameContext';
 
@@ -88,6 +90,8 @@ const ctx: GameContext = {
   zone: { name: 'forest', areaId: 'startskogen', width: 44, height: 44, ...zoneExtras } as GameContext['zone'],
   session: { seed: 1, killed: new Set() },
   data: DATA,
+  rng: new Rng(1),
+  worldState: new WorldStateService(),
 };
 // Motorstub: hjälten är skrivbar bara här (som i Game), moduler ser Readonly<HeroState>
 const H = ctx.hero as HeroState;

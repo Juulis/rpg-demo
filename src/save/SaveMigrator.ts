@@ -2,6 +2,7 @@ import type { Equipment, ItemInstance } from '../core/GameContext';
 import { isRecord } from '../core/json';
 import { parseFogMap } from './fog';
 import { parseFoundItemsMap } from './foundItems';
+import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
 const num = (v: unknown, d: number): number => (typeof v === 'number' && Number.isFinite(v) ? v : d);
@@ -54,6 +55,8 @@ export class SaveMigrator {
     const fog = parseFogMap(d.fog);
     if (fog) out.fog = fog;
     if (typeof d.savedAt === 'number') out.savedAt = d.savedAt;
+    const ws = parseWorldState(d.worldState);
+    out.worldState = ws ?? hydrateWorldStateFromLegacy(out.game, out.foundItems);
     return out;
   }
 

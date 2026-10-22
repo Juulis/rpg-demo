@@ -35,6 +35,8 @@ import { MonsterBar } from '../ui/MonsterBar';
 import { Tooltip } from '../ui/Tooltip';
 import type { Zone, ZoneName } from '../world/Zone';
 import { DevCheatsView } from '../dev/DevCheatsView';
+import { WorldStateService } from '../world/WorldStateService';
+import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
 import { ZoneFactory } from '../world/ZoneFactory';
 
 const CLASS_TINT: Record<string, number> = { riddare: 0xffffff, barbar: 0xffd2b8, amazonkrigare: 0xffe6c8 };
@@ -53,6 +55,7 @@ export class Game {
   readonly rng = new Rng(Rng.newSeed());
   readonly loot = new Loot(this.text, this.rng);
   readonly authority: GameAuthority = new LocalAuthority(this.loot, new CombatRules(this.loot, this.rng));
+  readonly worldState = new WorldStateService();
   private readonly heroState: HeroState = {
     id: null,
     name: '',
@@ -111,7 +114,15 @@ export class Game {
   private dead = false;
 
   constructor(private readonly modules: GameModule[] = []) {
-    this.ctx = { bus: this.bus, hero: this.heroState, zone: this.zoneView, session: createSession(), data: DATA, rng: this.rng };
+    this.ctx = {
+      bus: this.bus,
+      hero: this.heroState,
+      zone: this.zoneView,
+      session: createSession(),
+      data: DATA,
+      rng: this.rng,
+      worldState: this.worldState,
+    };
   }
 
   get session() {
@@ -185,6 +196,19 @@ export class Game {
     const h = this.heroState;
     Object.assign(h, structuredClone(save.hero));
     const g = save.game;
+    const legacyGame = g
+      ? {
+          seed: g.seed,
+          killed: g.killed,
+          zone: g.zone,
+          pos: g.pos ? ([g.pos.x, g.pos.y] as [number, number]) : null,
+          stage: g.stage,
+          runes: g.runes,
+          city: g.city,
+        }
+      : null;
+    const ws = (save.worldState && parseWorldState(save.worldState)) || hydrateWorldStateFromLegacy(legacyGame, save.foundItems);
+    this.worldState.replace(ws);
     h.stage = g?.stage ?? 0;
     h.runes = g?.runes ?? 0;
     h.city = g?.city ?? 'besatt';
@@ -228,6 +252,7 @@ export class Game {
         runes: h.runes,
         city: h.city,
       },
+      worldState: this.worldState.snapshot(),
     };
   }
 
@@ -241,6 +266,9 @@ export class Game {
     h.stage = 0;
     h.city = 'besatt';
     h.resumePos = null;
+    this.worldState.resetForNewRun();
+    this.worldState.setRunesActive(0);
+    this.worldState.setCityState('gamla_byn', 'besatt');
     this.bus.emit('new_game', { seed: s.seed });
     this.enterZone('forest');
   }
@@ -379,6 +407,8 @@ export class Game {
   private bossDefeated(m: Monster): void {
     this.heroState.stage = 4;
     this.heroState.city = 'rensad';
+    this.bus.emit('boss_killed', { id: m.id });
+    this.bus.emit('city_state_changed', { city: 'gamla_byn', state: 'rensad' });
     this.hud.boss(null);
     this.hud.flash(this.text.t('msg.boss_dead', { name: this.bossName(m) }), '#c7a35a');
   }

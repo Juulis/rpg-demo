@@ -23,6 +23,10 @@ export class AutoSaveService {
     'boss_start',
     'level_up',
     'lore_unlock',
+    'boss_killed',
+    'legendary_found',
+    'city_state_changed',
+    'runes_changed',
   ];
   private current: SaveFile | null = null;
   private playing = false;
@@ -113,6 +117,9 @@ export class AutoSaveService {
         city: g?.city ?? 'besatt',
       },
       savedAt: Date.now(),
+      worldState: snap.worldState ?? cur.worldState,
+      ...(cur.foundItems ? { foundItems: cur.foundItems, found: cur.found } : {}),
+      ...(cur.fog ? { fog: cur.fog } : {}),
     };
   }
 

@@ -10,7 +10,7 @@ export type GameEvents = {
   hit: { target: string; dmg: number; crit: boolean };
   kill: { id: string; area: string; lvl: number; champion: boolean; unique: boolean; boss: boolean };
   loot_drop: { quality: string };
-  pickup: { itemId: string; first: boolean };
+  pickup: { itemId: string; first: boolean; quality?: string };
   gold: { amount: number };
   rune: { n: number };
   portal_open: void;
@@ -28,4 +28,9 @@ export type GameEvents = {
   ui_close: { panel: UiPanel };
   /** Språkbyte (U2:s LocaleManager, #22). */
   locale_changed: { locale: 'sv' | 'en' };
+  /** Världstillstånd (#37). */
+  boss_killed: { id: string };
+  legendary_found: { itemId: string };
+  city_state_changed: { city: string; state: string };
+  runes_changed: { count: number };
 };

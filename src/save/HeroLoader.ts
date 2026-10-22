@@ -48,6 +48,7 @@ export class HeroLoader {
         runes: resume ? g.runes : 0,
         city: resume ? g.city : 'besatt',
       },
+      worldState: save.worldState,
     });
     if (fresh) delete h.fresh;
     this.autosave.begin(save);

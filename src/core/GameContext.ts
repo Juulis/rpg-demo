@@ -4,6 +4,8 @@ import type { Session } from './Session';
 import type { Rng } from './Rng';
 import type { FoundEntry } from './SaveBackend';
 import type { GameData, VillageZoneDef } from '../data/types';
+import type { WorldState } from '../world/worldStateTypes';
+import type { WorldStateService } from '../world/WorldStateService';
 
 /**
  * Koordinater (se ARCHITECTURE.md): världsenheter = samma enhet som i speldata (spawnzoner/portal_by, 3D-versionens meter).
@@ -102,6 +104,7 @@ export interface HeroSave {
   } | null;
   /** Per-hjälte fynd (lorebok); sätts av SaveBackend vid load, inte av Game.getSnapshot(). */
   foundItems?: Record<string, FoundEntry>;
+  worldState?: WorldState;
 }
 
 /** Delas ut till varje modul via init(). Inga globaler. */
@@ -113,6 +116,8 @@ export interface GameContext {
   data: GameData;
   /** Seedad slumptjänst (Math.random är förbjudet via ESLint). */
   rng: Rng;
+  /** Per-hjälte världstillstånd (#37). */
+  worldState: WorldStateService;
 }
 
 /** En utbytbar del av spelet (AudioManager, SaveManager, MapUI, StartMenu, Lorebook …). Registreras i src/main.ts. */
