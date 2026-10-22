@@ -37,6 +37,10 @@ import { MonsterBar } from '../ui/MonsterBar';
 import { resolveDialogText } from '../npc/dialogResolve';
 import { npcHasNewRumor, pickRumorForNpc } from '../rumor/pickRumor';
 import { formatRumorText } from '../rumor/rumorText';
+import { QuestEngine, type QuestEngineHooks } from '../quest/questEngine';
+import { readQuestProgress } from '../quest/questProgress';
+import { choiceText, stepText } from '../quest/questText';
+import { QuestLog } from '../ui/QuestLog';
 import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
 import { NpcLabels } from '../ui/NpcLabels';
@@ -121,6 +125,8 @@ export class Game {
   private npcDialog!: NpcDialog;
   private npcBark!: NpcBark;
   private npcLabels!: NpcLabels;
+  private questLog!: QuestLog;
+  private readonly questEngine = new QuestEngine(this.worldState);
   private switching = false;
   private targetMonster: Monster | null = null;
   private targetDrop: GroundDrop | null = null;
@@ -172,6 +178,7 @@ export class Game {
     this.npcDialog = new NpcDialog(this.text, this.bus);
     this.npcBark = new NpcBark();
     this.npcLabels = new NpcLabels(this.text);
+    this.questLog = new QuestLog(this.text, this.bus);
     this.labels.onClick = (d) => this.goPickup(d);
     this.portals.onEnter = (z) => this.travel(z);
     this.combat.onBossDefeated = (m) => this.bossDefeated(m);
@@ -187,6 +194,18 @@ export class Game {
     this.bus.on('locale_changed', () => {
       this.hud.relabel();
       this.invUI.relabel();
+    });
+    this.bus.on('pickup', ({ itemId }) => {
+      const h = this.questHooks();
+      if (h) this.questEngine.onPickup(itemId, h);
+    });
+    this.bus.on('boss_killed', ({ id }) => {
+      const h = this.questHooks();
+      if (h) this.questEngine.onBossKilled(id, h);
+    });
+    this.bus.on('zone_enter', ({ areaId }) => {
+      const h = this.questHooks();
+      if (h) this.questEngine.onEnterRegion(areaId, undefined, h);
     });
     this.bindInput(r.app.canvas);
     DevCheatsView.tryCreate(this.input);
@@ -392,7 +411,7 @@ export class Game {
     this.hud.flash(this.text.t(name === 'village' ? 'msg.zone_village' : 'msg.zone_forest'));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
-    this.bus.emit('zone_enter', { name });
+    this.bus.emit('zone_enter', { name, areaId: zone.areaId });
   }
 
   private rebindHero(h: Hero, view: DirSprite): Hero {
@@ -460,7 +479,17 @@ export class Game {
         this.bus.emit('ui_close', { panel: 'npc' });
         return;
       }
+      if (this.questLog.isOpen) {
+        this.questLog.close();
+        this.bus.emit('ui_close', { panel: 'quests' });
+        return;
+      }
       if (this.invUI.isOpen()) this.invUI.close();
+    });
+    i.bind('KeyJ', () => {
+      if (this.npcDialog.isOpen) return;
+      this.questLog.toggle();
+      this.bus.emit(this.questLog.isOpen ? 'ui_open' : 'ui_close', { panel: 'quests' });
     });
     i.bind('KeyF', () => this.tryTalkNpc());
     i.bind('Digit3', () => this.quaff('hp'));
@@ -529,6 +558,22 @@ export class Game {
     return null;
   }
 
+  private questHooks(): QuestEngineHooks | null {
+    const w = this.world;
+    if (!w) return null;
+    const inv = w.hero.inv;
+    return {
+      worldTime: w.time,
+      region: w.zone.areaId,
+      hasItem: (id) => inv.bag.some((it) => it.base === id) || Object.values(inv.equip).some((it) => it?.base === id),
+    };
+  }
+
+  private refreshQuestLog(): void {
+    const { active, done } = this.questEngine.activeAndCompleted();
+    this.questLog.update(this.worldState.get(), active, done);
+  }
+
   private npcRumorSparks(w: World): Set<string> {
     const day = Math.floor(w.time / 90);
     const ctx = { world: this.worldState.get(), day };
@@ -551,6 +596,25 @@ export class Game {
     w.hero.moveTarget = null;
     this.targetMonster = null;
     this.targetDrop = null;
+    const hooks = this.questHooks();
+    if (hooks) {
+      this.questEngine.onNpcTalk(ent.resolved.def.id, hooks);
+      this.refreshQuestLog();
+      const pending = this.questEngine.pendingChoices(ent.resolved.def.id, hooks);
+      const block = pending[0];
+      if (block) {
+        const prog = readQuestProgress(this.worldState.get(), block.quest.id);
+        const step = block.quest.steg.find((s) => s.id === prog.steg);
+        const body = step ? stepText(block.quest, step) : block.quest.beskrivning;
+        const options = block.choices.map((c) => ({ id: c.id, label: choiceText(block.quest, c) }));
+        this.npcDialog.showChoices(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite), body, options, (choiceId) => {
+          this.questEngine.applyChoice(block.quest.id, choiceId, hooks);
+          this.refreshQuestLog();
+        });
+        this.bus.emit('ui_open', { panel: 'npc' });
+        return;
+      }
+    }
     const day = Math.floor(w.time / 90);
     this.worldState.setGameDay(day);
     const ctx = { world: this.worldState.get(), day };
@@ -631,6 +695,7 @@ export class Game {
     this.npcSys.update(dt);
     this.npcSys.updateBarks(w, w.text, this.npcDialog.isOpen, (line, x, y) => this.npcBark.show(line, x, y));
     this.npcBark.update(dt, this.camera);
+    this.refreshQuestLog();
     for (const a of this.decorAnims) a.update(dt);
     this.hoverUpdate();
     const boss = w.monsters.find((m) => m.boss && m.active && !m.dead);

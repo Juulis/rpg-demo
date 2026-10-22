@@ -61,4 +61,20 @@ export class WorldStateService {
   snapshot(): WorldState {
     return cloneWorldState(this.state);
   }
+
+  /** Kör försenade effekter vars due_day har passerats. */
+  tickPending(gameDay: number): void {
+    const keep: typeof this.state.pending = [];
+    for (const p of this.state.pending) {
+      if (p.due_day > gameDay) {
+        keep.push(p);
+        continue;
+      }
+      const eff = p.effect;
+      if (eff.typ === 'npc_state' && typeof eff.npc === 'string' && typeof eff.state === 'string') {
+        this.state.npc_states[eff.npc] = eff.state;
+      }
+    }
+    this.state.pending = keep;
+  }
 }

@@ -217,4 +217,5 @@ export interface GameData {
   npc: import('./npcTypes').NpcDataFile;
   dialoger: import('./dialogTypes').DialogDataFile;
   rykten: import('./rumorTypes').RumorDataFile;
+  quests: import('./questTypes').QuestDataFile;
 }
