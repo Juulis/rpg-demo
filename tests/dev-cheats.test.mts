@@ -3,13 +3,7 @@
  * Kör: npx tsx tests/dev-cheats.test.mts
  */
 import assert from 'node:assert/strict';
-import {
-  _resetDevCheatsForTest,
-  effectiveMagicFind,
-  mfMultiplier,
-  setDevCheat,
-  xpMultiplier,
-} from '../src/dev/DevCheats';
+import { _resetDevCheatsForTest, effectiveMagicFind, mfMultiplier, setDevCheat, xpMultiplier } from '../src/dev/DevCheats';
 
 _resetDevCheatsForTest();
 
