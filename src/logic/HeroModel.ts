@@ -140,7 +140,16 @@ export class HeroModel {
   tryDodge(dx: number, dy: number, animDuration = 0): boolean {
     const prof = dodgeProfile(this.cls.id);
     const cost = dodgeStaminaCost(this.stats, prof.stamina_cost);
-    if (!canStartDodge({ playing: this.s.playing, dodgeCd: this.dodgeCd, dodgeRemain: this.dodgeRemain, stamina: this.s.stamina, cost, atkT: this.atkT }))
+    if (
+      !canStartDodge({
+        playing: this.s.playing,
+        dodgeCd: this.dodgeCd,
+        dodgeRemain: this.dodgeRemain,
+        stamina: this.s.stamina,
+        cost,
+        atkT: this.atkT,
+      })
+    )
       return false;
     const len = Math.hypot(dx, dy);
     if (len < 0.01) {

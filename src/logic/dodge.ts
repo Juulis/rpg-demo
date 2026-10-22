@@ -11,14 +11,16 @@ export interface DodgeProfile {
 }
 
 const meta = () =>
-  (DATA.classes.meta as unknown as {
-    dodge: {
-      stamina_cost: number;
-      cooldown_s: number;
-      iframes_s: number;
-      by_class: Record<string, { distance: number; duration_s: number; shield?: boolean }>;
-    };
-  }).dodge;
+  (
+    DATA.classes.meta as unknown as {
+      dodge: {
+        stamina_cost: number;
+        cooldown_s: number;
+        iframes_s: number;
+        by_class: Record<string, { distance: number; duration_s: number; shield?: boolean }>;
+      };
+    }
+  ).dodge;
 
 export function dodgeProfile(classId: string): DodgeProfile {
   const m = meta();
