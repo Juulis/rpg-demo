@@ -20,16 +20,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # TS-versionen (next/) får inte stoppa hotfixar till 3D-spelet på roten: fel här hoppar bara över next/.
-      - name: Bygg TS-versionen till dist/next
-        id: next
-        continue-on-error: true
-        run: npm run typecheck && npm run lint && npm run build
-      - name: Sätt ihop Pages-artefakten (3D-spelet på roten)
+      - run: npm run typecheck
+      - run: npm run lint
+      - name: Bygg 2D-spelet till dist/ (Pages-rot)
+        run: npm run build
+      - name: Sätt ihop Pages-artefakt (next/-omdirigering)
         run: node scripts/assemble-pages.mjs
       - run: npx playwright install --with-deps chromium
-      - name: Röktest – roten måste vara spelbar
-        run: node scripts/smoke.mjs dist ${{ steps.next.outcome == 'success' && ' ' || '--allow-missing-next' }}
+      - name: Röktest – 2D på roten måste vara spelbar
+        run: node scripts/smoke.mjs dist
       - uses: actions/configure-pages@v5
         with:
           enablement: true
