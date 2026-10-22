@@ -129,6 +129,7 @@ export class CombatSystem {
     const st = h.stats;
     const t = w.text;
     if (!h.s.playing) return;
+    if (h.invulnerable()) return;
     const f = h.forward();
     const to = from ? this.norm({ x: from.x - h.pos.x, y: from.y - h.pos.y }) : null;
     const front = to ? f.x * to.x + f.y * to.y > 0.2 : true;
@@ -142,12 +143,7 @@ export class CombatSystem {
       stamina: h.s.stamina,
       blocking: h.blocking && !!from,
     });
-    if (r.kind === 'dodge') {
-      const dod = h.view.getAnim('dod');
-      if (dod?.frames[0]?.length) h.dodgeT = dod.frames[0].length / dod.fps;
-      h.view.play('dod', true);
-      return w.fb.float(h.pos, t.t('fx.dodge'), 'weak', 100);
-    }
+    if (r.kind === 'miss') return w.fb.float(h.pos, t.t('fx.miss'), 'weak', 100);
     if (r.kind === 'block' || r.reduced) {
       h.s.stamina -= 5;
       h.stDelay = 1;

@@ -18,6 +18,8 @@ export type GameEvents = {
   boss_start: void;
   boss_phase: { phase: number };
   step: void;
+  /** Aktiv undanmanöver (#15). */
+  dodge: { classId: string };
   level_up: { level: number };
   new_game: { seed: number };
   hero_loaded: { heroId: string };

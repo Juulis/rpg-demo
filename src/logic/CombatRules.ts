@@ -30,7 +30,7 @@ export interface HeroHitResult {
   /** Familjsmultiplikator (>1 svag, <1 resistent). */
   fm: number;
 }
-export type MonsterHitResult = { kind: 'dodge' } | { kind: 'block' } | { kind: 'hit'; dmg: number; reduced: boolean };
+export type MonsterHitResult = { kind: 'miss' } | { kind: 'block' } | { kind: 'hit'; dmg: number; reduced: boolean };
 
 /** Stridsregler enligt attribut.json och monsterfamiljer.json. Ren TS, seedad slump. */
 export class CombatRules {
@@ -73,7 +73,7 @@ export class CombatRules {
     const R = this.rng;
     const { st } = o;
     if (R.next() > this.L.hitChance(15 + 8 * o.monsterLvl, 15 + 8 * o.heroLvl + st.defense * 2, o.monsterLvl, o.heroLvl))
-      return { kind: 'dodge' };
+      return { kind: 'miss' };
     if (st.block > 0 && o.front && o.stamina >= 5 && R.next() < st.block * (o.moving ? 0.5 : 1)) return { kind: 'block' };
     let d = o.raw;
     const reduced = o.blocking && o.front && o.stamina >= 5;

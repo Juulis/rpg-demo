@@ -462,6 +462,15 @@ export class Game {
       const n = this.portals.nearRune();
       if (n >= 0) this.portals.activate(n, false);
     });
+    const tryDodge = (): void => this.tryDodge();
+    i.bind('Space', tryDodge);
+    const shiftDodge = (): void => {
+      const k = this.input;
+      if (k.isDown('KeyW') || k.isDown('KeyA') || k.isDown('KeyS') || k.isDown('KeyD')) return;
+      tryDodge();
+    };
+    i.bind('ShiftLeft', shiftDodge);
+    i.bind('ShiftRight', shiftDodge);
     i.bind('KeyQ', () => this.combat.skill(true));
     i.bind('up:KeyQ', () => this.combat.skill(false));
     i.bind('reset', () => this.combat.skill(false));
@@ -526,6 +535,19 @@ export class Game {
     this.targetDrop = null;
     this.npcDialog.show(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite));
     this.bus.emit('ui_open', { panel: 'npc' });
+  }
+
+  private tryDodge(): void {
+    const w = this.world;
+    if (!w || this.dead || this.npcDialog.isOpen || this.invUI.isOpen()) return;
+    const h = w.hero;
+    if (!this.input.overCanvas()) return;
+    const mouse = this.camera.toWorld(this.input.mouse.x, this.input.mouse.y);
+    const dod = h.view.getAnim('dod');
+    const animDur = dod?.frames[0]?.length && dod.fps ? dod.frames[0].length / dod.fps : 0;
+    if (!h.tryDodge(mouse.x - h.pos.x, mouse.y - h.pos.y, animDur)) return;
+    h.view.play('dod', true);
+    this.bus.emit('dodge', { classId: h.cls.id });
   }
 
   private tryTalkNpc(): void {
@@ -600,6 +622,16 @@ export class Game {
     const s = h.s;
     h.regen(dt);
     if (h.blocking && s.stamina <= 0) h.blocking = false;
+    let sprinting = false;
+    if (h.dodging()) {
+      h.pos.x += h.dodgeVx * dt;
+      h.pos.y += h.dodgeVy * dt;
+      w.zone.collide(h.pos, 0.5);
+      h.moveTarget = null;
+      h.moving = false;
+      this.targetMonster = null;
+      this.targetDrop = null;
+    } else {
     // fortsatt klick-och-håll styr mot muspekaren (D2)
     if (this.input.leftDown && !this.targetMonster && !this.targetDrop && !this.invUI.holding && this.input.overCanvas())
       h.moveTarget = this.camera.toWorld(this.input.mouse.x, this.input.mouse.y);
@@ -650,8 +682,13 @@ export class Game {
     const len = Math.hypot(vx, vy);
     h.moving = len > 0 && h.atkT <= 0;
     const sprintCfg = DATA.classes.meta.sprint;
-    const wantSprint = (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) && h.moving && !h.blocking && !!sprintCfg;
-    let sprinting = false;
+    const wantSprint =
+      !h.dodging() &&
+      h.dodgeT <= 0 &&
+      (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) &&
+      h.moving &&
+      !h.blocking &&
+      !!sprintCfg;
     if (wantSprint && h.s.stamina > 0) {
       sprinting = true;
       h.s.stamina = Math.max(0, h.s.stamina - sprintCfg.stamina_per_s * dt);
@@ -672,6 +709,7 @@ export class Game {
       if (h.moveTarget && Math.hypot(before.x - h.pos.x, before.y - h.pos.y) > step * 0.9) h.moveTarget = null;
       if (Math.floor(w.time * 3) !== Math.floor((w.time - dt) * 3)) this.bus.emit('step', undefined);
     }
+    }
     if (h.atkPendingHit && h.atkHitT <= 0) this.combat.resolveAttackHit();
     const v = h.view;
     v.dir = dirIndex(Math.sin(s.facing), Math.cos(s.facing));
@@ -682,7 +720,7 @@ export class Game {
     v.bobY = h.atkT > 0 && !v.hasAnim('attack') ? -Math.sin((h.atkT / 0.3) * Math.PI) * 6 : 0;
     v.update(dt);
     if (h.atkT <= 0) v.playbackRate = 1;
-    v.sprite.tint = h.blocking ? 0xa0c8ff : (CLASS_TINT[s.cls] ?? 0xffffff);
+    v.sprite.tint = h.blocking || h.shieldDodge ? 0xa0c8ff : (CLASS_TINT[s.cls] ?? 0xffffff);
     const sp = Iso.worldToScreen(h.pos.x, h.pos.y);
     v.position.set(sp.x, sp.y);
     v.zIndex = h.pos.x + h.pos.y;
