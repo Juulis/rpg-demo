@@ -189,7 +189,6 @@ export class InventoryUI {
     this.statBox.innerHTML =
       `<h4>${t.data('klasser', hero.cls.id, 'name', hero.cls.name)} · ${t.t('hud.level', { level: lv })}</h4>` +
       row('stat.life', st.maxHp) +
-      row('stat.stamina', st.maxSt) +
       row('stat.damage', `${st.dmgMin}–${st.dmgMax}`) +
       row('stat.defense', Math.round(st.defense)) +
       row('stat.block', pct(st.block)) +

@@ -94,8 +94,6 @@ export class Game {
     gold: 0,
     hp: 1,
     maxHp: 1,
-    stamina: 1,
-    maxStamina: 1,
     pos: { x: 0, y: 0 },
     inv: [],
     equip: {},
@@ -510,7 +508,6 @@ export class Game {
   private respawn(): void {
     const h = this.mustWorld().hero;
     h.s.hp = h.stats.maxHp;
-    h.s.stamina = h.stats.maxSt;
     this.enterZone('forest', { x: 0, y: 4 });
   }
 
@@ -828,7 +825,6 @@ export class Game {
     }
     const s = h.s;
     h.regen(dt);
-    if (h.blocking && s.stamina <= 0) h.blocking = false;
     let sprinting = false;
     if (h.dodging()) {
       h.pos.x += h.dodgeVx * dt;
@@ -891,11 +887,7 @@ export class Game {
       const sprintCfg = DATA.classes.meta.sprint;
       const wantSprint =
         !h.dodging() && h.dodgeT <= 0 && (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) && h.moving && !h.blocking && !!sprintCfg;
-      if (wantSprint && h.s.stamina > 0) {
-        sprinting = true;
-        h.s.stamina = Math.max(0, h.s.stamina - sprintCfg.stamina_per_s * dt);
-        h.stDelay = DATA.classes.meta.resource?.regen_delay_s ?? 1;
-      }
+      if (wantSprint) sprinting = true;
       if (h.moving) {
         const runMult = sprinting && sprintCfg ? sprintCfg.speed_mult : 1;
         const sp = h.stats.speed * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);

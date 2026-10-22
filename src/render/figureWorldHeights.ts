@@ -1,8 +1,8 @@
 import type { Anim, AnimSet } from './spriteAnim';
 import { animBodyHeight, animSetRefHeight } from './spriteLayout';
 
-/** Designreferens: riddare_idle ≈ 155 px synlig höjd vid 1,8 m. */
-export const FIGURE_HEIGHT_HUMAN_M = 1.8;
+/** Designreferens: riddare walk ≈ 155 px synlig höjd vid denna världshöjd (≈20 % under ursprunglig 1,8 m). */
+export const FIGURE_HEIGHT_HUMAN_M = 1.44;
 export const SCREEN_PX_PER_WORLD_METER = 155 / FIGURE_HEIGHT_HUMAN_M;
 
 export type FigureHeightProfile =
@@ -23,8 +23,8 @@ export type FigureHeightProfile =
 
 const PROFILE_HEIGHT_M: Record<FigureHeightProfile, number> = {
   human: FIGURE_HEIGHT_HUMAN_M,
-  wolf: 0.8,
-  wolf_large: 1.05,
+  wolf: 1.02,
+  wolf_large: 1.22,
   bear: 1.2,
   deer: 0.9,
   fox: 0.4,
@@ -35,7 +35,7 @@ const PROFILE_HEIGHT_M: Record<FigureHeightProfile, number> = {
   corrupted_human: FIGURE_HEIGHT_HUMAN_M,
   boss_bear: 2.8,
   boss_undead: 2.4,
-  boss_wolf: 1.25,
+  boss_wolf: 1.45,
 };
 
 const MONSTER_PROFILE: Record<string, FigureHeightProfile> = {
@@ -71,9 +71,9 @@ const FAMILY_PROFILE: Record<string, FigureHeightProfile> = {
   gastar: 'ghost',
 };
 
-/** Animation för världshöjd (idle före walk — samma mått som stående NPC). */
+/** Walk används för världshöjd (samma som pixel-skala i DirSprite). */
 export function referenceAnimForScale(set: AnimSet): Anim | undefined {
-  return set.idle ?? set.gang ?? set.run ?? set.attack ?? set.dod;
+  return set.gang ?? set.run ?? set.idle ?? set.attack ?? set.dod;
 }
 
 /** Synlig kroppshöjd i skärmpx vid scaleK = 1 (inkl. anim.scale från ark). */

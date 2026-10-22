@@ -15,7 +15,6 @@ export interface GameAuthority {
     heroLvl: number;
     front: boolean;
     moving: boolean;
-    stamina: number;
     blocking: boolean;
   }): MonsterHitResult;
   /** Belöning när ett monster dör: XP och droppar. */

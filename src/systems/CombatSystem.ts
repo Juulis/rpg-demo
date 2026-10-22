@@ -140,14 +140,9 @@ export class CombatSystem {
       heroLvl: h.level,
       front,
       moving: h.moving,
-      stamina: h.s.stamina,
       blocking: h.blocking && !!from,
     });
     if (r.kind === 'miss') return w.fb.float(h.pos, t.t('fx.miss'), 'weak', 100);
-    if (r.kind === 'block' || r.reduced) {
-      h.s.stamina -= 5;
-      h.stDelay = 1;
-    }
     if (r.kind === 'block') return w.fb.float(h.pos, t.t('fx.block'), 'weak', 100);
     const d = r.dmg;
     h.s.hp = Math.max(0, h.s.hp - d);
@@ -220,14 +215,10 @@ export class CombatSystem {
     const c = h.cls;
     const sk = c.skills[0];
     if (c.id === 'riddare') {
-      h.blocking = down && h.s.stamina > 0;
+      h.blocking = down;
       return;
     }
     if (!down || !sk || h.skillCd > 0) return;
-    if (!h.spend(sk.stamina_cost)) {
-      w.fb.flash(w.text.t('msg.no_stamina'));
-      return;
-    }
     h.skillCd = sk.cooldown_s;
     h.atkT = 0.3;
     h.atkCd = 0.5;

@@ -74,8 +74,6 @@ const ctx: GameContext = {
     gold: 0,
     hp: 1,
     maxHp: 1,
-    stamina: 1,
-    maxStamina: 1,
     pos: { x: 0, y: 0 },
     inv: [],
     equip: {},
