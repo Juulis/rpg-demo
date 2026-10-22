@@ -10,7 +10,7 @@
     { "id": "runsten_1", "areaId": "startskogen", "pos": [14, -10], "radius": 2.5 },
     { "id": "runsten_2", "areaId": "startskogen", "pos": [-16, -6], "radius": 2.5 },
     { "id": "runsten_3", "areaId": "startskogen", "pos": [4, 20], "radius": 2.5 },
-    { "id": "ristarens_vagg", "areaId": "runornas_kall", "pos": [6, -8], "radius": 3 },
+    { "id": "ristarens_vagg", "areaId": "gamla_byn", "region": "kapellets_krypta", "pos": [-12, 4], "radius": 3 },
     { "id": "ulvhilds_ide_kedjor", "areaId": "startskogen", "region": "ulvhilds_ide", "pos": [28, 10], "radius": 3.2 },
     { "id": "ulvhilds_ide", "areaId": "startskogen", "region": "ulvhilds_ide", "pos": [32, 12], "radius": 4 },
     { "id": "gravvaktarens_kropp", "areaId": "gamla_byn", "region": "gravasen", "pos": [9, -21], "radius": 3 },
