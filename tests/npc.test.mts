@@ -20,16 +20,18 @@ assert.ok(village.length >= 5);
 
 const ws = createEmptyWorldState();
 ws.npc_states.gamla_ylva = 'dod';
-const hidden = resolveNpc(forest[0]!, ws);
+const ylvaDef = forest.find((n) => n.id === 'gamla_ylva');
+assert.ok(ylvaDef);
+const hidden = resolveNpc(ylvaDef, ws);
 assert.equal(hidden.hidden, true);
 
 ws.npc_states.gamla_ylva = 'levande';
-const shown = resolveNpc(forest[0]!, ws);
+const shown = resolveNpc(ylvaDef, ws);
 assert.equal(shown.hidden, false);
 
 const text = new Text();
 setNpcLocale('en');
-const ylva = forest[0]!;
+const ylva = ylvaDef;
 assert.equal(npcName(text, ylva), 'Old Ylva');
 assert.ok(npcLine(text, ylva).includes('fire'));
 
