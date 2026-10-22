@@ -5,6 +5,7 @@ import type { MonsterFactory } from '../entities/MonsterFactory';
 import type { QuestEngineHooks } from '../quest/questEngine';
 import { readQuestProgress } from '../quest/questProgress';
 import { questAnchorById } from '../quest/questAnchors';
+import { canonicalBossId } from '../world/bossIds';
 import type { SpawnSpec } from './SpawnSystem';
 import type { LootSystem } from './LootSystem';
 import type { World } from './World';
@@ -12,8 +13,10 @@ import type { WorldStateService } from '../world/WorldStateService';
 
 const MIRA_CHAMPION_UID = 'quest:miras_bror:champion';
 const SKULL_AMBUSH_PREFIX = 'quest:benens_visk:lik:';
+const ULVHILD_UID = 'quest:ulvhilds_pals:boss';
+const GRAV_GUARD_UID = 'quest:gravvaktarnas_sista_strid:vakt';
 
-/** Questspecifika monster och garanterad loot för akt 1 del 1 (#44). */
+/** Questspecifika monster och garanterad loot (akt 1, #44–#45). */
 export class QuestEncounterSystem {
   private skullLootSpawned = false;
 
@@ -26,6 +29,9 @@ export class QuestEncounterSystem {
   ) {
     this.bus.on('kill', (p) => this.onKill(p.id));
     this.bus.on('pickup', (p) => this.onPickup(p.itemId));
+    this.bus.on('quest_inspect', ({ ankare }) => {
+      if (ankare === 'gravvaktarnas_kammare') this.worldState.get().flags.krypta_besokt = true;
+    });
   }
 
   reset(): void {
@@ -34,6 +40,13 @@ export class QuestEncounterSystem {
 
   update(w: World, hooks: QuestEngineHooks): void {
     const ws = this.worldState.get();
+    this.updateMirasBro(w, hooks, ws);
+    this.updateBenensVisk(w, hooks, ws);
+    this.updateUlvhildsPals(w, hooks, ws);
+    this.updateGravvaktarnasStrid(w, hooks, ws);
+  }
+
+  private updateMirasBro(w: World, hooks: QuestEngineHooks, ws: ReturnType<WorldStateService['get']>): void {
     const mira = readQuestProgress(ws, 'miras_bror');
     if (mira.status === 'aktiv' && mira.steg === 'sanningen' && !hooks.hasItem('flyktingens_sandaler')) {
       if (!ws.flags.quest_mira_champion_slain && !this.hasLivingQuestMonster(w, MIRA_CHAMPION_UID)) {
@@ -43,7 +56,9 @@ export class QuestEncounterSystem {
         this.spawnQuestItem(w, 'kolarkojan', 'flyktingens_sandaler');
       }
     }
+  }
 
+  private updateBenensVisk(w: World, hooks: QuestEngineHooks, ws: ReturnType<WorldStateService['get']>): void {
     const visk = readQuestProgress(ws, 'benens_visk');
     if (
       visk.status === 'aktiv' &&
@@ -57,10 +72,34 @@ export class QuestEncounterSystem {
     }
   }
 
-  private onKill(uid: string): void {
-    if (uid === MIRA_CHAMPION_UID) {
-      this.worldState.get().flags.quest_mira_champion_slain = true;
+  private updateUlvhildsPals(w: World, hooks: QuestEngineHooks, ws: ReturnType<WorldStateService['get']>): void {
+    const ulv = readQuestProgress(ws, 'ulvhilds_pals');
+    if (ulv.status !== 'aktiv') return;
+    const bossId = canonicalBossId('grabjornen_ulvhild') ?? 'grabjornen_ulvhild';
+    const bossDead = ws.bosses_killed.includes(bossId) || ws.bosses_killed.includes('grabjornen_ulvhild');
+    if (ulv.steg === 'ulvhild' && !bossDead && !this.hasLivingQuestMonster(w, ULVHILD_UID)) {
+      this.spawnUlvhildBoss(w);
     }
+    if (ulv.steg === 'palsen' && !hooks.hasItem('quest_ulvhilds_pals') && !this.hasQuestDrop(w, 'quest_ulvhilds_pals')) {
+      this.spawnQuestItem(w, 'ulvhilds_ide', 'quest_ulvhilds_pals');
+    }
+  }
+
+  private updateGravvaktarnasStrid(w: World, hooks: QuestEngineHooks, ws: ReturnType<WorldStateService['get']>): void {
+    const grav = readQuestProgress(ws, 'gravvaktarnas_sista_strid');
+    if (grav.status !== 'aktiv') return;
+    if (grav.steg === 'kryptan' && !ws.flags.quest_grav_guard_slain && !this.hasLivingQuestMonster(w, GRAV_GUARD_UID)) {
+      this.spawnGravGuard(w);
+    }
+    if (grav.steg === 'kronikan' && !hooks.hasItem('quest_gravvaktarnas_kronika') && !this.hasQuestDrop(w, 'quest_gravvaktarnas_kronika')) {
+      this.spawnQuestItem(w, 'gravvaktarnas_kammare', 'quest_gravvaktarnas_kronika');
+    }
+  }
+
+  private onKill(uid: string): void {
+    const ws = this.worldState.get();
+    if (uid === MIRA_CHAMPION_UID) ws.flags.quest_mira_champion_slain = true;
+    if (uid === GRAV_GUARD_UID) ws.flags.quest_grav_guard_slain = true;
   }
 
   private onPickup(itemId: string): void {
@@ -103,6 +142,39 @@ export class QuestEncounterSystem {
     };
     w.zone.collide(pos, 0.5);
     this.factory.create(w, 'vargbest', pos, spec.level, spec);
+  }
+
+  private spawnUlvhildBoss(w: World): void {
+    const pos = this.anchorPos('ulvhilds_ide');
+    if (!pos) return;
+    const spec: SpawnSpec = {
+      uid: ULVHILD_UID,
+      enemy: 'grabjornen_ulvhild',
+      pos: [pos.x, pos.y],
+      level: 6,
+      elite: null,
+      modifiers: [],
+      boss: true,
+    };
+    w.zone.collide(pos, 0.5);
+    this.factory.create(w, 'grabjornen_ulvhild', pos, spec.level, spec);
+  }
+
+  private spawnGravGuard(w: World): void {
+    const pos = this.anchorPos('gravvaktarnas_kammare');
+    if (!pos) return;
+    const spec: SpawnSpec = {
+      uid: GRAV_GUARD_UID,
+      enemy: 'skelett_vakt',
+      pos: [pos.x, pos.y],
+      level: 9,
+      elite: 'unik',
+      modifiers: [],
+      uniqueName: 'Skelettväktaren',
+      boss: false,
+    };
+    w.zone.collide(pos, 0.5);
+    this.factory.create(w, 'skelett_vakt', pos, spec.level, spec);
   }
 
   private spawnRottingPair(w: World, at: Vec2): void {
