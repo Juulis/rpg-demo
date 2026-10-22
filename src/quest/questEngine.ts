@@ -6,6 +6,8 @@ import { readQuestProgress, writeQuestProgress } from './questProgress';
 import { gameDay } from './questTime';
 import { startTriggerSatisfied, triggerSatisfied } from './triggerMatch';
 import type { TriggerEnv } from './triggerMatch';
+import { inTimeWindow } from './questTime';
+import { repopulationCityAfterQuest } from '../world/repopulation';
 import type { WorldStateService } from '../world/WorldStateService';
 import type { WorldState } from '../world/worldStateTypes';
 
@@ -130,6 +132,18 @@ export class QuestEngine {
     for (const def of act1Quests()) {
       const progress = readQuestProgress(this.ws(), def.id);
       if (progress.status !== 'aktiv') continue;
+      const step = this.currentStep(def, progress);
+      if (!step) continue;
+      const tr = step.trigger;
+      if (tr.typ === 'inspektera_alla') {
+        const list = Array.isArray(tr.ankare) ? tr.ankare : [];
+        if (!list.includes(ankare)) continue;
+      } else if (tr.typ === 'inspektera') {
+        if (typeof tr.ankare === 'string' && tr.ankare !== ankare) continue;
+      } else {
+        continue;
+      }
+      if (tr.tid?.length === 2 && !inTimeWindow(hooks.worldTime, tr.tid[0], tr.tid[1])) continue;
       const ins = [...(progress.inspekterat ?? [])];
       if (!ins.includes(ankare)) ins.push(ankare);
       writeQuestProgress(this.ws(), def.id, { ...progress, inspekterat: ins });
@@ -173,6 +187,8 @@ export class QuestEngine {
       applyConsequences(this.worldState, [{ typ: 'xp_grant', amount: xp }], day, runtime);
     }
     writeQuestProgress(this.ws(), def.id, { status: 'klar', val: choiceId, steg: progress.steg, givare: progress.givare });
+    const bump = repopulationCityAfterQuest(this.ws(), def.id);
+    if (bump) this.worldState.setCityState(bump.city, bump.state);
     return true;
   }
 
