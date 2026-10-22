@@ -1,5 +1,6 @@
 import type { Loot } from './loot/Loot';
 import { isQuestItemId } from '../quest/questItems';
+import { isConsumableCategory } from './consumables';
 import { SLOTS, type Equip, type Item, type Slot } from './loot/types';
 
 export const BAG_W = 10;
@@ -167,13 +168,13 @@ export class Inventory {
   findPotion(kind: 'hp' | 'st'): Item | undefined {
     return this.bag.find((i) => {
       const b = this.L.base(i);
-      return b.category === 'dryck' && (kind === 'hp' ? !!(b.heal ?? b.heal_pct) : !!(b.stamina ?? b.stamina_pct));
+      return isConsumableCategory(b.category) && (kind === 'hp' ? !!(b.heal ?? b.heal_pct) : !!(b.stamina ?? b.stamina_pct));
     });
   }
   countPotions(kind: 'hp' | 'st'): number {
     return this.bag.reduce((s, i) => {
       const b = this.L.base(i);
-      const ok = b.category === 'dryck' && (kind === 'hp' ? !!(b.heal ?? b.heal_pct) : !!(b.stamina ?? b.stamina_pct));
+      const ok = isConsumableCategory(b.category) && (kind === 'hp' ? !!(b.heal ?? b.heal_pct) : !!(b.stamina ?? b.stamina_pct));
       return s + (ok ? (i.n ?? 1) : 0);
     }, 0);
   }

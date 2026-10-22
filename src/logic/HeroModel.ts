@@ -5,6 +5,7 @@ import { canStartDodge, dodgeProfile } from './dodge';
 import type { HeroStats, Loot } from './loot/Loot';
 import { SLOTS, type Equip, type Item } from './loot/types';
 import { Inventory } from './Inventory';
+import { isConsumableCategory } from './consumables';
 
 /** Ren spellogik (ingen DOM/Pixi). Hjälten: tillstånd (delad HeroState), klass, beräknade attribut, väska och progression. */
 export class HeroModel {
@@ -36,6 +37,13 @@ export class HeroModel {
   }
   skillCd = 0;
   curse = 0;
+  consumableBuffT = 0;
+  consumableDmgPct = 0;
+  consumableSpeedPct = 0;
+  private hotLeft = 0;
+  private hotPerTick = 0;
+  private hotInterval = 0;
+  private hotTimer = 0;
   readonly maxLevel = (DATA.portalVillage as unknown as { progression: { max_level: number } }).progression.max_level;
 
   constructor(
@@ -109,17 +117,37 @@ export class HeroModel {
     return ups;
   }
 
-  /** Dricker en dryck ur väskan. */
+  /** Äter eller dricker en förbrukningsvara ur väskan. */
   use(it: Item): void {
     const b = this.L.base(it);
-    if (b.category !== 'dryck') return;
+    if (!isConsumableCategory(b.category)) return;
     const s = this.s;
     const st = this.stats;
     if (b.heal) s.hp = Math.min(st.maxHp, s.hp + b.heal);
     if (b.heal_pct) s.hp = Math.min(st.maxHp, s.hp + st.maxHp * b.heal_pct);
+    const hot = b.heal_over_time;
+    if (hot && hot.total > 0 && hot.duration_s > 0) {
+      this.hotLeft = hot.total;
+      this.hotInterval = hot.duration_s / Math.max(1, Math.ceil(hot.total / 3));
+      this.hotPerTick = hot.total / Math.max(1, Math.ceil(hot.duration_s / this.hotInterval));
+      this.hotTimer = this.hotInterval;
+    }
+    if (b.buff_duration_s && (b.buff_damage_pct || b.buff_speed_pct)) {
+      this.consumableBuffT = b.buff_duration_s;
+      this.consumableDmgPct = b.buff_damage_pct ?? 0;
+      this.consumableSpeedPct = b.buff_speed_pct ?? 0;
+    }
     it.n = (it.n ?? 1) - 1;
     if (it.n <= 0) this.inv.lift(it);
     else this.inv.onChange();
+  }
+
+  combatDamageMult(): number {
+    return this.consumableBuffT > 0 && this.consumableDmgPct > 0 ? 1 + this.consumableDmgPct : 1;
+  }
+
+  moveSpeedMult(): number {
+    return this.consumableBuffT > 0 && this.consumableSpeedPct > 0 ? 1 + this.consumableSpeedPct : 1;
   }
 
   /** Startar undanmanöver mot (dx, dy) i världsriktning. */
@@ -180,5 +208,15 @@ export class HeroModel {
     if (this.dodgeRemain <= 0) this.shieldDodge = false;
     this.skillCd -= dt;
     this.curse -= dt;
+    if (this.consumableBuffT > 0) this.consumableBuffT -= dt;
+    if (this.hotLeft > 0) {
+      this.hotTimer -= dt;
+      if (this.hotTimer <= 0) {
+        const tick = Math.min(this.hotLeft, this.hotPerTick);
+        this.hotLeft -= tick;
+        s.hp = Math.min(this.stats.maxHp, s.hp + tick);
+        this.hotTimer = this.hotInterval;
+      }
+    }
   }
 }

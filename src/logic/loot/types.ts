@@ -27,8 +27,13 @@ export interface BaseItem {
   subtype?: string;
   heal?: number;
   heal_pct?: number;
+  heal_over_time?: { total: number; duration_s: number };
   stamina?: number;
   stamina_pct?: number;
+  buff_damage_pct?: number;
+  buff_speed_pct?: number;
+  buff_duration_s?: number;
+  name_en?: string;
   potion_slots?: number;
   size?: Num2;
 }

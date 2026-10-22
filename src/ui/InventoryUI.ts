@@ -260,7 +260,7 @@ export class InventoryUI {
     const slot = inv.slotOfItem(it);
     if (slot) {
       if (!inv.unequip(slot)) this.flash(this.text.t('msg.bag_full'));
-    } else if (b.category === 'dryck') this.hero.use(it);
+    } else if (b.category === 'mat' || b.category === 'dryck') this.hero.use(it);
     else if (this.L.equipable(b)) {
       const best = inv.bestSlot(it);
       if (best && !inv.equipTo(it, best)) this.flash(this.text.t(inv.reqOk(it) ? 'msg.bag_full' : 'msg.need_level'));

@@ -84,7 +84,7 @@
   "services": [
     {
       "id": "handlare",
-      "desc": "Köper och säljer drycker och vanliga föremål."
+      "desc": "Köper och säljer proviant och vanliga föremål."
     },
     {
       "id": "smed",

@@ -58,7 +58,7 @@ export class CombatSystem {
     if (m.dead) return;
     m.aggroed = true;
     this.markPatrolAid(m);
-    const r = w.authority.heroHit(st, h.level, this.snapshot(m), mult);
+    const r = w.authority.heroHit(st, h.level, this.snapshot(m), mult * h.combatDamageMult());
     if (!r.hit) {
       w.fb.float(m.pos, t.t('fx.miss'), 'res', m.view.height2);
       return;

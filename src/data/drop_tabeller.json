@@ -31,7 +31,7 @@
     },
     "ilvl_rule": "ilvl = undertypens fasta nivå. Champion: nivå + 1. Unik: nivå + 3, ilvl + 1 extra. Boss: nivå + 2.",
     "guld_category_note": "Kategorin guld i category_weights ger en extra guldhög (×2 mot vanligt guldbelopp) utöver gold_chance.",
-    "removed": "Ädelstenar och hylsor borttagna tills vidare; deras vikt fördelad 40 % dryck, 20 % amulett, 20 % ring, 20 % guld."
+    "removed": "Ädelstenar och hylsor borttagna tills vidare; deras vikt fördelad 40 % mat, 20 % amulett, 20 % ring, 20 % guld."
   },
   "family_tables": {
     "ododa": {
@@ -40,7 +40,7 @@
       "category_weights": {
         "vapen": 30,
         "rustning": 25,
-        "dryck": 25,
+        "mat": 25,
         "amulett": 5,
         "ring": 5,
         "guld": 2
@@ -57,7 +57,7 @@
       "drop_chance": 0.4,
       "gold_mult": 0.6,
       "category_weights": {
-        "dryck": 62,
+        "mat": 62,
         "amulett": 16,
         "ring": 16,
         "guld": 6
@@ -69,7 +69,7 @@
       "drop_chance": 0.45,
       "gold_mult": 1.2,
       "category_weights": {
-        "dryck": 54,
+        "mat": 54,
         "amulett": 20,
         "ring": 19,
         "guld": 7
@@ -81,7 +81,7 @@
       "drop_chance": 0.4,
       "gold_mult": 0.8,
       "category_weights": {
-        "dryck": 61,
+        "mat": 61,
         "amulett": 16,
         "ring": 15,
         "guld": 8
@@ -100,7 +100,7 @@
       "category_weights": {
         "vapen": 10,
         "rustning": 15,
-        "dryck": 45,
+        "mat": 45,
         "amulett": 13,
         "ring": 12,
         "guld": 5
@@ -112,7 +112,7 @@
       "drop_chance": 0.55,
       "gold_mult": 1.5,
       "category_weights": {
-        "dryck": 46,
+        "mat": 46,
         "amulett": 23,
         "ring": 23,
         "guld": 8
@@ -167,7 +167,7 @@
       "weapon_type": null,
       "table_override": {
         "category_weights": {
-          "dryck": 72,
+          "mat": 72,
           "amulett": 11,
           "ring": 11,
           "guld": 6
@@ -350,7 +350,7 @@
         "category_weights": {
           "vapen": 25,
           "rustning": 25,
-          "dryck": 25,
+          "mat": 25,
           "amulett": 10,
           "ring": 10,
           "guld": 5
@@ -377,7 +377,7 @@
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
@@ -423,7 +423,7 @@
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
@@ -465,7 +465,7 @@
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
@@ -507,7 +507,7 @@
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
@@ -557,7 +557,7 @@
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
@@ -611,7 +611,7 @@
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
@@ -630,20 +630,23 @@
     }
   },
   "potion_weights_by_tier": {
-    "note": "tier enligt ilvl: 1 = 1 till 6, 2 = 7 till 14, 3 = 15+",
+    "note": "tier enligt ilvl: 1 = 1 till 6, 2 = 7 till 14, 3 = 15+. Mat och naturliga förbrukningsvaror.",
     "1": {
-      "liten_halsodryck": 60,
-      "uthallighetsdryck": 40
+      "torkat_kott": 50,
+      "skogsörtste": 35,
+      "vargblod": 15
     },
     "2": {
-      "liten_halsodryck": 35,
-      "stor_halsodryck": 30,
-      "uthallighetsdryck": 35
+      "torkat_kott": 25,
+      "rokerat_hogrev": 30,
+      "skogsörtste": 30,
+      "vargblod": 15
     },
     "3": {
-      "stor_halsodryck": 45,
-      "uthallighetsdryck": 35,
-      "foryngringsdryck": 20
+      "rokerat_hogrev": 40,
+      "skogsörtste": 25,
+      "vargblod": 15,
+      "varlbrygd": 20
     }
   },
   "elite_loot_ref": "monster_niva.json elites",
