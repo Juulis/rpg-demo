@@ -196,6 +196,7 @@ export type Sets = typeof import('./set.json');
 export type DropTables = typeof import('./drop_tabeller.json');
 export type Attributes = typeof import('./attribut.json');
 export type Lorebook = typeof import('./lorebok.json');
+export type { NpcDataFile } from './npcTypes';
 export type LootQualities = typeof import('./loot_kvaliteter.json');
 
 /** All speldata, tillgänglig för moduler via GameContext.data. */
@@ -213,4 +214,5 @@ export interface GameData {
   drops: DropTables;
   attributes: Attributes;
   lorebook: Lorebook;
+  npc: import('./npcTypes').NpcDataFile;
 }

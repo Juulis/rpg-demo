@@ -9,7 +9,7 @@ export const SV = {
     hp: 'Liv',
     stamina: 'Uthållighet',
     potions: '{count} st',
-    help: 'Klick: gå/anfall · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: drycker',
+    help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: drycker',
   },
   msg: {
     rune_awake: 'Runan vaknar! ({n}/3)',
@@ -29,6 +29,7 @@ export const SV = {
     boss_dead: '{name} är besegrad! Byn är fri.',
     died: 'Du har fallit. Klicka för att börja om vid portalen.',
     gold: '+{amount} guld',
+    too_far: 'Gå närmare för att prata.',
   },
   fx: { miss: 'Miss', dodge: 'Undvek', block: 'Block', immune: 'Immun', strong: 'Krosslag', thorns: '-{n} torn' },
   tooltip: {

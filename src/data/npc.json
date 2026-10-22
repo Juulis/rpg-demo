@@ -1,0 +1,125 @@
+{
+  "meta": {
+    "sprite_ref": "public/assets/2d/sprites/npc/npc.json",
+    "note": "pos = världsenheter. tile = byrutnät (gamla_byn). tillstand_varianter nycklar matchar world_state.npc_states."
+  },
+  "npcs": [
+    {
+      "id": "gamla_ylva",
+      "sprite": "gamla_ylva",
+      "area": "startskogen",
+      "zone": "forest",
+      "pos": [4, 11],
+      "act": 1,
+      "name": "Gamla Ylva",
+      "default_line": "Håll dig nära elden, barn. Mörkret lyssnar.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "bror_vakt",
+      "sprite": "bror_vakt",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [2, 17],
+      "act": 1,
+      "name": "Bror",
+      "default_line": "Ingen passerar utan tillstånd. Inte ens du.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "sigrun_helare",
+      "sprite": "sigrun_helare",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [9, 9],
+      "act": 1,
+      "name": "Sigrun",
+      "default_line": "Sätt dig. Jag ser till såren innan de ser dig.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "gravvaktaren_ebbe",
+      "sprite": "gravvaktaren_ebbe",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [22, 20],
+      "act": 1,
+      "name": "Ebbe",
+      "default_line": "Gravarna är oroliga i natt. Jag håller dem stilla.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "marta_torghandlare",
+      "sprite": "marta_torghandlare",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [12, 13],
+      "act": 1,
+      "name": "Märta",
+      "default_line": "Allt har ett pris. Ibland två.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "gunnar_jarnhand",
+      "sprite": "gunnar_jarnhand",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [15, 13],
+      "act": 1,
+      "name": "Gunnar",
+      "default_line": "Stål ska hålla. Människor med, om de får välja.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "olle_vardshus",
+      "sprite": "olle_vardshus",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [18, 11],
+      "act": 1,
+      "name": "Olle",
+      "default_line": "Värmen är svag men ärlig. Drick innan du går.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "sara_benlasare",
+      "sprite": "sara_benlasare",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [7, 16],
+      "act": 1,
+      "name": "Sara",
+      "default_line": "Ben berättar sanningar folk inte vill höra.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "vaktkapten_ingrid",
+      "sprite": "vaktkapten_ingrid",
+      "area": "gamla_byn",
+      "zone": "village",
+      "tile": [4, 19],
+      "act": 1,
+      "name": "Ingrid",
+      "default_line": "Vakterna står kvar även när hoppet flyr.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    }
+  ]
+}

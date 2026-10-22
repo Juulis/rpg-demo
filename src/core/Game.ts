@@ -10,6 +10,7 @@ import { CombatRules } from '../logic/CombatRules';
 import { LocalAuthority } from '../logic/LocalAuthority';
 import { DATA, validateData } from '../data';
 import { Hero } from '../entities/Hero';
+import type { NpcEntity } from '../entities/NpcEntity';
 import type { Monster } from '../entities/Monster';
 import { MonsterFactory } from '../entities/MonsterFactory';
 import { Input } from '../input/Input';
@@ -32,6 +33,9 @@ import { InventoryUI } from '../ui/InventoryUI';
 import { ItemText } from '../ui/ItemText';
 import { LootLabels } from '../ui/LootLabels';
 import { MonsterBar } from '../ui/MonsterBar';
+import { NpcDialog } from '../ui/NpcDialog';
+import { NpcLabels } from '../ui/NpcLabels';
+import { NpcSystem } from '../systems/NpcSystem';
 import { Tooltip } from '../ui/Tooltip';
 import type { Zone, ZoneName } from '../world/Zone';
 import { DevCheatsView } from '../dev/DevCheatsView';
@@ -108,6 +112,9 @@ export class Game {
   private invUI!: InventoryUI;
   private labels!: LootLabels;
   private monBar!: MonsterBar;
+  private npcSys!: NpcSystem;
+  private npcDialog!: NpcDialog;
+  private npcLabels!: NpcLabels;
   private switching = false;
   private targetMonster: Monster | null = null;
   private targetDrop: GroundDrop | null = null;
@@ -154,6 +161,9 @@ export class Game {
     this.invUI = new InventoryUI(this.loot, this.text, itemText, this.tip, this.assets, this.bus, (t) => this.hud.flash(t));
     this.labels = new LootLabels(this.lootSys);
     this.monBar = new MonsterBar(this.text);
+    this.npcSys = new NpcSystem(this.assets, this.worldState);
+    this.npcDialog = new NpcDialog(this.text, this.bus);
+    this.npcLabels = new NpcLabels(this.text);
     this.labels.onClick = (d) => this.goPickup(d);
     this.portals.onEnter = (z) => this.travel(z);
     this.combat.onBossDefeated = (m) => this.bossDefeated(m);
@@ -281,6 +291,9 @@ export class Game {
     this.invUI.dispose();
     this.labels.dispose();
     this.monBar.dispose();
+    this.npcDialog.dispose();
+    this.npcLabels.dispose();
+    this.npcSys.dispose();
     this.bus.clear();
     this.renderer.destroy();
   }
@@ -365,6 +378,7 @@ export class Game {
     this.syncZoneView(zone);
     this.dead = false;
     hs.playing = true;
+    this.npcSys.sync(this.world);
     this.hud.flash(this.text.t(name === 'village' ? 'msg.zone_village' : 'msg.zone_forest'));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
@@ -431,8 +445,14 @@ export class Game {
     i.bind('KeyB', toggleInv);
     i.bind('KeyI', toggleInv);
     i.bind('Escape', () => {
+      if (this.npcDialog.isOpen) {
+        this.npcDialog.close();
+        this.bus.emit('ui_close', { panel: 'npc' });
+        return;
+      }
       if (this.invUI.isOpen()) this.invUI.close();
     });
+    i.bind('KeyF', () => this.tryTalkNpc());
     i.bind('Digit3', () => this.quaff('hp'));
     i.bind('Digit4', () => this.quaff('st'));
     i.bind('KeyE', () => {
@@ -490,9 +510,36 @@ export class Game {
     return null;
   }
 
+  private openNpcDialog(ent: NpcEntity): void {
+    const w = this.world;
+    if (!w) return;
+    const d = Math.hypot(ent.resolved.pos.x - w.hero.pos.x, ent.resolved.pos.y - w.hero.pos.y);
+    if (d > 3.2) {
+      w.fb.flash(w.text.t('msg.too_far'));
+      return;
+    }
+    w.hero.moveTarget = null;
+    this.targetMonster = null;
+    this.targetDrop = null;
+    this.npcDialog.show(ent.resolved);
+    this.bus.emit('ui_open', { panel: 'npc' });
+  }
+
+  private tryTalkNpc(): void {
+    const w = this.world;
+    if (!w || this.npcDialog.isOpen) return;
+    const n = this.npcSys.nearest(w);
+    if (n) this.openNpcDialog(n);
+  }
+
   private worldClick(): void {
-    if (this.invUI.holding) return;
+    if (this.invUI.holding || this.npcDialog.isOpen) return;
     const { x, y } = this.input.mouse;
+    const w = this.world;
+    if (w) {
+      const npc = this.npcSys.pickAt(x, y, this.camera);
+      if (npc) return this.openNpcDialog(npc);
+    }
     const d = this.dropAt(x, y);
     if (d && !d.data.gold) return this.goPickup(d);
     const m = this.monsterAt(x, y);
@@ -526,6 +573,7 @@ export class Game {
     this.parallax.update(this.camera.pos);
     this.hud.update(dt, h, this.camera);
     this.labels.update(w.drops, this.input.altHeld || this.input.labelsToggled, this.camera);
+    this.npcLabels.update(this.npcSys.entities(), this.camera);
     this.hoverUpdate();
     const boss = w.monsters.find((m) => m.boss && m.active && !m.dead);
     if (boss)
@@ -539,6 +587,11 @@ export class Game {
   private heroUpdate(dt: number): void {
     const w = this.mustWorld();
     const h = w.hero;
+    if (this.npcDialog.isOpen) {
+      h.regen(dt);
+      h.moveTarget = null;
+      return;
+    }
     const s = h.s;
     h.regen(dt);
     if (h.blocking && s.stamina <= 0) h.blocking = false;
