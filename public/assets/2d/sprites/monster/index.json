@@ -5,13 +5,19 @@
   "gravgast",
   "likatare_varg",
   "ruttnande_lik",
+  "skelett_bagskytt",
+  "skelett_hund",
+  "skelett_kapten",
   "skelett_krigare",
+  "skelett_runprast",
+  "skelett_vakt",
   "skogsspindel",
   "skogsvarg",
   "skuggvarg",
   "smittad_bybo",
   "taggsvin",
-  "vandrande_skelett"
+  "vandrande_skelett",
+  "vargbest"
  ],
  "singles": "monster.json",
  "not": "Genereras av scripts/gen-monster-index.mjs. Varje id har <id>/<id>.json med anims idle/gang/attack/dod."

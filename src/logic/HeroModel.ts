@@ -19,6 +19,8 @@ export class HeroModel {
   /** Träff i attackanimation väntar på atkHitT (synkad med hitFrame). */
   atkPendingHit = false;
   atkHitT = 0;
+  /** Visuell undvik-animation (#15), ingen separat gameplay ännu. */
+  dodgeT = 0;
 
   /** Avbryt pågående attackträff (död, zonbyte). */
   clearAttack(): void {
@@ -137,6 +139,7 @@ export class HeroModel {
     this.atkCd -= dt;
     this.atkT -= dt;
     if (this.atkHitT > 0) this.atkHitT -= dt;
+    if (this.dodgeT > 0) this.dodgeT -= dt;
     this.skillCd -= dt;
     this.curse -= dt;
   }

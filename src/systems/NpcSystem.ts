@@ -61,6 +61,10 @@ export class NpcSystem {
 
   readonly entities = (): readonly NpcEntity[] => this.list;
 
+  update(dt: number): void {
+    for (const n of this.list) n.update(dt);
+  }
+
   private clear(_w: World): void {
     for (const n of this.list) n.view.destroy({ children: true });
     this.list = [];
