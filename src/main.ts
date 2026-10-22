@@ -2,7 +2,7 @@ import './style.css';
 import './ui/ui.css';
 import { Game } from './core/Game';
 import type { GameModule } from './core/GameContext';
-import { AudioModule, MapModule, MenuModule, SaveModule, WorldStateModule } from './index';
+import { AudioModule, LoreBookModule, MapModule, MenuModule, SaveModule, WorldStateModule } from './index';
 
 /**
  * Moduler registreras här. Varje modul får GameContext (bus, hero, zone, session, data) via init().
@@ -14,7 +14,14 @@ const save = new SaveModule({
   getSnapshot: () => game.getSnapshot(),
   setSaveBackend: (b) => game.setSaveBackend(b),
 });
-const modules: GameModule[] = [new WorldStateModule(), save, new MenuModule(save), new AudioModule(save), new MapModule(save)]; // save före menu
+const modules: GameModule[] = [
+  new WorldStateModule(),
+  save,
+  new MenuModule(save),
+  new AudioModule(save),
+  new MapModule(save),
+  new LoreBookModule(save),
+]; // save före menu
 
 const host = document.getElementById('app');
 if (!host) throw new Error('#app saknas');

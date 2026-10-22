@@ -43,6 +43,7 @@ import { QuestAnchorSystem } from '../systems/QuestAnchorSystem';
 import { applyFactionGreetingTone } from '../npc/factionGreeting';
 import { readQuestProgress } from '../quest/questProgress';
 import { choiceText, stepText } from '../quest/questText';
+import { closeLoreBook, isLoreBookOpen } from '../lore/LoreBookGate';
 import { QuestLog } from '../ui/QuestLog';
 import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
@@ -513,6 +514,11 @@ export class Game {
         this.bus.emit('ui_close', { panel: 'quests' });
         return;
       }
+      if (isLoreBookOpen()) {
+        closeLoreBook();
+        this.bus.emit('ui_close', { panel: 'lore' });
+        return;
+      }
       if (this.invUI.isOpen()) this.invUI.close();
     });
     i.bind('KeyJ', () => {
@@ -705,7 +711,7 @@ export class Game {
 
   private tryDodge(): void {
     const w = this.world;
-    if (!w || this.dead || this.npcDialog.isOpen || this.invUI.isOpen()) return;
+    if (!w || this.dead || this.npcDialog.isOpen || this.invUI.isOpen() || isLoreBookOpen()) return;
     const h = w.hero;
     if (!this.input.overCanvas()) return;
     const mouse = this.camera.toWorld(this.input.mouse.x, this.input.mouse.y);
@@ -724,7 +730,7 @@ export class Game {
   }
 
   private worldClick(): void {
-    if (this.invUI.holding || this.npcDialog.isOpen) return;
+    if (this.invUI.holding || this.npcDialog.isOpen || isLoreBookOpen()) return;
     const { x, y } = this.input.mouse;
     const w = this.world;
     if (w) {
@@ -793,7 +799,7 @@ export class Game {
   private heroUpdate(dt: number): void {
     const w = this.mustWorld();
     const h = w.hero;
-    if (this.npcDialog.isOpen) {
+    if (this.npcDialog.isOpen || isLoreBookOpen()) {
       h.regen(dt);
       h.moveTarget = null;
       return;
