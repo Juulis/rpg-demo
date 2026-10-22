@@ -1,6 +1,7 @@
 import type { Vec2 } from '../core/GameContext';
 import type { AssetStore } from '../render/Assets';
 import { DirSprite } from '../render/DirSprite';
+import { scaleKForWorldHeightM, shadowRadiusForWorldHeightM, worldHeightMForMonster } from '../render/figureWorldHeights';
 import type { SpawnSpec, SpawnSystem } from '../systems/SpawnSystem';
 import type { World } from '../systems/World';
 import { Monster } from './Monster';
@@ -17,7 +18,8 @@ export class MonsterFactory {
     const def = fullDef(id);
     const look = monsterLook(id, def.family, (k) => this.assets.monsters.has(k));
     const set = this.assets.monsters.get(look.sheet) ?? this.assets.monsters.get('forvriden_jagare') ?? {};
-    const view = new DirSprite(set, look.scale, def.boss ? 40 : 26);
+    const hm = worldHeightMForMonster(id, def.family, def.boss);
+    const view = new DirSprite(set, scaleKForWorldHeightM(set, hm), shadowRadiusForWorldHeightM(hm));
     view.sprite.tint = look.tint;
     const es = spec?.elite ? this.spawn.eliteStats(spec) : null;
     const m = new Monster(def, lvl ?? spec?.level ?? def.level, pos, view, spec, es, () => w.rng.next());

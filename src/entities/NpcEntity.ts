@@ -2,6 +2,7 @@ import { Container, Graphics } from 'pixi.js';
 import type { ResolvedNpc } from '../npc/npcPlacement';
 import { activityIsMoving, stepNpcToward } from '../npc/npcMovement';
 import { DirSprite } from '../render/DirSprite';
+import { scaleKForWorldHeightM, shadowRadiusForWorldHeightM, worldHeightMForHeroOrNpc } from '../render/figureWorldHeights';
 import { Iso } from '../render/Iso';
 import type { Anim, AnimSet } from '../render/spriteAnim';
 import type { Zone } from '../world/Zone';
@@ -20,15 +21,18 @@ export class NpcEntity {
     this.resolved = resolved;
     this.target.x = resolved.pos.x;
     this.target.y = resolved.pos.y;
+    const npcHm = worldHeightMForHeroOrNpc();
+    const npcShadow = shadowRadiusForWorldHeightM(npcHm);
     if (anim && !anim.single) {
       const set: AnimSet = { idle: anim, gang: anim };
-      const v = new DirSprite(set, 1, 22, false);
+      const v = new DirSprite(set, scaleKForWorldHeightM(set, npcHm), npcShadow, false);
       v.dir = NPC_FACE_DIR;
       v.play('idle');
       this.sprite = v;
       this.view.addChild(v);
     } else if (anim?.frames[0]?.[0]) {
-      const v = new DirSprite({ idle: anim, gang: anim }, 1, 22, true);
+      const set: AnimSet = { idle: anim, gang: anim };
+      const v = new DirSprite(set, scaleKForWorldHeightM(set, npcHm), npcShadow, true);
       v.dir = NPC_FACE_DIR;
       v.play('idle');
       this.sprite = v;
