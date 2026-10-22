@@ -462,6 +462,15 @@ export class Game {
       const n = this.portals.nearRune();
       if (n >= 0) this.portals.activate(n, false);
     });
+    const tryDodge = (): void => this.tryDodge();
+    i.bind('Space', tryDodge);
+    const shiftDodge = (): void => {
+      const k = this.input;
+      if (k.isDown('KeyW') || k.isDown('KeyA') || k.isDown('KeyS') || k.isDown('KeyD')) return;
+      tryDodge();
+    };
+    i.bind('ShiftLeft', shiftDodge);
+    i.bind('ShiftRight', shiftDodge);
     i.bind('KeyQ', () => this.combat.skill(true));
     i.bind('up:KeyQ', () => this.combat.skill(false));
     i.bind('reset', () => this.combat.skill(false));
@@ -526,6 +535,19 @@ export class Game {
     this.targetDrop = null;
     this.npcDialog.show(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite));
     this.bus.emit('ui_open', { panel: 'npc' });
+  }
+
+  private tryDodge(): void {
+    const w = this.world;
+    if (!w || this.dead || this.npcDialog.isOpen || this.invUI.isOpen()) return;
+    const h = w.hero;
+    if (!this.input.overCanvas()) return;
+    const mouse = this.camera.toWorld(this.input.mouse.x, this.input.mouse.y);
+    const dod = h.view.getAnim('dod');
+    const animDur = dod?.frames[0]?.length && dod.fps ? dod.frames[0].length / dod.fps : 0;
+    if (!h.tryDodge(mouse.x - h.pos.x, mouse.y - h.pos.y, animDur)) return;
+    h.view.play('dod', true);
+    this.bus.emit('dodge', { classId: h.cls.id });
   }
 
   private tryTalkNpc(): void {
@@ -600,77 +622,88 @@ export class Game {
     const s = h.s;
     h.regen(dt);
     if (h.blocking && s.stamina <= 0) h.blocking = false;
-    // fortsatt klick-och-håll styr mot muspekaren (D2)
-    if (this.input.leftDown && !this.targetMonster && !this.targetDrop && !this.invUI.holding && this.input.overCanvas())
-      h.moveTarget = this.camera.toWorld(this.input.mouse.x, this.input.mouse.y);
-    let vx = 0;
-    let vy = 0;
-    const k = this.input;
-    const sx = (k.isDown('KeyD') ? 1 : 0) - (k.isDown('KeyA') ? 1 : 0);
-    const sy = (k.isDown('KeyS') ? 1 : 0) - (k.isDown('KeyW') ? 1 : 0);
-    if (sx || sy) {
-      // skärmriktning → värld (iso): skärm-x = x − y, skärm-y = (x + y)/2
-      vx = sx / 2 + sy;
-      vy = -sx / 2 + sy;
+    let sprinting = false;
+    if (h.dodging()) {
+      h.pos.x += h.dodgeVx * dt;
+      h.pos.y += h.dodgeVy * dt;
+      w.zone.collide(h.pos, 0.5);
       h.moveTarget = null;
+      h.moving = false;
       this.targetMonster = null;
       this.targetDrop = null;
-    }
-    const tm = this.targetMonster;
-    if (tm && (tm.dead || !w.monsters.includes(tm))) this.targetMonster = null;
-    if (this.targetMonster) {
-      const m = this.targetMonster;
-      const d = Math.hypot(m.pos.x - h.pos.x, m.pos.y - h.pos.y);
-      s.facing = Math.atan2(m.pos.x - h.pos.x, m.pos.y - h.pos.y);
-      if (d <= h.stats.reach + (m.boss ? 0.6 : 0.2)) {
+    } else {
+      // fortsatt klick-och-håll styr mot muspekaren (D2)
+      if (this.input.leftDown && !this.targetMonster && !this.targetDrop && !this.invUI.holding && this.input.overCanvas())
+        h.moveTarget = this.camera.toWorld(this.input.mouse.x, this.input.mouse.y);
+      let vx = 0;
+      let vy = 0;
+      const k = this.input;
+      const sx = (k.isDown('KeyD') ? 1 : 0) - (k.isDown('KeyA') ? 1 : 0);
+      const sy = (k.isDown('KeyS') ? 1 : 0) - (k.isDown('KeyW') ? 1 : 0);
+      if (sx || sy) {
+        // skärmriktning → värld (iso): skärm-x = x − y, skärm-y = (x + y)/2
+        vx = sx / 2 + sy;
+        vy = -sx / 2 + sy;
         h.moveTarget = null;
-        this.combat.attack();
-        if (!this.input.leftDown) this.targetMonster = null;
-      } else h.moveTarget = { ...m.pos };
-    }
-    const td = this.targetDrop;
-    if (td) {
-      if (!w.drops.includes(td)) this.targetDrop = null;
-      else if (Math.hypot(td.pos.x - h.pos.x, td.pos.y - h.pos.y) < 1.3) {
-        void this.lootSys.pickup(td);
+        this.targetMonster = null;
         this.targetDrop = null;
-        h.moveTarget = null;
       }
-    }
-    if (h.moveTarget && !vx && !vy) {
-      const dx = h.moveTarget.x - h.pos.x;
-      const dy = h.moveTarget.y - h.pos.y;
-      const d = Math.hypot(dx, dy);
-      if (d < 0.15) h.moveTarget = null;
-      else {
-        vx = dx;
-        vy = dy;
+      const tm = this.targetMonster;
+      if (tm && (tm.dead || !w.monsters.includes(tm))) this.targetMonster = null;
+      if (this.targetMonster) {
+        const m = this.targetMonster;
+        const d = Math.hypot(m.pos.x - h.pos.x, m.pos.y - h.pos.y);
+        s.facing = Math.atan2(m.pos.x - h.pos.x, m.pos.y - h.pos.y);
+        if (d <= h.stats.reach + (m.boss ? 0.6 : 0.2)) {
+          h.moveTarget = null;
+          this.combat.attack();
+          if (!this.input.leftDown) this.targetMonster = null;
+        } else h.moveTarget = { ...m.pos };
       }
-    }
-    const len = Math.hypot(vx, vy);
-    h.moving = len > 0 && h.atkT <= 0;
-    const sprintCfg = DATA.classes.meta.sprint;
-    const wantSprint = (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) && h.moving && !h.blocking && !!sprintCfg;
-    let sprinting = false;
-    if (wantSprint && h.s.stamina > 0) {
-      sprinting = true;
-      h.s.stamina = Math.max(0, h.s.stamina - sprintCfg.stamina_per_s * dt);
-      h.stDelay = DATA.classes.meta.resource?.regen_delay_s ?? 1;
-    }
-    if (h.moving) {
-      const runMult = sprinting && sprintCfg ? sprintCfg.speed_mult : 1;
-      const sp = h.stats.speed * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
-      const step = Math.min(
-        sp * dt,
-        h.moveTarget && !this.targetMonster ? Math.hypot(h.moveTarget.x - h.pos.x, h.moveTarget.y - h.pos.y) : Infinity,
-      );
-      h.pos.x += (vx / len) * step;
-      h.pos.y += (vy / len) * step;
-      s.facing = Math.atan2(vx, vy);
-      const before = { ...h.pos };
-      w.zone.collide(h.pos, 0.5);
-      if (h.moveTarget && Math.hypot(before.x - h.pos.x, before.y - h.pos.y) > step * 0.9) h.moveTarget = null;
-      if (Math.floor(w.time * 3) !== Math.floor((w.time - dt) * 3)) this.bus.emit('step', undefined);
+      const td = this.targetDrop;
+      if (td) {
+        if (!w.drops.includes(td)) this.targetDrop = null;
+        else if (Math.hypot(td.pos.x - h.pos.x, td.pos.y - h.pos.y) < 1.3) {
+          void this.lootSys.pickup(td);
+          this.targetDrop = null;
+          h.moveTarget = null;
+        }
+      }
+      if (h.moveTarget && !vx && !vy) {
+        const dx = h.moveTarget.x - h.pos.x;
+        const dy = h.moveTarget.y - h.pos.y;
+        const d = Math.hypot(dx, dy);
+        if (d < 0.15) h.moveTarget = null;
+        else {
+          vx = dx;
+          vy = dy;
+        }
+      }
+      const len = Math.hypot(vx, vy);
+      h.moving = len > 0 && h.atkT <= 0;
+      const sprintCfg = DATA.classes.meta.sprint;
+      const wantSprint =
+        !h.dodging() && h.dodgeT <= 0 && (k.isDown('ShiftLeft') || k.isDown('ShiftRight')) && h.moving && !h.blocking && !!sprintCfg;
+      if (wantSprint && h.s.stamina > 0) {
+        sprinting = true;
+        h.s.stamina = Math.max(0, h.s.stamina - sprintCfg.stamina_per_s * dt);
+        h.stDelay = DATA.classes.meta.resource?.regen_delay_s ?? 1;
+      }
+      if (h.moving) {
+        const runMult = sprinting && sprintCfg ? sprintCfg.speed_mult : 1;
+        const sp = h.stats.speed * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
+        const step = Math.min(
+          sp * dt,
+          h.moveTarget && !this.targetMonster ? Math.hypot(h.moveTarget.x - h.pos.x, h.moveTarget.y - h.pos.y) : Infinity,
+        );
+        h.pos.x += (vx / len) * step;
+        h.pos.y += (vy / len) * step;
+        s.facing = Math.atan2(vx, vy);
+        const before = { ...h.pos };
+        w.zone.collide(h.pos, 0.5);
+        if (h.moveTarget && Math.hypot(before.x - h.pos.x, before.y - h.pos.y) > step * 0.9) h.moveTarget = null;
+        if (Math.floor(w.time * 3) !== Math.floor((w.time - dt) * 3)) this.bus.emit('step', undefined);
+      }
     }
     if (h.atkPendingHit && h.atkHitT <= 0) this.combat.resolveAttackHit();
     const v = h.view;
@@ -682,7 +715,7 @@ export class Game {
     v.bobY = h.atkT > 0 && !v.hasAnim('attack') ? -Math.sin((h.atkT / 0.3) * Math.PI) * 6 : 0;
     v.update(dt);
     if (h.atkT <= 0) v.playbackRate = 1;
-    v.sprite.tint = h.blocking ? 0xa0c8ff : (CLASS_TINT[s.cls] ?? 0xffffff);
+    v.sprite.tint = h.blocking || h.shieldDodge ? 0xa0c8ff : (CLASS_TINT[s.cls] ?? 0xffffff);
     const sp = Iso.worldToScreen(h.pos.x, h.pos.y);
     v.position.set(sp.x, sp.y);
     v.zIndex = h.pos.x + h.pos.y;

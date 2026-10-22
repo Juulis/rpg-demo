@@ -13,6 +13,27 @@
       "speed_mult": 1.55,
       "stamina_per_s": 10
     },
+    "dodge": {
+      "stamina_cost": 20,
+      "cooldown_s": 1.0,
+      "iframes_s": 0.3,
+      "by_class": {
+        "riddare": {
+          "distance": 2.5,
+          "duration_s": 0.32,
+          "shield": true
+        },
+        "barbar": {
+          "distance": 3.5,
+          "duration_s": 0.38
+        },
+        "amazonkrigare": {
+          "distance": 4.0,
+          "duration_s": 0.42
+        }
+      },
+      "note": "Undanmanöver mot muspekaren. Amazon: längre språng (jfr vig_undanmanöver 4 enheter, 0,3 s osårbar)."
+    },
     "magic": {
       "status": "framtida_upplasning",
       "note": "Magi låses upp senare i kampanjen (t.ex. via runorna). Ingen klass har magi från start."

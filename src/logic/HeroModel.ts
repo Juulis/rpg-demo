@@ -1,6 +1,7 @@
 import type { HeroState, Vec2 } from '../core/GameContext';
 import { DATA } from '../data';
 import type { HeroClass } from '../data/types';
+import { canStartDodge, dodgeProfile, dodgeStaminaCost } from './dodge';
 import type { HeroStats, Loot } from './loot/Loot';
 import { SLOTS, type Equip, type Item } from './loot/types';
 import { Inventory } from './Inventory';
@@ -19,8 +20,14 @@ export class HeroModel {
   /** Träff i attackanimation väntar på atkHitT (synkad med hitFrame). */
   atkPendingHit = false;
   atkHitT = 0;
-  /** Visuell undvik-animation (#15), ingen separat gameplay ännu. */
+  /** Visuell undvik-animation (synkad med undanmanöver). */
   dodgeT = 0;
+  dodgeCd = 0;
+  iframeT = 0;
+  dodgeRemain = 0;
+  dodgeVx = 0;
+  dodgeVy = 0;
+  shieldDodge = false;
 
   /** Avbryt pågående attackträff (död, zonbyte). */
   clearAttack(): void {
@@ -129,6 +136,54 @@ export class HeroModel {
     else this.inv.onChange();
   }
 
+  /** Startar undanmanöver mot (dx, dy) i världsriktning. */
+  tryDodge(dx: number, dy: number, animDuration = 0): boolean {
+    const prof = dodgeProfile(this.cls.id);
+    const cost = dodgeStaminaCost(this.stats, prof.stamina_cost);
+    if (
+      !canStartDodge({
+        playing: this.s.playing,
+        dodgeCd: this.dodgeCd,
+        dodgeRemain: this.dodgeRemain,
+        stamina: this.s.stamina,
+        cost,
+        atkT: this.atkT,
+      })
+    )
+      return false;
+    const len = Math.hypot(dx, dy);
+    if (len < 0.01) {
+      const f = this.forward();
+      dx = f.x;
+      dy = f.y;
+    } else {
+      dx /= len;
+      dy /= len;
+    }
+    if (!this.spend(cost)) return false;
+    this.clearAttack();
+    this.moveTarget = null;
+    this.blocking = false;
+    this.dodgeCd = prof.cooldown_s;
+    this.iframeT = prof.iframes_s;
+    this.dodgeRemain = prof.duration_s;
+    const spd = prof.distance / prof.duration_s;
+    this.dodgeVx = dx * spd;
+    this.dodgeVy = dy * spd;
+    this.shieldDodge = !!prof.shield;
+    this.s.facing = Math.atan2(dx, dy);
+    this.dodgeT = Math.max(prof.duration_s, animDuration);
+    return true;
+  }
+
+  dodging(): boolean {
+    return this.dodgeRemain > 0;
+  }
+
+  invulnerable(): boolean {
+    return this.iframeT > 0;
+  }
+
   /** Regenerering per bildruta. */
   regen(dt: number): void {
     const s = this.s;
@@ -140,6 +195,10 @@ export class HeroModel {
     this.atkT -= dt;
     if (this.atkHitT > 0) this.atkHitT -= dt;
     if (this.dodgeT > 0) this.dodgeT -= dt;
+    if (this.dodgeCd > 0) this.dodgeCd -= dt;
+    if (this.iframeT > 0) this.iframeT -= dt;
+    if (this.dodgeRemain > 0) this.dodgeRemain -= dt;
+    if (this.dodgeRemain <= 0) this.shieldDodge = false;
     this.skillCd -= dt;
     this.curse -= dt;
   }
