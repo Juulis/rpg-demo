@@ -31,6 +31,7 @@ export class Hud {
         <div class="bar xp"><i></i><span></span></div>
       </div>
       <div class="lvl"></div>
+      <div class="clock"></div>
       <div class="pots"><div class="pot hp"><b>3</b><span></span></div><div class="pot st"><b>4</b><span></span></div></div>
       <div class="help"></div>
       <div class="bossbar hidden"><div class="bbName"></div><div class="bbTrack"><i></i></div><div class="bbPhase"></div></div>`;
@@ -46,6 +47,7 @@ export class Hud {
       xp: '.bar.xp i',
       xpT: '.bar.xp span',
       lvl: '.lvl',
+      clock: '.clock',
       potHp: '.pot.hp span',
       potSt: '.pot.st span',
       help: '.help',
@@ -110,7 +112,7 @@ export class Hud {
     this.set('bossPhase', phase);
   }
 
-  update(dt: number, h: Hero, cam: Camera): void {
+  update(dt: number, h: Hero, cam: Camera, clock?: { period: string; time: string }): void {
     const s = h.s;
     this.width('hp', s.hp / s.maxHp);
     this.set('hpT', `${Math.ceil(s.hp)} / ${s.maxHp}`);
@@ -120,6 +122,7 @@ export class Hud {
     this.width('xp', s.xp / need);
     this.set('xpT', this.text.t('hud.xp', { xp: s.xp, need }));
     this.set('lvl', this.text.t('hud.level', { level: s.level }));
+    if (clock) this.set('clock', this.text.t('hud.clock', { period: clock.period, time: clock.time }));
     this.set('potHp', this.text.t('hud.potions', { count: h.inv.countPotions('hp') }));
     this.set('potSt', this.text.t('hud.potions', { count: h.inv.countPotions('st') }));
     if (this.msgT > 0 && (this.msgT -= dt) <= 0) this.msg.classList.add('hidden');

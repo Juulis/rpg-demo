@@ -135,8 +135,9 @@ export class MapModule implements GameModule {
     }
     const z = ctx.zone;
     const h = ctx.hero;
-    v.mini.draw(z, h, t);
-    if (this.open) v.big.draw(z, h, t);
+    const ct = ctx.clock?.time ?? 0;
+    v.mini.draw(z, h, t, ct);
+    if (this.open) v.big.draw(z, h, t, ct);
   }
 
   dispose(): void {

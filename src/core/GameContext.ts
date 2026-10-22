@@ -6,6 +6,7 @@ import type { FoundEntry } from './SaveBackend';
 import type { GameData, VillageZoneDef } from '../data/types';
 import type { WorldState } from '../world/worldStateTypes';
 import type { WorldStateService } from '../world/WorldStateService';
+import type { GameClockSnapshot } from '../world/GameClock';
 
 /**
  * Koordinater (se ARCHITECTURE.md): världsenheter = samma enhet som i speldata (spawnzoner/portal_by, 3D-versionens meter).
@@ -101,6 +102,8 @@ export interface HeroSave {
     stage: number;
     runes: number;
     city: string;
+    /** Spelklocka i sekunder (#47). */
+    worldTime?: number;
   } | null;
   /** Per-hjälte fynd (lorebok); sätts av SaveBackend vid load, inte av Game.getSnapshot(). */
   foundItems?: Record<string, FoundEntry>;
@@ -118,6 +121,8 @@ export interface GameContext {
   rng: Rng;
   /** Per-hjälte världstillstånd (#37). */
   worldState: WorldStateService;
+  /** Spelklocka: `day`, `time` (sekunder), `isNight` (#47). */
+  clock: Readonly<GameClockSnapshot>;
 }
 
 /** En utbytbar del av spelet (AudioManager, SaveManager, MapUI, StartMenu, Lorebook …). Registreras i src/main.ts. */

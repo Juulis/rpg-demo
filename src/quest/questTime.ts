@@ -1,11 +1,11 @@
-/** Speldygn och klockslag från världstid (90 enheter = ett dygn). */
-export function gameDay(time: number): number {
-  return Math.floor(time / 90);
-}
+import { clockHourMinute, isDaytime, gameDay, SECONDS_PER_DAY, timeOfDaySeconds } from '../world/GameClock';
+
+/** Speldygn och klockslag från spelklockan (48 min = ett dygn). */
+export { gameDay };
 
 export function gameMinutesOfDay(time: number): number {
-  const frac = (time % 90) / 90;
-  return Math.floor(frac * 24 * 60);
+  const { hour, minute } = clockHourMinute(time);
+  return hour * 60 + minute;
 }
 
 function parseHm(hhmm: string): number {
@@ -20,3 +20,5 @@ export function inTimeWindow(time: number, from: string, to: string): boolean {
   if (a <= b) return cur >= a && cur < b;
   return cur >= a || cur < b;
 }
+
+export { isDaytime, SECONDS_PER_DAY, timeOfDaySeconds };

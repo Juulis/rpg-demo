@@ -1,4 +1,5 @@
 import type { HeroState, ZoneView } from '../core/GameContext';
+import { mapFogColor } from './fogColor';
 import type { GoalTracker } from './GoalTracker';
 import type { MapModel } from './MapModel';
 import type { MapPainter } from './MapPainter';
@@ -29,7 +30,7 @@ export class MapView {
     this.canvas.style.display = v ? 'block' : 'none';
   }
 
-  draw(z: ZoneView, h: Readonly<HeroState>, time: number): void {
+  draw(z: ZoneView, h: Readonly<HeroState>, time: number, clockTime = 0): void {
     const prep = this.painter.prepare(this.canvas);
     if (!prep) return;
     const { c, W, H } = prep;
@@ -40,7 +41,7 @@ export class MapView {
     const s = Math.min((W - pad * 2) / (x1 - x0), (H - pad * 2 - 40) / (y1 - y0));
     const p = { s, ox: W / 2 - ((x0 + x1) / 2) * s, oy: H / 2 + 20 - ((y0 + y1) / 2) * s, mini: false };
     c.save();
-    this.painter.world(c, z, p, [11, 12, 14, 230]);
+    this.painter.world(c, z, p, mapFogColor(clockTime, false));
     const g = this.goals.goal(z, h.pos);
     if (g) this.painter.goalRing(c, g, p, 0.5 + 0.5 * Math.sin(time / 250));
     this.painter.hero(c, h, p);

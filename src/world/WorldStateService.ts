@@ -25,6 +25,10 @@ export class WorldStateService {
     if (Number.isFinite(day) && day >= 0) this.gameDay = Math.floor(day);
   }
 
+  getGameDay(): number {
+    return this.gameDay;
+  }
+
   lastRumorForNpc(npcId: string): string | undefined {
     return this.state.rumors_last[npcId];
   }

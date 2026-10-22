@@ -4,6 +4,7 @@
  */
 export const SV = {
   hud: {
+    clock: '{period} · {time}',
     level: 'Nivå {level}',
     xp: 'XP {xp} / {need}',
     hp: 'Liv',

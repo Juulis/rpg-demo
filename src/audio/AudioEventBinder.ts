@@ -37,6 +37,7 @@ export class AudioEventBinder {
       bus.on('map_toggle', () => this.player.play('toggle')),
       bus.on('ui_open', () => this.player.play('click')),
       bus.on('level_up', () => this.player.play('rune', { rate: 1.25, vary: 0 })),
+      bus.on('night_ambient', (p) => this.player.play('night', { rate: 0.7 + p.intensity * 0.2, vary: 0.15 })),
     ];
   }
 

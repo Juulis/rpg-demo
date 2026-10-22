@@ -33,6 +33,7 @@ const { MenuModule } = await import('../src/menu/MenuModule');
 const { MapModule } = await import('../src/map/MapModule');
 const { Rng } = await import('../src/core/Rng');
 const { WorldStateService } = await import('../src/world/WorldStateService');
+const { DEFAULT_CLOCK_TIME, snapshotAt } = await import('../src/world/GameClock');
 import type { GameEvents } from '../src/core/events';
 import type { GameContext, HeroState } from '../src/core/GameContext';
 
@@ -92,6 +93,7 @@ const ctx: GameContext = {
   data: DATA,
   rng: new Rng(1),
   worldState: new WorldStateService(),
+  clock: snapshotAt(DEFAULT_CLOCK_TIME),
 };
 // Motorstub: hjälten är skrivbar bara här (som i Game), moduler ser Readonly<HeroState>
 const H = ctx.hero as HeroState;

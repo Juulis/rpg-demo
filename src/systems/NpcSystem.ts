@@ -76,7 +76,7 @@ export class NpcSystem {
   /** Bark när hjälten går in i radie (inte under aktiv dialog). */
   updateBarks(w: World, text: Text, dialogOpen: boolean, onBark: (line: string, x: number, y: number) => void): void {
     if (dialogOpen) return;
-    const ctx = { world: this.worldState.get(), day: Math.floor(w.time / 90) };
+    const ctx = { world: this.worldState.get(), day: this.worldState.getGameDay() };
     const hx = w.hero.pos.x;
     const hy = w.hero.pos.y;
     for (const n of this.list) {

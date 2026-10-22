@@ -37,4 +37,8 @@ export type GameEvents = {
   legendary_found: { itemId: string };
   city_state_changed: { city: string; state: string };
   runes_changed: { count: number };
+  /** Nytt speldygn (#47). */
+  day_changed: { day: number };
+  /** Avlägset nattljud (inte spawn-relaterat). */
+  night_ambient: { intensity: number };
 };
