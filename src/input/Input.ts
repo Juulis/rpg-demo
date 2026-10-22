@@ -29,6 +29,20 @@ export class Input {
     const vis = (): void => this.reset();
     document.addEventListener('visibilitychange', vis);
     this.off.push(() => document.removeEventListener('visibilitychange', vis));
+    // Alt+klick på föremålsetiketter: preventDefault i capture hindrar att webbläsaren släpper Alt före klicket.
+    for (const t of ['mousedown', 'mouseup', 'click', 'contextmenu', 'pointerdown'] as const) {
+      on(
+        t,
+        (e) => {
+          const me = e as MouseEvent;
+          if (me.altKey) {
+            me.preventDefault();
+            this.altHeld = true;
+          } else if (this.altHeld) this.altHeld = false;
+        },
+        true,
+      );
+    }
     on('pointermove', (e) => {
       this.mouse.x = e.clientX;
       this.mouse.y = e.clientY;

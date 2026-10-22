@@ -32,6 +32,7 @@ export class LootLabels {
         el.style.color = this.loot.color(d.data);
         const target = d;
         el.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
           e.stopPropagation();
           this.onClick(target);
         });
