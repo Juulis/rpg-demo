@@ -1160,6 +1160,44 @@
       "visual": "Fem bleka fingerben på en silverkedja, pekar alltid bort från bäraren."
     },
     {
+      "id": "quest_ulvhilds_pals",
+      "name": "Ulvhilds päls",
+      "base": "benharnesk",
+      "type": "brost",
+      "level": 6,
+      "item_level": 6,
+      "requirements": { "level": 5 },
+      "fixed": { "defense_pct": 0.5, "life": 25, "vs_bestar_damage_pct": 0.15 },
+      "visual": "Gråbjörnens päls, tung och blodig, fortfarande varm."
+    },
+    {
+      "id": "quest_gravvaktarnas_kronika",
+      "name": "Gravvaktarnas krönika",
+      "base": "bensmycke",
+      "type": "amulett",
+      "level": 8,
+      "item_level": 8,
+      "requirements": { "level": 7 },
+      "fixed": { "magic_find": 0.2, "vs_ododa_damage_pct": 0.2 },
+      "visual": "Bunden bok av pergament och ben, handskriven av gravvaktarna."
+    },
+    {
+      "id": "likatarens_kake",
+      "name": "Likätarens käke",
+      "base": "benyxa",
+      "type": "yxa",
+      "level": 11,
+      "item_level": 11,
+      "requirements": { "level": 11 },
+      "fixed": {
+        "damage_pct": 0.8,
+        "life_on_hit": 4,
+        "vs_bestar_damage_pct": 0.3,
+        "strong_hit_chance": 0.08
+      },
+      "visual": "Yxa vars blad är en hel vargkäke med tänderna kvar, skaft av ett svartnat skenben."
+    },
+    {
       "id": "vargtandens_kniv",
       "name": "Vargtandens kniv",
       "base": "kniv",
