@@ -13,6 +13,8 @@ import { Hero } from '../entities/Hero';
 import type { NpcEntity } from '../entities/NpcEntity';
 import type { Monster } from '../entities/Monster';
 import { MonsterFactory } from '../entities/MonsterFactory';
+import { syncProximitySpawns } from '../systems/SpawnProximity';
+import { ForestGroundChunks } from '../world/ForestGroundChunks';
 import { Input } from '../input/Input';
 import { Loot } from '../logic/loot/Loot';
 import { AssetStore, dirIndex } from '../render/Assets';
@@ -151,6 +153,7 @@ export class Game {
   private targetDrop: GroundDrop | null = null;
   private dead = false;
   private decorAnims: StripAnimSprite[] = [];
+  private forestGround: ForestGroundChunks | null = null;
 
   constructor(private readonly modules: GameModule[] = []) {
     this.ctx = {
@@ -389,6 +392,7 @@ export class Game {
     this.dayNight?.attachWorldEffects(r.effects);
     const built = this.zones.build(name);
     r.ground.addChild(built.ground);
+    this.forestGround = built.ground instanceof ForestGroundChunks ? built.ground : null;
     for (const d of built.decor) r.objects.addChild(d);
     this.decorAnims = built.decorAnims;
     const hs = this.heroState;
@@ -416,6 +420,7 @@ export class Game {
       hero,
       zone,
       monsters: [],
+      spawnQueue: [],
       drops: [],
       projectiles: [],
       objects: r.objects,
@@ -435,6 +440,7 @@ export class Game {
     this.targetMonster = null;
     this.targetDrop = null;
     this.factory.populate(this.world, hs.city);
+    syncProximitySpawns(this.world, this.factory, hs.pos);
     this.portals.attach(built.runeSprites);
     this.parallax.set(
       this.assets.backgrounds.get('himmel'),
@@ -781,6 +787,8 @@ export class Game {
     if (qh) this.questEncounters.update(w, qh);
     const h = w.hero;
     if (h.s.playing) this.heroUpdate(dt);
+    this.forestGround?.sync(h.pos);
+    syncProximitySpawns(w, this.factory, h.pos);
     this.ai.update(dt);
     this.combat.update(dt);
     this.lootSys.update(dt);

@@ -10,7 +10,14 @@ import type { Monster } from '../entities/Monster';
 import type { Loot } from '../logic/loot/Loot';
 import type { Drop as DropData } from '../logic/loot/types';
 import type { Text } from '../text/Text';
+import type { SpawnSpec } from './SpawnSystem';
 import type { Zone } from '../world/Zone';
+
+export interface QueuedSpawn {
+  spec: SpawnSpec;
+  pos: Vec2;
+  done: boolean;
+}
 
 export interface GroundDrop {
   pos: Vec2;
@@ -47,6 +54,8 @@ export interface World {
   hero: Hero;
   zone: Zone;
   monsters: Monster[];
+  /** Startskogen: monster skapas när hjälten närmar sig. */
+  spawnQueue: QueuedSpawn[];
   drops: GroundDrop[];
   projectiles: Projectile[];
   objects: Container;

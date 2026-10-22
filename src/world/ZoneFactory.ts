@@ -5,6 +5,8 @@ import { DATA } from '../data';
 import type { AssetStore, DecorId } from '../render/Assets';
 import { Iso, TILE_WORLD } from '../render/Iso';
 import { StripAnimSprite } from '../render/StripAnimSprite';
+import { FOREST_DECOR_MID, FOREST_DECOR_OUTER, FOREST_PLAY_RADIUS, FOREST_SAFE_RADIUS } from './forestConstants';
+import { ForestGroundChunks } from './ForestGroundChunks';
 import { Zone, type ZoneName } from './Zone';
 
 export const RUNE_POS: readonly [number, number][] = [
@@ -65,38 +67,20 @@ export class ZoneFactory {
 
   private forest(): BuiltZone {
     const R = new Rng(7);
-    const zone = new Zone('forest', 'startskogen', 90, 90);
-    zone.circle = 45;
-    zone.safeRadius = 12;
-    const ground = new Container();
+    const span = Math.ceil(FOREST_PLAY_RADIUS * 2.2);
+    const zone = new Zone('forest', 'startskogen', span, span);
+    zone.circle = FOREST_PLAY_RADIUS;
+    zone.safeRadius = FOREST_SAFE_RADIUS;
+    const ground = new ForestGroundChunks(this.assets);
     const decor: Container[] = [];
     const decorAnims: StripAnimSprite[] = [];
-    const N = 30;
-    for (let i = -N; i <= N; i++)
-      for (let j = -N; j <= N; j++) {
-        const x = i * TILE_WORLD;
-        const y = j * TILE_WORLD;
-        const d = Math.hypot(x, y);
-        if (d > 58) continue;
-        const id =
-          d < 7
-            ? R.pick(['lera_1', 'lera_2', 'lera_3'])
-            : d < 9
-              ? 'gras_till_lera'
-              : d > 44
-                ? R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke'])
-                : R.next() < 0.18
-                  ? R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke'])
-                  : R.pick(['gras_1', 'gras_2', 'gras_3', 'gras_4']);
-        this.tile(id, i, j, ground);
-      }
     const free = (x: number, y: number, r: number): boolean =>
-      Math.hypot(x, y) > 12 &&
+      Math.hypot(x, y) > FOREST_SAFE_RADIUS &&
       RUNE_POS.every(([a, b]) => Math.hypot(x - a, y - b) > 4) &&
       zone.colliders.every((c) => Math.hypot(x - c.x, y - c.y) > c.r + r);
-    for (let n = 0, g = 0; n < 130 && g < 5000; g++) {
+    for (let n = 0, g = 0; n < 280 && g < 12000; g++) {
       const a = R.next() * 6.283;
-      const d = Math.sqrt(R.next()) * 57;
+      const d = Math.sqrt(R.next()) * FOREST_DECOR_OUTER;
       const x = Math.cos(a) * d;
       const y = Math.sin(a) * d;
       if (!free(x, y, 1)) continue;
@@ -104,9 +88,9 @@ export class ZoneFactory {
       zone.colliders.push({ x, y, r: 0.9 });
       n++;
     }
-    for (let n = 0, g = 0; n < 40 && g < 5000; g++) {
+    for (let n = 0, g = 0; n < 85 && g < 12000; g++) {
       const a = R.next() * 6.283;
-      const d = Math.sqrt(R.next()) * 44;
+      const d = Math.sqrt(R.next()) * FOREST_DECOR_MID;
       const x = Math.cos(a) * d;
       const y = Math.sin(a) * d;
       if (!free(x, y, 1.2)) continue;
