@@ -10,6 +10,7 @@ import {
   worldHeightMForHeroOrNpc,
   worldHeightMForMonster,
 } from '../src/render/figureWorldHeights';
+import { animDisplayScale, animSetRefHeight } from '../src/render/spriteLayout';
 import type { Anim, AnimSet } from '../src/render/spriteAnim';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../public/assets/2d/sprites');
@@ -37,6 +38,8 @@ function heroSet(): AnimSet {
     idle: animFrom(idle.w, idle.h, idle.anchor, HERO_SCALE),
     gang: animFrom(walk.w, walk.h, walk.anchor, HERO_SCALE),
     run: animFrom(readHeroSheet('riddare_run_8dir').w, readHeroSheet('riddare_run_8dir').h, walk.anchor, HERO_SCALE),
+    attack: animFrom(readHeroSheet('riddare_attack_8dir').w, readHeroSheet('riddare_attack_8dir').h, walk.anchor, HERO_SCALE),
+    dod: animFrom(readHeroSheet('riddare_dodge_8dir').w, readHeroSheet('riddare_dodge_8dir').h, walk.anchor, HERO_SCALE),
   };
 }
 
@@ -91,5 +94,13 @@ assertNear(heroShown, npcShown, REL_TOL, 'hjälte vs NPC');
 assertNear(heroShown, skShown, REL_TOL, 'hjälte vs skelett');
 assertNear(wolfShown, wolfHm, 0.02, 'varg målhöjd');
 assertNear(wolfShown / heroShown, wolfHm / heroHm, REL_TOL, 'varg/hjälte-förhållande');
+assert.ok(wolfShown >= heroShown * 0.65, 'minsta varg känns farlig vs hjälte');
+
+const refH = animSetRefHeight(hero);
+for (const name of ['gang', 'attack', 'dod'] as const) {
+  const a = hero[name];
+  assert.ok(a, name);
+  assert.equal(animDisplayScale(heroK, refH, a), animDisplayScale(heroK, refH, hero.gang!), `hjälte ${name} pixel-skala`);
+}
 
 console.log('figure-world-scale.test.mts: ok');

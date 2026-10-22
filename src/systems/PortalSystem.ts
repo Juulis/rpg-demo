@@ -38,15 +38,11 @@ export class PortalSystem {
     return w.zone.runes.findIndex((r) => !r.active && Math.hypot(r.x - w.hero.pos.x, r.y - w.hero.pos.y) < 2.6);
   }
 
-  /** Väcker runan (E kostar 20 uthållighet, beröring är gratis). */
-  activate(i: number, free: boolean): boolean {
+  /** Väcker runan (E eller beröring). */
+  activate(i: number, _free: boolean): boolean {
     const w = this.w();
     const r = w.zone.runes[i];
     if (!w.hero.s.playing || !r || r.active) return false;
-    if (!free && !w.hero.spend(20)) {
-      w.fb.flash(w.text.t('msg.no_stamina'));
-      return false;
-    }
     r.active = true;
     w.hero.s.runes++;
     this.paintRune(i);

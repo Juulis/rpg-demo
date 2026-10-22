@@ -1,6 +1,7 @@
 import { Container } from 'pixi.js';
 import type { Vec2 } from '../core/GameContext';
 import { DirSprite } from '../render/DirSprite';
+import { scaleKForWorldHeightM, shadowRadiusForWorldHeightM, worldHeightMForHeroOrNpc } from '../render/figureWorldHeights';
 import type { AnimSet } from '../render/spriteAnim';
 import type { WorldFigureId } from '../render/WorldFigureSprites';
 import { Iso } from '../render/Iso';
@@ -34,7 +35,8 @@ export class WorldAmbientEntity {
     this.target = { x: pos.x, y: pos.y };
     this.isHandlare = figure === 'handlare';
     this.canRun = figure === 'radjur' || figure === 'hare' || figure === 'rav';
-    this.sprite = new DirSprite(set, 1, 20, false);
+    const hm = worldHeightMForHeroOrNpc();
+    this.sprite = new DirSprite(set, scaleKForWorldHeightM(set, hm), shadowRadiusForWorldHeightM(hm), false);
     this.sprite.play('idle');
     this.view.addChild(this.sprite);
     this.syncView();

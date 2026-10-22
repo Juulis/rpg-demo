@@ -36,8 +36,6 @@ export interface HeroState {
   gold: number;
   hp: number;
   maxHp: number;
-  stamina: number;
-  maxStamina: number;
   /** Världsposition (världsenheter). */
   pos: Vec2;
   inv: ItemInstance[];

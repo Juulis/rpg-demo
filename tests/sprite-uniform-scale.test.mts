@@ -3,12 +3,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Texture } from 'pixi.js';
-import { animBodyHeight, animDisplayScale, animSetRefHeight } from '../src/render/spriteLayout';
+import { animDisplayScale, animSetRefHeight } from '../src/render/spriteLayout';
 import type { Anim, AnimSet } from '../src/render/spriteAnim';
 
 const HERO_SCALE = 0.55;
 const DISPLAY_K = 1;
-const TOL = 2;
 const HERO_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '../public/assets/2d/sprites/hero');
 
 function readSheet(name: string): { w: number; h: number; anchor: [number, number] } {
@@ -32,21 +31,21 @@ function animFromMeta(w: number, h: number, anchor: [number, number], scale = HE
   };
 }
 
-function assertUniformHeights(set: AnimSet, label: string): void {
+/** Alla animationer delar samma px-skala (ingen rut-normalisering). */
+function assertSamePixelScale(set: AnimSet, label: string): void {
   const refH = animSetRefHeight(set);
   const names = ['idle', 'gang', 'run', 'attack', 'dod'] as const;
-  const heights: number[] = [];
+  const scales: number[] = [];
   for (const n of names) {
     const a = set[n];
     if (!a) continue;
-    const frameH = a.h * animDisplayScale(DISPLAY_K, refH, a);
-    assert.ok(Math.abs(frameH - refH * DISPLAY_K * (a.scale ?? 1)) < 0.02, `${label} ${n} frameH`);
-    heights.push(animBodyHeight(DISPLAY_K, refH, a));
+    const k = animDisplayScale(DISPLAY_K, refH, a);
+    scales.push(k);
+    assert.ok(Math.abs(k - DISPLAY_K * (a.scale ?? 1)) < 0.0001, `${label} ${n} display scale`);
   }
-  assert.ok(heights.length >= 2, `${label}: behöver minst två animationer`);
-  const min = Math.min(...heights);
-  const max = Math.max(...heights);
-  assert.ok(max - min <= TOL, `${label}: kroppshöjd ${min.toFixed(1)}..${max.toFixed(1)} (tol ${TOL})`);
+  assert.ok(scales.length >= 2, `${label}: behöver minst två animationer`);
+  const first = scales[0]!;
+  for (const k of scales) assert.equal(k, first, `${label}: samma pixel-skala i alla anims`);
 }
 
 function sheetAnim(name: string): Anim {
@@ -63,8 +62,12 @@ const riddare: AnimSet = {
   attack: sheetAnim('riddare_attack_8dir'),
   dod: sheetAnim('riddare_dodge_8dir'),
 };
-assertUniformHeights(riddare, 'riddare');
+assertSamePixelScale(riddare, 'riddare');
 assert.ok(runM.h > walkM.h * 1.05, 'run-ruta större än walk');
+const atkK = animDisplayScale(1, animSetRefHeight(riddare), riddare.attack!);
+const walkK = animDisplayScale(1, animSetRefHeight(riddare), riddare.gang!);
+assert.equal(atkK, walkK, 'attack samma k som walk');
+assert.ok(riddare.attack!.h > riddare.gang!.h * 0.9, 'attack-ruta finns');
 
 for (const cls of ['amazon', 'barbar'] as const) {
   const prefix = cls === 'amazon' ? 'amazon' : 'barbar';
@@ -82,7 +85,7 @@ for (const cls of ['amazon', 'barbar'] as const) {
     else if (stem === 'attack') set.attack = anim;
     else set.dod = anim;
   }
-  if (set.gang) assertUniformHeights(set, prefix);
+  if (set.gang) assertSamePixelScale(set, prefix);
 }
 
 console.log('sprite-uniform-scale.test.mts: ok');

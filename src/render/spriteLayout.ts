@@ -1,14 +1,14 @@
 import type { Anim, AnimSet } from './spriteAnim';
 
-/** Referenshöjd (px) för enhetlig skala — walk först, annars idle/run. */
+/** Walk-rutans pixelhöjd (kalibrering av världsskala — inte innehållsnormalisering). */
 export function animSetRefHeight(set: AnimSet): number {
-  const ref = set.gang ?? set.idle ?? set.run ?? set.attack ?? set.dod;
+  const ref = set.gang ?? set.run ?? set.idle ?? set.attack ?? set.dod;
   return ref?.h ?? 256;
 }
 
-/** Pixi-skala så att alla animationer i setet får samma logiska storlek (fotankare oförändrad). */
-export function animDisplayScale(scaleK: number, refH: number, anim: Anim): number {
-  return scaleK * (anim.scale ?? 1) * (refH / anim.h);
+/** Pixi-skala: samma källpixel → samma skärmpixel i alla animationer (walk-referens vid scaleK). */
+export function animDisplayScale(scaleK: number, _refH: number, anim: Anim): number {
+  return scaleK * (anim.scale ?? 1);
 }
 
 /** Synlig höjd från fotpunkt till topp av rutan (px) — samma mått som DirSprite.height2. */

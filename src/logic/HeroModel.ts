@@ -1,7 +1,7 @@
 import type { HeroState, Vec2 } from '../core/GameContext';
 import { DATA } from '../data';
 import type { HeroClass } from '../data/types';
-import { canStartDodge, dodgeProfile, dodgeStaminaCost } from './dodge';
+import { canStartDodge, dodgeProfile } from './dodge';
 import type { HeroStats, Loot } from './loot/Loot';
 import { SLOTS, type Equip, type Item } from './loot/types';
 import { Inventory } from './Inventory';
@@ -11,7 +11,6 @@ export class HeroModel {
   readonly cls: HeroClass;
   stats: HeroStats;
   readonly inv: Inventory;
-  stDelay = 0;
   moveTarget: Vec2 | null = null;
   moving = false;
   blocking = false;
@@ -52,7 +51,6 @@ export class HeroModel {
     if (s.fresh) this.startGear();
     this.stats = this.compute();
     s.hp = s.maxHp = this.stats.maxHp;
-    s.stamina = s.maxStamina = this.stats.maxSt;
   }
 
   get pos(): Vec2 {
@@ -71,9 +69,7 @@ export class HeroModel {
   recalc(): void {
     this.stats = this.compute();
     this.s.maxHp = this.stats.maxHp;
-    this.s.maxStamina = this.stats.maxSt;
     this.s.hp = Math.min(this.s.hp, this.stats.maxHp);
-    this.s.stamina = Math.min(this.s.stamina, this.stats.maxSt);
   }
 
   /** Startutrustning: Normal tier 1 enligt klasser.json ({item, count, quality, affixes}). */
@@ -93,13 +89,6 @@ export class HeroModel {
     this.s.fresh = false;
   }
 
-  spend(n: number): boolean {
-    if (this.s.stamina < n) return false;
-    this.s.stamina -= n;
-    this.stDelay = (DATA.classes.meta as unknown as { resource: { regen_delay_s: number } }).resource.regen_delay_s;
-    return true;
-  }
-
   /** XP-behov för nästa nivå: 100·n^1,5. Returnerar antal nya nivåer. */
   static need(n: number): number {
     return Math.round(100 * Math.pow(n, 1.5));
@@ -115,7 +104,6 @@ export class HeroModel {
       ups++;
       this.recalc();
       s.hp = this.stats.maxHp;
-      s.stamina = this.stats.maxSt;
     }
     if (s.level >= this.maxLevel) s.xp = 0;
     return ups;
@@ -129,8 +117,6 @@ export class HeroModel {
     const st = this.stats;
     if (b.heal) s.hp = Math.min(st.maxHp, s.hp + b.heal);
     if (b.heal_pct) s.hp = Math.min(st.maxHp, s.hp + st.maxHp * b.heal_pct);
-    if (b.stamina) s.stamina = Math.min(st.maxSt, s.stamina + b.stamina);
-    if (b.stamina_pct) s.stamina = Math.min(st.maxSt, s.stamina + st.maxSt * b.stamina_pct);
     it.n = (it.n ?? 1) - 1;
     if (it.n <= 0) this.inv.lift(it);
     else this.inv.onChange();
@@ -139,14 +125,11 @@ export class HeroModel {
   /** Startar undanmanöver mot (dx, dy) i världsriktning. */
   tryDodge(dx: number, dy: number, animDuration = 0): boolean {
     const prof = dodgeProfile(this.cls.id);
-    const cost = dodgeStaminaCost(this.stats, prof.stamina_cost);
     if (
       !canStartDodge({
         playing: this.s.playing,
         dodgeCd: this.dodgeCd,
         dodgeRemain: this.dodgeRemain,
-        stamina: this.s.stamina,
-        cost,
         atkT: this.atkT,
       })
     )
@@ -160,7 +143,6 @@ export class HeroModel {
       dx /= len;
       dy /= len;
     }
-    if (!this.spend(cost)) return false;
     this.clearAttack();
     this.moveTarget = null;
     this.blocking = false;
@@ -187,9 +169,6 @@ export class HeroModel {
   /** Regenerering per bildruta. */
   regen(dt: number): void {
     const s = this.s;
-    this.stDelay -= dt;
-    if (this.stDelay <= 0 && !this.blocking) s.stamina = Math.min(this.stats.maxSt, s.stamina + this.stats.regen * dt);
-    if (this.blocking) s.stamina = Math.max(0, s.stamina - 4 * dt);
     if (this.stats.lifeRegen) s.hp = Math.min(this.stats.maxHp, s.hp + this.stats.lifeRegen * dt);
     this.atkCd -= dt;
     this.atkT -= dt;

@@ -67,16 +67,15 @@ export class CombatRules {
     heroLvl: number;
     front: boolean;
     moving: boolean;
-    stamina: number;
     blocking: boolean;
   }): MonsterHitResult {
     const R = this.rng;
     const { st } = o;
     if (R.next() > this.L.hitChance(15 + 8 * o.monsterLvl, 15 + 8 * o.heroLvl + st.defense * 2, o.monsterLvl, o.heroLvl))
       return { kind: 'miss' };
-    if (st.block > 0 && o.front && o.stamina >= 5 && R.next() < st.block * (o.moving ? 0.5 : 1)) return { kind: 'block' };
+    if (st.block > 0 && o.front && R.next() < st.block * (o.moving ? 0.5 : 1)) return { kind: 'block' };
     let d = o.raw;
-    const reduced = o.blocking && o.front && o.stamina >= 5;
+    const reduced = o.blocking && o.front;
     if (reduced) d *= 0.3;
     return { kind: 'hit', dmg: Math.max(1, Math.round(d - st.defReduce)), reduced };
   }
