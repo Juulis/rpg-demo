@@ -1,3 +1,4 @@
+import { xpMultiplier } from '../dev/DevCheats';
 import type { Rng } from '../core/Rng';
 import { DATA } from '../data';
 import type { DamageType } from '../data/types';
@@ -86,6 +87,6 @@ export class CombatRules {
     const row = DATA.monsterLevels.xp_penalty.table.find((r) => r.hjalte_minus_monster === Math.max(-8, Math.min(12, diff)));
     let k = row ? row.xp_mult : 1;
     if (m.boss) k = Math.max(0.25, k);
-    return Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult);
+    return Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
   }
 }

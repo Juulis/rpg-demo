@@ -1,3 +1,4 @@
+import { effectiveMagicFind } from '../dev/DevCheats';
 import type { GameAuthority } from '../core/GameAuthority';
 import type { HeroStats, Loot } from './loot/Loot';
 import type { Drop } from './loot/types';
@@ -24,10 +25,17 @@ export class LocalAuthority implements GameAuthority {
 
   killReward(o: Parameters<GameAuthority['killReward']>[0]): { xp: number; drops: Drop[] } {
     const xp = this.rules.monsterXp(o.m, o.heroLvl);
-    const { drops } = this.L.rollDrops({ id: o.m.id, mlvl: o.m.lvl, ilvl: o.ilvl, mf: o.mf, goldFind: o.goldFind, firstKill: o.firstKill });
+    const mf = effectiveMagicFind(o.mf);
+    const { drops } = this.L.rollDrops({ id: o.m.id, mlvl: o.m.lvl, ilvl: o.ilvl, mf, goldFind: o.goldFind, firstKill: o.firstKill });
     for (let i = 0; i < o.extraRolls; i++)
       drops.push(
-        ...this.L.rollDrops({ id: o.m.id, mlvl: o.m.lvl, ilvl: o.ilvl, mf: o.mf + (o.qualityMult - 1) * 100, goldFind: o.goldFind }).drops,
+        ...this.L.rollDrops({
+          id: o.m.id,
+          mlvl: o.m.lvl,
+          ilvl: o.ilvl,
+          mf: effectiveMagicFind(o.mf + (o.qualityMult - 1) * 100),
+          goldFind: o.goldFind,
+        }).drops,
       );
     return { xp, drops };
   }

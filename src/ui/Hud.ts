@@ -1,3 +1,4 @@
+import { devCheatsEnabled, isAnyDevCheatActive, subscribeDevCheats } from '../dev/DevCheats';
 import type { Hero } from '../entities/Hero';
 import type { Camera } from '../render/Camera';
 import type { Text } from '../text/Text';
@@ -19,6 +20,7 @@ export class Hud {
   private readonly floaters: Floater[] = [];
   private msgT = 0;
   private readonly el: Record<string, HTMLElement> = {};
+  private readonly cheatIndicator: HTMLDivElement | null;
 
   constructor(private readonly text: Text) {
     this.root.id = 'hud';
@@ -55,7 +57,21 @@ export class Hud {
       const e = this.root.querySelector<HTMLElement>(sel);
       if (e) this.el[k] = e;
     }
+    if (devCheatsEnabled()) {
+      const ind = document.createElement('div');
+      ind.className = 'dev-cheat-indicator hidden';
+      ind.textContent = 'FUSK';
+      ind.title = 'Utvecklarfusk aktivt';
+      this.root.appendChild(ind);
+      this.cheatIndicator = ind;
+      subscribeDevCheats(() => this.syncCheatIndicator());
+      this.syncCheatIndicator();
+    } else this.cheatIndicator = null;
     this.relabel();
+  }
+
+  private syncCheatIndicator(): void {
+    this.cheatIndicator?.classList.toggle('hidden', !isAnyDevCheatActive());
   }
 
   relabel(): void {

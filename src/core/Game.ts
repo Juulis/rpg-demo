@@ -34,6 +34,7 @@ import { LootLabels } from '../ui/LootLabels';
 import { MonsterBar } from '../ui/MonsterBar';
 import { Tooltip } from '../ui/Tooltip';
 import type { Zone, ZoneName } from '../world/Zone';
+import { DevCheatsView } from '../dev/DevCheatsView';
 import { ZoneFactory } from '../world/ZoneFactory';
 
 const CLASS_TINT: Record<string, number> = { riddare: 0xffffff, barbar: 0xffd2b8, amazonkrigare: 0xffe6c8 };
@@ -159,6 +160,7 @@ export class Game {
       this.invUI.relabel();
     });
     this.bindInput(r.app.canvas);
+    DevCheatsView.tryCreate(this.input);
     const resize = (): void => {
       this.camera.resize(r.width, r.height);
       this.parallax.resize(r.width, r.height);
