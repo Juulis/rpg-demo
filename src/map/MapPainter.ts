@@ -138,7 +138,7 @@ export class MapPainter {
     c.fillStyle = '#f2c46b';
     c.font = FONT;
     c.textAlign = 'center';
-    c.fillText(g.text, x, y + 30);
+    c.fillText(this.model.t(g.text), x, y + 30);
   }
 
   /** Spelarpil; framåt = (sin, cos) av facing. */

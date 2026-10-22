@@ -31,6 +31,7 @@ const { SaveModule } = await import('../src/save/SaveModule');
 const { SaveMigrator } = await import('../src/save/SaveMigrator');
 const { MenuModule } = await import('../src/menu/MenuModule');
 const { MapModule } = await import('../src/map/MapModule');
+const { LocaleManager } = await import('../src/i18n/LocaleManager');
 const { Rng } = await import('../src/core/Rng');
 const { WorldStateService } = await import('../src/world/WorldStateService');
 const { DEFAULT_CLOCK_TIME, snapshotAt } = await import('../src/world/GameClock');
@@ -163,11 +164,12 @@ assert.deepEqual(played, ['boss', 'drop_rare', 'pickup_first', 'step', 'step']);
 offs.forEach((o) => o());
 
 // --- moduler
-const save = new SaveModule(gateway, new SerializedSaveBackend(new LocalStorageSaveBackend(store)), true, () => 123456789);
+const i18n = new LocaleManager({ dev: false });
+const save = new SaveModule(gateway, new SerializedSaveBackend(new LocalStorageSaveBackend(store)), true, () => 123456789, i18n);
 const audio = new AudioModule(save);
-const menu = new MenuModule(save);
-const map = new MapModule(save, () => document.body, false);
-for (const m of [audio, save, menu, map]) m.init(ctx);
+const menu = new MenuModule(save, i18n);
+const map = new MapModule(save, i18n, () => document.body, false);
+for (const m of [i18n, audio, save, menu, map]) m.init(ctx);
 await save.ready;
 await new Promise((r) => setTimeout(r, 30));
 

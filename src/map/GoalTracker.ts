@@ -1,10 +1,11 @@
 import type { Vec2, ZoneView } from '../core/GameContext';
+import type { Key } from '../i18n/types';
 import type { MapModel } from './MapModel';
 
 export interface Goal {
   x: number;
   y: number;
-  text: string;
+  text: Key;
 }
 
 /** Nästa mål: närmaste inaktiva runsten, annars portalen. */
@@ -23,13 +24,13 @@ export class GoalTracker {
           best = r;
         }
       }
-      if (best) return { x: best.x, y: best.y, text: 'Nästa mål: runsten' };
+      if (best) return { x: best.x, y: best.y, text: 'map.goal_rune' };
     }
     if (z.runes.length) {
       const p = z.portals[0];
-      if (p) return { x: p.x, y: p.y, text: 'Nästa mål: portalen' };
+      if (p) return { x: p.x, y: p.y, text: 'map.goal_portal' };
       const fp = this.model.forestPortal();
-      if (fp) return { x: fp[0], y: fp[1], text: 'Nästa mål: portalen' };
+      if (fp) return { x: fp[0], y: fp[1], text: 'map.goal_portal' };
     }
     return null;
   }
