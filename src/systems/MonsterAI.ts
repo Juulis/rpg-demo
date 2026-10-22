@@ -1,4 +1,5 @@
 import type { Monster } from '../entities/Monster';
+import type { WorldFighter } from '../entities/WorldFighter';
 import type { MonsterAttack } from '../entities/MonsterDefs';
 import type { MonsterFactory } from '../entities/MonsterFactory';
 import { dirIndex } from '../render/Assets';
@@ -38,8 +39,11 @@ export class MonsterAI {
         }
         continue;
       }
-      const hx = hp.x - m.pos.x;
-      const hy = hp.y - m.pos.y;
+      const threat = this.pickThreat(w, m);
+      const tx = threat ? threat.pos.x - m.pos.x : hp.x - m.pos.x;
+      const ty = threat ? threat.pos.y - m.pos.y : hp.y - m.pos.y;
+      const hx = tx;
+      const hy = ty;
       const d = Math.hypot(hx, hy) || 0.01;
       const D = m.def;
       for (const k of Object.keys(m.timers)) m.timers[k] = (m.timers[k] ?? 0) - dt;
@@ -53,7 +57,12 @@ export class MonsterAI {
       let sp = 0;
       let face: number | null = null;
       const playing = w.hero.s.playing;
-      const aggro = playing && (d < D.aggro_range || (m.aggroed && d < D.aggro_range * 2)) && (!m.boss || m.active);
+      const aggro =
+        !!threat &&
+        (!m.boss || m.active) &&
+        (threat.hero
+          ? playing && (d < D.aggro_range || (m.aggroed && d < D.aggro_range * 2))
+          : d < D.aggro_range * 1.15 || (m.aggroed && d < D.aggro_range * 2.5));
       if (m.boss && !m.active && playing && w.zone.inArena(hp)) {
         m.active = true;
         this.onBossStart(m);
@@ -71,7 +80,7 @@ export class MonsterAI {
         face = Math.atan2(vx, vy);
         if (!m.chargeHit && d < 1.3) {
           m.chargeHit = true;
-          this.combat.hurt(D.damage, m.pos, m);
+          this.hitThreat(threat, D.damage, m.pos, m);
         }
       } else if (aggro) {
         const ranged = D.attack_range > 5;
@@ -113,7 +122,14 @@ export class MonsterAI {
           if (d <= D.attack_range && m.cd <= 0) {
             m.cd = D.attack_cd * (m.es?.attackCd ?? 1);
             const a = D.attacks[0];
-            this.combat.projectile(m.pos, hp, a?.projectile_speed ?? 12, D.damage, D.ai === 'skelett_runprast' ? 'fire' : 'arrow', m);
+            this.combat.projectile(
+              m.pos,
+              threat?.pos ?? hp,
+              a?.projectile_speed ?? 12,
+              D.damage,
+              D.ai === 'skelett_runprast' ? 'fire' : 'arrow',
+              m,
+            );
             m.atk = 0.4;
           }
         } else {
@@ -125,7 +141,7 @@ export class MonsterAI {
           if (d < D.attack_range && m.cd <= 0) {
             m.cd = D.attack_cd * (m.es?.attackCd ?? 1);
             m.atk = 0.4;
-            this.combat.hurt(D.damage, m.pos, m);
+            this.hitThreat(threat, D.damage, m.pos, m);
           }
         }
       } else {
@@ -167,6 +183,32 @@ export class MonsterAI {
       m.moving = sp > 0.3;
       this.sync(m, dt);
     }
+  }
+
+  private pickThreat(w: World, m: Monster): { pos: { x: number; y: number }; hero: boolean; fighter: WorldFighter | null } | null {
+    const h = w.hero;
+    let best: { pos: { x: number; y: number }; hero: boolean; fighter: WorldFighter | null; d: number } | null = null;
+    if (h.s.playing) {
+      const d = Math.hypot(h.pos.x - m.pos.x, h.pos.y - m.pos.y);
+      best = { pos: h.pos, hero: true, fighter: null, d };
+    }
+    for (const f of w.worldFighters) {
+      if (!f.alive) continue;
+      const d = Math.hypot(f.pos.x - m.pos.x, f.pos.y - m.pos.y);
+      if (!best || d < best.d) best = { pos: f.pos, hero: false, fighter: f, d };
+    }
+    if (!best) return null;
+    return { pos: best.pos, hero: best.hero, fighter: best.fighter };
+  }
+
+  private hitThreat(
+    threat: { hero: boolean; fighter: WorldFighter | null } | null,
+    dmg: number,
+    from: { x: number; y: number },
+    m: Monster,
+  ): void {
+    if (threat?.fighter) this.combat.hurtWorldFighter(threat.fighter, dmg, from);
+    else this.combat.hurt(dmg, from, m);
   }
 
   private sync(m: Monster, dt: number): void {
