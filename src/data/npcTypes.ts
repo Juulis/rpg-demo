@@ -16,6 +16,8 @@ export interface NpcDef {
   pos?: [number, number];
   tile?: [number, number];
   tillstand_varianter?: Record<string, NpcStateVariant>;
+  /** Bakgrundsbybo: rutinmall från npcRoutines.templates */
+  routineTemplate?: string;
 }
 
 export interface NpcDataFile {

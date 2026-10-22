@@ -1,8 +1,10 @@
 import type { WorldStateService } from '../world/WorldStateService';
 import type { AssetStore } from '../render/Assets';
 import { NpcEntity } from '../entities/NpcEntity';
+import { backgroundVillagerDefs } from '../npc/backgroundVillagers';
 import { npcsForZone } from '../npc/npcCatalog';
-import { resolveNpc } from '../npc/npcPlacement';
+import { resolveNpc, type NpcPlacementContext } from '../npc/npcPlacement';
+import { resolveRoutinePlacement } from '../npc/resolveRoutine';
 import { resolveDialogText } from '../npc/dialogResolve';
 import type { Text } from '../text/Text';
 import type { World } from './World';
@@ -17,19 +19,29 @@ export class NpcSystem {
   private list: NpcEntity[] = [];
   private readonly barkNear = new Set<string>();
   private readonly barkCd = new Map<string, number>();
+  private worldTime = 0;
 
   constructor(
     private readonly assets: AssetStore,
     private readonly worldState: WorldStateService,
   ) {}
 
+  setWorldTime(t: number): void {
+    this.worldTime = t;
+  }
+
   sync(w: World): void {
     this.barkNear.clear();
     this.clear(w);
-    const defs = npcsForZone(w.zone.name as 'forest' | 'village', w.zone.areaId);
+    const areaId = w.zone.areaId;
+    const defs = [
+      ...npcsForZone(w.zone.name as 'forest' | 'village', areaId),
+      ...backgroundVillagerDefs(areaId, this.worldState.get()),
+    ];
     const state = this.worldState.get();
+    const ctx: NpcPlacementContext = { zoneAreaId: areaId, worldTime: this.worldTime };
     for (const def of defs) {
-      const resolved = resolveNpc(def, state);
+      const resolved = resolveNpc(def, state, ctx);
       if (resolved.hidden) continue;
       const anim = this.assets.npcs.get(resolved.sprite) ?? null;
       const ent = new NpcEntity(resolved, anim);
@@ -69,8 +81,15 @@ export class NpcSystem {
 
   readonly entities = (): readonly NpcEntity[] => this.list;
 
-  update(dt: number): void {
-    for (const n of this.list) n.update(dt);
+  update(dt: number, w: World): void {
+    const state = this.worldState.get();
+    const ctx: NpcPlacementContext = { zoneAreaId: w.zone.areaId, worldTime: this.worldTime };
+    for (const n of this.list) {
+      const def = n.resolved.def;
+      const placement = resolveRoutinePlacement(def, state, ctx.zoneAreaId, ctx.worldTime, def.routineTemplate);
+      if (placement) n.setRoutineTarget(placement.pos.x, placement.pos.y, placement.aktivitet);
+      n.update(dt, w.zone);
+    }
   }
 
   /** Bark när hjälten går in i radie (inte under aktiv dialog). */
