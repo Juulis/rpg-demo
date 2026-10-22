@@ -1,0 +1,19 @@
+{
+ "image": "amazon_idle_8dir.png",
+ "frameW": 177,
+ "frameH": 310,
+ "anchor": [
+  88,
+  304
+ ],
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ]
+}

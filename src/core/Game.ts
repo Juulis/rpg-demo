@@ -50,6 +50,7 @@ import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
 import { NpcLabels } from '../ui/NpcLabels';
 import { NpcSystem } from '../systems/NpcSystem';
+import { WorldAmbientSystem } from '../systems/WorldAmbientSystem';
 import { merchantInTradeHours } from '../npc/resolveRoutine';
 import { merchantNightGreeting } from '../npc/routineText';
 import { getNpcLocale } from '../npc/npcText';
@@ -134,6 +135,7 @@ export class Game {
   private labels!: LootLabels;
   private monBar!: MonsterBar;
   private npcSys!: NpcSystem;
+  private worldAmbientSys!: WorldAmbientSystem;
   private npcDialog!: NpcDialog;
   private npcBark!: NpcBark;
   private npcLabels!: NpcLabels;
@@ -194,6 +196,7 @@ export class Game {
     this.labels = new LootLabels(this.lootSys);
     this.monBar = new MonsterBar(this.text);
     this.npcSys = new NpcSystem(this.assets, this.worldState);
+    this.worldAmbientSys = new WorldAmbientSystem(this.assets);
     this.npcDialog = new NpcDialog(this.text, this.bus);
     this.npcBark = new NpcBark();
     this.npcLabels = new NpcLabels(this.text);
@@ -389,7 +392,7 @@ export class Game {
     this.decorAnims = built.decorAnims;
     const hs = this.heroState;
     const heroView = new DirSprite(this.assets.heroes.setFor(hs.cls), 1, 26);
-    heroView.sprite.tint = CLASS_TINT[hs.cls] ?? 0xffffff;
+    heroView.sprite.tint = this.assets.heroes.hasDedicated(hs.cls) ? 0xffffff : (CLASS_TINT[hs.cls] ?? 0xffffff);
     r.objects.addChild(heroView);
     const hero =
       this.world && this.world.hero.inv.bag === hs.inv && this.world.hero.cls.id === hs.cls
@@ -442,6 +445,7 @@ export class Game {
     hs.playing = true;
     this.npcSys.setWorldTime(this.gameClock.timeSeconds);
     this.npcSys.sync(this.world);
+    this.worldAmbientSys.sync(this.world, this.ctx.session.seed);
     this.hud.flash(this.text.t(name === 'village' ? 'msg.zone_village' : 'msg.zone_forest'));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
@@ -788,6 +792,7 @@ export class Game {
     this.npcLabels.update(this.npcSys.entities(), this.camera, this.npcRumorSparks(w));
     this.npcSys.setWorldTime(this.gameClock.timeSeconds);
     this.npcSys.update(dt, w);
+    this.worldAmbientSys.update(dt, w);
     this.npcSys.updateBarks(w, w.text, this.npcDialog.isOpen, (line, x, y) => this.npcBark.show(line, x, y));
     this.npcBark.update(dt, this.camera);
     this.refreshQuestLog();
