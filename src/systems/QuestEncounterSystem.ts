@@ -57,7 +57,7 @@ export class QuestEncounterSystem {
       if (!ws.flags.quest_mira_champion_slain && !this.hasLivingQuestMonster(w, MIRA_CHAMPION_UID)) {
         this.spawnChampion(w);
       }
-      if (ws.flags.quest_mira_champion_slain && !this.hasQuestDrop(w, 'flyktingens_sandaler')) {
+      if (ws.flags.quest_mira_champion_slain && !hooks.hasItem('flyktingens_sandaler') && !this.hasQuestDrop(w, 'flyktingens_sandaler')) {
         this.spawnQuestItem(w, 'kolarkojan', 'flyktingens_sandaler');
       }
     }
