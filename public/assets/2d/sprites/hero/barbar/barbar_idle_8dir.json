@@ -1,0 +1,19 @@
+{
+ "image": "barbar_idle_8dir.png",
+ "frameW": 245,
+ "frameH": 287,
+ "anchor": [
+  122,
+  281
+ ],
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ]
+}

@@ -1,5 +1,6 @@
 import { Rectangle, Texture } from 'pixi.js';
 import { HeroSprites } from './HeroSprites';
+import { WorldFigureSprites } from './WorldFigureSprites';
 import { fetchJsonResilient, loadTextureResilient } from './resilientAssets';
 import { loadMonster8dirSet, loadSheet8dir, loadStripAnim } from './sheet8dir';
 import { assetUrl, DIRS, type Anim, type AnimName, type AnimSet } from './spriteAnim';
@@ -131,6 +132,7 @@ export class AssetStore {
   readonly npcs = new Map<string, Anim>();
   readonly npcPortraits = new Map<string, string>();
   readonly heroes = new HeroSprites();
+  readonly worldFigures = new WorldFigureSprites();
   readonly backgrounds = new Map<string, Texture>();
   readonly effects = new Map<string, Texture>();
   /** Animerad dekor (t.ex. lägereld). */
@@ -142,6 +144,7 @@ export class AssetStore {
       this.loadTiles(),
       this.loadDecor(),
       this.loadHero(),
+      this.loadWorldFigures(),
       this.loadMonsters(),
       this.loadNpcs(),
       this.loadBg(),
@@ -171,6 +174,13 @@ export class AssetStore {
       await this.heroes.load((p) => tex(p));
     } catch (e) {
       console.warn('[AssetStore] hjältesprites:', e);
+    }
+  }
+  private async loadWorldFigures(): Promise<void> {
+    try {
+      await this.worldFigures.load((p) => tex(p));
+    } catch (e) {
+      console.warn('[AssetStore] världsfigurer:', e);
     }
   }
   private async loadMonsters(): Promise<void> {
