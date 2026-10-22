@@ -40,6 +40,7 @@ import { formatRumorText } from '../rumor/rumorText';
 import type { ConsequenceRuntime } from '../consequences/types';
 import { QuestEngine, type QuestEngineHooks } from '../quest/questEngine';
 import { QuestAnchorSystem } from '../systems/QuestAnchorSystem';
+import { QuestEncounterSystem } from '../systems/QuestEncounterSystem';
 import { applyFactionGreetingTone } from '../npc/factionGreeting';
 import { readQuestProgress } from '../quest/questProgress';
 import { choiceText, stepText } from '../quest/questText';
@@ -139,6 +140,7 @@ export class Game {
   private questLog!: QuestLog;
   private readonly questEngine = new QuestEngine(this.worldState);
   private readonly questAnchors = new QuestAnchorSystem(this.bus, this.questEngine, () => this.questHooks());
+  private questEncounters!: QuestEncounterSystem;
   private readonly gameClock = new GameClock(this.bus);
   private dayNight: DayNightPresenter | null = null;
   private switching = false;
@@ -180,6 +182,7 @@ export class Game {
     this.factory = new MonsterFactory(this.assets, this.spawn);
     const w = (): World => this.mustWorld();
     this.lootSys = new LootSystem(w, this.assets, () => this.foundRegistry);
+    this.questEncounters = new QuestEncounterSystem(this.bus, this.worldState, this.factory, this.lootSys, () => this.world);
     this.combat = new CombatSystem(w, this.lootSys);
     this.ai = new MonsterAI(w, this.combat, this.factory);
     this.portals = new PortalSystem(w, this.assets);
@@ -222,6 +225,7 @@ export class Game {
     });
     this.bus.on('zone_enter', ({ areaId }) => {
       this.questAnchors.reset();
+      this.questEncounters.reset();
       const h = this.questHooks();
       if (h) this.questEngine.onEnterRegion(areaId, undefined, h);
     });
@@ -766,6 +770,8 @@ export class Game {
     this.dayNight?.update(dt, w.zone.name);
     this.flushPendingItemGrants();
     this.questAnchors.update(w);
+    const qh = this.questHooks();
+    if (qh) this.questEncounters.update(w, qh);
     const h = w.hero;
     if (h.s.playing) this.heroUpdate(dt);
     this.ai.update(dt);

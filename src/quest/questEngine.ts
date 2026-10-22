@@ -168,6 +168,10 @@ export class QuestEngine {
     if (progress.status !== 'aktiv') return false;
     const day = gameDay(hooks.worldTime);
     if (choice.consequences?.length) applyConsequences(this.worldState, choice.consequences, day, runtime);
+    const xp = def.belöning?.xp;
+    if (typeof xp === 'number' && xp > 0) {
+      applyConsequences(this.worldState, [{ typ: 'xp_grant', amount: xp }], day, runtime);
+    }
     writeQuestProgress(this.ws(), def.id, { status: 'klar', val: choiceId, steg: progress.steg, givare: progress.givare });
     return true;
   }
