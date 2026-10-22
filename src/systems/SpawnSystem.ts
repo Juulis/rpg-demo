@@ -1,6 +1,7 @@
 import { Rng } from '../core/Rng';
 import type { Session } from '../core/Session';
 import { DATA, monsterDef } from '../data';
+import { expandStartskogenArea } from '../data/startskogenExpand';
 import type { EliteKind, EnemyRow, MonsterLevels, SpawnArea, SpawnPoint } from '../data/types';
 
 /** Ett genererat monster (i områdets egna koordinater). */
@@ -51,7 +52,7 @@ export class SpawnSystem {
   area(id: string): SpawnArea {
     const a = DATA.spawn.areas.find((x) => x.id === id);
     if (!a) throw new Error(`Okänt spawnområde: ${id}`);
-    return a;
+    return expandStartskogenArea(a);
   }
 
   /** cityState: stadens tillstånd (bara 'besatt' genererar monster). Dödade monster/bossar tas bort via session.killed (enda listan). */

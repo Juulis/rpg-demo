@@ -32,10 +32,20 @@ export class MonsterFactory {
     return m;
   }
 
-  /** Alla monster för zonens spawnområde enligt sessionens seed; dödade id hoppas över. */
+  /** Spawnlista per game; Startskogen instansierar nära hjälten (se syncProximitySpawns). */
   populate(w: World, cityState: string): void {
     const area = this.spawn.area(w.zone.areaId);
-    for (const s of this.spawn.roll(area, w.session, { cityState })) {
+    const specs = this.spawn.roll(area, w.session, { cityState });
+    if (w.zone.areaId === 'startskogen') {
+      w.spawnQueue = specs.map((s) => {
+        const p = w.zone.toWorld(s.pos);
+        w.zone.collide(p, 0.5);
+        return { spec: s, pos: p, done: false };
+      });
+      return;
+    }
+    w.spawnQueue = [];
+    for (const s of specs) {
       if (w.session.killed.has(s.uid)) continue;
       const p = w.zone.toWorld(s.pos);
       w.zone.collide(p, 0.5);
