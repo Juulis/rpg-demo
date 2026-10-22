@@ -19,7 +19,7 @@ const VILLAGE_TORCH_TILES: [number, number][] = [
 /** Mörk overlay, facklor i byn och nattljud (ingen spawn-/nivåpåverkan). */
 export class DayNightPresenter {
   private readonly shade = new Graphics();
-  private readonly torches = new Graphics();
+  private torches = new Graphics();
   private screenW = 0;
   private screenH = 0;
   private nightCryT = 8;
@@ -37,7 +37,15 @@ export class DayNightPresenter {
     this.torches.eventMode = 'none';
   }
 
+  get torchLayer(): Graphics {
+    return this.torches;
+  }
+
   attachWorldEffects(worldEffects: Container): void {
+    if (this.torches.destroyed) {
+      this.torches = new Graphics();
+      this.torches.eventMode = 'none';
+    }
     if (this.torches.parent !== worldEffects) {
       this.torches.parent?.removeChild(this.torches);
       worldEffects.addChild(this.torches);

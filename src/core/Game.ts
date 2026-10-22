@@ -367,7 +367,12 @@ export class Game {
     const r = this.renderer;
     r.ground.removeChildren().forEach((c) => c.destroy({ children: true }));
     r.objects.removeChildren().forEach((c) => c.destroy({ children: true }));
-    r.effects.removeChildren().forEach((c) => c.destroy({ children: true }));
+    const torchLayer = this.dayNight?.torchLayer;
+    for (const c of [...r.effects.children]) {
+      if (c === torchLayer) continue;
+      r.effects.removeChild(c);
+      c.destroy({ children: true });
+    }
     this.dayNight?.attachWorldEffects(r.effects);
     const built = this.zones.build(name);
     r.ground.addChild(built.ground);
