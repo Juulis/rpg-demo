@@ -192,6 +192,24 @@
       "note": "Matchar spawnWolf i game.js."
     },
     {
+      "id": "ruttnande_lik",
+      "name": "Ruttnande lik",
+      "family": "ododa",
+      "level": 4,
+      "hp": 87,
+      "damage": 11,
+      "defense": 3,
+      "speed": 3.4,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 48,
+      "aggro_range": 10,
+      "behavior": "Halvruttet lik av en bybo, slår med bara händerna, långsamt men segt.",
+      "weapon_type": null,
+      "zones": ["vargaby", "startskogen"],
+      "boss": false
+    },
+    {
       "id": "taggsvin",
       "name": "Taggsvin",
       "family": "bestar",

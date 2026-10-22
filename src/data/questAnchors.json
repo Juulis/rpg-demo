@@ -1,12 +1,12 @@
 {
   "meta": {
-    "note": "Quest-inspektionsankare (världsenheter). Utökas med kartdesign."
+    "note": "Quest-inspektionsankare (världsenheter). region = logisk quest-region om den skiljer sig från areaId."
   },
   "anchors": [
     { "id": "startskogen_barnsandal", "areaId": "startskogen", "pos": [18, -2], "radius": 2.8 },
-    { "id": "kolarkojan", "areaId": "vargstigen", "pos": [-10, 14], "radius": 3.2 },
-    { "id": "viskarens_hus", "areaId": "startskogen", "pos": [2, 6], "radius": 2.5 },
-    { "id": "viskarens_hus_skallar", "areaId": "startskogen", "pos": [0, 4], "radius": 2.2 },
+    { "id": "kolarkojan", "areaId": "startskogen", "region": "vargstigen", "pos": [24, -6], "radius": 3.2 },
+    { "id": "viskarens_hus", "areaId": "startskogen", "region": "vargaby", "pos": [-14, 8], "radius": 2.5 },
+    { "id": "viskarens_hus_skallar", "areaId": "startskogen", "region": "vargaby", "pos": [-15, 7], "radius": 2.2 },
     { "id": "runsten_1", "areaId": "startskogen", "pos": [14, -10], "radius": 2.5 },
     { "id": "runsten_2", "areaId": "startskogen", "pos": [-16, -6], "radius": 2.5 },
     { "id": "runsten_3", "areaId": "startskogen", "pos": [4, 20], "radius": 2.5 },
