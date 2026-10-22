@@ -1,0 +1,167 @@
+{
+  "hugg": {
+    "name": "Slash"
+  },
+  "stick": {
+    "name": "Pierce"
+  },
+  "kross": {
+    "name": "Crush"
+  },
+  "ododa": {
+    "name": "Undead",
+    "theme": "Skeletons and revenants from ancient graves, bound by dark runes."
+  },
+  "demoner": {
+    "name": "Demons",
+    "theme": "Things of fire and ash from the cracks in the world. Cunning and cruel."
+  },
+  "bestar": {
+    "name": "Beasts",
+    "theme": "Twisted wolves, bears and boars that hunt in packs."
+  },
+  "gastar": {
+    "name": "Wraiths",
+    "theme": "Drowned and forgotten spirits of mist and bog, half seen."
+  },
+  "forvridna": {
+    "name": "The Twisted",
+    "theme": "Men and women warped by demonic blight, sick and malformed."
+  },
+  "insekter": {
+    "name": "Vermin",
+    "theme": "Giant spiders and chitin beetles of mines and cellars."
+  },
+  "skogsvarg": {
+    "name": "Wolf"
+  },
+  "vargbest": {
+    "name": "Warg Brute"
+  },
+  "taggsvin": {
+    "name": "Quillboar"
+  },
+  "skuggvarg": {
+    "name": "Grey Wolf"
+  },
+  "gravargsledare": {
+    "name": "Grey Wolf Packleader"
+  },
+  "ruttbjorn": {
+    "name": "Rot Bear"
+  },
+  "grabjornen_ulvhild": {
+    "name": "Ulvhild the Greybear"
+  },
+  "skelett_hund": {
+    "name": "Bone Hound"
+  },
+  "skelett_krigare": {
+    "name": "Skeleton Warrior"
+  },
+  "skelett_bagskytt": {
+    "name": "Skeleton Archer"
+  },
+  "skelett_runprast": {
+    "name": "Rune Priest"
+  },
+  "skelett_vakt": {
+    "name": "Skeleton Guardian"
+  },
+  "skelett_kapten": {
+    "name": "Skeleton Captain"
+  },
+  "benkungen_valdemar": {
+    "name": "Valdemar the Bone King"
+  },
+  "dimgast": {
+    "name": "Mist Wraith"
+  },
+  "klagokvinna": {
+    "name": "Wailing Hag"
+  },
+  "trasknacken": {
+    "name": "Bog Nix"
+  },
+  "trasdrottningen": {
+    "name": "The Bog Queen"
+  },
+  "gruvspindel": {
+    "name": "Mine Spider"
+  },
+  "syrabagge": {
+    "name": "Acid Beetle"
+  },
+  "kitinvakt": {
+    "name": "Chitin Guard"
+  },
+  "spinnmodern": {
+    "name": "The Broodmother"
+  },
+  "askimp": {
+    "name": "Ash Imp"
+  },
+  "eldpiska_demon": {
+    "name": "Flamelash Demon"
+  },
+  "hornslaktare": {
+    "name": "Hornbutcher"
+  },
+  "askriddare": {
+    "name": "Ash Knight"
+  },
+  "askfursten_morvath": {
+    "name": "Morvath the Ash Prince"
+  },
+  "smittbarare": {
+    "name": "Blight Carrier"
+  },
+  "galen_munk": {
+    "name": "Mad Monk"
+  },
+  "kottklump": {
+    "name": "Fleshmound"
+  },
+  "fadern_av_smittan": {
+    "name": "The Blightfather"
+  },
+  "vandrande_skelett": {
+    "name": "Wandering Skeleton"
+  },
+  "skogsspindel": {
+    "name": "Forest Spider"
+  },
+  "forvriden_jagare": {
+    "name": "Twisted Hunter"
+  },
+  "ruttnande_lik": {
+    "name": "Rotting Corpse"
+  },
+  "smittad_bybo": {
+    "name": "Blighted Villager"
+  },
+  "likatare_varg": {
+    "name": "Carrion Wolf"
+  },
+  "gravgast": {
+    "name": "Grave Wraith"
+  },
+  "drunknad": {
+    "name": "Drowned One"
+  },
+  "trask_igel": {
+    "name": "Bog Leech"
+  },
+  "forvriden_gruvarbetare": {
+    "name": "Twisted Miner"
+  },
+  "gruvdemon": {
+    "name": "Pit Demon"
+  },
+  "askkultist": {
+    "name": "Ash Cultist"
+  },
+  "brandskelett": {
+    "name": "Burning Skeleton"
+  }
+}

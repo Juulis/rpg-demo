@@ -35,25 +35,78 @@ function readOne(cond: Record<string, unknown>, ctx: ConditionContext): boolean 
     return ctx.world.last_events.some((e) => e.id === id || e.id.endsWith(`:${id}`) || e.id.includes(id));
   }
   if ('npc_state' in cond && isRecord(cond.npc_state)) {
-    const npc = String(cond.npc_state.id);
-    const want = String(cond.npc_state.state);
-    return (ctx.world.npc_states[npc] ?? '') === want;
+    if ('id' in cond.npc_state || 'state' in cond.npc_state) {
+      const npc = String(cond.npc_state.id);
+      const want = String(cond.npc_state.state);
+      return (ctx.world.npc_states[npc] ?? '') === want;
+    }
+    const entries = Object.entries(cond.npc_state);
+    if (entries.length === 1) {
+      const pair = entries[0];
+      if (!pair) return false;
+      const [npc, want] = pair;
+      const cur = ctx.world.npc_states[npc];
+      const normalized = cur === undefined || cur === '' ? 'standard' : cur;
+      return normalized === String(want);
+    }
+    return false;
   }
   if ('quest_status' in cond && isRecord(cond.quest_status)) {
-    const q = String(cond.quest_status.id);
-    const want = String(cond.quest_status.status);
-    const cur = ctx.world.quests[q];
-    if (want === 'not_started') return cur === undefined;
-    if (!isRecord(cur)) return false;
-    return String(cur.status ?? '') === want;
+    const statusAliases: Record<string, string[]> = {
+      ej_startad: ['ej_startad', 'not_started'],
+      not_started: ['ej_startad', 'not_started'],
+      aktiv: ['aktiv', 'active'],
+      active: ['aktiv', 'active'],
+      klar: ['klar', 'complete', 'completed'],
+      complete: ['klar', 'complete', 'completed'],
+    };
+    const matchStatus = (want: string, cur: unknown): boolean => {
+      const aliases = statusAliases[want] ?? [want];
+      if (aliases.includes('ej_startad') || aliases.includes('not_started')) {
+        if (cur === undefined) return aliases.some((a) => a === 'ej_startad' || a === 'not_started');
+      }
+      if (!isRecord(cur)) return false;
+      const st = String(cur.status ?? '');
+      return aliases.includes(st);
+    };
+
+    if ('id' in cond.quest_status) {
+      const q = String(cond.quest_status.id);
+      const want = String(cond.quest_status.status);
+      return matchStatus(want, ctx.world.quests[q]);
+    }
+    const entries = Object.entries(cond.quest_status);
+    if (entries.length === 1) {
+      const pair = entries[0];
+      if (!pair) return false;
+      const [q, want] = pair;
+      return matchStatus(String(want), ctx.world.quests[q]);
+    }
+    return false;
   }
   if ('quest_val' in cond && isRecord(cond.quest_val)) {
-    const q = String(cond.quest_val.id);
-    const key = String(cond.quest_val.key ?? 'choice');
-    const want = cond.quest_val.value;
-    const cur = ctx.world.quests[q];
-    if (!isRecord(cur)) return false;
-    return cur[key] === want;
+    if ('id' in cond.quest_val) {
+      const q = String(cond.quest_val.id);
+      const key = String(cond.quest_val.key ?? 'val');
+      const want = cond.quest_val.value;
+      const cur = ctx.world.quests[q];
+      if (!isRecord(cur)) return false;
+      if (cur[key] === want) return true;
+      if (key === 'choice' && cur.val === want) return true;
+      return false;
+    }
+    const entries = Object.entries(cond.quest_val);
+    if (entries.length === 1) {
+      const pair = entries[0];
+      if (!pair) return false;
+      const [q, want] = pair;
+      const cur = ctx.world.quests[q];
+      if (!isRecord(cur)) return false;
+      if (cur.val === want) return true;
+      if (cur.choice === want) return true;
+      return Object.values(cur).includes(want);
+    }
+    return false;
   }
   if ('rykte_aktivt' in cond) {
     const id = String(cond.rykte_aktivt);

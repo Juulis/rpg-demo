@@ -1,0 +1,22 @@
+{
+  "besatt": { "name": "Overrun", "desc": "Monsters everywhere, black mist, not a living soul." },
+  "rensad": {
+    "name": "Cleansed",
+    "desc": "The town's boss is slain and every zone cleared at least once. No monsters will ever rise here again."
+  },
+  "aterbefolkad_1": { "name": "Resettled I" },
+  "aterbefolkad_2": { "name": "Resettled II" },
+  "aterbefolkad_3": { "name": "Resettled III" },
+  "handlare": { "desc": "Buys and sells potions and common goods." },
+  "vapenhandlare": { "desc": "Buys and sells weapons, armor and shields. Never alters an item." },
+  "vakter": { "desc": "Town guards hold off raids. No monsters spawn near town." },
+  "kuriosahandlare": { "desc": "Buys and sells finer amulets, rings and bone goods. Never alters an item." },
+  "tavern_uppdrag": { "desc": "Side quests and rumors." },
+  "snabbresa": { "desc": "Fast travel between resettled towns." },
+  "helare": { "desc": "Heals for free and cures poison." },
+  "vargaby": { "name": "Wolfstead", "access": "The road east from Wildwood." },
+  "gamla_byn": { "name": "The Old Village", "access": "The Red Portal at the heart of the forest. Opens when all three runes are awake." },
+  "dimmerstrand": { "name": "Mistshore", "access": "The road west. Always open." },
+  "kopparberg": { "name": "Copperfell", "access": "The road north through the mountains. Always open." },
+  "askeborg": { "name": "Ashenhold", "access": "The road south across the Ash Fields. Always open." }
+}

@@ -1,0 +1,976 @@
+{
+  "meta": {
+    "version": "1.0",
+    "regel": "Inga NPC:er spärrar rörelse. NPC:er med visas annat än alltid dyker upp när staden når det tillståndet; platsen är alltid fri att besöka.",
+    "handel_regel": "Handlare köper och säljer bara. Ingen smedja, inga uppgraderingar, ingen ändring av föremål.",
+    "tid": "Dygnet i spelet är 24 timmar = 48 minuter realtid. Tider i HH:MM.",
+    "rykten_ref": "varld.md rumor datamodell; rykten.id refereras i repliker.rykten",
+    "akt_regel": "akt anger vilken akt NPC:n hör till. grafik_prioritet true = akt 1, behöver grafik först.",
+    "tillstand_regel": "tillstand_varianter väljs via world_state.npc_states. Fält i varianten skriver över standardfälten. dod tar bort NPC:n; ersatts_av anger vem som tar över platsen."
+  },
+  "npcs": [
+    {
+      "id": "gamla_ylva",
+      "namn": "Gamla Ylva",
+      "roll": "berattare",
+      "faktion": "de_kvarvarande",
+      "omrade": "startlagret",
+      "plats": "lagerelden",
+      "visas": "alltid",
+      "personlighet": "Klok, trött, talar i gåtor om runorna.",
+      "utseende": "Krokig gammal kvinna i grå sjal, runhalsband av ben, mjölkvitt ena öga.",
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "20:00",
+          "plats": "lagerelden",
+          "aktivitet": "berättar och lagar mat"
+        },
+        {
+          "from": "20:00",
+          "to": "06:00",
+          "plats": "ylvas_talt",
+          "aktivitet": "sover, mumlar om runorna"
+        }
+      ],
+      "repliker": {
+        "halsning": "Runorna sover, barn. Men de drömmer.",
+        "rader": [
+          "Tre stenar höll natten borta en gång. De kan göra det igen.",
+          "Gå inte mellan stenarna efter mörkrets inbrott om du inte vet vad du gör.",
+          "Askan föll i veckor. Vi andades den. Vissa av oss blev aldrig desamma.",
+          "Jag minns Askeborg innan det brann. Klockorna hördes ända hit."
+        ],
+        "rykten": [
+          "rykte_runorna_sover",
+          "rykte_portalen_oppen",
+          "rykte_mira_vet",
+          "rykte_viskaren_tyst",
+          "rykte_bror_begraver",
+          "rykte_ristaren_sanning",
+          "rykte_ristaren_hjalte",
+          "rykte_fjarde_stenen"
+        ]
+      },
+      "relationer": {
+        "sigrun_helare": "syster",
+        "lilla_mira": "tar hand om henne",
+        "bror_vakt": "litar på honom"
+      },
+      "quest_krokar": ["Vad hände med runornas ristare?", "Ylvas syn: en fjärde sten någonstans i Askeborg."],
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["runornas_ristare", "tand_stenen"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "sokare": {
+          "halsning": "Den fjärde stenen, barn. Allt handlar om den fjärde stenen.",
+          "bark": "Han släckte den själv. Själv."
+        }
+      }
+    },
+    {
+      "id": "tor_kolare",
+      "namn": "Tor Kolare",
+      "roll": "handlare",
+      "faktion": "de_kvarvarande",
+      "omrade": "startlagret",
+      "plats": "lagrets_karra",
+      "visas": "alltid",
+      "personlighet": "Snål men ärlig, skämtar för att inte gråta.",
+      "utseende": "Bred man med sotigt förkläde, kolsvarta händer och en kärra full av krimskrams.",
+      "dygnsrutin": [
+        {
+          "from": "07:00",
+          "to": "19:00",
+          "plats": "lagrets_karra",
+          "aktivitet": "köper och säljer"
+        },
+        {
+          "from": "19:00",
+          "to": "22:00",
+          "plats": "lagerelden",
+          "aktivitet": "dricker och skrävlar"
+        },
+        {
+          "from": "22:00",
+          "to": "07:00",
+          "plats": "tors_talt",
+          "aktivitet": "sover"
+        }
+      ],
+      "repliker": {
+        "halsning": "Har du guld så har jag varor. Har du inte, ha en trevlig dag.",
+        "rader": [
+          "Allt har ett pris. Även det du hittar på de döda.",
+          "Jag köper ben. Fråga inte varför.",
+          "Pilar? Klart. Hälsodrycker? Om du har råd."
+        ],
+        "rykten": ["rykte_vargarna_okar", "rykte_ulvhild_dod", "rykte_hedda_palsen"]
+      },
+      "relationer": {
+        "gamla_ylva": "tål henne",
+        "marta_torghandlare": "konkurrent och gammal vän"
+      },
+      "quest_krokar": ["Tor letar efter sin gamla kärrhäst som flydde mot Vargaby."],
+      "handel": {
+        "saljer": ["liten_halsodryck", "uthallighetsdryck", "pilar", "kastspjut", "tier 1 vapen och rustning (Normal)"],
+        "koper": ["vapen", "rustning", "amulett", "ring", "ben", "material"],
+        "prisfaktor_salj": 1.2,
+        "prisfaktor_kop": 0.25,
+        "lager_byts": "varje nytt game"
+      },
+      "akt": "akt_1",
+      "grafik_prioritet": true
+    },
+    {
+      "id": "sigrun_helare",
+      "namn": "Sigrun",
+      "roll": "helare",
+      "faktion": "de_kvarvarande",
+      "omrade": "startlagret",
+      "plats": "helartaltet",
+      "visas": "alltid",
+      "personlighet": "Mild, bestämd, har sett för mycket död.",
+      "utseende": "Ung kvinna med flätat askblont hår, blodfläckat förkläde och örtpåsar i bältet.",
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "21:00",
+          "plats": "helartaltet",
+          "aktivitet": "läker och kokar örter"
+        },
+        {
+          "from": "21:00",
+          "to": "23:00",
+          "plats": "lagerelden",
+          "aktivitet": "sitter med Ylva"
+        },
+        {
+          "from": "23:00",
+          "to": "06:00",
+          "plats": "helartaltet",
+          "aktivitet": "sover lätt"
+        }
+      ],
+      "repliker": {
+        "halsning": "Sitt ner. Låt mig se på dig.",
+        "rader": [
+          "Jag kan läka sår, inte smitta. Kom ihåg det.",
+          "Om ett bett blir grönt, kom hit direkt.",
+          "Askan sitter i lungorna. Andas genom tyg i Askeborg."
+        ],
+        "rykten": ["rykte_smittan_sprider_sig", "rykte_mira_vet", "rykte_bror_begraver"]
+      },
+      "relationer": {
+        "gamla_ylva": "syster",
+        "broder_elias": "brevvän innan fallet"
+      },
+      "quest_krokar": ["Sigrun vill ha örter från Dimmerstrands träsk."],
+      "handel": {
+        "tjanst": "helning",
+        "pris": "gratis, full HP",
+        "saljer": ["liten_halsodryck", "stor_halsodryck"],
+        "koper": [],
+        "prisfaktor_salj": 1.0
+      },
+      "akt": "akt_1",
+      "grafik_prioritet": true
+    },
+    {
+      "id": "bror_vakt",
+      "namn": "Bror",
+      "roll": "vakt",
+      "faktion": "de_kvarvarande",
+      "omrade": "startlagret",
+      "plats": "lagrets_palissad",
+      "visas": "alltid",
+      "personlighet": "Fåordig, vaksam, före detta jägare.",
+      "utseende": "Gråskäggig man i läderharnesk med spjut och en vargtand i örat.",
+      "dygnsrutin": [
+        {
+          "from": "18:00",
+          "to": "06:00",
+          "plats": "lagrets_palissad",
+          "aktivitet": "håller vakt med fackla"
+        },
+        {
+          "from": "06:00",
+          "to": "10:00",
+          "plats": "lagerelden",
+          "aktivitet": "äter, berättar om natten"
+        },
+        {
+          "from": "10:00",
+          "to": "18:00",
+          "plats": "brors_talt",
+          "aktivitet": "sover"
+        }
+      ],
+      "repliker": {
+        "halsning": "Håll dig på stigen. Skogen är hungrig.",
+        "rader": [
+          "Vargarna har blivit fler sedan runorna slocknade.",
+          "Jag såg ett skelett vid ett vägröse i norr. Det tittade tillbaka.",
+          "Om du går till Vargaby, gå i dagsljus."
+        ],
+        "rykten": ["rykte_vargarna_okar", "rykte_skelett_vid_rosena", "rykte_viskaren_tyst", "rykte_bror_begraver"]
+      },
+      "relationer": {
+        "gamla_ylva": "skyddar henne",
+        "hedda_jagare": "jagade ihop förr"
+      },
+      "quest_krokar": ["Brors son försvann i Vargaby."],
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["ulvhilds_pals"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "bitter": {
+          "halsning": "Du valde jägaren. Gå din väg.",
+          "bark": "Min pojke ligger kvar därute."
+        },
+        "fridfull": {
+          "halsning": "Han vilar nu. Tack vare dig.",
+          "bark": "Det är en bra natt för vakt."
+        }
+      }
+    },
+    {
+      "id": "lilla_mira",
+      "namn": "Lilla Mira",
+      "roll": "flykting",
+      "faktion": "de_kvarvarande",
+      "omrade": "startlagret",
+      "plats": "lagrets_utkant",
+      "visas": "alltid",
+      "personlighet": "Tyst, envis, väntar på sin bror.",
+      "utseende": "Litet barn i för stor kappa, barfota, kramar en trasdocka.",
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "18:00",
+          "plats": "lagrets_utkant",
+          "aktivitet": "tittar mot vägen till Vargaby"
+        },
+        {
+          "from": "18:00",
+          "to": "08:00",
+          "plats": "ylvas_talt",
+          "aktivitet": "sover hos Ylva"
+        }
+      ],
+      "repliker": {
+        "halsning": "Har du sett min bror? Han hade nya sandaler.",
+        "rader": [
+          "Han sprang före mig. Han var alltid snabbast.",
+          "Ylva säger att jag inte ska vänta. Jag väntar ändå.",
+          "Vargarna sjöng den natten."
+        ],
+        "rykten": ["rykte_flyktingens_sandaler", "rykte_mira_hoppas"]
+      },
+      "relationer": {
+        "gamla_ylva": "bor hos henne"
+      },
+      "quest_krokar": ["Om hjälten hittar Flyktingens sandaler har Mira något att säga."],
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["miras_bror"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "hjalper_sigrun": {
+          "plats": "helartaltet",
+          "halsning": "Jag hjälper Sigrun nu. Hon säger att jag har lätta händer.",
+          "bark": "Sigrun! Jag har hämtat mer vatten!"
+        },
+        "vandrar_mot_vargaby": {
+          "omrade": "vargaby",
+          "plats": "vargaby_port",
+          "visas": "vargaby aterbefolkad_1",
+          "halsning": "Han är inte här. Men du sa att han var här.",
+          "bark": "Har någon sett en pojke med nya sandaler?"
+        }
+      }
+    },
+    {
+      "id": "viskaren",
+      "namn": "Viskaren",
+      "roll": "berattare",
+      "faktion": "ingen",
+      "omrade": "startskogen",
+      "plats": "skog_nordvast_rose",
+      "visas": "alltid",
+      "personlighet": "Galen eller vis, svårt att säga. Talar med ben.",
+      "utseende": "Mager eremit i trasor, halsband av fingerben, ögonen fästa på något ingen annan ser.",
+      "dygnsrutin": [
+        {
+          "from": "00:00",
+          "to": "24:00",
+          "plats": "skog_nordvast_rose",
+          "aktivitet": "sitter vid ett vägröse och viskar till benen"
+        }
+      ],
+      "repliker": {
+        "halsning": "Hör du dem? Nej. Du hör aldrig.",
+        "rader": [
+          "Benen minns. Benen ljuger aldrig.",
+          "Jag bodde i Vargaby. Nu bor jag här. Vargarna låter mig vara.",
+          "Min dräkt? Den är någon annanstans nu. Den väntar på dig."
+        ],
+        "rykten": ["rykte_benviskaren", "rykte_viskaren_skrattar"]
+      },
+      "relationer": {
+        "bror_vakt": "Bror vill att han flyttar in i lägret, han vägrar"
+      },
+      "quest_krokar": ["Viskaren talar om Benviskarens dräkt och de dödas visk."],
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["benens_visk"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "lugn": {
+          "omrade": "startlagret",
+          "plats": "lagerelden",
+          "halsning": "Det är tyst nu. Jag hade glömt hur tyst låter.",
+          "bark": "Värm dig. Elden viskar inte."
+        },
+        "besatt": {
+          "halsning": "Skallen pratar med dig nu, inte med mig. Hör du?",
+          "bark": "Han valde dig. Han valde dig."
+        }
+      }
+    },
+    {
+      "id": "hedda_jagare",
+      "namn": "Hedda",
+      "roll": "handlare",
+      "faktion": "de_kvarvarande",
+      "omrade": "vargaby",
+      "plats": "vargaby_jaktstuga",
+      "visas": "vargaby aterbefolkad_1",
+      "personlighet": "Hård, praktisk, skrattar högt.",
+      "utseende": "Kortklippt kvinna med vargskinnskappa, båge på ryggen och ärr över hakan.",
+      "dygnsrutin": [
+        {
+          "from": "05:00",
+          "to": "10:00",
+          "plats": "vargaby_skogskant",
+          "aktivitet": "jagar"
+        },
+        {
+          "from": "10:00",
+          "to": "20:00",
+          "plats": "vargaby_jaktstuga",
+          "aktivitet": "köper och säljer"
+        },
+        {
+          "from": "20:00",
+          "to": "05:00",
+          "plats": "vargaby_jaktstuga",
+          "aktivitet": "sover med kniven under kudden"
+        }
+      ],
+      "repliker": {
+        "halsning": "Päls, ben, pilar. Det är vad Vargaby har nu.",
+        "rader": [
+          "Jag köper allt som kommer från ett djur.",
+          "Gråvargarna leds av en stor hanne med kedja runt halsen.",
+          "Ulvhild åt min man. Jag hoppas att hon kvävdes."
+        ],
+        "rykten": ["rykte_ulvhild_dod", "rykte_gravargsledaren", "rykte_mira_hoppas", "rykte_hedda_palsen"]
+      },
+      "relationer": {
+        "bror_vakt": "gammal jaktkamrat",
+        "tor_kolare": "säljer till honom"
+      },
+      "quest_krokar": ["Hedda vill ha Ulvhilds päls."],
+      "handel": {
+        "saljer": ["pilar", "kastspjut", "liten_halsodryck", "bage och spjut (Normal och Magisk)", "ben baser (Normal)"],
+        "koper": ["vapen", "rustning", "ben", "material"],
+        "prisfaktor_salj": 1.1,
+        "prisfaktor_kop": 0.3
+      },
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["ulvhilds_pals"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "lamnar": {
+          "omrade": "dimmerstrand",
+          "plats": "dimmerstrand_brygga",
+          "halsning": "Vargaby har inget kvar för mig. Här finns åtminstone fisk.",
+          "handel_mult": 1.1
+        }
+      }
+    },
+    {
+      "id": "gravvaktaren_ebbe",
+      "namn": "Gravvaktaren Ebbe",
+      "roll": "berattare",
+      "faktion": "gravvaktarna",
+      "omrade": "gamla_byn",
+      "plats": "portalgladet",
+      "visas": "alltid",
+      "personlighet": "Högtidlig, skuldtyngd, den siste av sin orden i byn.",
+      "utseende": "Gammal man i trasig grå ordensdräkt, en lykta med blått ljus och en spade på ryggen.",
+      "dygnsrutin": [
+        {
+          "from": "00:00",
+          "to": "24:00",
+          "plats": "portalgladet",
+          "aktivitet": "vaktar portalen, sover aldrig"
+        }
+      ],
+      "repliker": {
+        "halsning": "Ingen borde komma hit. Ändå kom du.",
+        "rader": [
+          "Vi vaktade de döda i tvåhundra år. Vi var för få när de vaknade.",
+          "Valdemar var en god hövding. Det är kronan som styr honom nu.",
+          "Krossa benen. Stick inte. Spjut går rakt igenom dem."
+        ],
+        "rykten": [
+          "rykte_benkungen",
+          "rykte_benkungen_dod",
+          "rykte_gravvaktarens_arv",
+          "rykte_kronikan_ebbe",
+          "rykte_valdemar_vilar",
+          "rykte_valdemar_sara"
+        ]
+      },
+      "relationer": {
+        "vaktkapten_ingrid": "hennes farfar var gravvaktare",
+        "olle_vardshus": "misstror hans prat"
+      },
+      "quest_krokar": ["Ebbe vill att Valdemar begravs ordentligt.", "Gravvaktarens arv: Ebbe vet var vaktarna föll."],
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["gravvaktarnas_sista_strid", "begrav_benkungen"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "berattar_for_barn": {
+          "halsning": "Barnen vill höra krönikan igen. Sätt dig du med.",
+          "bark": "Och då stod Ebbes bröder kvar, till sista mannen."
+        },
+        "dod": {
+          "ersatts_av": "vaktkapten_ingrid",
+          "miljo": "Ebbes lykta står släckt vid portalen."
+        }
+      }
+    },
+    {
+      "id": "marta_torghandlare",
+      "namn": "Marta",
+      "roll": "handlare",
+      "faktion": "de_kvarvarande",
+      "omrade": "gamla_byn",
+      "plats": "torget",
+      "visas": "gamla_byn aterbefolkad_1",
+      "personlighet": "Pratsam, nyfiken, vet allt om alla.",
+      "utseende": "Rund kvinna med röd huvudduk, korg på armen och ett stånd fullt av krukor och tyg.",
+      "dygnsrutin": [
+        {
+          "from": "07:00",
+          "to": "19:00",
+          "plats": "torget",
+          "aktivitet": "säljer från ståndet"
+        },
+        {
+          "from": "19:00",
+          "to": "22:00",
+          "plats": "osterhus",
+          "aktivitet": "skvallrar på värdshuset"
+        },
+        {
+          "from": "22:00",
+          "to": "07:00",
+          "plats": "torget_hus",
+          "aktivitet": "sover"
+        }
+      ],
+      "repliker": {
+        "halsning": "Nya ansikten! Äntligen nya ansikten!",
+        "rader": [
+          "Byn luktar fortfarande ben, men folk kommer tillbaka.",
+          "Jag säljer det jag har, köper det du har.",
+          "Har du hört vad Olle säger om Dimmerstrand?"
+        ],
+        "rykten": ["rykte_byn_vaknar", "rykte_dimmerstrand", "rykte_kronikan_ebbe", "rykte_benkungen_dod", "rykte_valdemar_vilar"]
+      },
+      "relationer": {
+        "tor_kolare": "gammal vän",
+        "olle_vardshus": "skvallerpartner"
+      },
+      "quest_krokar": ["Marta saknar sin dotter som flydde till Kopparberg."],
+      "handel": {
+        "saljer": ["liten_halsodryck", "stor_halsodryck", "uthallighetsdryck", "amuletter och ringar (Normal och Magisk)"],
+        "koper": ["vapen", "rustning", "amulett", "ring", "ben", "material"],
+        "prisfaktor_salj": 1.15,
+        "prisfaktor_kop": 0.3
+      },
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["martas_dotter"]
+    },
+    {
+      "id": "gunnar_jarnhand",
+      "namn": "Gunnar Järnhand",
+      "roll": "handlare",
+      "faktion": "de_kvarvarande",
+      "omrade": "gamla_byn",
+      "plats": "vasterhus",
+      "visas": "gamla_byn aterbefolkad_2",
+      "personlighet": "Bitter, stolt, har lagt hammaren på hyllan.",
+      "utseende": "Stor man med brännärr på armarna, läderförkläde och en släckt härd bakom sig.",
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "18:00",
+          "plats": "vasterhus",
+          "aktivitet": "säljer vapen och rustning"
+        },
+        {
+          "from": "18:00",
+          "to": "20:00",
+          "plats": "vasterhus",
+          "aktivitet": "putsar gamla vapen, säger inget"
+        },
+        {
+          "from": "20:00",
+          "to": "08:00",
+          "plats": "vasterhus",
+          "aktivitet": "sover"
+        }
+      ],
+      "repliker": {
+        "halsning": "Jag smider inte längre. Men jag säljer.",
+        "rader": [
+          "Min mästare smidde Runsmidd klinga. Han dog samma natt.",
+          "Ingen härd brinner i den här byn så länge jag lever. Jag har sett vad eld gör.",
+          "Jag köper vapen. Allt du drar från de döda."
+        ],
+        "rykten": ["rykte_runsmidd_klinga", "rykte_askeborg_brinner"]
+      },
+      "relationer": {
+        "marta_torghandlare": "granne",
+        "rask_avfallen": "hatar kultister"
+      },
+      "quest_krokar": ["Gunnars mästares svärd, Runsmidd klinga, borde komma hem."],
+      "handel": {
+        "saljer": ["vapen tier 1 till 2 (Normal och Magisk)", "rustning tier 1 till 2 (Normal och Magisk)", "skold"],
+        "koper": ["vapen", "rustning", "ben"],
+        "prisfaktor_salj": 1.25,
+        "prisfaktor_kop": 0.35,
+        "ingen_andring": "Säljer och köper bara, ändrar aldrig föremål."
+      },
+      "akt": "akt_1",
+      "grafik_prioritet": true
+    },
+    {
+      "id": "vaktkapten_ingrid",
+      "namn": "Vaktkapten Ingrid",
+      "roll": "vakt",
+      "faktion": "gravvaktarna",
+      "omrade": "gamla_byn",
+      "plats": "byporten",
+      "visas": "gamla_byn aterbefolkad_2",
+      "personlighet": "Rak, disciplinerad, skyddar de nya invånarna.",
+      "utseende": "Lång kvinna i ringbrynja och grå mantel, hillebard, ärr genom ena ögonbrynet.",
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "18:00",
+          "plats": "byporten",
+          "aktivitet": "leder vakterna"
+        },
+        {
+          "from": "18:00",
+          "to": "22:00",
+          "plats": "torget",
+          "aktivitet": "rundor med fackla"
+        },
+        {
+          "from": "22:00",
+          "to": "06:00",
+          "plats": "byporten_vakthus",
+          "aktivitet": "sover i rustningen"
+        }
+      ],
+      "repliker": {
+        "halsning": "Byn är under mitt skydd. Bete dig därefter.",
+        "rader": [
+          "Mina vakter är bönder med spjut. Men de står kvar.",
+          "Min farfar var gravvaktare. Ebbe kände honom.",
+          "Om du ser något röra sig på kyrkogården, säg till."
+        ],
+        "rykten": ["rykte_byn_vaknar", "rykte_vakter_i_byn", "rykte_kronikan_ingrid", "rykte_valdemar_signet"]
+      },
+      "relationer": {
+        "gravvaktaren_ebbe": "respekterar honom",
+        "olle_vardshus": "tycker han pratar för mycket"
+      },
+      "quest_krokar": ["Ingrid vill veta vad som hände hennes farfar."],
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "gravvaktare": {
+          "halsning": "Gravvaktarna lever i oss nu. Krossa benen, stick inte.",
+          "bark": "Gryningsövning! Sköldarna upp!"
+        },
+        "vaktar_porten": {
+          "plats": "portalgladet",
+          "halsning": "Ebbe är död. Någon måste vakta porten.",
+          "bark": "Lyktan ska tändas igen. En dag."
+        }
+      }
+    },
+    {
+      "id": "olle_vardshus",
+      "namn": "Olle",
+      "roll": "berattare",
+      "faktion": "de_kvarvarande",
+      "omrade": "gamla_byn",
+      "plats": "osterhus_vardshus",
+      "visas": "gamla_byn aterbefolkad_3",
+      "personlighet": "Gladlynt, överdriver allt, samlar rykten.",
+      "utseende": "Tjock man med rött ansikte, förkläde med ölfläckar och en träslev i bältet.",
+      "dygnsrutin": [
+        {
+          "from": "12:00",
+          "to": "02:00",
+          "plats": "osterhus_vardshus",
+          "aktivitet": "serverar och berättar"
+        },
+        {
+          "from": "02:00",
+          "to": "12:00",
+          "plats": "osterhus_vardshus",
+          "aktivitet": "sover bakom disken"
+        }
+      ],
+      "repliker": {
+        "halsning": "Sätt dig! Första stopet är på mig, nästa är på dig.",
+        "rader": [
+          "Jag hör allt. Hälften är lögn. Den andra hälften är värre.",
+          "Folk säger att någon har sett ljus i Askeborg igen.",
+          "En jägare sa att Dimmerstrands klockor ringer under vattnet."
+        ],
+        "rykten": [
+          "rykte_dimmerstrand",
+          "rykte_askeborg_ljus",
+          "rykte_hjalten",
+          "rykte_ulvhild_dod",
+          "rykte_hedda_palsen",
+          "rykte_ristaren_sanning",
+          "rykte_kronikan_ingrid",
+          "rykte_benkungen_dod",
+          "rykte_valdemar_vilar",
+          "rykte_valdemar_signet",
+          "rykte_valdemar_sara"
+        ]
+      },
+      "relationer": {
+        "marta_torghandlare": "skvallerpartner",
+        "gravvaktaren_ebbe": "retas med honom"
+      },
+      "quest_krokar": ["Värdshusets tavla: krokar till alla städer."],
+      "handel": {
+        "saljer": ["mat (läker 15 HP över tid)", "uthallighetsdryck"],
+        "koper": [],
+        "prisfaktor_salj": 1.0
+      },
+      "akt": "akt_1",
+      "grafik_prioritet": true
+    },
+    {
+      "id": "sara_benlasare",
+      "namn": "Sara Benläsare",
+      "roll": "handlare",
+      "faktion": "ingen",
+      "omrade": "gamla_byn",
+      "plats": "kapellet",
+      "visas": "gamla_byn aterbefolkad_3",
+      "personlighet": "Viskande, märklig, vet mycket om ben och smycken.",
+      "utseende": "Blek kvinna i svart, bär hundratals små benpärlor i håret och en stav av ryggkotor.",
+      "dygnsrutin": [
+        {
+          "from": "20:00",
+          "to": "04:00",
+          "plats": "kapellet",
+          "aktivitet": "handlar vid ljus"
+        },
+        {
+          "from": "04:00",
+          "to": "20:00",
+          "plats": "kapellet_krypta",
+          "aktivitet": "sover"
+        }
+      ],
+      "repliker": {
+        "halsning": "Ben berättar. Smycken lyssnar.",
+        "rader": [
+          "Jag säljer det som de döda bar.",
+          "Viskaren var min lärare innan han gick vilse.",
+          "Kom på natten. Benen talar tydligare då."
+        ],
+        "rykten": ["rykte_benviskaren", "rykte_legendariskt_hittat", "rykte_viskaren_skrattar", "rykte_valdemar_sara"]
+      },
+      "relationer": {
+        "viskaren": "gammal lärare",
+        "gravvaktaren_ebbe": "han ogillar henne"
+      },
+      "quest_krokar": ["Sara vill köpa Benkungens krona, men bara för att begrava den."],
+      "handel": {
+        "saljer": ["amuletter och ringar (Magisk och Sällsynt)", "ben baser (Normal och Magisk)"],
+        "koper": ["amulett", "ring", "ben"],
+        "prisfaktor_salj": 1.4,
+        "prisfaktor_kop": 0.4
+      },
+      "akt": "akt_1",
+      "grafik_prioritet": true,
+      "quests": ["begrav_benkungen"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "altare": {
+          "halsning": "Valdemar talar med mig nu. Han är mycket arg. Vill du köpa något?",
+          "handel_mult": 0.85
+        }
+      }
+    },
+    {
+      "id": "lova_fiskarankan",
+      "namn": "Fiskaränkan Lova",
+      "roll": "flykting",
+      "faktion": "de_kvarvarande",
+      "omrade": "dimmerstrand",
+      "plats": "dimmerstrand_brygga",
+      "visas": "alltid",
+      "personlighet": "Sorgsen, tyst, rädd för vatten men lämnar inte stranden.",
+      "utseende": "Mager kvinna i genomvått sjal, fiskenät över axlarna, sitter i en halvsjunken båt.",
+      "dygnsrutin": [
+        {
+          "from": "06:00",
+          "to": "20:00",
+          "plats": "dimmerstrand_brygga",
+          "aktivitet": "lagar nät och tittar ut i dimman"
+        },
+        {
+          "from": "20:00",
+          "to": "06:00",
+          "plats": "dimmerstrand_bat",
+          "aktivitet": "sover i båten"
+        }
+      ],
+      "repliker": {
+        "halsning": "Gå inte för nära vattnet. Det drar.",
+        "rader": [
+          "Min man drunknade. Nu går han upp på stranden om nätterna.",
+          "Korparna väntar på taken. På vad, vet ingen.",
+          "Träsdrottningen sjunger. Har du hört henne?"
+        ],
+        "rykten": ["rykte_dimmerstrand", "rykte_trasdrottningen_dod", "rykte_korpmodern"]
+      },
+      "relationer": {
+        "sigrun_helare": "Sigrun lät henne bo i lägret en vinter"
+      },
+      "quest_krokar": ["Lovas man bland de drunknade.", "Korpmoderns båge."],
+      "akt": "akt_2",
+      "grafik_prioritet": false,
+      "quests": ["klockorna_under_vattnet", "korpmoderns_sista_flykt"]
+    },
+    {
+      "id": "broder_elias",
+      "namn": "Broder Elias",
+      "roll": "helare",
+      "faktion": "de_kvarvarande",
+      "omrade": "kopparberg",
+      "plats": "kopparberg_port",
+      "visas": "alltid",
+      "personlighet": "From, plågad, den ende som kom ut ur Järnklostret. En av hans bröder går nu som Galen munk.",
+      "utseende": "Tunn munk i sotig kåpa med bönepärlor av ben och bandage över ena handen.",
+      "dygnsrutin": [
+        {
+          "from": "05:00",
+          "to": "21:00",
+          "plats": "kopparberg_port",
+          "aktivitet": "ber och läker"
+        },
+        {
+          "from": "21:00",
+          "to": "05:00",
+          "plats": "kopparberg_skjul",
+          "aktivitet": "ber hela natten"
+        }
+      ],
+      "repliker": {
+        "halsning": "Herren har glömt det här berget. Jag har inte.",
+        "rader": [
+          "Bröderna låste in sig för att inte förvridas. Jag var den ende som öppnade dörren.",
+          "Spindlarna hör dig gå. Gå lätt.",
+          "Brodern med järngördeln var den starkaste av oss."
+        ],
+        "rykten": ["rykte_spinnmodern", "rykte_jarnmunkens_gordel", "rykte_smittan_sprider_sig"]
+      },
+      "relationer": {
+        "sigrun_helare": "brevvän"
+      },
+      "quest_krokar": ["Järnmunkens gördel och vad som hände i klostret."],
+      "handel": {
+        "tjanst": "helning",
+        "pris": "gratis, full HP och tar bort gift",
+        "saljer": ["stor_halsodryck"],
+        "koper": [],
+        "prisfaktor_salj": 1.1
+      },
+      "akt": "akt_3",
+      "grafik_prioritet": false,
+      "quests": ["jarnmunkens_las"]
+    },
+    {
+      "id": "rask_avfallen",
+      "namn": "Rask den avfallne",
+      "roll": "berattare",
+      "faktion": "askans_barn_avfallen",
+      "omrade": "askfalten",
+      "plats": "askfalten_ruin",
+      "visas": "alltid",
+      "personlighet": "Nervös, skamsen, vet för mycket.",
+      "utseende": "Ung man med brännmärken på armarna, askgrå kåpa i trasor och ett avbrutet ritualhalsband.",
+      "dygnsrutin": [
+        {
+          "from": "00:00",
+          "to": "24:00",
+          "plats": "askfaltens_ruin",
+          "aktivitet": "gömmer sig, kikar mot staden"
+        }
+      ],
+      "repliker": {
+        "halsning": "Säg inte till dem att jag är här. Snälla.",
+        "rader": [
+          "Jag var ett av Askans barn. Jag trodde elden renade.",
+          "Morvath sitter i katedralens ruin. Han väntar inte på något. Han bara brinner.",
+          "Pilgrimen gick förbi mig. Han hälsade. Ingen hälsar i Askeborg."
+        ],
+        "rykten": ["rykte_askeborg_ljus", "rykte_askfursten", "rykte_askfursten_dod"]
+      },
+      "relationer": {
+        "gunnar_jarnhand": "Gunnar hatar honom",
+        "olle_vardshus": "har hört om honom"
+      },
+      "quest_krokar": ["Rask vet var Askvandrarens börda spreds.", "Kultens ritualer kring den fjärde stenen."],
+      "akt": "akt_4",
+      "grafik_prioritet": false,
+      "quests": ["den_fjarde_stenen", "pilgrimens_vag"]
+    },
+    {
+      "id": "fyrvaktaren_hulda",
+      "namn": "Fyrvaktaren Hulda",
+      "roll": "helare",
+      "faktion": "de_kvarvarande",
+      "omrade": "sista_ljuset",
+      "plats": "fyren",
+      "visas": "alltid",
+      "personlighet": "Stenhård, varm under ytan, har hållit ljuset tänt i trettio år.",
+      "utseende": "Gammal kvinna i oljerock med lykta, vindbitet ansikte och en sotig sjal.",
+      "dygnsrutin": [
+        {
+          "from": "18:00",
+          "to": "06:00",
+          "plats": "fyren",
+          "aktivitet": "håller fyren tänd"
+        },
+        {
+          "from": "06:00",
+          "to": "18:00",
+          "plats": "fyrstugan",
+          "aktivitet": "läker och sover"
+        }
+      ],
+      "repliker": {
+        "halsning": "Ljuset brinner så länge jag andas.",
+        "rader": [
+          "Ruttmarken andas om natten. Man hör det.",
+          "Ingen har gått in i katedralen och kommit ut.",
+          "Ljuset håller smittan borta. Fråga mig inte hur."
+        ],
+        "rykten": ["rykte_smittan_sprider_sig", "rykte_fjarde_stenen"]
+      },
+      "relationer": {
+        "gamla_ylva": "systrar i samma orden en gång"
+      },
+      "quest_krokar": ["Varför håller fyren smittan borta?"],
+      "akt": "akt_5",
+      "grafik_prioritet": false,
+      "handel": {
+        "tjanst": "helning",
+        "pris": "gratis, full HP och tar bort gift",
+        "saljer": ["stor_halsodryck", "foryngringsdryck"],
+        "koper": [],
+        "prisfaktor_salj": 1.2
+      },
+      "quests": ["ljuset_som_haller"]
+    },
+    {
+      "id": "kram_handlaren",
+      "namn": "Kram",
+      "roll": "handlare",
+      "faktion": "de_kvarvarande",
+      "omrade": "sista_ljuset",
+      "plats": "hamnboden",
+      "visas": "alltid",
+      "personlighet": "Snabb, girig, glad, handlar med alla sidor.",
+      "utseende": "Liten man i lappad rock med hundra fickor och en papegojskalle på axeln.",
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "20:00",
+          "plats": "hamnboden",
+          "aktivitet": "handlar"
+        },
+        {
+          "from": "20:00",
+          "to": "08:00",
+          "plats": "hamnboden",
+          "aktivitet": "räknar guld"
+        }
+      ],
+      "repliker": {
+        "halsning": "Allt har ett pris. Det har du också.",
+        "rader": [
+          "Jag köper av vem som helst. Även av kultister.",
+          "Det bästa från Ruttmarken säljer jag dyrt.",
+          "Jag har sett Tor Kolares kärra en gång. Bra kärra."
+        ],
+        "rykten": ["rykte_legendariskt_hittat", "rykte_hjalten"]
+      },
+      "relationer": {
+        "tor_kolare": "konkurrent"
+      },
+      "quest_krokar": ["Krams okända leverantör i Ruttmarken."],
+      "akt": "akt_5",
+      "grafik_prioritet": false,
+      "handel": {
+        "saljer": ["drycker", "vapen och rustning tier 3 (Normal till Sällsynt)", "amuletter och ringar (Magisk och Sällsynt)"],
+        "koper": ["vapen", "rustning", "amulett", "ring", "ben", "material"],
+        "prisfaktor_salj": 1.5,
+        "prisfaktor_kop": 0.35
+      }
+    }
+  ]
+}

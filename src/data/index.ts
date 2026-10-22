@@ -12,9 +12,9 @@ import portalBy from './portal_by.json';
 import set from './set.json';
 import spawnzoner from './spawnzoner.json';
 import stader from './stader.json';
-import dialoger from './dialoger.json';
 import npc from './npc.json';
 import type { DialogDataFile } from './dialogTypes';
+import { DIALOG_DATA } from '../npc/designDialoger';
 import type { NpcDataFile } from './npcTypes';
 import type { Cities, Classes, GameData, MonsterDef, MonsterFamilies, MonsterLevels, PortalVillage, SpawnZones } from './types';
 
@@ -33,7 +33,7 @@ export const DATA: GameData = {
   attributes: attribut,
   lorebook: lorebok,
   npc: npc as unknown as NpcDataFile,
-  dialoger: dialoger as unknown as DialogDataFile,
+  dialoger: DIALOG_DATA as DialogDataFile,
 };
 
 const MONSTERS = new Map<string, MonsterDef>(DATA.families.monsters.map((m) => [m.id, m]));

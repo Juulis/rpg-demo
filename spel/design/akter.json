@@ -1,0 +1,355 @@
+{
+  "meta": {
+    "version": "1.0",
+    "regler": [
+      "Inga spärrar: alla regioner kan besökas när som helst, svårighet styrs av monsternivå.",
+      "Inga hylsor, ingen ändring av föremål.",
+      "status finns = data finns i spawnzoner.json och stader.json; ny = planerad, behöver spawnzoner och grafik."
+    ],
+    "maxniva": 30,
+    "maxniva_forslag": "30 räcker för akt 1 till 5. Föreslå höjning till 35 bara om en svårighetsgrad Mardröm läggs till (alla monster +5 nivåer).",
+    "nya_bossar_status": "planerade, stats räknas med monster_niva.json när akten byggs"
+  },
+  "akter": [
+    {
+      "id": "akt_1",
+      "namn": "Akt 1: Runornas skog",
+      "tema": "Skog, vargar och de dödas by. Hjälten väcker runorna och lär känna fallet.",
+      "niva": [1, 10],
+      "bygg_ordning": 1,
+      "regioner": [
+        {
+          "id": "startlagret",
+          "namn": "Lägret vid skogsbrynet",
+          "biom": "skogsbryn, tältläger",
+          "typ": "by",
+          "niva": [1, 1],
+          "familjer": [],
+          "status": "finns",
+          "beskrivning": "De kvarvarandes läger. Säker zon, startpunkt."
+        },
+        {
+          "id": "startskogen",
+          "namn": "Startskogen",
+          "biom": "barrskog, dimma, runstenar",
+          "typ": "vildmark",
+          "niva": [1, 3],
+          "familjer": ["bestar", "insekter", "forvridna", "ododa"],
+          "status": "finns",
+          "beskrivning": "De tre runstenarna och den röda portalen i mitten."
+        },
+        {
+          "id": "vargstigen",
+          "namn": "Vargstigen",
+          "biom": "glesnande skog, myr",
+          "typ": "vildmark",
+          "niva": [3, 4],
+          "familjer": ["bestar", "forvridna"],
+          "status": "ny",
+          "beskrivning": "Vägen österut mot Vargaby, övergivna kolarkojor."
+        },
+        {
+          "id": "vargaby",
+          "namn": "Vargaby",
+          "biom": "jägarby i skogsglänta",
+          "typ": "stad",
+          "niva": [4, 6],
+          "familjer": ["bestar", "forvridna", "ododa"],
+          "status": "finns",
+          "beskrivning": "",
+          "boss": "grabjornen_ulvhild"
+        },
+        {
+          "id": "ulvhilds_ide",
+          "namn": "Ulvhilds ide",
+          "biom": "grotta under granrötter",
+          "typ": "bana",
+          "niva": [6, 6],
+          "familjer": ["bestar"],
+          "status": "ny",
+          "beskrivning": "Gråbjörnens ide, ben och kedjor."
+        },
+        {
+          "id": "gamla_byn",
+          "namn": "Den gamla byn",
+          "biom": "förbannad by, kyrkogård",
+          "typ": "stad",
+          "niva": [7, 9],
+          "familjer": ["ododa", "gastar", "bestar"],
+          "status": "finns",
+          "beskrivning": "Nås via röda portalen eller till fots över Gravåsen.",
+          "boss": "benkungen_valdemar"
+        },
+        {
+          "id": "gravasen",
+          "namn": "Gravåsen",
+          "biom": "kal ås med gravhögar",
+          "typ": "vildmark",
+          "niva": [7, 8],
+          "familjer": ["ododa", "bestar"],
+          "status": "ny",
+          "beskrivning": "Gångväg mellan Vargaby och Den gamla byn, för den som inte tar portalen."
+        },
+        {
+          "id": "kapellets_krypta",
+          "namn": "Kapellets krypta",
+          "biom": "krypta under kapellet",
+          "typ": "bana",
+          "niva": [9, 10],
+          "familjer": ["ododa"],
+          "status": "ny",
+          "beskrivning": "Benkungens tronsal och gravvaktarnas sista strid."
+        }
+      ],
+      "bossar": ["grabjornen_ulvhild", "benkungen_valdemar"],
+      "quest_krokar": [
+        "Miras bror och Flyktingens sandaler",
+        "Vad hände med runornas ristare",
+        "Begrav Benkungen",
+        "Gravvaktarnas sista strid"
+      ]
+    },
+    {
+      "id": "akt_2",
+      "namn": "Akt 2: Dimmans kust",
+      "tema": "Kust, träsk och drunknade. Klockor som ringer under vattnet.",
+      "niva": [11, 15],
+      "bygg_ordning": 2,
+      "regioner": [
+        {
+          "id": "dimvagen",
+          "namn": "Dimvägen",
+          "biom": "hed och sjöar",
+          "typ": "vildmark",
+          "niva": [10, 11],
+          "familjer": ["gastar", "bestar"],
+          "status": "ny",
+          "beskrivning": ""
+        },
+        {
+          "id": "dimmerstrand",
+          "namn": "Dimmerstrand",
+          "biom": "fiskeläge, träsk, dimma",
+          "typ": "stad",
+          "niva": [11, 14],
+          "familjer": ["gastar", "ododa", "insekter"],
+          "status": "finns",
+          "beskrivning": "",
+          "boss": "trasdrottningen"
+        },
+        {
+          "id": "korpholmarna",
+          "namn": "Korpholmarna",
+          "biom": "klippiga öar, fågelberg",
+          "typ": "vildmark",
+          "niva": [12, 13],
+          "familjer": ["gastar", "bestar"],
+          "status": "ny",
+          "beskrivning": "Korpmoderns hem, nås över ebbstigar."
+        },
+        {
+          "id": "sjunkna_kyrkan",
+          "namn": "Den sjunkna kyrkan",
+          "biom": "halvt översvämmad kyrka",
+          "typ": "bana",
+          "niva": [14, 15],
+          "familjer": ["gastar", "ododa"],
+          "status": "ny",
+          "beskrivning": "Klockorna ringer här. Träsdrottningens tron."
+        }
+      ],
+      "bossar": ["trasdrottningen"],
+      "underbossar_nya": ["korpmodern"],
+      "quest_krokar": ["Lovas man bland de drunknade", "Korpmoderns båge", "Klockorna under vattnet"]
+    },
+    {
+      "id": "akt_3",
+      "namn": "Akt 3: Kopparberget",
+      "tema": "Gruvor, kloster och djup. Det som väntade under berget.",
+      "niva": [15, 19],
+      "bygg_ordning": 3,
+      "regioner": [
+        {
+          "id": "bergsvagen",
+          "namn": "Bergsvägen",
+          "biom": "fjällsluttning, tallar",
+          "typ": "vildmark",
+          "niva": [14, 15],
+          "familjer": ["bestar", "forvridna"],
+          "status": "ny",
+          "beskrivning": ""
+        },
+        {
+          "id": "kopparberg",
+          "namn": "Kopparberg",
+          "biom": "gruvstad på bergssida",
+          "typ": "stad",
+          "niva": [15, 18],
+          "familjer": ["insekter", "forvridna", "demoner"],
+          "status": "finns",
+          "beskrivning": "",
+          "boss": "spinnmodern"
+        },
+        {
+          "id": "jarnklostret",
+          "namn": "Järnklostret",
+          "biom": "bergskloster",
+          "typ": "bana",
+          "niva": [16, 17],
+          "familjer": ["forvridna", "ododa"],
+          "status": "ny",
+          "beskrivning": "Bröderna som låste in sig. Järnmunkens gördel."
+        },
+        {
+          "id": "gruvdjupen",
+          "namn": "Gruvdjupen",
+          "biom": "schakt, kristallgrottor, nät",
+          "typ": "bana",
+          "niva": [17, 19],
+          "familjer": ["insekter", "demoner"],
+          "status": "ny",
+          "beskrivning": "Spinnmoderns kammare längst ner."
+        }
+      ],
+      "bossar": ["spinnmodern"],
+      "underbossar_nya": ["jarnmunken"],
+      "quest_krokar": ["Martas dotter i Kopparberg", "Järnmunkens gördel", "Varför grävde de så djupt"]
+    },
+    {
+      "id": "akt_4",
+      "namn": "Akt 4: Askeborg",
+      "tema": "Askfält, brinnande stad och kult. Sprickan i himlen.",
+      "niva": [19, 25],
+      "bygg_ordning": 4,
+      "regioner": [
+        {
+          "id": "askfalten",
+          "namn": "Askfälten",
+          "biom": "förbränd slätt, glödande sprickor",
+          "typ": "vildmark",
+          "niva": [19, 20],
+          "familjer": ["demoner", "forvridna", "ododa"],
+          "status": "ny",
+          "beskrivning": "Raskas gömställe i en ruin."
+        },
+        {
+          "id": "askeborg",
+          "namn": "Askeborg",
+          "biom": "brinnande stad, katedralruin",
+          "typ": "stad",
+          "niva": [19, 23],
+          "familjer": ["demoner", "forvridna", "ododa"],
+          "status": "finns",
+          "beskrivning": "",
+          "boss": "askfursten_morvath"
+        },
+        {
+          "id": "kultens_katakomber",
+          "namn": "Kultens katakomber",
+          "biom": "katakomber under staden",
+          "typ": "bana",
+          "niva": [22, 24],
+          "familjer": ["forvridna", "demoner"],
+          "status": "ny",
+          "beskrivning": "Askans barns ritualer kring den fjärde stenen."
+        },
+        {
+          "id": "katedralen",
+          "namn": "Den brända katedralen",
+          "biom": "katedral i lågor",
+          "typ": "bana",
+          "niva": [24, 25],
+          "familjer": ["demoner"],
+          "status": "ny",
+          "beskrivning": "Morvaths säte."
+        }
+      ],
+      "bossar": ["askfursten_morvath"],
+      "underbossar_nya": ["askans_profet"],
+      "quest_krokar": ["Askvandrarens börda", "Den fjärde stenen", "Raskas skuld"]
+    },
+    {
+      "id": "akt_5",
+      "namn": "Akt 5: Smittans hjärta",
+      "tema": "Ruttmark och sprickans botten. Var smittan föddes.",
+      "niva": [24, 30],
+      "bygg_ordning": 5,
+      "regioner": [
+        {
+          "id": "sista_ljuset",
+          "namn": "Sista ljuset",
+          "biom": "fyrby på klippa",
+          "typ": "by",
+          "niva": [24, 24],
+          "familjer": [],
+          "status": "ny",
+          "beskrivning": "Sista mänskliga fästet före Ruttmarken."
+        },
+        {
+          "id": "ruttmarken",
+          "namn": "Ruttmarken",
+          "biom": "sjuk skog, svulstiga träd, giftträsk",
+          "typ": "vildmark",
+          "niva": [24, 27],
+          "familjer": ["forvridna", "bestar", "insekter"],
+          "status": "ny",
+          "beskrivning": "Förvridnas slutområde."
+        },
+        {
+          "id": "smittans_katedral",
+          "namn": "Smittans katedral",
+          "biom": "levande kyrka av kött",
+          "typ": "bana",
+          "niva": [27, 28],
+          "familjer": ["forvridna"],
+          "status": "ny",
+          "beskrivning": "",
+          "boss": "fadern_av_smittan"
+        },
+        {
+          "id": "sprickans_botten",
+          "namn": "Sprickans botten",
+          "biom": "tomrum, svävande ruiner, den fjärde stenen",
+          "typ": "bana",
+          "niva": [29, 30],
+          "familjer": ["demoner", "forvridna", "ododa"],
+          "status": "ny",
+          "beskrivning": "Där runorna en gång släcktes.",
+          "boss": "den_slocknade"
+        }
+      ],
+      "bossar": ["fadern_av_smittan", "den_slocknade"],
+      "quest_krokar": ["Vem släckte runorna", "Den fjärde stenen tänds", "Magi låses upp"]
+    }
+  ],
+  "nya_bossar": {
+    "korpmodern": {
+      "akt": "akt_2",
+      "familj": "gastar",
+      "niva": 13,
+      "typ": "underboss",
+      "utseende": "Kvinnogestalt av korpfjädrar med båge av idegran."
+    },
+    "jarnmunken": {
+      "akt": "akt_3",
+      "familj": "forvridna",
+      "niva": 17,
+      "typ": "underboss",
+      "utseende": "Jättelik förvriden munk med järngördel som skär in i köttet."
+    },
+    "askans_profet": {
+      "akt": "akt_4",
+      "familj": "forvridna",
+      "niva": 23,
+      "typ": "underboss",
+      "utseende": "Kultledare i brinnande kåpa, ansiktet en mask av aska."
+    },
+    "den_slocknade": {
+      "akt": "akt_5",
+      "familj": "demoner",
+      "niva": 30,
+      "typ": "slutboss",
+      "utseende": "Gestalt av släckt runljus och aska, bär den fjärde stenen i bröstet. Den som en gång var runornas ristare."
+    }
+  }
+}

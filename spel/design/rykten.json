@@ -1,0 +1,409 @@
+{
+  "meta": {
+    "version": "1.0",
+    "modell": "Se varld.md. villkor tolkas mot world_state; tomt villkor = alltid sant. ersatter döljer ett annat rykte när detta är aktivt. Platshållare i {} fylls från world_state.",
+    "inga_sparrar": "Rykten informerar bara, de låser aldrig upp eller spärrar något.",
+    "villkor_tillagg": "quest_val: {quest_id: val_id} är sant när questen avslutats med det valet.",
+    "villkor_tillagg2": "npc_state: {npc: state}, faction_rep_gte: {faktion: värde}, flag: {flagga: värde}."
+  },
+  "rykten": [
+    {
+      "id": "rykte_runorna_sover",
+      "text": "Runorna i skogen sover men drömmer.",
+      "villkor": {
+        "runes_active_lt": 3
+      },
+      "talare": ["gamla_ylva"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_portalen_oppen",
+      "text": "Någon har väckt runorna. Den röda porten står öppen i skogens mitt.",
+      "villkor": {
+        "runes_active_gte": 3
+      },
+      "talare": ["gamla_ylva", "bror_vakt", "olle_vardshus"],
+      "prioritet": 2,
+      "ersatter": "rykte_runorna_sover"
+    },
+    {
+      "id": "rykte_vargarna_okar",
+      "text": "Vargarna blir fler för varje natt.",
+      "villkor": {
+        "boss_not_killed": "grabjornen_ulvhild"
+      },
+      "talare": ["tor_kolare", "bror_vakt"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_ulvhild_dod",
+      "text": "Gråbjörnen i Vargaby är död. Hedda sägs ha gråtit av lycka.",
+      "villkor": {
+        "boss_killed": "grabjornen_ulvhild"
+      },
+      "talare": ["tor_kolare", "hedda_jagare", "olle_vardshus"],
+      "prioritet": 3,
+      "ersatter": "rykte_vargarna_okar"
+    },
+    {
+      "id": "rykte_gravargsledaren",
+      "text": "En gråvarg med kedja runt halsen leder flockarna.",
+      "villkor": {
+        "boss_not_killed": "grabjornen_ulvhild"
+      },
+      "talare": ["hedda_jagare"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_skelett_vid_rosena",
+      "text": "Skelett har setts vid vägrösena i norr.",
+      "villkor": {},
+      "talare": ["bror_vakt"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_flyktingens_sandaler",
+      "text": "Ett barn flydde mot Vargaby i nya sandaler och kom aldrig fram.",
+      "villkor": {},
+      "talare": ["lilla_mira"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_benviskaren",
+      "text": "En eremit viskar till ben vid ett röse i nordväst.",
+      "villkor": {},
+      "talare": ["viskaren", "sara_benlasare"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_benkungen",
+      "text": "Hövdingen Valdemar bär en krona som binder hela byn.",
+      "villkor": {
+        "boss_not_killed": "benkungen_valdemar"
+      },
+      "talare": ["gravvaktaren_ebbe"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_benkungen_dod",
+      "text": "Benkungen har fallit. De döda i Den gamla byn ligger stilla.",
+      "villkor": {
+        "boss_killed": "benkungen_valdemar"
+      },
+      "talare": ["gravvaktaren_ebbe", "olle_vardshus", "marta_torghandlare"],
+      "prioritet": 3,
+      "ersatter": "rykte_benkungen"
+    },
+    {
+      "id": "rykte_gravvaktarens_arv",
+      "text": "Gravvaktarnas utrustning ligger kvar där de föll.",
+      "villkor": {},
+      "talare": ["gravvaktaren_ebbe"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_byn_vaknar",
+      "text": "Folk flyttar tillbaka till Den gamla byn. Det luktar bröd igen.",
+      "villkor": {
+        "city_state_gte": {
+          "gamla_byn": "aterbefolkad_1"
+        }
+      },
+      "talare": ["marta_torghandlare", "vaktkapten_ingrid", "tor_kolare"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_vakter_i_byn",
+      "text": "Byn har vakter nu. Bönder med spjut, men de står kvar.",
+      "villkor": {
+        "city_state_gte": {
+          "gamla_byn": "aterbefolkad_2"
+        }
+      },
+      "talare": ["vaktkapten_ingrid"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_runsmidd_klinga",
+      "text": "Smeden som smidde Runsmidd klinga dog samma natt.",
+      "villkor": {},
+      "talare": ["gunnar_jarnhand"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_askeborg_brinner",
+      "text": "Askeborg brinner fortfarande, trettio år senare.",
+      "villkor": {
+        "boss_not_killed": "askfursten_morvath"
+      },
+      "talare": ["gunnar_jarnhand", "gamla_ylva"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_dimmerstrand",
+      "text": "Klockorna i Dimmerstrand ringer under vattnet.",
+      "villkor": {
+        "boss_not_killed": "trasdrottningen"
+      },
+      "talare": ["olle_vardshus", "marta_torghandlare", "lova_fiskarankan"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_trasdrottningen_dod",
+      "text": "Dimman över Dimmerstrand har lättat. Klockorna har tystnat.",
+      "villkor": {
+        "boss_killed": "trasdrottningen"
+      },
+      "talare": ["lova_fiskarankan", "olle_vardshus"],
+      "prioritet": 3,
+      "ersatter": "rykte_dimmerstrand"
+    },
+    {
+      "id": "rykte_korpmodern",
+      "text": "Korparna på taken väntar på sin moder.",
+      "villkor": {},
+      "talare": ["lova_fiskarankan"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_spinnmodern",
+      "text": "Något stort väver i Kopparbergs djup.",
+      "villkor": {
+        "boss_not_killed": "spinnmodern"
+      },
+      "talare": ["broder_elias"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_jarnmunkens_gordel",
+      "text": "Den starkaste brodern bar en järngördel med lås.",
+      "villkor": {},
+      "talare": ["broder_elias"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_smittan_sprider_sig",
+      "text": "Smittan sprider sig. Bett som blir gröna är dödsdomar.",
+      "villkor": {
+        "boss_not_killed": "fadern_av_smittan"
+      },
+      "talare": ["sigrun_helare", "broder_elias", "fyrvaktaren_hulda"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_askeborg_ljus",
+      "text": "Någon har sett ljus i Askeborg igen. Inte eld. Något annat.",
+      "villkor": {},
+      "talare": ["olle_vardshus", "rask_avfallen"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_askfursten",
+      "text": "Morvath sitter i katedralens ruin och bara brinner.",
+      "villkor": {
+        "boss_not_killed": "askfursten_morvath"
+      },
+      "talare": ["rask_avfallen"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_askfursten_dod",
+      "text": "Askfursten är fallen. För första gången på trettio år föll regn över Askeborg.",
+      "villkor": {
+        "boss_killed": "askfursten_morvath"
+      },
+      "talare": ["rask_avfallen", "olle_vardshus", "gamla_ylva"],
+      "prioritet": 3,
+      "ersatter": "rykte_askfursten"
+    },
+    {
+      "id": "rykte_fjarde_stenen",
+      "text": "Det sägs att det fanns en fjärde runsten. Den ligger på sprickans botten.",
+      "villkor": {},
+      "talare": ["fyrvaktaren_hulda", "gamla_ylva"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_legendariskt_hittat",
+      "text": "Folk säger att {hjalte} bär {foremal}. Sådant har ingen sett på trettio år.",
+      "villkor": {
+        "event": "legendary_found"
+      },
+      "talare": ["sara_benlasare", "kram_handlaren", "olle_vardshus"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_hjalten",
+      "text": "{hjalte} har dödat {antal_bossar} av mörkrets furstar. Folk börjar hoppas.",
+      "villkor": {
+        "bosses_killed_gte": 1
+      },
+      "talare": ["olle_vardshus", "kram_handlaren"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_mira_vet",
+      "text": "Lilla Mira har slutat vänta vid vägen. Hon hjälper Sigrun nu.",
+      "villkor": {
+        "quest_val": {
+          "miras_bror": "ge_sandalerna"
+        }
+      },
+      "talare": ["sigrun_helare", "gamla_ylva"],
+      "prioritet": 4,
+      "ersatter": "rykte_flyktingens_sandaler"
+    },
+    {
+      "id": "rykte_mira_hoppas",
+      "text": "Lilla Mira säger att någon sett hennes bror i Vargaby. Hon vill gå dit.",
+      "villkor": {
+        "quest_val": {
+          "miras_bror": "behall_och_ljug"
+        }
+      },
+      "talare": ["lilla_mira", "hedda_jagare"],
+      "prioritet": 4,
+      "ersatter": "rykte_flyktingens_sandaler"
+    },
+    {
+      "id": "rykte_viskaren_tyst",
+      "text": "Viskaren sitter vid Ylvas eld nu. Han viskar inte längre.",
+      "villkor": {
+        "quest_val": {
+          "benens_visk": "ge_skallen"
+        }
+      },
+      "talare": ["gamla_ylva", "bror_vakt"],
+      "prioritet": 4,
+      "ersatter": "rykte_benviskaren"
+    },
+    {
+      "id": "rykte_viskaren_skrattar",
+      "text": "Viskaren skrattar om nätterna. Han säger att skallen har valt.",
+      "villkor": {
+        "quest_val": {
+          "benens_visk": "behall_skallen"
+        }
+      },
+      "talare": ["viskaren", "sara_benlasare"],
+      "prioritet": 4
+    },
+    {
+      "id": "rykte_hedda_palsen",
+      "text": "Ulvhilds päls hänger i Heddas jaktstuga. Hon sover om nätterna nu.",
+      "villkor": {
+        "quest_val": {
+          "ulvhilds_pals": "ge_hedda"
+        }
+      },
+      "talare": ["hedda_jagare", "tor_kolare", "olle_vardshus"],
+      "prioritet": 4
+    },
+    {
+      "id": "rykte_bror_begraver",
+      "text": "Bror begravde sin son i björnens päls. Det står ett nytt kors vid lägret.",
+      "villkor": {
+        "quest_val": {
+          "ulvhilds_pals": "ge_bror"
+        }
+      },
+      "talare": ["bror_vakt", "gamla_ylva", "sigrun_helare"],
+      "prioritet": 4
+    },
+    {
+      "id": "rykte_ristaren_sanning",
+      "text": "Ylva säger att runornas ristare själv släckte den fjärde stenen. Hon pratar om att tända den igen.",
+      "villkor": {
+        "quest_val": {
+          "runornas_ristare": "sanningen"
+        }
+      },
+      "talare": ["gamla_ylva", "olle_vardshus"],
+      "prioritet": 4,
+      "ersatter": "rykte_runorna_sover"
+    },
+    {
+      "id": "rykte_ristaren_hjalte",
+      "text": "Ylva berättar om runornas ristare, en hjälte som dog i strid.",
+      "villkor": {
+        "quest_val": {
+          "runornas_ristare": "skona"
+        }
+      },
+      "talare": ["gamla_ylva"],
+      "prioritet": 4,
+      "ersatter": "rykte_runorna_sover"
+    },
+    {
+      "id": "rykte_kronikan_ebbe",
+      "text": "Ebbe läser gravvaktarnas krönika för barnen vid portalen.",
+      "villkor": {
+        "quest_val": {
+          "gravvaktarnas_sista_strid": "ge_ebbe"
+        }
+      },
+      "talare": ["gravvaktaren_ebbe", "marta_torghandlare"],
+      "prioritet": 4,
+      "ersatter": "rykte_gravvaktarens_arv"
+    },
+    {
+      "id": "rykte_kronikan_ingrid",
+      "text": "Vaktkapten Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
+      "villkor": {
+        "quest_val": {
+          "gravvaktarnas_sista_strid": "ge_ingrid"
+        }
+      },
+      "talare": ["vaktkapten_ingrid", "olle_vardshus"],
+      "prioritet": 4,
+      "ersatter": "rykte_gravvaktarens_arv"
+    },
+    {
+      "id": "rykte_valdemar_vilar",
+      "text": "Valdemar vilar i hövdingagraven med sin signet. Kyrkogården är stilla.",
+      "villkor": {
+        "quest_val": {
+          "begrav_benkungen": "begrav_med_signet"
+        }
+      },
+      "talare": ["gravvaktaren_ebbe", "olle_vardshus", "marta_torghandlare"],
+      "prioritet": 4,
+      "ersatter": "rykte_benkungen_dod"
+    },
+    {
+      "id": "rykte_valdemar_signet",
+      "text": "{hjalte} bär hövdingens signet. Vissa säger att byn har en ny hövding.",
+      "villkor": {
+        "quest_val": {
+          "begrav_benkungen": "behall_signeten"
+        }
+      },
+      "talare": ["olle_vardshus", "vaktkapten_ingrid"],
+      "prioritet": 4,
+      "ersatter": "rykte_benkungen_dod"
+    },
+    {
+      "id": "rykte_valdemar_sara",
+      "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+      "villkor": {
+        "quest_val": {
+          "begrav_benkungen": "ge_sara"
+        }
+      },
+      "talare": ["sara_benlasare", "gravvaktaren_ebbe", "olle_vardshus"],
+      "prioritet": 4,
+      "ersatter": "rykte_benkungen_dod"
+    },
+    {
+      "id": "rykte_ebbe_dod",
+      "text": "Gravvaktaren Ebbe hittades död vid portalen, med lyktan släckt. Ingrid vaktar porten nu.",
+      "villkor": {
+        "npc_state": {
+          "gravvaktaren_ebbe": "dod"
+        }
+      },
+      "talare": ["vaktkapten_ingrid", "olle_vardshus", "marta_torghandlare"],
+      "prioritet": 5
+    }
+  ]
+}

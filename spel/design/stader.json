@@ -1,0 +1,159 @@
+{
+  "states": [
+    {
+      "id": "besatt",
+      "name": "Besatt",
+      "desc": "Monster överallt, mörk dimma, inga människor.",
+      "requirements": null
+    },
+    {
+      "id": "rensad",
+      "name": "Rensad",
+      "desc": "Stadens boss besegrad och alla zoner rensade minst en gång. Inga monster genereras där i något framtida game.",
+      "requirements": {
+        "boss_defeated": true,
+        "zones_cleared_pct": 1.0
+      }
+    },
+    {
+      "id": "aterbefolkad_1",
+      "name": "Återbefolkad nivå 1",
+      "requirements": {
+        "state": "rensad",
+        "gold": 200,
+        "materials": {
+          "timmer": 10
+        }
+      },
+      "settlers": [5, 10],
+      "unlocks": ["handlare"],
+      "income_gold_per_hour": 10
+    },
+    {
+      "id": "aterbefolkad_2",
+      "name": "Återbefolkad nivå 2",
+      "requirements": {
+        "state": "aterbefolkad_1",
+        "gold": 600,
+        "materials": {
+          "timmer": 25,
+          "sten": 15
+        },
+        "quest": "skydda_karavan"
+      },
+      "settlers": [15, 30],
+      "unlocks": ["vapenhandlare", "vakter"],
+      "income_gold_per_hour": 30
+    },
+    {
+      "id": "aterbefolkad_3",
+      "name": "Återbefolkad nivå 3",
+      "requirements": {
+        "state": "aterbefolkad_2",
+        "gold": 1500,
+        "materials": {
+          "timmer": 40,
+          "sten": 40,
+          "jarn": 20
+        },
+        "quest": "stadens_unika_uppdrag"
+      },
+      "settlers": [40, 80],
+      "unlocks": ["kuriosahandlare", "helare", "tavern_uppdrag", "snabbresa"],
+      "income_gold_per_hour": 75
+    }
+  ],
+  "services": [
+    {
+      "id": "handlare",
+      "desc": "Köper och säljer drycker och vanliga föremål."
+    },
+    {
+      "id": "vapenhandlare",
+      "desc": "Köper och säljer vapen, rustning och sköldar. Ändrar aldrig föremål."
+    },
+    {
+      "id": "vakter",
+      "desc": "Stadsvakter stoppar räder, monster spawnar inte nära stan."
+    },
+    {
+      "id": "kuriosahandlare",
+      "desc": "Köper och säljer amuletter, ringar och benföremål av högre kvalitet. Ändrar aldrig föremål."
+    },
+    {
+      "id": "tavern_uppdrag",
+      "desc": "Sidouppdrag och rykten."
+    },
+    {
+      "id": "snabbresa",
+      "desc": "Snabbresa mellan återbefolkade städer."
+    },
+    {
+      "id": "helare",
+      "desc": "Läker gratis och tar bort gift."
+    }
+  ],
+  "settlers_rule": "Invandrare anländer gradvis (1 per 2 min spel) upp till nivåns spann. Varje 10 invånare ger +5 % rabatt hos handlare.",
+  "raid_rule": "Borttagen: rensade städer får inga nya monster (D2 spawnmodell).",
+  "cities": [
+    {
+      "id": "vargaby",
+      "name": "Vargaby",
+      "order": 1,
+      "level_range": [4, 6],
+      "family": "bestar",
+      "boss": "grabjornen_ulvhild",
+      "access": "Väg österut från startskogen.",
+      "boss_level": 6,
+      "recommended_level": 4
+    },
+    {
+      "id": "gamla_byn",
+      "name": "Den gamla byn",
+      "order": 2,
+      "level_range": [7, 9],
+      "family": "ododa",
+      "boss": "benkungen_valdemar",
+      "access": "rod_portal i skogens mitt, öppnas när alla tre runor är aktiva.",
+      "data_file": "portal_by.json",
+      "unique_reward": "benkungens_krona",
+      "boss_level": 10,
+      "recommended_level": 7
+    },
+    {
+      "id": "dimmerstrand",
+      "name": "Dimmerstrand",
+      "order": 3,
+      "level_range": [11, 14],
+      "family": "gastar",
+      "boss": "trasdrottningen",
+      "access": "Väg västerut, alltid öppen.",
+      "boss_level": 14
+    },
+    {
+      "id": "kopparberg",
+      "name": "Kopparberg",
+      "order": 4,
+      "level_range": [15, 18],
+      "family": "insekter",
+      "boss": "spinnmodern",
+      "access": "Väg norrut genom bergen, alltid öppen.",
+      "boss_level": 18
+    },
+    {
+      "id": "askeborg",
+      "name": "Askeborg",
+      "order": 5,
+      "level_range": [19, 23],
+      "family": "demoner",
+      "boss": "askfursten_morvath",
+      "access": "Väg söderut genom askfälten, alltid öppen.",
+      "boss_level": 25
+    }
+  ],
+  "level_note": "Monsternivåer är statiska per område och skalas aldrig efter hjälten. Startskogen 1 till 3 före första staden. Förvridna (fadern_av_smittan nivå 28) är reserverade för framtida slutområde 24 till 28.",
+  "design_rule": "Inga rörelsespärrar: alla städer går att besöka när som helst. Svårigheten styrs bara av monstrens nivå. recommended_level är ren information.",
+  "service_rule": "Inga tjänster ändrar föremål (ingen smedja, inga uppgraderingar, inga hylsor).",
+  "npc_ref": "npc.json",
+  "akter_ref": "akter.json"
+}
