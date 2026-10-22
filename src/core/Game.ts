@@ -368,6 +368,7 @@ export class Game {
     r.ground.removeChildren().forEach((c) => c.destroy({ children: true }));
     r.objects.removeChildren().forEach((c) => c.destroy({ children: true }));
     r.effects.removeChildren().forEach((c) => c.destroy({ children: true }));
+    this.dayNight?.attachWorldEffects(r.effects);
     const built = this.zones.build(name);
     r.ground.addChild(built.ground);
     for (const d of built.decor) r.objects.addChild(d);

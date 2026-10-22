@@ -48,7 +48,7 @@ export class SfxLibrary {
     step: { variants: ['step1', 'step2', 'step3'], gain: 0.25 },
     click: { variants: ['click'], gain: 0.5 },
     toggle: { variants: ['toggle'], gain: 0.5 },
-    night: { variants: ['night'], gain: 0.35 },
+    night: { variants: ['boss'], gain: 0.22 },
   };
 
   /** Syntetiserad reserv om en fil saknas eller inte kan avkodas (t.ex. utan OGG-stöd). */

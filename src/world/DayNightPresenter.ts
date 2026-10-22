@@ -32,9 +32,16 @@ export class DayNightPresenter {
     private readonly rng: Rng,
   ) {
     screenLayer.addChild(this.shade);
-    worldEffects.addChild(this.torches);
+    this.attachWorldEffects(worldEffects);
     this.shade.eventMode = 'none';
     this.torches.eventMode = 'none';
+  }
+
+  attachWorldEffects(worldEffects: Container): void {
+    if (this.torches.parent !== worldEffects) {
+      this.torches.parent?.removeChild(this.torches);
+      worldEffects.addChild(this.torches);
+    }
   }
 
   resize(w: number, h: number): void {
