@@ -54,6 +54,7 @@ import { NpcDialog } from '../ui/NpcDialog';
 import { NpcLabels } from '../ui/NpcLabels';
 import { NpcSystem } from '../systems/NpcSystem';
 import { WorldAmbientSystem } from '../systems/WorldAmbientSystem';
+import { WorldFighterSystem } from '../systems/WorldFighterSystem';
 import { merchantInTradeHours } from '../npc/resolveRoutine';
 import { merchantNightGreeting } from '../npc/routineText';
 import { getNpcLocale } from '../npc/npcText';
@@ -137,6 +138,7 @@ export class Game {
   private monBar!: MonsterBar;
   private npcSys!: NpcSystem;
   private worldAmbientSys!: WorldAmbientSystem;
+  private worldFighterSys!: WorldFighterSystem;
   private npcDialog!: NpcDialog;
   private npcBark!: NpcBark;
   private npcLabels!: NpcLabels;
@@ -188,6 +190,7 @@ export class Game {
     this.lootSys = new LootSystem(w, this.assets, () => this.foundRegistry);
     this.questEncounters = new QuestEncounterSystem(this.bus, this.worldState, this.factory, this.lootSys, () => this.world);
     this.combat = new CombatSystem(w, this.lootSys);
+    this.worldFighterSys = new WorldFighterSystem(this.assets, this.combat);
     this.ai = new MonsterAI(w, this.combat, this.factory);
     this.portals = new PortalSystem(w, this.assets);
     this.hud = new Hud(this.text);
@@ -207,6 +210,7 @@ export class Game {
     this.portals.onEnter = (z) => this.travel(z);
     this.combat.onBossDefeated = (m) => this.bossDefeated(m);
     this.combat.onHeroDied = () => this.heroDied();
+    this.combat.onPatrolAidKill = () => this.patrolAidReward();
     this.ai.onBossStart = (m) => this.bossStart(m);
     this.ai.onBossPhase = (m, ph) => {
       const name = m.def.phases?.[ph]?.name ?? '';
@@ -418,6 +422,7 @@ export class Game {
       hero,
       zone,
       monsters: [],
+      worldFighters: [],
       spawnQueue: [],
       drops: [],
       projectiles: [],
@@ -453,6 +458,7 @@ export class Game {
     this.npcSys.setWorldTime(this.gameClock.timeSeconds);
     this.npcSys.sync(this.world);
     this.worldAmbientSys.sync(this.world, this.ctx.session.seed);
+    this.worldFighterSys.sync(this.world, this.ctx.session.seed);
     this.hud.flash(this.text.t(name === 'village' ? 'msg.zone_village' : 'msg.zone_forest'));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
@@ -504,6 +510,18 @@ export class Game {
     this.mustWorld().hero.clearAttack();
     this.dead = true;
     this.hud.flash(this.text.t('msg.died'), '#ff6060');
+  }
+  private patrolAidReward(): void {
+    const w = this.world;
+    if (!w) return;
+    const gold = 6 + Math.floor(w.rng.float(0, 5));
+    w.hero.s.gold += gold;
+    const ws = this.worldState.snapshot();
+    ws.faction_rep.de_kvarvarande = (ws.faction_rep.de_kvarvarande ?? 0) + 2;
+    ws.flags.helped_forest_patrol = true;
+    this.worldState.replace(ws);
+    w.fb.flash(this.text.t('msg.patrol_aid'));
+    w.fb.float(w.hero.pos, w.text.t('msg.gold', { amount: gold }), 'gold', 90);
   }
   private respawn(): void {
     const h = this.mustWorld().hero;
@@ -801,6 +819,7 @@ export class Game {
     this.npcSys.setWorldTime(this.gameClock.timeSeconds);
     this.npcSys.update(dt, w);
     this.worldAmbientSys.update(dt, w);
+    this.worldFighterSys.update(dt, w);
     this.npcSys.updateBarks(w, w.text, this.npcDialog.isOpen, (line, x, y) => this.npcBark.show(line, x, y));
     this.npcBark.update(dt, this.camera);
     this.refreshQuestLog();

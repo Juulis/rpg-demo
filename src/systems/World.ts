@@ -7,6 +7,7 @@ import type { GameAuthority } from '../core/GameAuthority';
 import type { Vec2 } from '../core/GameContext';
 import type { Hero } from '../entities/Hero';
 import type { Monster } from '../entities/Monster';
+import type { WorldFighter } from '../entities/WorldFighter';
 import type { Loot } from '../logic/loot/Loot';
 import type { Drop as DropData } from '../logic/loot/types';
 import type { Text } from '../text/Text';
@@ -54,6 +55,8 @@ export interface World {
   hero: Hero;
   zone: Zone;
   monsters: Monster[];
+  /** Patrull-NPC:er som slåss mot monster (startskogen). */
+  worldFighters: WorldFighter[];
   /** Startskogen: monster skapas när hjälten närmar sig. */
   spawnQueue: QueuedSpawn[];
   drops: GroundDrop[];

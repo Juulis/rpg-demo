@@ -40,6 +40,7 @@ export const SV = {
     died: 'Du har fallit. Klicka för att börja om vid portalen.',
     gold: '+{amount} guld',
     too_far: 'Gå närmare för att prata.',
+    patrol_aid: 'Du hjälpte en patrull — byborna minns det.',
   },
   fx: { miss: 'Miss', dodge: 'Undvek', block: 'Block', immune: 'Immun', strong: 'Krosslag', thorns: '-{n} torn' },
   tooltip: {

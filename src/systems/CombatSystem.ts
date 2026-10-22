@@ -2,6 +2,7 @@ import { Graphics } from 'pixi.js';
 import { DATA } from '../data';
 import type { Vec2 } from '../core/GameContext';
 import type { Monster } from '../entities/Monster';
+import type { WorldFighter } from '../entities/WorldFighter';
 import { Iso } from '../render/Iso';
 import type { MonsterSnapshot } from '../logic/CombatRules';
 import type { LootSystem } from './LootSystem';
@@ -18,6 +19,8 @@ export class CombatSystem {
   /** Anropas när bossen dör. */
   onBossDefeated: (m: Monster) => void = () => undefined;
   onHeroDied: () => void = () => undefined;
+  /** Spelaren hjälpte en patrull att fälla monstret. */
+  onPatrolAidKill: () => void = () => undefined;
 
   constructor(
     private readonly w: () => World,
@@ -54,6 +57,7 @@ export class CombatSystem {
     const t = w.text;
     if (m.dead) return;
     m.aggroed = true;
+    this.markPatrolAid(m);
     const r = w.authority.heroHit(st, h.level, this.snapshot(m), mult);
     if (!r.hit) {
       w.fb.float(m.pos, t.t('fx.miss'), 'res', m.view.height2);
@@ -85,6 +89,28 @@ export class CombatSystem {
       w.zone.collide(m.pos, 0.5);
     }
     if (m.hp <= 0) this.kill(m);
+  }
+
+  /** Låg skada från världspatrull — lämnar minst 1 HP så spelaren får sista slaget. */
+  damageMonsterFromFighter(m: Monster, dmg: number): void {
+    const w = this.w();
+    if (m.dead || m.boss) return;
+    m.aggroed = true;
+    m.hp = Math.max(1, m.hp - dmg);
+    m.flash = 0.15;
+    m.lastHit = w.time;
+  }
+
+  hurtWorldFighter(f: WorldFighter, raw: number, _from: Vec2 | null): void {
+    const w = this.w();
+    if (!f.alive) return;
+    const dmg = Math.max(1, Math.round(raw * 0.35));
+    f.hp -= dmg;
+    w.fb.float(f.pos, `-${dmg}`, 'hurt', 70);
+    if (f.hp <= 0) {
+      f.dead = 0.001;
+      f.playDeath();
+    }
   }
 
   kill(m: Monster): void {
@@ -120,6 +146,7 @@ export class CombatSystem {
       boss: m.boss,
     });
     if (m.boss) this.onBossDefeated(m);
+    if (m.heroAidedPatrol) this.onPatrolAidKill();
   }
 
   /** Hjälten tar skada. from = varifrån slaget kom (för block), m = anfallaren. */
@@ -274,9 +301,31 @@ export class CombatSystem {
         this.hurt(p.dmg, p.pos, p.from);
         gone = true;
       }
+      if (!gone) {
+        for (const f of w.worldFighters) {
+          if (!f.alive) continue;
+          if (Math.hypot(p.pos.x - f.pos.x, p.pos.y - f.pos.y) < 0.75) {
+            this.hurtWorldFighter(f, p.dmg, p.pos);
+            gone = true;
+            break;
+          }
+        }
+      }
       if (gone) {
         p.view.destroy();
         w.projectiles.splice(w.projectiles.indexOf(p), 1);
+      }
+    }
+  }
+
+  private markPatrolAid(m: Monster): void {
+    const w = this.w();
+    const aidR = 14;
+    for (const f of w.worldFighters) {
+      if (!f.alive) continue;
+      if (Math.hypot(f.pos.x - m.pos.x, f.pos.y - m.pos.y) < aidR) {
+        m.heroAidedPatrol = true;
+        return;
       }
     }
   }

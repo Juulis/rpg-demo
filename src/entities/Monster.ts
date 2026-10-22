@@ -41,6 +41,8 @@ export class Monster {
   active = false;
   moving = false;
   lastHit = 0;
+  /** Hjälten deltog i strid nära en världspatrull (belöning vid död). */
+  heroAidedPatrol = false;
 
   constructor(
     readonly def: FullMonsterDef,
