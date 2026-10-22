@@ -87,7 +87,7 @@
           "affixes": []
         },
         {
-          "item": "liten_halsodryck",
+          "item": "torkat_kott",
           "count": 3,
           "quality": "normal",
           "affixes": []
@@ -196,7 +196,7 @@
           "affixes": []
         },
         {
-          "item": "liten_halsodryck",
+          "item": "torkat_kott",
           "count": 3,
           "quality": "normal",
           "affixes": []
@@ -305,7 +305,7 @@
           "affixes": []
         },
         {
-          "item": "liten_halsodryck",
+          "item": "torkat_kott",
           "count": 2,
           "quality": "normal",
           "affixes": []

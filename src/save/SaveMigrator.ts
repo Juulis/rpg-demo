@@ -25,6 +25,13 @@ export class SaveMigrator {
     tvahands_klubba: ['knotpak', 5],
   };
 
+  private static readonly CONSUMABLE_REMAP: Readonly<Record<string, string>> = {
+    liten_halsodryck: 'torkat_kott',
+    stor_halsodryck: 'rokerat_hogrev',
+    uthallighetsdryck: 'skogsörtste',
+    foryngringsdryck: 'varlbrygd',
+  };
+
   migrate(raw: unknown): SaveFile | null {
     if (!isRecord(raw)) return null;
     let d: Record<string, unknown> = raw;
@@ -46,6 +53,7 @@ export class SaveMigrator {
       ...(h.fresh === true ? { fresh: true } : {}),
     };
     this.fixOldStartGear(hero);
+    this.remapConsumables(hero);
     const out: SaveFile = { version: SAVE_VERSION, hero, game: this.game(d.game) };
     const found = parseFoundItemsMap(d.foundItems);
     if (found) {
@@ -88,6 +96,16 @@ export class SaveMigrator {
     if (typeof g.rot === 'number') rec.rot = g.rot;
     if (typeof g.worldTime === 'number' && Number.isFinite(g.worldTime) && g.worldTime >= 0) rec.worldTime = g.worldTime;
     return rec;
+  }
+
+  private remapConsumables(h: HeroRecord): void {
+    const map = (it: ItemInstance | null | undefined): void => {
+      if (!it) return;
+      const next = SaveMigrator.CONSUMABLE_REMAP[it.base];
+      if (next) it.base = next;
+    };
+    Object.values(h.equip).forEach(map);
+    h.inv.forEach(map);
   }
 
   private fixOldStartGear(h: HeroRecord): void {

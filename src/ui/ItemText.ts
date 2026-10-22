@@ -61,7 +61,10 @@ export class ItemText {
     const name = L.nameOf(it);
     const q = L.Q[it.quality];
     let h = `<div class="tn" style="color:${col}">${name}</div>`;
-    const qn = b.category === 'dryck' || b.category === 'material' || !q ? '' : ` · ${t.data('loot_kvaliteter', q.id, 'name', q.name)}`;
+    const qn =
+      b.category === 'mat' || b.category === 'dryck' || b.category === 'material' || !q
+        ? ''
+        : ` · ${t.data('loot_kvaliteter', q.id, 'name', q.name)}`;
     const bn = L.baseName(b);
     h += `<div class="tb">${name !== bn ? bn : ''}${qn}</div>`;
     if (s.wdmg)
@@ -71,6 +74,8 @@ export class ItemText {
     if (b.heal) h += `<div>${t.t('tooltip.heals', { n: b.heal })}</div>`;
     if (b.stamina) h += `<div>${t.t('tooltip.gives_stamina', { n: b.stamina })}</div>`;
     if (b.heal_pct) h += `<div>${t.t('tooltip.heals_pct', { pct: pct(b.heal_pct) })}</div>`;
+    if (b.heal_over_time?.total) h += `<div>${t.t('tooltip.heals_over_time', { n: Math.round(b.heal_over_time.total) })}</div>`;
+    if (b.buff_damage_pct || b.buff_speed_pct) h += `<div class="af">${t.t('tooltip.consumable_buff')}</div>`;
     if (b.move_penalty) h += `<div class="bad">${t.t('tooltip.move_penalty', { pct: pct(b.move_penalty) })}</div>`;
     const req = b.requirements?.level ?? 1;
     if (req > 1) h += `<div class="${hero.inv.reqOk(it) ? 'tb' : 'bad'}">${t.t('tooltip.requires_level', { level: req })}</div>`;
@@ -86,7 +91,7 @@ export class ItemText {
       }
     if (it.set) h += this.setHtml(it, hero);
     if (inBag && L.equipable(b)) h += this.compare(it, hero);
-    if (b.category === 'dryck') h += `<div class="tb">${t.t('tooltip.rclick_drink')}</div>`;
+    if (b.category === 'mat' || b.category === 'dryck') h += `<div class="tb">${t.t('tooltip.rclick_use')}</div>`;
     else if (L.equipable(b)) h += `<div class="tb">${t.t(inBag ? 'tooltip.rclick_equip' : 'tooltip.rclick_unequip')}</div>`;
     return h;
   }

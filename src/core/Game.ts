@@ -909,7 +909,7 @@ export class Game {
       if (wantSprint) sprinting = true;
       if (h.moving) {
         const runMult = sprinting && sprintCfg ? sprintCfg.speed_mult : 1;
-        const sp = h.stats.speed * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
+        const sp = h.stats.speed * h.moveSpeedMult() * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
         const step = Math.min(
           sp * dt,
           h.moveTarget && !this.targetMonster ? Math.hypot(h.moveTarget.x - h.pos.x, h.moveTarget.y - h.pos.y) : Infinity,

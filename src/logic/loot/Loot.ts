@@ -231,7 +231,7 @@ export class Loot {
   }
   colorOf(it: Item): string {
     const b = this.base(it);
-    if (b.category === 'dryck') return b.heal || b.heal_pct ? '#e05a5a' : '#e0b24a';
+    if (b.category === 'mat' || b.category === 'dryck') return b.heal || b.heal_pct ? '#e05a5a' : '#e0b24a';
     if (b.category === 'material') return '#b0a890';
     return this.Q[it.quality]?.color ?? '#e6dfcc';
   }
@@ -354,7 +354,7 @@ export class Loot {
     R: LootRng,
     minQ?: string,
   ): Item | null {
-    if (cat === 'dryck') {
+    if (cat === 'mat' || cat === 'dryck') {
       const id = R.weighted(this.drops.potion_weights_by_tier[this.tierOf(ilvl)] ?? {});
       return id ? this.makeItem(id) : null;
     }

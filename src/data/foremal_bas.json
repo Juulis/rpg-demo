@@ -4,7 +4,7 @@
     "categories": [
       "vapen",
       "rustning",
-      "dryck",
+      "mat",
       "amulett",
       "ring",
       "guld",
@@ -922,33 +922,58 @@
   ],
   "potions": [
     {
-      "id": "liten_halsodryck",
-      "name": "Liten hälsodryck",
-      "category": "dryck",
-      "heal": 30,
+      "id": "torkat_kott",
+      "name": "Torkat kött",
+      "name_en": "Jerky",
+      "category": "mat",
+      "heal": 12,
+      "heal_over_time": {
+        "total": 18,
+        "duration_s": 8
+      },
       "stack": 10,
       "item_level": 1
     },
     {
-      "id": "stor_halsodryck",
-      "name": "Stor hälsodryck",
-      "category": "dryck",
-      "heal": 70,
+      "id": "rokerat_hogrev",
+      "name": "Rökt hogrev",
+      "name_en": "Smoked haunch",
+      "category": "mat",
+      "heal": 28,
+      "heal_over_time": {
+        "total": 42,
+        "duration_s": 10
+      },
       "stack": 5,
       "item_level": 7
     },
     {
-      "id": "uthallighetsdryck",
-      "name": "Uthållighetsdryck",
-      "category": "dryck",
+      "id": "skogsörtste",
+      "name": "Skogsörtste",
+      "name_en": "Forest herb tea",
+      "category": "mat",
       "stamina": 40,
       "stack": 10,
       "item_level": 1
     },
     {
-      "id": "foryngringsdryck",
-      "name": "Föryngringsdryck",
-      "category": "dryck",
+      "id": "vargblod",
+      "name": "Vargblod",
+      "name_en": "Wolf blood",
+      "category": "mat",
+      "heal": 8,
+      "stamina": 15,
+      "buff_damage_pct": 0.12,
+      "buff_speed_pct": 0.1,
+      "buff_duration_s": 25,
+      "stack": 8,
+      "item_level": 4
+    },
+    {
+      "id": "varlbrygd",
+      "name": "Välbrygd",
+      "name_en": "Herbal tonic",
+      "category": "mat",
       "heal_pct": 0.35,
       "stamina_pct": 0.35,
       "stack": 3,
