@@ -1182,6 +1182,54 @@
       "visual": "Bunden bok av pergament och ben, handskriven av gravvaktarna."
     },
     {
+      "id": "ristarens_mejsel",
+      "name": "Ristarens mejsel",
+      "name_en": "The Runecarver's Chisel",
+      "base": "stilett",
+      "type": "dolk",
+      "level": 9,
+      "item_level": 9,
+      "requirements": { "level": 9 },
+      "fixed": {
+        "damage_pct": 0.6,
+        "crit_chance": 0.08,
+        "attack_rating": 50,
+        "vs_demoner_damage_pct": 0.3
+      },
+      "visual": "Smal järnmejsel slipad till dolk, runor inristade längs skaftet som glöder svagt blått.",
+      "source": "quest:runornas_ristare"
+    },
+    {
+      "id": "quest_valdemars_signet",
+      "name": "Hövdingens signet (quest)",
+      "name_en": "Chieftain's Signet (quest)",
+      "base": "bensmycke",
+      "type": "amulett",
+      "level": 10,
+      "item_level": 10,
+      "requirements": { "level": 9 },
+      "fixed": { "magic_find": 0.1 },
+      "visual": "Tung silversignet med Valdemars släktvapen, bunden till en benrem tills du bestämmer dess öde."
+    },
+    {
+      "id": "hovdingens_signet",
+      "name": "Hövdingens signet",
+      "name_en": "Chieftain's Signet",
+      "base": "runamulett",
+      "type": "amulett",
+      "level": 10,
+      "item_level": 10,
+      "requirements": { "level": 10 },
+      "fixed": {
+        "life": 30,
+        "defense": 5,
+        "vs_ododa_damage_pct": 0.25,
+        "magic_find": 0.15
+      },
+      "visual": "Tung silversignet med Valdemars släktvapen, en varg och en lie, på en sliten läderrem.",
+      "source": "quest:begrav_benkungen"
+    },
+    {
       "id": "likatarens_kake",
       "name": "Likätarens käke",
       "base": "benyxa",

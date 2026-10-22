@@ -16,7 +16,7 @@ const SKULL_AMBUSH_PREFIX = 'quest:benens_visk:lik:';
 const ULVHILD_UID = 'quest:ulvhilds_pals:boss';
 const GRAV_GUARD_UID = 'quest:gravvaktarnas_sista_strid:vakt';
 
-/** Questspecifika monster och garanterad loot (akt 1, #44–#45). */
+/** Questspecifika monster och garanterad loot (akt 1, #44–#46). */
 export class QuestEncounterSystem {
   private skullLootSpawned = false;
 
@@ -29,8 +29,11 @@ export class QuestEncounterSystem {
   ) {
     this.bus.on('kill', (p) => this.onKill(p.id));
     this.bus.on('pickup', (p) => this.onPickup(p.itemId));
+    this.bus.on('boss_killed', ({ id }) => this.onBossKilled(id));
     this.bus.on('quest_inspect', ({ ankare }) => {
-      if (ankare === 'gravvaktarnas_kammare') this.worldState.get().flags.krypta_besokt = true;
+      if (ankare === 'gravvaktarnas_kammare' || ankare === 'ristarens_vagg') {
+        this.worldState.get().flags.krypta_besokt = true;
+      }
     });
   }
 
@@ -44,6 +47,8 @@ export class QuestEncounterSystem {
     this.updateBenensVisk(w, hooks, ws);
     this.updateUlvhildsPals(w, hooks, ws);
     this.updateGravvaktarnasStrid(w, hooks, ws);
+    this.updateRunornasRistare(w, hooks, ws);
+    this.updateBegravBenkungen(w, hooks, ws);
   }
 
   private updateMirasBro(w: World, hooks: QuestEngineHooks, ws: ReturnType<WorldStateService['get']>): void {
@@ -104,6 +109,36 @@ export class QuestEncounterSystem {
     const ws = this.worldState.get();
     if (uid === MIRA_CHAMPION_UID) ws.flags.quest_mira_champion_slain = true;
     if (uid === GRAV_GUARD_UID) ws.flags.quest_grav_guard_slain = true;
+  }
+
+  private onBossKilled(bossId: string): void {
+    const id = canonicalBossId('benkungen_valdemar') ?? 'benkungen_valdemar';
+    if (bossId !== id && bossId !== 'benkungen_valdemar') return;
+    const w = this.world();
+    if (!w) return;
+    if (this.hasQuestDrop(w, 'quest_valdemars_signet')) return;
+    const ws = this.worldState.get();
+    const progress = readQuestProgress(ws, 'begrav_benkungen');
+    if (progress.status === 'ej_startad') return;
+    this.spawnQuestItem(w, 'kapellet', 'quest_valdemars_signet');
+  }
+
+  private updateRunornasRistare(w: World, hooks: QuestEngineHooks, ws: ReturnType<WorldStateService['get']>): void {
+    const run = readQuestProgress(ws, 'runornas_ristare');
+    if (run.status !== 'aktiv') return;
+    if (run.steg === 'mejseln' && !hooks.hasItem('ristarens_mejsel') && !this.hasQuestDrop(w, 'ristarens_mejsel')) {
+      this.spawnQuestItem(w, 'ristarens_vagg', 'ristarens_mejsel');
+    }
+  }
+
+  private updateBegravBenkungen(w: World, hooks: QuestEngineHooks, ws: ReturnType<WorldStateService['get']>): void {
+    const ben = readQuestProgress(ws, 'begrav_benkungen');
+    if (ben.status !== 'aktiv' || ben.steg !== 'signeten') return;
+    const bossId = canonicalBossId('benkungen_valdemar') ?? 'benkungen_valdemar';
+    const dead = ws.bosses_killed.includes(bossId) || ws.bosses_killed.includes('benkungen_valdemar');
+    if (!dead) return;
+    if (hooks.hasItem('quest_valdemars_signet') || this.hasQuestDrop(w, 'quest_valdemars_signet')) return;
+    this.spawnQuestItem(w, 'kapellet', 'quest_valdemars_signet');
   }
 
   private onPickup(itemId: string): void {
