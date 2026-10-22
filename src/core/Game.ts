@@ -37,7 +37,10 @@ import { MonsterBar } from '../ui/MonsterBar';
 import { resolveDialogText } from '../npc/dialogResolve';
 import { npcHasNewRumor, pickRumorForNpc } from '../rumor/pickRumor';
 import { formatRumorText } from '../rumor/rumorText';
+import type { ConsequenceRuntime } from '../consequences/types';
 import { QuestEngine, type QuestEngineHooks } from '../quest/questEngine';
+import { QuestAnchorSystem } from '../systems/QuestAnchorSystem';
+import { applyFactionGreetingTone } from '../npc/factionGreeting';
 import { readQuestProgress } from '../quest/questProgress';
 import { choiceText, stepText } from '../quest/questText';
 import { QuestLog } from '../ui/QuestLog';
@@ -127,6 +130,7 @@ export class Game {
   private npcLabels!: NpcLabels;
   private questLog!: QuestLog;
   private readonly questEngine = new QuestEngine(this.worldState);
+  private readonly questAnchors = new QuestAnchorSystem(this.bus, this.questEngine, () => this.questHooks());
   private switching = false;
   private targetMonster: Monster | null = null;
   private targetDrop: GroundDrop | null = null;
@@ -204,6 +208,7 @@ export class Game {
       if (h) this.questEngine.onBossKilled(id, h);
     });
     this.bus.on('zone_enter', ({ areaId }) => {
+      this.questAnchors.reset();
       const h = this.questHooks();
       if (h) this.questEngine.onEnterRegion(areaId, undefined, h);
     });
@@ -558,6 +563,47 @@ export class Game {
     return null;
   }
 
+  private consequenceRuntime(): ConsequenceRuntime {
+    return {
+      grantItem: (itemId) => this.grantConsequenceItem(itemId),
+      grantXp: (amount) => {
+        const w = this.world;
+        if (!w) return;
+        const ups = w.hero.gainXp(amount);
+        if (ups) {
+          this.hud.flash(this.text.t('msg.level_up', { level: w.hero.level }));
+          this.bus.emit('level_up', { level: w.hero.level });
+        }
+      },
+      notify: (message) => this.hud.flash(message),
+    };
+  }
+
+  private grantConsequenceItem(itemId: string): boolean {
+    const w = this.world;
+    if (!w) return false;
+    const it = w.L.makeItem(itemId, { ilvl: Math.max(1, w.hero.s.level) });
+    if (!w.hero.inv.add(it)) return false;
+    const b = w.L.base(it);
+    const name = w.text.data('loot_bases', b.id, 'name', b.name);
+    w.fb.flash(w.text.t('msg.found', { name }));
+    return true;
+  }
+
+  private flushPendingItemGrants(): void {
+    const ws = this.worldState.snapshot();
+    let changed = false;
+    for (const key of Object.keys(ws.flags)) {
+      if (!key.startsWith('item_grant_pending:') || !ws.flags[key]) continue;
+      const itemId = key.slice('item_grant_pending:'.length);
+      if (this.grantConsequenceItem(itemId)) {
+        ws.flags[key] = false;
+        changed = true;
+      }
+    }
+    if (changed) this.worldState.replace(ws);
+  }
+
   private questHooks(): QuestEngineHooks | null {
     const w = this.world;
     if (!w) return null;
@@ -608,7 +654,7 @@ export class Game {
         const body = step ? stepText(block.quest, step) : block.quest.beskrivning;
         const options = block.choices.map((c) => ({ id: c.id, label: choiceText(block.quest, c) }));
         this.npcDialog.showChoices(ent.resolved, this.assets.npcPortraitUrl(ent.resolved.sprite), body, options, (choiceId) => {
-          this.questEngine.applyChoice(block.quest.id, choiceId, hooks);
+          this.questEngine.applyChoice(block.quest.id, choiceId, hooks, this.consequenceRuntime());
           this.refreshQuestLog();
         });
         this.bus.emit('ui_open', { panel: 'npc' });
@@ -621,7 +667,7 @@ export class Game {
     const npcId = ent.resolved.def.id;
     const last = this.worldState.lastRumorForNpc(npcId);
     const rumor = pickRumorForNpc(npcId, ctx, last);
-    const greeting = resolveDialogText(ent.resolved.def, 'halsning', ctx, w.text);
+    const greeting = applyFactionGreetingTone(npcId, ctx.world, resolveDialogText(ent.resolved.def, 'halsning', ctx, w.text));
     const heroName = this.heroState.name.trim() || 'Hjälten';
     const body = rumor ? formatRumorText(rumor, { heroName, text: w.text, world: ctx.world }) : greeting;
     if (rumor) this.worldState.recordRumorSpoken(npcId, rumor.id);
@@ -681,6 +727,9 @@ export class Game {
     if (!w) return;
     w.time += dt;
     this.worldState.setGameDay(Math.floor(w.time / 90));
+    this.worldState.tickPending(Math.floor(w.time / 90), this.consequenceRuntime());
+    this.flushPendingItemGrants();
+    this.questAnchors.update(w);
     const h = w.hero;
     if (h.s.playing) this.heroUpdate(dt);
     this.ai.update(dt);

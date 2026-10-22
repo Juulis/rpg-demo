@@ -31,6 +31,7 @@ export interface WorldState {
   npc_factions: Record<string, string>;
   town_growth: Record<string, number>;
   merchant_mods: Record<string, number>;
+  merchant_stock: Record<string, { add: string[]; remove: string[] }>;
   area_changes: Record<string, string>;
   quests: Record<string, unknown>;
   quest_excludes: string[];
@@ -55,6 +56,7 @@ export function createEmptyWorldState(): WorldState {
     npc_factions: {},
     town_growth: {},
     merchant_mods: {},
+    merchant_stock: {},
     area_changes: {},
     quests: {},
     quest_excludes: [],
@@ -106,6 +108,14 @@ export function parseWorldState(raw: unknown): WorldState | null {
   strMap(raw.npc_factions, ws.npc_factions);
   numMap(raw.town_growth, ws.town_growth);
   numMap(raw.merchant_mods, ws.merchant_mods);
+  if (isRecord(raw.merchant_stock)) {
+    for (const [npc, v] of Object.entries(raw.merchant_stock)) {
+      if (!isRecord(v)) continue;
+      const add = Array.isArray(v.add) ? v.add.filter((x): x is string => typeof x === 'string') : [];
+      const remove = Array.isArray(v.remove) ? v.remove.filter((x): x is string => typeof x === 'string') : [];
+      ws.merchant_stock[npc] = { add, remove };
+    }
+  }
   strMap(raw.area_changes, ws.area_changes);
   strMap(raw.rumors_last, ws.rumors_last);
   if (isRecord(raw.quests)) ws.quests = { ...raw.quests };

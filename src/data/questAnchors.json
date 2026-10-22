@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "note": "Quest-inspektionsankare (världsenheter). Utökas med kartdesign."
+  },
+  "anchors": [
+    { "id": "startskogen_barnsandal", "areaId": "startskogen", "pos": [18, -2], "radius": 2.8 },
+    { "id": "kolarkojan", "areaId": "vargstigen", "pos": [-10, 14], "radius": 3.2 },
+    { "id": "viskarens_hus", "areaId": "startskogen", "pos": [2, 6], "radius": 2.5 },
+    { "id": "viskarens_hus_skallar", "areaId": "startskogen", "pos": [0, 4], "radius": 2.2 },
+    { "id": "runsten_1", "areaId": "startskogen", "pos": [14, -10], "radius": 2.5 },
+    { "id": "runsten_2", "areaId": "startskogen", "pos": [-16, -6], "radius": 2.5 },
+    { "id": "runsten_3", "areaId": "startskogen", "pos": [4, 20], "radius": 2.5 },
+    { "id": "ristarens_vagg", "areaId": "runornas_kall", "pos": [6, -8], "radius": 3 },
+    { "id": "gravvaktarens_kropp", "areaId": "gravasen", "pos": [24, 30], "radius": 3 },
+    { "id": "gravvaktarnas_kammare", "areaId": "kapellets_krypta", "pos": [8, 12], "radius": 3 },
+    { "id": "hovdingagraven", "areaId": "hovdingagraven", "pos": [0, 0], "radius": 4 },
+    { "id": "kyrkogarden", "areaId": "gamla_byn", "pos": [13, 9], "radius": 4 },
+    { "id": "kapellet", "areaId": "gamla_byn", "pos": [-11, -21], "radius": 3.5 },
+    { "id": "byporten", "areaId": "gamla_byn", "pos": [-23, 7], "radius": 3 },
+    { "id": "gravkorsen", "areaId": "gamla_byn", "pos": [9, 5], "radius": 2.8 },
+    { "id": "skog_nordvast", "areaId": "startskogen", "pos": [-18, 12], "radius": 4 }
+  ]
+}
