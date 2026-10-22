@@ -49,6 +49,10 @@ import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
 import { NpcLabels } from '../ui/NpcLabels';
 import { NpcSystem } from '../systems/NpcSystem';
+import { merchantInTradeHours } from '../npc/resolveRoutine';
+import { merchantNightGreeting } from '../npc/routineText';
+import { getNpcLocale } from '../npc/npcText';
+import { routineForNpc } from '../npc/npcRoutineCatalog';
 import { Tooltip } from '../ui/Tooltip';
 import type { Zone, ZoneName } from '../world/Zone';
 import { DevCheatsView } from '../dev/DevCheatsView';
@@ -435,6 +439,7 @@ export class Game {
     this.syncZoneView(zone);
     this.dead = false;
     hs.playing = true;
+    this.npcSys.setWorldTime(this.gameClock.timeSeconds);
     this.npcSys.sync(this.world);
     this.hud.flash(this.text.t(name === 'village' ? 'msg.zone_village' : 'msg.zone_forest'));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
@@ -690,7 +695,11 @@ export class Game {
     const npcId = ent.resolved.def.id;
     const last = this.worldState.lastRumorForNpc(npcId);
     const rumor = pickRumorForNpc(npcId, ctx, last);
-    const greeting = applyFactionGreetingTone(npcId, ctx.world, resolveDialogText(ent.resolved.def, 'halsning', ctx, w.text));
+    let greeting = applyFactionGreetingTone(npcId, ctx.world, resolveDialogText(ent.resolved.def, 'halsning', ctx, w.text));
+    const routine = routineForNpc(npcId);
+    if (routine?.roll === 'handlare' && !merchantInTradeHours(npcId, this.gameClock.timeSeconds)) {
+      greeting = `${merchantNightGreeting(npcId, getNpcLocale())}\n\n${greeting}`;
+    }
     const heroName = this.heroState.name.trim() || 'Hjälten';
     const body = rumor ? formatRumorText(rumor, { heroName, text: w.text, world: ctx.world }) : greeting;
     if (rumor) this.worldState.recordRumorSpoken(npcId, rumor.id);
@@ -771,7 +780,8 @@ export class Game {
     });
     this.labels.update(w.drops, this.input.altHeld || this.input.labelsToggled, this.camera);
     this.npcLabels.update(this.npcSys.entities(), this.camera, this.npcRumorSparks(w));
-    this.npcSys.update(dt);
+    this.npcSys.setWorldTime(this.gameClock.timeSeconds);
+    this.npcSys.update(dt, w);
     this.npcSys.updateBarks(w, w.text, this.npcDialog.isOpen, (line, x, y) => this.npcBark.show(line, x, y));
     this.npcBark.update(dt, this.camera);
     this.refreshQuestLog();
