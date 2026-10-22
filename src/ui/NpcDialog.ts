@@ -3,6 +3,7 @@ import type { GameEvents } from '../core/events';
 import { setDialogLocale } from '../npc/dialogText';
 import { npcName, setNpcLocale } from '../npc/npcText';
 import { setQuestLocale } from '../quest/questText';
+import { setConsequenceNotifyLocale } from '../consequences/notifyText';
 import { setRumorLocale } from '../rumor/rumorText';
 import type { ResolvedNpc } from '../npc/npcPlacement';
 import type { Text } from '../text/Text';
@@ -46,6 +47,7 @@ export class NpcDialog {
       setDialogLocale(locale);
       setRumorLocale(locale);
       setQuestLocale(locale);
+      setConsequenceNotifyLocale(locale);
       if (this.open && this.current) this.render(this.current, this.portraitUrl, this.bodyText);
     });
   }

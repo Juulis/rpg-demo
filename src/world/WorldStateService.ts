@@ -1,3 +1,5 @@
+import { applyPendingEffect } from '../consequences/apply';
+import type { ConsequenceRuntime } from '../consequences/types';
 import { cloneWorldState, createEmptyWorldState, type WorldState } from './worldStateTypes';
 import { canonicalBossId } from './bossIds';
 
@@ -63,18 +65,9 @@ export class WorldStateService {
   }
 
   /** Kör försenade effekter vars due_day har passerats. */
-  tickPending(gameDay: number): void {
-    const keep: typeof this.state.pending = [];
-    for (const p of this.state.pending) {
-      if (p.due_day > gameDay) {
-        keep.push(p);
-        continue;
-      }
-      const eff = p.effect;
-      if (eff.typ === 'npc_state' && typeof eff.npc === 'string' && typeof eff.state === 'string') {
-        this.state.npc_states[eff.npc] = eff.state;
-      }
-    }
-    this.state.pending = keep;
+  tickPending(gameDay: number, runtime: ConsequenceRuntime = {}): void {
+    const due = this.state.pending.filter((p) => p.due_day <= gameDay);
+    this.state.pending = this.state.pending.filter((p) => p.due_day > gameDay);
+    for (const p of due) applyPendingEffect(this, p.effect, gameDay, runtime);
   }
 }

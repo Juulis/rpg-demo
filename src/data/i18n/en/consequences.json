@@ -1,0 +1,13 @@
+{
+  "consequence.faction_up": "Faction reputation increased ({faction}).",
+  "consequence.faction_down": "Faction reputation decreased ({faction}).",
+  "consequence.item": "You received: {item}.",
+  "consequence.item_bag_full": "Bag full — {item} is waiting.",
+  "consequence.xp": "+{amount} experience.",
+  "consequence.rumor": "A new rumor spreads…",
+  "consequence.town": "{town} changes.",
+  "consequence.npc_state": "{npc} changes.",
+  "consequence.quest_path": "A quest path closes.",
+  "consequence.greeting_warm": "They welcome you warmly.",
+  "consequence.greeting_cold": "They greet you coldly."
+}

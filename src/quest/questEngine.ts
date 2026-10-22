@@ -1,7 +1,7 @@
 import type { QuestChoice, QuestDef } from '../data/questTypes';
 import { act1Quests, questById } from './questCatalog';
 import { initialStepId } from './questAlreadyDone';
-import { applyConsequences } from './consequenceRunner';
+import { applyConsequences, type ConsequenceRuntime } from './consequenceRunner';
 import { readQuestProgress, writeQuestProgress } from './questProgress';
 import { startTriggerSatisfied, triggerSatisfied } from './triggerMatch';
 import type { TriggerEnv } from './triggerMatch';
@@ -158,7 +158,7 @@ export class QuestEngine {
     return out;
   }
 
-  applyChoice(questId: string, choiceId: string, hooks: QuestEngineHooks): boolean {
+  applyChoice(questId: string, choiceId: string, hooks: QuestEngineHooks, runtime: ConsequenceRuntime = {}): boolean {
     const def = questById(questId);
     if (!def) return false;
     const choice = def.val?.find((c) => c.id === choiceId);
@@ -166,7 +166,7 @@ export class QuestEngine {
     const progress = readQuestProgress(this.ws(), def.id);
     if (progress.status !== 'aktiv') return false;
     const day = Math.floor(hooks.worldTime / 90);
-    if (choice.consequences?.length) applyConsequences(this.worldState, choice.consequences, day);
+    if (choice.consequences?.length) applyConsequences(this.worldState, choice.consequences, day, runtime);
     writeQuestProgress(this.ws(), def.id, { status: 'klar', val: choiceId, steg: progress.steg, givare: progress.givare });
     return true;
   }
