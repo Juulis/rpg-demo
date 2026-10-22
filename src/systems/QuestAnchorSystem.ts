@@ -30,7 +30,8 @@ export class QuestAnchorSystem {
     for (const id of nowInside) {
       if (this.inside.has(id)) continue;
       this.questEngine.onInspect(id, h);
-      this.questEngine.onEnterRegion(areaId, id, h);
+      const def = anchors.find((x) => x.id === id);
+      this.questEngine.onEnterRegion(def?.region ?? areaId, id, h);
       this.bus.emit('quest_inspect', { ankare: id });
     }
     this.inside = nowInside;

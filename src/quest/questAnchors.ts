@@ -3,6 +3,8 @@ import anchorsFile from '../data/questAnchors.json';
 export interface QuestAnchorDef {
   id: string;
   areaId: string;
+  /** Logisk region för quest-triggers (t.ex. vargstigen) när areaId är startskogen. */
+  region?: string;
   pos: [number, number];
   radius: number;
 }

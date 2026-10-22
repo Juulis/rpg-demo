@@ -14,7 +14,7 @@
     "build:hero": "node scripts/build-hero-sprites.mjs",
     "pages": "npm run build && node scripts/assemble-pages.mjs",
     "smoke": "node scripts/smoke.mjs dist",
-    "test": "tsx tests/headless.test.mts && tsx tests/save-found.test.mts && tsx tests/save-queue.test.mts && tsx tests/asset-resilience.test.mts && tsx tests/dev-cheats.test.mts && tsx tests/world-state.test.mts && tsx tests/npc.test.mts && tsx tests/dodge.test.mts && tsx tests/dialog.test.mts && tsx tests/rumors.test.mts && tsx tests/quests.test.mts && tsx tests/consequences.test.mts && tsx tests/day-cycle.test.mts && node scripts/verify-hero-align.mjs"
+    "test": "tsx tests/headless.test.mts && tsx tests/save-found.test.mts && tsx tests/save-queue.test.mts && tsx tests/asset-resilience.test.mts && tsx tests/dev-cheats.test.mts && tsx tests/world-state.test.mts && tsx tests/npc.test.mts && tsx tests/act1-quests-44.test.mts && tsx tests/dodge.test.mts && tsx tests/dialog.test.mts && tsx tests/rumors.test.mts && tsx tests/quests.test.mts && tsx tests/consequences.test.mts && tsx tests/day-cycle.test.mts && node scripts/verify-hero-align.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
