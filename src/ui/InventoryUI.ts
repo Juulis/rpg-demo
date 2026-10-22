@@ -8,6 +8,7 @@ import { assetUrl, type AssetStore } from '../render/Assets';
 import type { Text, TextKey } from '../text/Text';
 import type { ItemText } from './ItemText';
 import type { Tooltip } from './Tooltip';
+import { discardNeedsConfirm } from '../logic/inventoryDiscard';
 
 const CELL = 34;
 const SLOT_POS: Record<Slot, [number, number, number, number]> = {
@@ -37,6 +38,8 @@ export class InventoryUI {
   private readonly slotEl = {} as Record<Slot, HTMLDivElement>;
   private hand: Item | null = null;
   private hero: Hero | null = null;
+  private readonly dropBtn: HTMLButtonElement;
+  private readonly confirmEl: HTMLDivElement;
   private readonly off: (() => void)[] = [];
 
   constructor(
@@ -47,11 +50,13 @@ export class InventoryUI {
     private readonly assets: AssetStore,
     private readonly bus: EventBus<GameEvents>,
     private readonly flash: (t: string) => void,
+    private readonly onDrop: (it: Item) => void,
   ) {
     const w = this.win;
     w.id = 'invWin';
     w.className = 'hidden';
-    w.innerHTML = `<div class="iwHead"><span class="iwTitle"></span> <small class="iwHint"></small><button class="iwClose">✕</button></div>
+    w.innerHTML = `<div class="iwHead"><span class="iwTitle"></span> <small class="iwHint"></small><button type="button" class="iwDrop hidden"></button><button class="iwClose">✕</button></div>
+      <div class="iwConfirm hidden"></div>
       <div class="iwBody"><div class="iwLeft"><div class="doll"><div class="dollFig"></div></div><div class="bag"></div></div><div class="statBox"></div></div>`;
     document.body.appendChild(w);
     this.doll = w.querySelector('.doll') as HTMLDivElement;
@@ -70,6 +75,9 @@ export class InventoryUI {
     }
     this.handEl.className = 'handItem hidden';
     document.body.appendChild(this.handEl);
+    this.dropBtn = w.querySelector('.iwDrop') as HTMLButtonElement;
+    this.confirmEl = w.querySelector('.iwConfirm') as HTMLDivElement;
+    this.dropBtn.onclick = () => this.hand && this.requestDrop(this.hand);
     (w.querySelector('.iwClose') as HTMLButtonElement).onclick = () => this.close();
     const on = <K extends keyof HTMLElementEventMap>(el: HTMLElement | Window, t: K, fn: (e: HTMLElementEventMap[K]) => void): void => {
       el.addEventListener(t, fn as EventListener);
@@ -80,13 +88,24 @@ export class InventoryUI {
     on(w, 'mousedown', (e) => this.click(e));
     on(w, 'contextmenu', (e) => this.rclick(e));
     on(window, 'mousemove', (e) => this.moveHand(e));
+    on(window, 'mouseup', (e) => this.releaseHand(e));
     this.relabel();
+  }
+
+  /** Anropas av Game efter att föremålet lagts på marken. */
+  itemDropped(it: Item): void {
+    if (this.hand === it) {
+      this.hand = null;
+      this.renderHand();
+    }
+    this.render();
   }
 
   /** Texter i fönstret (ritas om vid språkbyte). */
   relabel(): void {
     (this.win.querySelector('.iwTitle') as HTMLElement).textContent = this.text.t('inv.title');
     (this.win.querySelector('.iwHint') as HTMLElement).textContent = this.text.t('inv.hint');
+    this.dropBtn.textContent = this.text.t('inv.drop');
     for (const s of SLOTS) {
       this.slotEl[s].title = this.text.t(`slot.${s}` as TextKey);
       this.slotEl[s].dataset.ph = this.text.t(`slot.${s}` as TextKey);
@@ -119,6 +138,7 @@ export class InventoryUI {
     this.bus.emit('ui_open', { panel: 'inventory' });
   }
   close(): void {
+    this.hideConfirm();
     if (this.hand && this.hero) {
       if (!this.hero.inv.add(this.hand)) return this.flash(this.text.t('msg.bag_full'));
       this.hand = null;
@@ -250,11 +270,16 @@ export class InventoryUI {
 
   private rclick(e: MouseEvent): void {
     e.preventDefault();
-    if (this.hand || !this.hero) return;
+    if (!this.hero) return;
     const inv = this.hero.inv;
     const el = (e.target as HTMLElement).closest<HTMLElement>('.itm');
     const it = this.find(el?.dataset.uid);
-    if (!it) return;
+    if (e.shiftKey && it) {
+      this.tip.hide();
+      this.requestDrop(it);
+      return;
+    }
+    if (this.hand || !it) return;
     this.tip.hide();
     const b = this.L.base(it);
     const slot = inv.slotOfItem(it);
@@ -268,9 +293,55 @@ export class InventoryUI {
     this.render();
   }
 
+  private releaseHand(e: MouseEvent): void {
+    if (!this.hand || !this.isOpen() || e.button !== 0) return;
+    const r = this.win.getBoundingClientRect();
+    const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (!inside) this.requestDrop(this.hand);
+  }
+
+  private requestDrop(it: Item): void {
+    if (!this.hero) return;
+    const name = this.L.nameOf(it);
+    if (discardNeedsConfirm(it, this.L)) {
+      this.showConfirm(
+        this.text.t('inv.drop_confirm', { name }),
+        () => {
+          this.hideConfirm();
+          this.onDrop(it);
+        },
+        () => this.hideConfirm(),
+      );
+      return;
+    }
+    this.onDrop(it);
+  }
+
+  private showConfirm(question: string, onYes: () => void, onNo: () => void): void {
+    this.confirmEl.classList.remove('hidden');
+    this.confirmEl.innerHTML = '';
+    const q = document.createElement('p');
+    q.textContent = question;
+    const yes = document.createElement('button');
+    yes.type = 'button';
+    yes.textContent = this.text.t('inv.drop');
+    yes.onclick = onYes;
+    const no = document.createElement('button');
+    no.type = 'button';
+    no.textContent = this.text.t('inv.cancel');
+    no.onclick = onNo;
+    this.confirmEl.append(q, yes, no);
+  }
+
+  private hideConfirm(): void {
+    this.confirmEl.classList.add('hidden');
+    this.confirmEl.innerHTML = '';
+  }
+
   private renderHand(e?: MouseEvent): void {
     const it = this.hand;
     this.handEl.classList.toggle('hidden', !it);
+    this.dropBtn.classList.toggle('hidden', !it);
     this.handEl.innerHTML = '';
     if (!it || !this.hero) return;
     const [w, h] = this.hero.inv.size(it);

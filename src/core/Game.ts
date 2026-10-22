@@ -17,6 +17,7 @@ import { syncProximitySpawns } from '../systems/SpawnProximity';
 import { ForestGroundChunks } from '../world/ForestGroundChunks';
 import { Input } from '../input/Input';
 import { Loot } from '../logic/loot/Loot';
+import type { Item } from '../logic/loot/types';
 import { AssetStore, dirIndex } from '../render/Assets';
 import { Camera } from '../render/Camera';
 import { DirSprite } from '../render/DirSprite';
@@ -198,7 +199,16 @@ export class Game {
     this.dayNight = new DayNightPresenter(r.app.stage, r.effects, this.bus, this.gameClock, this.rng);
     this.tip = new Tooltip();
     const itemText = new ItemText(this.loot, this.text);
-    this.invUI = new InventoryUI(this.loot, this.text, itemText, this.tip, this.assets, this.bus, (t) => this.hud.flash(t));
+    this.invUI = new InventoryUI(
+      this.loot,
+      this.text,
+      itemText,
+      this.tip,
+      this.assets,
+      this.bus,
+      (t) => this.hud.flash(t),
+      (it) => this.dropItemFromInventory(it),
+    );
     this.labels = new LootLabels(this.lootSys);
     this.monBar = new MonsterBar(this.text);
     this.npcSys = new NpcSystem(this.assets, this.worldState);
@@ -616,6 +626,14 @@ export class Game {
     }
     return best;
   }
+  private dropItemFromInventory(it: Item): void {
+    const w = this.mustWorld();
+    const inv = w.hero.inv;
+    if (inv.bag.includes(it) || inv.slotOfItem(it)) inv.detach(it);
+    this.lootSys.dropFromHero(it);
+    this.invUI.itemDropped(it);
+  }
+
   private dropAt(sx: number, sy: number): GroundDrop | null {
     const w = this.world;
     if (!w) return null;
@@ -936,7 +954,8 @@ export class Game {
       if (h.moving) {
         const sprintMeta = DATA.classes.meta.sprint;
         const runMult = sprinting && sprintMeta ? sprintMeta.speed_mult : 1;
-        const moveSp = h.stats.speed * h.moveSpeedMult() * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
+        const moveSp =
+          h.stats.speed * h.moveSpeedMult() * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
         const locomote = sprinting && v.hasAnim('run') ? 'run' : 'gang';
         v.playbackRate = locomotionPlaybackRate(v.getAnim(locomote), moveSp);
       } else v.playbackRate = 1;

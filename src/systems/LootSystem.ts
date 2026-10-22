@@ -74,6 +74,17 @@ export class LootSystem {
     w.drops.push({ pos: { ...pos }, data: d, view, t: w.rng.next() * 6 });
   }
 
+  /** Slängt föremål från väskan hamnar på marken nära hjälten. */
+  dropFromHero(it: Item): void {
+    const w = this.w();
+    const h = w.hero;
+    const a = w.rng.float(0, Math.PI * 2);
+    const d = 0.35 + w.rng.float(0, 0.35);
+    const pos = { x: h.pos.x + Math.cos(a) * d, y: h.pos.y + Math.sin(a) * d };
+    w.zone.collide(pos, 0.2);
+    this.spawn(pos, { item: it });
+  }
+
   remove(g: GroundDrop): void {
     const w = this.w();
     g.view.destroy({ children: true });
