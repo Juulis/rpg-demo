@@ -1,10 +1,10 @@
 {
  "image": "lagereld_anim.png",
  "frames": 8,
- "frameW": 348,
- "frameH": 385,
+ "frameW": 329,
+ "frameH": 364,
  "anchor": [
-  172,
+  167,
   352
  ],
  "fps": 10,
