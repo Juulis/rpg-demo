@@ -7,7 +7,7 @@ export function allNpcs(): readonly NpcDef[] {
   return data.npcs;
 }
 
-export function npcsForZone(zoneName: 'forest' | 'village', areaId: string): NpcDef[] {
+export function npcsForZone(zoneName: 'forest' | 'village' | 'wolfstead', areaId: string): NpcDef[] {
   return data.npcs.filter((n) => n.zone === zoneName && n.area === areaId && n.act === 1);
 }
 

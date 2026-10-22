@@ -14,6 +14,10 @@ export class GoalTracker {
 
   goal(z: ZoneView, hero: Vec2): Goal | null {
     if (z.name === 'village' || z.areaId === 'gamla_byn') return this.villageGoal(z);
+    if (z.name === 'wolfstead' || z.areaId === 'vargaby') {
+      const a = z.arena;
+      if (a) return { x: (a.x0 + a.x1) / 2, y: (a.y0 + a.y1) / 2, text: 'Nästa mål: Ulvhilds ide' };
+    }
     const inactive = z.runes.filter((r) => !r.active);
     if (inactive.length) {
       let best = inactive[0];

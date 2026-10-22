@@ -5,7 +5,11 @@ export type Bounds = readonly [x0: number, y0: number, x1: number, y1: number];
 
 /** Statisk kartgeometri och namn. All zon-geometri läses ur ZoneView/GameData, inget hårdkodat utöver namn. */
 export class MapModel {
-  static readonly ZONE_NAME: Readonly<Record<string, string>> = { forest: 'Den dimmiga skogen', village: 'Den gamla byn' };
+  static readonly ZONE_NAME: Readonly<Record<string, string>> = {
+    forest: 'Den dimmiga skogen',
+    village: 'Den gamla byn',
+    wolfstead: 'Vargaby',
+  };
   static readonly AREA_NAME: Readonly<Record<string, string>> = {
     portalgladet: 'Portalgläntan',
     byporten: 'Byporten',

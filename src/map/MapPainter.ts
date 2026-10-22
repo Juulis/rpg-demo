@@ -120,7 +120,8 @@ export class MapPainter {
         c.fillStyle = '#ff7080';
         c.font = FONT;
         c.textAlign = 'center';
-        c.fillText(pt.target === 'village' ? 'Portal → Den gamla byn' : 'Portal → Skogen', X(pt.x), Y(pt.y) - Math.max(9, 1.4 * s + 6));
+        const label = pt.target === 'village' ? 'Portal → Den gamla byn' : pt.target === 'wolfstead' ? 'Väg → Vargaby' : 'Portal → Skogen';
+        c.fillText(label, X(pt.x), Y(pt.y) - Math.max(9, 1.4 * s + 6));
       }
     }
   }

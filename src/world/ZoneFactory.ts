@@ -5,7 +5,14 @@ import { DATA } from '../data';
 import type { AssetStore, DecorId } from '../render/Assets';
 import { Iso, TILE_WORLD } from '../render/Iso';
 import { StripAnimSprite } from '../render/StripAnimSprite';
-import { FOREST_DECOR_MID, FOREST_DECOR_OUTER, FOREST_PLAY_RADIUS, FOREST_SAFE_RADIUS } from './forestConstants';
+import {
+  FOREST_DECOR_MID,
+  FOREST_DECOR_OUTER,
+  FOREST_PLAY_RADIUS,
+  FOREST_SAFE_RADIUS,
+  FOREST_VARGABY_PORTAL_X,
+  FOREST_VARGABY_PORTAL_Y,
+} from './forestConstants';
 import { ForestGroundChunks } from './ForestGroundChunks';
 import { Zone, type ZoneName } from './Zone';
 
@@ -30,7 +37,9 @@ export class ZoneFactory {
   constructor(private readonly assets: AssetStore) {}
 
   build(name: ZoneName): BuiltZone {
-    return name === 'village' ? this.village() : this.forest();
+    if (name === 'village') return this.village();
+    if (name === 'wolfstead') return this.wolfstead();
+    return this.forest();
   }
 
   private tile(id: string, i: number, j: number, ground: Container): void {
@@ -108,6 +117,11 @@ export class ZoneFactory {
       decor.push(s);
     }
     zone.entry = { x: 0, y: 4 };
+    zone.portals.push({
+      x: FOREST_VARGABY_PORTAL_X,
+      y: FOREST_VARGABY_PORTAL_Y,
+      target: 'wolfstead',
+    });
     decor.push(this.decorSprite('eldstad_kall', -1.2, 2.6, 0.34));
     const fire = this.decorAnimSprite('lagereld_anim', -1.2, 2.6, 0.34);
     if (fire) {
@@ -225,6 +239,78 @@ export class ZoneFactory {
     const e = Zone.T(...(DATA.portalVillage as unknown as { portal: { village_entry_tile: [number, number] } }).portal.village_entry_tile);
     zone.entry = { x: e.x, y: e.y - 3 };
     zone.portals.push({ x: e.x, y: e.y + 1, target: 'forest' });
+    return { zone, ground, decor, decorAnims, runeSprites: [] };
+  }
+
+  /** Vargaby — 32×32 rutor (samma grid som spawnzoner), platshållargrafik tills stadskonst finns. */
+  private wolfstead(): BuiltZone {
+    const R = new Rng(41);
+    const zone = new Zone('wolfstead', 'vargaby', 62, 62);
+    zone.rect = [-31, 31];
+    zone.tileCoords = true;
+    const ground = new Container();
+    const decor: Container[] = [];
+    const decorAnims: StripAnimSprite[] = [];
+    const roadV = (tx: number) => Math.abs(tx - 16) < 1.2;
+    const roadH = (ty: number) => Math.abs(ty - 18) < 1.2 || Math.abs(ty - 15) < 1.1;
+    for (let tx = -3; tx < 35; tx++)
+      for (let ty = -3; ty < 35; ty++) {
+        const w = Zone.T(tx, ty);
+        const inside = tx >= 0 && tx < 32 && ty >= 0 && ty < 32;
+        const road = inside && (roadV(tx) || roadH(ty) || ty >= 24);
+        const northDen = inside && ty <= 7 && Math.abs(tx - 16) < 5;
+        const id = !inside
+          ? R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke'])
+          : northDen
+            ? R.pick(['lera_1', 'lera_2', 'stenhog'])
+            : road
+              ? R.next() < 0.35
+                ? 'kullersten_mossig'
+                : 'kullersten'
+              : R.next() < 0.3
+                ? R.pick(['lera_1', 'lera_2', 'lera_3'])
+                : R.pick(['gras_1', 'gras_2', 'gras_3', 'gras_4']);
+        this.tile(id, w.x / TILE_WORLD, w.y / TILE_WORLD, ground);
+      }
+    for (let i = 0; i < 48; i++) {
+      const t = (i / 48) * 4;
+      const side = Math.floor(t);
+      const c = -30 + (t - side) * 60;
+      const e = 32 + R.next() * 3;
+      const p = [
+        [c, -e],
+        [e, c],
+        [-c, e],
+        [-e, -c],
+      ][side] ?? [0, 0];
+      decor.push(this.decorSprite(R.next() < 0.7 ? 'gran' : 'dod_ek', p[0] ?? 0, p[1] ?? 0, 0.55 + R.next() * 0.25, R.next() < 0.5));
+    }
+    for (const [tx, ty] of [
+      [8, 12],
+      [24, 12],
+      [10, 22],
+      [22, 22],
+    ] as const) {
+      const p = Zone.T(tx, ty);
+      decor.push(this.decorSprite('ruinmur', p.x, p.y, 0.5, tx > 16));
+      decor.push(this.decorSprite('stenhog', p.x + 1.2, p.y + 0.8, 0.28));
+      zone.colliders.push({ x: p.x, y: p.y, r: 1.8 });
+    }
+    const den = Zone.T(16, 4);
+    zone.arena = { x0: den.x - 8, y0: den.y - 6, x1: den.x + 8, y1: den.y + 4 };
+    for (const ox of [-5, 5]) {
+      decor.push(this.decorSprite('ruinmur', den.x + ox, den.y - 1, 0.45));
+      zone.colliders.push({ x: den.x + ox, y: den.y - 1, r: 1.2 });
+    }
+    for (let i = -3; i <= 3; i++) {
+      const p = Zone.T(16 + i, 6);
+      decor.push(this.decorSprite('stenhog', p.x, p.y, 0.2 + R.next() * 0.08));
+    }
+    const port = Zone.T(16, 25);
+    zone.entry = { x: port.x, y: port.y - 2 };
+    zone.portals.push({ x: port.x, y: port.y + 1, target: 'forest' });
+    decor.push(this.decorSprite('ruinmur', port.x - 4, port.y, 0.4));
+    decor.push(this.decorSprite('ruinmur', port.x + 4, port.y, 0.4, true));
     return { zone, ground, decor, decorAnims, runeSprites: [] };
   }
 }
