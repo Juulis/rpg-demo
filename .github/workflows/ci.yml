@@ -19,8 +19,8 @@ jobs:
       - name: Headless-test (jsdom, stub-motor)
         run: npm test
       - run: npm run build
-      - name: Sätt ihop Pages-artefakten (3D på roten, TS under next/)
+      - name: Sätt ihop Pages-artefakten (2D på roten, next/ omdirigerar)
         run: node scripts/assemble-pages.mjs
       - run: npx playwright install --with-deps chromium
-      - name: Röktest – roten spelbar, next/ laddar
+      - name: Röktest – 2D på roten
         run: npm run smoke

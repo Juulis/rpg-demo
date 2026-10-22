@@ -17,7 +17,7 @@ const server = createServer((req, res) => {
   createReadStream(p).pipe(res);
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
-const base = `http://127.0.0.1:${server.address().port}/rpg-demo/next/`;
+const base = `http://127.0.0.1:${server.address().port}/rpg-demo/`;
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 await page.goto(base, { waitUntil: 'load' });
