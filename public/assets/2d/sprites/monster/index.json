@@ -19,6 +19,17 @@
   "vandrande_skelett",
   "vargbest"
  ],
+ "eightDir": [
+  "benkungen_valdemar",
+  "skelett_bagskytt",
+  "skelett_hund",
+  "skelett_kapten",
+  "skelett_krigare",
+  "skelett_runprast",
+  "skelett_vakt",
+  "skogsvarg",
+  "vargbest"
+ ],
  "singles": "monster.json",
- "not": "Genereras av scripts/gen-monster-index.mjs. Varje id har <id>/<id>.json med anims idle/gang/attack/dod."
+ "not": "Genereras av scripts/gen-monster-index.mjs. eightDir = hero-style *_idle_8dir sheets; övriga sheets använder legacy <id>.json."
 }

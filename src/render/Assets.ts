@@ -30,7 +30,13 @@ export const TILES = [
   'gras_blommor_2',
   'gras_till_kullersten',
   'gras_till_kullersten_2',
+  'gras_till_kullersten_ov',
   'gras_till_lera',
+  'gras_till_lera_ov',
+  'gras_till_lera_oh',
+  'gras_till_lera_oh_2',
+  'gras_till_lera_nh',
+  'gras_till_lera_nv',
   'gras_till_skogsbotten',
   'lera_1',
   'lera_2',
@@ -47,6 +53,11 @@ export const TILES = [
   'skogsbotten_barr_2',
   'skogsbotten_till_kullersten',
   'skogsbotten_till_kullersten_2',
+  'skogsbotten_till_kullersten_ov',
+  'skogsbotten_till_kullersten_ov_2',
+  'skogsbotten_till_kullersten_oh',
+  'skogsbotten_till_kullersten_nh',
+  'skogsbotten_till_kullersten_nv',
   'skogsbotten_till_lera',
   'stengolv_sprucket_1',
   'stengolv_sprucket_2',
@@ -163,14 +174,19 @@ export class AssetStore {
     }
   }
   private async loadMonsters(): Promise<void> {
-    const index = await fetchJsonResilient<{ sheets: string[] }>('2d/sprites/monster/index.json', { sheets: [] });
+    const index = await fetchJsonResilient<{ sheets: string[]; eightDir?: string[] }>('2d/sprites/monster/index.json', {
+      sheets: [],
+    });
+    const eightDir = new Set(index.eightDir ?? []);
     await Promise.all(
       index.sheets.map(async (id) => {
         try {
-          const eight = await loadMonster8dirSet(tex, id);
-          if (eight) {
-            this.monsters.set(id, completeAnimSet(eight));
-            return;
+          if (eightDir.has(id)) {
+            const eight = await loadMonster8dirSet(tex, id);
+            if (eight) {
+              this.monsters.set(id, completeAnimSet(eight));
+              return;
+            }
           }
           const m = await fetchJsonResilient<{ anims: Record<AnimName, SheetAnim> }>(`2d/sprites/monster/${id}/${id}.json`, {
             anims: {} as Record<AnimName, SheetAnim>,
