@@ -97,10 +97,12 @@ assertNear(wolfShown / heroShown, wolfHm / heroHm, REL_TOL, 'varg/hjälte-förh�
 assert.ok(wolfShown >= heroShown * 0.65, 'minsta varg känns farlig vs hjälte');
 
 const refH = animSetRefHeight(hero);
+const heroWalk = hero.gang;
+assert.ok(heroWalk, 'gang');
 for (const name of ['gang', 'attack', 'dod'] as const) {
   const a = hero[name];
   assert.ok(a, name);
-  assert.equal(animDisplayScale(heroK, refH, a), animDisplayScale(heroK, refH, hero.gang!), `hjälte ${name} pixel-skala`);
+  assert.equal(animDisplayScale(heroK, refH, a), animDisplayScale(heroK, refH, heroWalk), `hjälte ${name} pixel-skala`);
 }
 
 console.log('figure-world-scale.test.mts: ok');

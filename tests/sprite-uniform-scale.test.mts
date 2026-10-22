@@ -44,7 +44,8 @@ function assertSamePixelScale(set: AnimSet, label: string): void {
     assert.ok(Math.abs(k - DISPLAY_K * (a.scale ?? 1)) < 0.0001, `${label} ${n} display scale`);
   }
   assert.ok(scales.length >= 2, `${label}: behöver minst två animationer`);
-  const first = scales[0]!;
+  const first = scales[0];
+  assert.ok(first !== undefined);
   for (const k of scales) assert.equal(k, first, `${label}: samma pixel-skala i alla anims`);
 }
 
@@ -64,10 +65,13 @@ const riddare: AnimSet = {
 };
 assertSamePixelScale(riddare, 'riddare');
 assert.ok(runM.h > walkM.h * 1.05, 'run-ruta större än walk');
-const atkK = animDisplayScale(1, animSetRefHeight(riddare), riddare.attack!);
-const walkK = animDisplayScale(1, animSetRefHeight(riddare), riddare.gang!);
+const riddareAttack = riddare.attack;
+const riddareWalk = riddare.gang;
+assert.ok(riddareAttack && riddareWalk);
+const atkK = animDisplayScale(1, animSetRefHeight(riddare), riddareAttack);
+const walkK = animDisplayScale(1, animSetRefHeight(riddare), riddareWalk);
 assert.equal(atkK, walkK, 'attack samma k som walk');
-assert.ok(riddare.attack!.h > riddare.gang!.h * 0.9, 'attack-ruta finns');
+assert.ok(riddareAttack.h > riddareWalk.h * 0.9, 'attack-ruta finns');
 
 for (const cls of ['amazon', 'barbar'] as const) {
   const prefix = cls === 'amazon' ? 'amazon' : 'barbar';
