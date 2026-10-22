@@ -46,7 +46,8 @@ assert.equal(hidden, null);
 
 const resolved = resolveNpc(torDef, ws, { zoneAreaId: 'startskogen', worldTime: midnight });
 assert.equal(resolved.hidden, false);
-assert.ok(resolved.pos.x !== torDef.pos![0] || resolved.pos.y !== torDef.pos![1]);
+const home = torDef.pos ?? [0, 0];
+assert.ok(resolved.pos.x !== home[0] || resolved.pos.y !== home[1]);
 
 const { areaId, plats } = parseNpcLocationKey('startlagret:lagerelden');
 assert.equal(areaId, 'startskogen');

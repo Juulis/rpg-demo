@@ -23,7 +23,7 @@ export function backgroundVillagerDefs(areaId: string, world: Readonly<WorldStat
   if (count <= 0) return [];
   const out: NpcDef[] = [];
   for (let i = 0; i < count; i++) {
-    const template = TEMPLATE_CYCLE[i % TEMPLATE_CYCLE.length]!;
+    const template = TEMPLATE_CYCLE[i % TEMPLATE_CYCLE.length] ?? 'bybo_bonde';
     const id = `bybo_${template}_${i}`;
     out.push({
       id,
