@@ -934,8 +934,9 @@ export class Game {
     v.bobY = h.atkT > 0 && !v.hasAnim('attack') ? -Math.sin((h.atkT / 0.3) * Math.PI) * 6 : 0;
     if (h.atkT <= 0) {
       if (h.moving) {
-        const runMult = sprinting && sprintCfg ? sprintCfg.speed_mult : 1;
-        const moveSp = h.stats.speed * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
+        const sprintMeta = DATA.classes.meta.sprint;
+        const runMult = sprinting && sprintMeta ? sprintMeta.speed_mult : 1;
+        const moveSp = h.stats.speed * h.moveSpeedMult() * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
         const locomote = sprinting && v.hasAnim('run') ? 'run' : 'gang';
         v.playbackRate = locomotionPlaybackRate(v.getAnim(locomote), moveSp);
       } else v.playbackRate = 1;
