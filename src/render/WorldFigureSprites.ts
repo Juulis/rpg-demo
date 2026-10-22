@@ -55,7 +55,7 @@ export class WorldFigureSprites {
       const walk = await tryAnim(id, 'walk');
       const idle = await tryAnim(id, 'idle');
       const run = id === 'radjur' ? await tryAnim(id, 'run') : undefined;
-      const attack = await tryAnim(id, 'attack');
+      const attack = id === 'bjorn' ? await tryAnim(id, 'attack') : undefined;
       const set = complete({ idle, gang: walk, run: run ?? walk, attack });
       if (set) this.byId.set(id, set);
     }
