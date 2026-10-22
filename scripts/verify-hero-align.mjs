@@ -77,12 +77,7 @@ async function verifySheet(jsonName, walkMeta, refFootX, refFootY, maxErr, attac
     const nFrame = meta.frames ?? 1;
     for (let f = 0; f < nFrame; f++) {
       const looseSheet = jsonName.includes('run') || jsonName.includes('dodge');
-      const limit =
-        jsonName.includes('attack') && f >= (meta.hitFrame ?? 3)
-          ? attackLoose
-          : looseSheet
-            ? 20
-            : maxErr;
+      const limit = jsonName.includes('attack') && f >= (meta.hitFrame ?? 3) ? attackLoose : looseSheet ? 20 : maxErr;
       const r = meta.rects.find((q) => meta.dirs.indexOf(q.dir) === d && (q.frame ?? 0) === f);
       const crop = cropRgba(data, sw, sh, r.x, r.y, r.w, r.h);
       const { footX, footY } = footMetrics(crop, r.w, r.h);
