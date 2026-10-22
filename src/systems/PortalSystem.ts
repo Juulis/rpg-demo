@@ -52,6 +52,7 @@ export class PortalSystem {
     this.paintRune(i);
     w.fb.flash(w.text.t('msg.rune_awake', { n: w.hero.s.runes }));
     w.bus.emit('rune', { n: w.hero.s.runes });
+    w.bus.emit('runes_changed', { count: w.hero.s.runes });
     if (w.zone.runes.every((q) => q.active) && !this.opening) {
       this.opening = true;
       setTimeout(() => {

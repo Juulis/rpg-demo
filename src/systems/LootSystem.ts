@@ -110,7 +110,7 @@ export class LootSystem {
           return false;
         }
         this.remove(g);
-        w.bus.emit('pickup', { itemId: foundId, first });
+        w.bus.emit('pickup', { itemId: foundId, first, quality: it.quality });
         w.fb.flash(w.text.t('msg.found', { name }), this.color(g.data));
         return true;
       } catch (e) {
