@@ -29,5 +29,7 @@ const game = new Game(modules);
 await game.start(host);
 document.getElementById('newGame')?.addEventListener('click', () => game.newGame());
 
-// Debug-hook bara i dev-bygget (inga globaler i produktion).
-if (import.meta.env.DEV) (window as unknown as { __game?: Game }).__game = game;
+// Debug-hook i dev / fångstskript (inga globaler i vanlig produktion).
+if (import.meta.env.DEV || import.meta.env.VITE_CAPTURE_HOOK === 'true') {
+  (window as unknown as { __game?: Game }).__game = game;
+}

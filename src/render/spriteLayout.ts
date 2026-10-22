@@ -11,9 +11,9 @@ export function animDisplayScale(scaleK: number, refH: number, anim: Anim): numb
   return scaleK * (anim.scale ?? 1) * (refH / anim.h);
 }
 
-/** Synlig höjd ovanför fotpunkten (px) vid dir 0, frame 0. */
+/** Synlig höjd från fotpunkt till topp av rutan (px) — samma mått som DirSprite.height2. */
 export function animBodyHeight(scaleK: number, refH: number, anim: Anim, dir = 0, frame = 0): number {
   const k = animDisplayScale(scaleK, refH, anim);
   const ay = anim.alignY?.[anim.single ? 0 : dir]?.[frame] ?? 0;
-  return (anim.h - anim.anchor[1] + ay) * k;
+  return (anim.anchor[1] + ay) * k;
 }
