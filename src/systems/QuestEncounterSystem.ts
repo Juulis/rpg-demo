@@ -91,11 +91,7 @@ export class QuestEncounterSystem {
     if (grav.steg === 'kryptan' && !ws.flags.quest_grav_guard_slain && !this.hasLivingQuestMonster(w, GRAV_GUARD_UID)) {
       this.spawnGravGuard(w);
     }
-    if (
-      grav.steg === 'kronikan' &&
-      !hooks.hasItem('quest_gravvaktarnas_kronika') &&
-      !this.hasQuestDrop(w, 'quest_gravvaktarnas_kronika')
-    ) {
+    if (grav.steg === 'kronikan' && !hooks.hasItem('quest_gravvaktarnas_kronika') && !this.hasQuestDrop(w, 'quest_gravvaktarnas_kronika')) {
       this.spawnQuestItem(w, 'gravvaktarnas_kammare', 'quest_gravvaktarnas_kronika');
     }
   }
