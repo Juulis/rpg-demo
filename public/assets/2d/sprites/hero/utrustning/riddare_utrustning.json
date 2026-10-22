@@ -1,0 +1,476 @@
+{
+ "figur": "riddare",
+ "lager": [
+  "svard_bak",
+  "bas",
+  "rustning",
+  "svard_fram"
+ ],
+ "anims": {
+  "idle": {
+   "kropp": "../../2d/sprites/riddare_idle_8dir.json",
+   "filer": {
+    "svard_bak": "riddare_idle_svard_bak_8dir.json",
+    "bas": "riddare_idle_bas_8dir.json",
+    "rustning": "riddare_idle_rustning_8dir.json",
+    "svard_fram": "riddare_idle_svard_fram_8dir.json"
+   },
+   "order": {
+    "S": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "V": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "N": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "O": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ]
+   },
+   "svardPixlar": {
+    "S": {
+     "utanforKropp": 8509,
+     "overKropp": 113
+    },
+    "SV": {
+     "utanforKropp": 6578,
+     "overKropp": 76
+    },
+    "V": {
+     "utanforKropp": 6943,
+     "overKropp": 389
+    },
+    "NV": {
+     "utanforKropp": 6422,
+     "overKropp": 194
+    },
+    "N": {
+     "utanforKropp": 6941,
+     "overKropp": 155
+    },
+    "NO": {
+     "utanforKropp": 5241,
+     "overKropp": 118
+    },
+    "O": {
+     "utanforKropp": 5358,
+     "overKropp": 42
+    },
+    "SO": {
+     "utanforKropp": 6595,
+     "overKropp": 115
+    }
+   }
+  },
+  "walk": {
+   "kropp": "../riddare_walk_8dir.json",
+   "filer": {
+    "svard_bak": "riddare_walk_svard_bak_8dir.json",
+    "bas": "riddare_walk_bas_8dir.json",
+    "rustning": "riddare_walk_rustning_8dir.json",
+    "svard_fram": "riddare_walk_svard_fram_8dir.json"
+   },
+   "order": {
+    "S": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "V": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "N": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "O": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ]
+   },
+   "svardPixlar": {
+    "S": {
+     "utanforKropp": 12922,
+     "overKropp": 248
+    },
+    "SV": {
+     "utanforKropp": 5449,
+     "overKropp": 15
+    },
+    "V": {
+     "utanforKropp": 4786,
+     "overKropp": 56
+    },
+    "NV": {
+     "utanforKropp": 6623,
+     "overKropp": 665
+    },
+    "N": {
+     "utanforKropp": 7378,
+     "overKropp": 48
+    },
+    "NO": {
+     "utanforKropp": 6623,
+     "overKropp": 665
+    },
+    "O": {
+     "utanforKropp": 4786,
+     "overKropp": 56
+    },
+    "SO": {
+     "utanforKropp": 5449,
+     "overKropp": 15
+    }
+   }
+  },
+  "run": {
+   "kropp": "../riddare_run_8dir.json",
+   "filer": {
+    "svard_bak": "riddare_run_svard_bak_8dir.json",
+    "bas": "riddare_run_bas_8dir.json",
+    "rustning": "riddare_run_rustning_8dir.json",
+    "svard_fram": "riddare_run_svard_fram_8dir.json"
+   },
+   "order": {
+    "S": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "V": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "N": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "O": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ]
+   },
+   "svardPixlar": {
+    "S": {
+     "utanforKropp": 4869,
+     "overKropp": 49
+    },
+    "SV": {
+     "utanforKropp": 8300,
+     "overKropp": 7
+    },
+    "V": {
+     "utanforKropp": 12210,
+     "overKropp": 197
+    },
+    "NV": {
+     "utanforKropp": 2890,
+     "overKropp": 16
+    },
+    "N": {
+     "utanforKropp": 2939,
+     "overKropp": 2
+    },
+    "NO": {
+     "utanforKropp": 2890,
+     "overKropp": 16
+    },
+    "O": {
+     "utanforKropp": 12210,
+     "overKropp": 197
+    },
+    "SO": {
+     "utanforKropp": 8300,
+     "overKropp": 7
+    }
+   }
+  },
+  "attack": {
+   "kropp": "../riddare_attack_8dir.json",
+   "filer": {
+    "svard_bak": "riddare_attack_svard_bak_8dir.json",
+    "bas": "riddare_attack_bas_8dir.json",
+    "rustning": "riddare_attack_rustning_8dir.json",
+    "svard_fram": "riddare_attack_svard_fram_8dir.json"
+   },
+   "order": {
+    "S": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "V": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "N": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "O": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ]
+   },
+   "svardPixlar": {
+    "S": {
+     "utanforKropp": 2827,
+     "overKropp": 1986
+    },
+    "SV": {
+     "utanforKropp": 2082,
+     "overKropp": 1435
+    },
+    "V": {
+     "utanforKropp": 6063,
+     "overKropp": 934
+    },
+    "NV": {
+     "utanforKropp": 2933,
+     "overKropp": 914
+    },
+    "N": {
+     "utanforKropp": 5002,
+     "overKropp": 83
+    },
+    "NO": {
+     "utanforKropp": 2933,
+     "overKropp": 914
+    },
+    "O": {
+     "utanforKropp": 6063,
+     "overKropp": 934
+    },
+    "SO": {
+     "utanforKropp": 2082,
+     "overKropp": 1435
+    }
+   }
+  },
+  "dodge": {
+   "kropp": "../riddare_dodge_8dir.json",
+   "filer": {
+    "svard_bak": "riddare_dodge_svard_bak_8dir.json",
+    "bas": "riddare_dodge_bas_8dir.json",
+    "rustning": "riddare_dodge_rustning_8dir.json",
+    "svard_fram": "riddare_dodge_svard_fram_8dir.json"
+   },
+   "order": {
+    "S": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "V": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NV": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "N": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "NO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "O": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ],
+    "SO": [
+     "svard_bak",
+     "bas",
+     "rustning",
+     "svard_fram"
+    ]
+   },
+   "svardPixlar": {
+    "S": {
+     "utanforKropp": 3349,
+     "overKropp": 1524
+    },
+    "SV": {
+     "utanforKropp": 5194,
+     "overKropp": 666
+    },
+    "V": {
+     "utanforKropp": 3127,
+     "overKropp": 25
+    },
+    "NV": {
+     "utanforKropp": 2937,
+     "overKropp": 5
+    },
+    "N": {
+     "utanforKropp": 3918,
+     "overKropp": 24
+    },
+    "NO": {
+     "utanforKropp": 2937,
+     "overKropp": 5
+    },
+    "O": {
+     "utanforKropp": 3127,
+     "overKropp": 25
+    },
+    "SO": {
+     "utanforKropp": 5194,
+     "overKropp": 666
+    }
+   }
+  }
+ }
+}
