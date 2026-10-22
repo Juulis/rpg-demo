@@ -303,7 +303,7 @@ export class InventoryUI {
   private requestDrop(it: Item): void {
     if (!this.hero) return;
     const name = this.L.nameOf(it);
-    if (discardNeedsConfirm(it, this.L)) {
+    if (discardNeedsConfirm(it)) {
       this.showConfirm(
         this.text.t('inv.drop_confirm', { name }),
         () => {

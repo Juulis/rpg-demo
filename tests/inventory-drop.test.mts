@@ -13,8 +13,8 @@ const inv = new Inventory(L, [], {}, () => 1);
 const normal = L.makeItem('torkat_kott', { n: 2 });
 assert.ok(inv.add(normal));
 const questStub = { uid: 'q1', base: 'quest_ulvhilds_pals', quality: 'common', affixes: [], ilvl: 1 };
-assert.ok(discardNeedsConfirm(questStub, L));
-assert.equal(discardNeedsConfirm(normal, L), false);
+assert.ok(discardNeedsConfirm(questStub));
+assert.equal(discardNeedsConfirm(normal), false);
 
 inv.detach(normal);
 assert.equal(inv.bag.length, 0);
@@ -46,7 +46,8 @@ const dropped = L.makeItem('benflisa');
 sys.dropFromHero(dropped);
 assert.equal(drops.length, 1);
 assert.equal(drops[0]?.data.item?.base, 'benflisa');
-const p = drops[0]!.pos;
+const p = drops[0]?.pos;
+assert.ok(p);
 assert.ok(Math.hypot(p.x - heroPos.x, p.y - heroPos.y) < 1.5);
 
 console.log('inventory-drop.test.mts: ok');

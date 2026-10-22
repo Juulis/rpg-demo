@@ -954,8 +954,7 @@ export class Game {
       if (h.moving) {
         const sprintMeta = DATA.classes.meta.sprint;
         const runMult = sprinting && sprintMeta ? sprintMeta.speed_mult : 1;
-        const moveSp =
-          h.stats.speed * h.moveSpeedMult() * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
+        const moveSp = h.stats.speed * h.moveSpeedMult() * runMult * (h.blocking ? 0.4 : 1) * (h.curse > 0 ? 0.8 : 1);
         const locomote = sprinting && v.hasAnim('run') ? 'run' : 'gang';
         v.playbackRate = locomotionPlaybackRate(v.getAnim(locomote), moveSp);
       } else v.playbackRate = 1;
