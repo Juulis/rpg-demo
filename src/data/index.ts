@@ -14,6 +14,8 @@ import spawnzoner from './spawnzoner.json';
 import stader from './stader.json';
 import npc from './npc.json';
 import rykten from './rykten.json';
+import quests from './quests.json';
+import type { QuestDataFile } from './questTypes';
 import type { RumorDataFile } from './rumorTypes';
 import type { DialogDataFile } from './dialogTypes';
 import { DIALOG_DATA } from '../npc/designDialoger';
@@ -37,6 +39,7 @@ export const DATA: GameData = {
   npc: npc as unknown as NpcDataFile,
   dialoger: DIALOG_DATA as DialogDataFile,
   rykten: rykten as unknown as RumorDataFile,
+  quests: quests as unknown as QuestDataFile,
 };
 
 const MONSTERS = new Map<string, MonsterDef>(DATA.families.monsters.map((m) => [m.id, m]));

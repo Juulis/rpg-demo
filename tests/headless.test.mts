@@ -140,7 +140,7 @@ bus.on('new_game', ({ seed }) => {
     ctx.zone = { ...ctx.zone, name: zone };
     H.pos = H.resumePos ?? { x: 0, y: 0 };
     H.playing = true;
-    bus.emit('zone_enter', { name: zone });
+    bus.emit('zone_enter', { name: zone, areaId: zone === 'village' ? 'gamla_byn' : 'startskogen' });
   }, 20);
 });
 

@@ -1,4 +1,5 @@
 import type { Loot } from './loot/Loot';
+import { isQuestItemId } from '../quest/questItems';
 import { SLOTS, type Equip, type Item, type Slot } from './loot/types';
 
 export const BAG_W = 10;
@@ -74,6 +75,7 @@ export class Inventory {
     return SLOTS.find((s) => this.equip[s] === it);
   }
   remove(it: Item): void {
+    if (isQuestItemId(it.base)) return;
     const i = this.bag.indexOf(it);
     if (i >= 0) this.bag.splice(i, 1);
     const s = this.slotOfItem(it);

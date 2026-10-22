@@ -2,6 +2,7 @@ import type { EventBus } from '../core/EventBus';
 import type { GameEvents } from '../core/events';
 import { setDialogLocale } from '../npc/dialogText';
 import { npcName, setNpcLocale } from '../npc/npcText';
+import { setQuestLocale } from '../quest/questText';
 import { setRumorLocale } from '../rumor/rumorText';
 import type { ResolvedNpc } from '../npc/npcPlacement';
 import type { Text } from '../text/Text';
@@ -15,6 +16,7 @@ export class NpcDialog {
   private readonly title = document.createElement('div');
   private readonly body = document.createElement('div');
   private readonly hint = document.createElement('div');
+  private readonly choices = document.createElement('div');
   private open = false;
   private current: ResolvedNpc | null = null;
   private portraitUrl: string | null = null;
@@ -34,7 +36,8 @@ export class NpcDialog {
     this.body.className = 'npc-dialog-body';
     this.hint.className = 'npc-dialog-hint';
     this.hint.textContent = 'Esc';
-    this.textCol.append(this.title, this.body, this.hint);
+    this.choices.className = 'npc-dialog-choices';
+    this.textCol.append(this.title, this.body, this.choices, this.hint);
     this.row.append(this.portrait, this.textCol);
     this.root.append(this.row);
     document.body.appendChild(this.root);
@@ -42,6 +45,7 @@ export class NpcDialog {
       setNpcLocale(locale);
       setDialogLocale(locale);
       setRumorLocale(locale);
+      setQuestLocale(locale);
       if (this.open && this.current) this.render(this.current, this.portraitUrl, this.bodyText);
     });
   }
@@ -51,6 +55,7 @@ export class NpcDialog {
   }
 
   show(npc: ResolvedNpc, portraitUrl: string | null = null, body: string | null = null): void {
+    this.choices.replaceChildren();
     this.current = npc;
     this.portraitUrl = portraitUrl;
     this.bodyText = body;
@@ -59,11 +64,33 @@ export class NpcDialog {
     this.render(npc, portraitUrl, body);
   }
 
+  showChoices(
+    npc: ResolvedNpc,
+    portraitUrl: string | null,
+    body: string,
+    options: { id: string; label: string }[],
+    onPick: (id: string) => void,
+  ): void {
+    this.show(npc, portraitUrl, body);
+    for (const o of options) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'npc-dialog-choice';
+      btn.textContent = o.label;
+      btn.addEventListener('click', () => {
+        onPick(o.id);
+        this.close();
+      });
+      this.choices.append(btn);
+    }
+  }
+
   close(): void {
     this.open = false;
     this.current = null;
     this.portraitUrl = null;
     this.bodyText = null;
+    this.choices.replaceChildren();
     this.root.classList.add('hidden');
     this.portrait.classList.add('hidden');
   }

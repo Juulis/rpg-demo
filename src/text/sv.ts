@@ -14,6 +14,12 @@ export const SV = {
   rumor: {
     unknown_item: 'ett legendariskt föremål',
   },
+  quest: {
+    log_title: 'Uppdrag',
+    log_hint: 'J — stäng',
+    section_active: 'Aktiva',
+    section_done: 'Klara',
+  },
   msg: {
     rune_awake: 'Runan vaknar! ({n}/3)',
     portal_open: 'En röd portal öppnar sig i gläntan…',
