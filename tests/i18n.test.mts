@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { LocaleManager } from '../src/i18n/LocaleManager';
+
+const backend = {
+  settings: new Map<string, string>(),
+  async getSetting(key: string) {
+    return backend.settings.get(key) ?? null;
+  },
+  async setSetting(key: string, value: string) {
+    backend.settings.set(key, value);
+  },
+};
+
+async function run(): Promise<void> {
+  const i18n = new LocaleManager({ dev: false });
+  await i18n.bindSettings(backend as never);
+  assert.equal(i18n.locale, 'sv');
+  assert.equal(i18n.t('menu.continue'), 'Fortsätt');
+
+  await i18n.setLocale('en');
+  assert.equal(i18n.locale, 'en');
+  assert.equal(i18n.t('menu.continue'), 'Continue');
+  assert.equal(backend.settings.get(LocaleManager.STORAGE_KEY), 'en');
+
+  const missing = i18n.t('menu.this_key_does_not_exist' as 'menu.continue');
+  assert.ok(missing.includes('menu.this_key_does_not_exist') || missing === 'menu.this_key_does_not_exist');
+
+  console.log('i18n.test.mts: ok');
+}
+
+await run();

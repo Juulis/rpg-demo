@@ -5,10 +5,23 @@
 import assert from 'node:assert/strict';
 import { DATA } from '../src/data/index';
 import type { ZoneView } from '../src/core/GameContext';
+import { LocaleManager } from '../src/i18n/LocaleManager';
 import { GoalTracker } from '../src/map/GoalTracker';
 import { MapModel } from '../src/map/MapModel';
 
-const model = new MapModel(DATA);
+const backend = {
+  settings: new Map<string, string>(),
+  async getSetting(key: string) {
+    return backend.settings.get(key) ?? null;
+  },
+  async setSetting(key: string, value: string) {
+    backend.settings.set(key, value);
+  },
+};
+
+const i18n = new LocaleManager({ dev: false });
+await i18n.bindSettings(backend as never);
+const model = new MapModel(DATA, i18n);
 const goals = new GoalTracker(model);
 const z: ZoneView = {
   name: 'village',
@@ -24,7 +37,7 @@ const z: ZoneView = {
 
 const g1 = goals.goal(z, { x: 0, y: 0 });
 assert.ok(g1);
-assert.ok(g1.text.includes('Byporten'));
+assert.ok(model.t(g1.text, g1.params).includes('Byporten'));
 
 z.cleared.byporten = true;
 z.cleared.torget = true;
@@ -33,7 +46,7 @@ z.cleared.osterhus = true;
 z.cleared.kyrkogarden = true;
 const g2 = goals.goal(z, { x: 0, y: 0 });
 assert.ok(g2);
-assert.ok(g2.text.includes('kapell'));
+assert.ok(model.t(g2.text, g2.params).includes('kapell'));
 
 const forest: ZoneView = {
   name: 'forest',
@@ -47,6 +60,6 @@ const forest: ZoneView = {
   cleared: {},
 };
 const g3 = goals.goal(forest, { x: 0, y: 0 });
-assert.ok(g3?.text.includes('runsten'));
+assert.ok(model.t(g3!.text, g3!.params).includes('runsten'));
 
 console.log('map-goal.test.mts: ok');

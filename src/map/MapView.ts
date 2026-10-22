@@ -55,6 +55,6 @@ export class MapView {
     c.shadowBlur = 0;
     c.fillStyle = '#9fc4d4';
     c.font = '13px Cinzel, Georgia, serif';
-    c.fillText('Tab: stäng karta · ◆ runsten · ● portal · ▲ du · ◯ nästa mål', W / 2, H - 22);
+    c.fillText(this.model.t('map.legend'), W / 2, H - 22);
   }
 }

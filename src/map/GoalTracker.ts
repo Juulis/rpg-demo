@@ -1,11 +1,13 @@
 import type { Vec2, ZoneView } from '../core/GameContext';
 import type { VillageZoneDef } from '../data/types';
+import type { Key, Params } from '../i18n/types';
 import type { MapModel } from './MapModel';
 
 export interface Goal {
   x: number;
   y: number;
-  text: string;
+  text: Key;
+  params?: Params;
 }
 
 /** Nästa mål: i skogen runsten/portal; i byn nästa ej rensade zon eller kapellet. */
@@ -16,7 +18,7 @@ export class GoalTracker {
     if (z.name === 'village' || z.areaId === 'gamla_byn') return this.villageGoal(z);
     if (z.name === 'wolfstead' || z.areaId === 'vargaby') {
       const a = z.arena;
-      if (a) return { x: (a.x0 + a.x1) / 2, y: (a.y0 + a.y1) / 2, text: 'Nästa mål: Ulvhilds ide' };
+      if (a) return { x: (a.x0 + a.x1) / 2, y: (a.y0 + a.y1) / 2, text: 'map.goal_wolf_den' };
     }
     const inactive = z.runes.filter((r) => !r.active);
     if (inactive.length) {
@@ -29,13 +31,13 @@ export class GoalTracker {
           best = r;
         }
       }
-      if (best) return { x: best.x, y: best.y, text: 'Nästa mål: runsten' };
+      if (best) return { x: best.x, y: best.y, text: 'map.goal_rune' };
     }
     if (z.runes.length) {
       const p = z.portals[0];
-      if (p) return { x: p.x, y: p.y, text: 'Nästa mål: portalen' };
+      if (p) return { x: p.x, y: p.y, text: 'map.goal_portal' };
       const fp = this.model.forestPortal();
-      if (fp) return { x: fp[0], y: fp[1], text: 'Nästa mål: portalen' };
+      if (fp) return { x: fp[0], y: fp[1], text: 'map.goal_portal' };
     }
     return null;
   }
@@ -46,13 +48,13 @@ export class GoalTracker {
       if (q.safe) continue;
       if (!z.cleared[q.id]) {
         const [x, y] = this.zoneCenter(q);
-        return { x, y, text: `Nästa mål: ${this.model.areaName(q.id)}` };
+        return { x, y, text: 'map.goal_area', params: { area: this.model.areaName(q.id) } };
       }
     }
     const chapel = zones.find((q) => q.id === 'benkungens_kapell');
     if (chapel) {
       const [x, y] = this.zoneCenter(chapel);
-      return { x, y, text: `Nästa mål: ${this.model.areaName(chapel.id)}` };
+      return { x, y, text: 'map.goal_area', params: { area: this.model.areaName(chapel.id) } };
     }
     return null;
   }
