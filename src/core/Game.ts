@@ -18,6 +18,7 @@ import { Loot } from '../logic/loot/Loot';
 import { AssetStore, dirIndex } from '../render/Assets';
 import { Camera } from '../render/Camera';
 import { DirSprite } from '../render/DirSprite';
+import { scaleKForWorldHeightM, shadowRadiusForWorldHeightM, worldHeightMForHeroOrNpc } from '../render/figureWorldHeights';
 import type { StripAnimSprite } from '../render/StripAnimSprite';
 import { Iso } from '../render/Iso';
 import { Parallax } from '../render/Parallax';
@@ -391,7 +392,9 @@ export class Game {
     for (const d of built.decor) r.objects.addChild(d);
     this.decorAnims = built.decorAnims;
     const hs = this.heroState;
-    const heroView = new DirSprite(this.assets.heroes.setFor(hs.cls), 1, 26);
+    const heroSet = this.assets.heroes.setFor(hs.cls);
+    const heroHm = worldHeightMForHeroOrNpc();
+    const heroView = new DirSprite(heroSet, scaleKForWorldHeightM(heroSet, heroHm), shadowRadiusForWorldHeightM(heroHm));
     heroView.sprite.tint = this.assets.heroes.hasDedicated(hs.cls) ? 0xffffff : (CLASS_TINT[hs.cls] ?? 0xffffff);
     r.objects.addChild(heroView);
     const hero =
