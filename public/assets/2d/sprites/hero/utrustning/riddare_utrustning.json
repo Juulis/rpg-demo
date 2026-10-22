@@ -8,6 +8,16 @@
   "skold",
   "svard_fram"
  ],
+ "vapen": {
+  "svard": [
+   "svard_bak",
+   "svard_fram"
+  ],
+  "yxa": [
+   "yxa_bak",
+   "yxa_fram"
+  ]
+ },
  "anims": {
   "idle": {
    "kropp": "../../2d/sprites/riddare_idle_8dir.json",
@@ -17,7 +27,9 @@
     "rustning": "riddare_idle_rustning_8dir.json",
     "hjalm": "riddare_idle_hjalm_8dir.json",
     "skold": "riddare_idle_skold_8dir.json",
-    "svard_fram": "riddare_idle_svard_fram_8dir.json"
+    "svard_fram": "riddare_idle_svard_fram_8dir.json",
+    "yxa_bak": "riddare_idle_yxa_bak_8dir.json",
+    "yxa_fram": "riddare_idle_yxa_fram_8dir.json"
    },
    "order": {
     "S": [
@@ -84,6 +96,140 @@
      "svard_fram",
      "skold"
     ]
+   },
+   "orderPerVapen": {
+    "svard": {
+     "S": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "SV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "V": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "NV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "N": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "NO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "O": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "SO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ]
+    },
+    "yxa": {
+     "S": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "SV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "V": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "NV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "N": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "NO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "O": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "SO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ]
+    }
    },
    "svardPixlar": {
     "S": {
@@ -128,7 +274,9 @@
     "rustning": "riddare_walk_rustning_8dir.json",
     "hjalm": "riddare_walk_hjalm_8dir.json",
     "skold": "riddare_walk_skold_8dir.json",
-    "svard_fram": "riddare_walk_svard_fram_8dir.json"
+    "svard_fram": "riddare_walk_svard_fram_8dir.json",
+    "yxa_bak": "riddare_walk_yxa_bak_8dir.json",
+    "yxa_fram": "riddare_walk_yxa_fram_8dir.json"
    },
    "order": {
     "S": [
@@ -196,6 +344,140 @@
      "skold"
     ]
    },
+   "orderPerVapen": {
+    "svard": {
+     "S": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "SV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "V": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "NV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "N": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "NO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "O": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "SO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ]
+    },
+    "yxa": {
+     "S": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "SV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "V": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "NV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "N": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "NO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "O": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "SO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ]
+    }
+   },
    "svardPixlar": {
     "S": {
      "utanforKropp": 12918,
@@ -211,15 +493,15 @@
     },
     "NV": {
      "utanforKropp": 6676,
-     "overKropp": 4019
+     "overKropp": 2431
     },
     "N": {
      "utanforKropp": 7319,
-     "overKropp": 3223
+     "overKropp": 2193
     },
     "NO": {
      "utanforKropp": 6676,
-     "overKropp": 3534
+     "overKropp": 3014
     },
     "O": {
      "utanforKropp": 4751,
@@ -239,7 +521,9 @@
     "rustning": "riddare_run_rustning_8dir.json",
     "hjalm": "riddare_run_hjalm_8dir.json",
     "skold": "riddare_run_skold_8dir.json",
-    "svard_fram": "riddare_run_svard_fram_8dir.json"
+    "svard_fram": "riddare_run_svard_fram_8dir.json",
+    "yxa_bak": "riddare_run_yxa_bak_8dir.json",
+    "yxa_fram": "riddare_run_yxa_fram_8dir.json"
    },
    "order": {
     "S": [
@@ -247,8 +531,8 @@
      "bas",
      "rustning",
      "hjalm",
-     "svard_fram",
-     "skold"
+     "skold",
+     "svard_fram"
     ],
     "SV": [
      "svard_bak",
@@ -307,10 +591,144 @@
      "skold"
     ]
    },
+   "orderPerVapen": {
+    "svard": {
+     "S": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "SV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "V": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "NV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "N": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "NO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "O": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "SO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ]
+    },
+    "yxa": {
+     "S": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "SV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "V": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "NV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "N": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "NO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "O": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "SO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ]
+    }
+   },
    "svardPixlar": {
     "S": {
      "utanforKropp": 4585,
-     "overKropp": 442
+     "overKropp": 260
     },
     "SV": {
      "utanforKropp": 8211,
@@ -318,7 +736,7 @@
     },
     "V": {
      "utanforKropp": 12227,
-     "overKropp": 490
+     "overKropp": 418
     },
     "NV": {
      "utanforKropp": 2856,
@@ -326,7 +744,7 @@
     },
     "N": {
      "utanforKropp": 2820,
-     "overKropp": 121
+     "overKropp": 119
     },
     "NO": {
      "utanforKropp": 2856,
@@ -334,7 +752,7 @@
     },
     "O": {
      "utanforKropp": 12227,
-     "overKropp": 526
+     "overKropp": 549
     },
     "SO": {
      "utanforKropp": 8211,
@@ -350,7 +768,9 @@
     "rustning": "riddare_attack_rustning_8dir.json",
     "hjalm": "riddare_attack_hjalm_8dir.json",
     "skold": "riddare_attack_skold_8dir.json",
-    "svard_fram": "riddare_attack_svard_fram_8dir.json"
+    "svard_fram": "riddare_attack_svard_fram_8dir.json",
+    "yxa_bak": "riddare_attack_yxa_bak_8dir.json",
+    "yxa_fram": "riddare_attack_yxa_fram_8dir.json"
    },
    "order": {
     "S": [
@@ -382,24 +802,24 @@
      "bas",
      "rustning",
      "hjalm",
-     "svard_fram",
-     "skold"
+     "skold",
+     "svard_fram"
     ],
     "N": [
      "svard_bak",
      "bas",
      "rustning",
      "hjalm",
-     "svard_fram",
-     "skold"
+     "skold",
+     "svard_fram"
     ],
     "NO": [
      "svard_bak",
      "bas",
      "rustning",
      "hjalm",
-     "svard_fram",
-     "skold"
+     "skold",
+     "svard_fram"
     ],
     "O": [
      "svard_bak",
@@ -418,38 +838,172 @@
      "svard_fram"
     ]
    },
+   "orderPerVapen": {
+    "svard": {
+     "S": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "SV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "V": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "NV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "N": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "NO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "O": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "SO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ]
+    },
+    "yxa": {
+     "S": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "SV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "V": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "NV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "N": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "NO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "O": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "SO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ]
+    }
+   },
    "svardPixlar": {
     "S": {
-     "utanforKropp": 3981,
-     "overKropp": 6002
+     "utanforKropp": 3957,
+     "overKropp": 5162
     },
     "SV": {
      "utanforKropp": 3568,
-     "overKropp": 8019
+     "overKropp": 7924
     },
     "V": {
-     "utanforKropp": 7765,
-     "overKropp": 3503
+     "utanforKropp": 7762,
+     "overKropp": 3260
     },
     "NV": {
      "utanforKropp": 3231,
-     "overKropp": 5007
+     "overKropp": 3518
     },
     "N": {
      "utanforKropp": 5250,
      "overKropp": 15462
     },
     "NO": {
-     "utanforKropp": 3232,
-     "overKropp": 5023
+     "utanforKropp": 3231,
+     "overKropp": 2479
     },
     "O": {
-     "utanforKropp": 7765,
-     "overKropp": 3503
+     "utanforKropp": 7762,
+     "overKropp": 3260
     },
     "SO": {
      "utanforKropp": 3568,
-     "overKropp": 8003
+     "overKropp": 7908
     }
    }
   },
@@ -461,7 +1015,9 @@
     "rustning": "riddare_dodge_rustning_8dir.json",
     "hjalm": "riddare_dodge_hjalm_8dir.json",
     "skold": "riddare_dodge_skold_8dir.json",
-    "svard_fram": "riddare_dodge_svard_fram_8dir.json"
+    "svard_fram": "riddare_dodge_svard_fram_8dir.json",
+    "yxa_bak": "riddare_dodge_yxa_bak_8dir.json",
+    "yxa_fram": "riddare_dodge_yxa_fram_8dir.json"
    },
    "order": {
     "S": [
@@ -529,14 +1085,148 @@
      "skold"
     ]
    },
+   "orderPerVapen": {
+    "svard": {
+     "S": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "svard_fram"
+     ],
+     "SV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "V": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "NV": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "N": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "NO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "O": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ],
+     "SO": [
+      "svard_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "svard_fram",
+      "skold"
+     ]
+    },
+    "yxa": {
+     "S": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "skold",
+      "yxa_fram"
+     ],
+     "SV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "V": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "NV": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "N": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "NO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "O": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ],
+     "SO": [
+      "yxa_bak",
+      "bas",
+      "rustning",
+      "hjalm",
+      "yxa_fram",
+      "skold"
+     ]
+    }
+   },
    "svardPixlar": {
     "S": {
      "utanforKropp": 3393,
-     "overKropp": 1958
+     "overKropp": 1935
     },
     "SV": {
      "utanforKropp": 5210,
-     "overKropp": 656
+     "overKropp": 650
     },
     "V": {
      "utanforKropp": 3130,

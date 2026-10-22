@@ -437,24 +437,24 @@
    "bas",
    "rustning",
    "hjalm",
-   "svard_fram",
-   "skold"
+   "skold",
+   "svard_fram"
   ],
   "N": [
    "svard_bak",
    "bas",
    "rustning",
    "hjalm",
-   "svard_fram",
-   "skold"
+   "skold",
+   "svard_fram"
   ],
   "NO": [
    "svard_bak",
    "bas",
    "rustning",
    "hjalm",
-   "svard_fram",
-   "skold"
+   "skold",
+   "svard_fram"
   ],
   "O": [
    "svard_bak",
@@ -472,5 +472,139 @@
    "skold",
    "svard_fram"
   ]
+ },
+ "orderPerVapen": {
+  "svard": {
+   "S": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "SV": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "V": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "NV": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "N": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "NO": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "O": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "SO": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ]
+  },
+  "yxa": {
+   "S": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "SV": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "V": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "NV": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "N": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "NO": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "O": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "SO": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ]
+  }
  }
 }

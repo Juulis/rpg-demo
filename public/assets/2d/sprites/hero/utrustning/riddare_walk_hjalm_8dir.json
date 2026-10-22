@@ -855,5 +855,139 @@
    "svard_fram",
    "skold"
   ]
+ },
+ "orderPerVapen": {
+  "svard": {
+   "S": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "SV": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "V": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "NV": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "N": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "NO": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "O": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "SO": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ]
+  },
+  "yxa": {
+   "S": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "SV": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "V": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "NV": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "N": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "NO": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "O": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "SO": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ]
+  }
  }
 }
