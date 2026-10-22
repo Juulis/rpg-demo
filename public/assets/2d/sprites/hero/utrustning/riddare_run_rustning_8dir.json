@@ -795,49 +795,65 @@
    "svard_bak",
    "bas",
    "rustning",
-   "svard_fram"
+   "hjalm",
+   "svard_fram",
+   "skold"
   ],
   "SV": [
    "svard_bak",
    "bas",
    "rustning",
-   "svard_fram"
+   "hjalm",
+   "svard_fram",
+   "skold"
   ],
   "V": [
    "svard_bak",
    "bas",
    "rustning",
+   "hjalm",
+   "skold",
    "svard_fram"
   ],
   "NV": [
    "svard_bak",
    "bas",
    "rustning",
-   "svard_fram"
+   "hjalm",
+   "svard_fram",
+   "skold"
   ],
   "N": [
    "svard_bak",
    "bas",
    "rustning",
+   "hjalm",
+   "skold",
    "svard_fram"
   ],
   "NO": [
    "svard_bak",
    "bas",
    "rustning",
-   "svard_fram"
+   "hjalm",
+   "svard_fram",
+   "skold"
   ],
   "O": [
    "svard_bak",
    "bas",
    "rustning",
+   "hjalm",
+   "skold",
    "svard_fram"
   ],
   "SO": [
    "svard_bak",
    "bas",
    "rustning",
-   "svard_fram"
+   "hjalm",
+   "svard_fram",
+   "skold"
   ]
  }
 }
