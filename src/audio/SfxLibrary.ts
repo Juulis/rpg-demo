@@ -15,7 +15,8 @@ export type SoundName =
   | 'boss'
   | 'step'
   | 'click'
-  | 'toggle';
+  | 'toggle'
+  | 'night';
 
 export interface SoundDef {
   /** Filvarianter (slumpas) under public/assets/sfx/<variant>.ogg. */
@@ -47,6 +48,7 @@ export class SfxLibrary {
     step: { variants: ['step1', 'step2', 'step3'], gain: 0.25 },
     click: { variants: ['click'], gain: 0.5 },
     toggle: { variants: ['toggle'], gain: 0.5 },
+    night: { variants: ['boss'], gain: 0.22 },
   };
 
   /** Syntetiserad reserv om en fil saknas eller inte kan avkodas (t.ex. utan OGG-stöd). */
@@ -58,6 +60,7 @@ export class SfxLibrary {
     rune: { freq: 520, type: 'sine', dur: 0.8 },
     portal: { freq: 300, type: 'sine', dur: 0.7, sweepTo: 900 },
     boss: { freq: 70, type: 'sawtooth', dur: 0.5 },
+    night: { freq: 220, type: 'sawtooth', dur: 0.35, sweepTo: 60 },
     drop_rare: { freq: 880, type: 'sine', dur: 0.3 },
   };
   private static readonly DEFAULT_SYNTH: SynthPatch = { freq: 660, type: 'sine', dur: 0.12 };

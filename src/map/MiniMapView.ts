@@ -1,4 +1,5 @@
 import type { HeroState, ZoneView } from '../core/GameContext';
+import { mapFogColor } from './fogColor';
 import type { GoalTracker } from './GoalTracker';
 import type { MapPainter } from './MapPainter';
 
@@ -32,7 +33,7 @@ export class MiniMapView {
     this.canvas.style.display = v ? 'block' : 'none';
   }
 
-  draw(z: ZoneView, h: Readonly<HeroState>, time: number): void {
+  draw(z: ZoneView, h: Readonly<HeroState>, time: number, clockTime = 0): void {
     const prep = this.painter.prepare(this.canvas);
     if (!prep) return;
     const { c, W, H } = prep;
@@ -43,7 +44,7 @@ export class MiniMapView {
     c.beginPath();
     c.arc(W / 2, H / 2, W / 2 - 2, 0, 7);
     c.clip();
-    this.painter.world(c, z, p, [13, 15, 18, 255]);
+    this.painter.world(c, z, p, mapFogColor(clockTime, true));
     this.painter.hero(c, h, p);
     c.restore();
     const g = this.goals.goal(z, h.pos);

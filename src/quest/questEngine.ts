@@ -3,6 +3,7 @@ import { act1Quests, questById } from './questCatalog';
 import { initialStepId } from './questAlreadyDone';
 import { applyConsequences, type ConsequenceRuntime } from './consequenceRunner';
 import { readQuestProgress, writeQuestProgress } from './questProgress';
+import { gameDay } from './questTime';
 import { startTriggerSatisfied, triggerSatisfied } from './triggerMatch';
 import type { TriggerEnv } from './triggerMatch';
 import type { WorldStateService } from '../world/WorldStateService';
@@ -22,7 +23,7 @@ export class QuestEngine {
   }
 
   private env(hooks: QuestEngineHooks, partial: Partial<TriggerEnv> = {}): TriggerEnv {
-    const day = Math.floor(hooks.worldTime / 90);
+    const day = gameDay(hooks.worldTime);
     return {
       ctx: { world: this.ws(), day },
       worldTime: hooks.worldTime,
@@ -165,7 +166,7 @@ export class QuestEngine {
     if (!choice) return false;
     const progress = readQuestProgress(this.ws(), def.id);
     if (progress.status !== 'aktiv') return false;
-    const day = Math.floor(hooks.worldTime / 90);
+    const day = gameDay(hooks.worldTime);
     if (choice.consequences?.length) applyConsequences(this.worldState, choice.consequences, day, runtime);
     writeQuestProgress(this.ws(), def.id, { status: 'klar', val: choiceId, steg: progress.steg, givare: progress.givare });
     return true;

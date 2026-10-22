@@ -86,6 +86,7 @@ export class SaveMigrator {
       city: str(g.city, 'besatt'),
     };
     if (typeof g.rot === 'number') rec.rot = g.rot;
+    if (typeof g.worldTime === 'number' && Number.isFinite(g.worldTime) && g.worldTime >= 0) rec.worldTime = g.worldTime;
     return rec;
   }
 

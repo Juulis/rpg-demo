@@ -51,6 +51,9 @@ import { NpcSystem } from '../systems/NpcSystem';
 import { Tooltip } from '../ui/Tooltip';
 import type { Zone, ZoneName } from '../world/Zone';
 import { DevCheatsView } from '../dev/DevCheatsView';
+import { formatClockTime, GameClock } from '../world/GameClock';
+import { DayNightPresenter } from '../world/DayNightPresenter';
+import { clockPeriodLabel, setClockLocale } from '../world/clockText';
 import { WorldStateService } from '../world/WorldStateService';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
 import { ZoneFactory } from '../world/ZoneFactory';
@@ -131,6 +134,8 @@ export class Game {
   private questLog!: QuestLog;
   private readonly questEngine = new QuestEngine(this.worldState);
   private readonly questAnchors = new QuestAnchorSystem(this.bus, this.questEngine, () => this.questHooks());
+  private readonly gameClock = new GameClock(this.bus);
+  private dayNight: DayNightPresenter | null = null;
   private switching = false;
   private targetMonster: Monster | null = null;
   private targetDrop: GroundDrop | null = null;
@@ -146,6 +151,7 @@ export class Game {
       data: DATA,
       rng: this.rng,
       worldState: this.worldState,
+      clock: this.gameClock.view,
     };
   }
 
@@ -173,6 +179,7 @@ export class Game {
     this.ai = new MonsterAI(w, this.combat, this.factory);
     this.portals = new PortalSystem(w, this.assets);
     this.hud = new Hud(this.text);
+    this.dayNight = new DayNightPresenter(r.app.stage, r.effects, this.bus, this.gameClock, this.rng);
     this.tip = new Tooltip();
     const itemText = new ItemText(this.loot, this.text);
     this.invUI = new InventoryUI(this.loot, this.text, itemText, this.tip, this.assets, this.bus, (t) => this.hud.flash(t));
@@ -195,7 +202,8 @@ export class Game {
     };
     // Kartan (U2, MapView) täcker skärmen med rubrik överst och legend nederst: dölj HUD-delar som annars krockar.
     this.bus.on('map_toggle', ({ open }) => document.body.classList.toggle('map-open', open));
-    this.bus.on('locale_changed', () => {
+    this.bus.on('locale_changed', ({ locale }) => {
+      setClockLocale(locale);
       this.hud.relabel();
       this.invUI.relabel();
     });
@@ -217,6 +225,7 @@ export class Game {
     const resize = (): void => {
       this.camera.resize(r.width, r.height);
       this.parallax.resize(r.width, r.height);
+      this.dayNight?.resize(r.width, r.height);
     };
     resize();
     r.app.renderer.on('resize', resize);
@@ -262,6 +271,7 @@ export class Game {
     this.ctx.session.killed.clear();
     for (const id of s.killed) this.ctx.session.killed.add(id);
     if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
+    this.gameClock.load(g?.worldTime);
     if (this.camera) this.enterZone(h.zone === 'village' ? 'village' : 'forest', h.resumePos ?? undefined);
   }
 
@@ -293,6 +303,7 @@ export class Game {
         stage: h.stage,
         runes: h.runes,
         city: h.city,
+        worldTime: this.gameClock.timeSeconds,
       },
       worldState: this.worldState.snapshot(),
     };
@@ -311,6 +322,7 @@ export class Game {
     this.worldState.resetForNewRun();
     this.worldState.setRunesActive(0);
     this.worldState.setCityState('gamla_byn', 'besatt');
+    this.gameClock.resetForNewHero();
     this.bus.emit('new_game', { seed: s.seed });
     this.enterZone('forest');
   }
@@ -327,6 +339,7 @@ export class Game {
     this.npcBark.dispose();
     this.npcLabels.dispose();
     this.npcSys.dispose();
+    this.dayNight?.destroy();
     this.bus.clear();
     this.renderer.destroy();
   }
@@ -354,7 +367,13 @@ export class Game {
     const r = this.renderer;
     r.ground.removeChildren().forEach((c) => c.destroy({ children: true }));
     r.objects.removeChildren().forEach((c) => c.destroy({ children: true }));
-    r.effects.removeChildren().forEach((c) => c.destroy({ children: true }));
+    const torchLayer = this.dayNight?.torchLayer;
+    for (const c of [...r.effects.children]) {
+      if (c === torchLayer) continue;
+      r.effects.removeChild(c);
+      c.destroy({ children: true });
+    }
+    this.dayNight?.attachWorldEffects(r.effects);
     const built = this.zones.build(name);
     r.ground.addChild(built.ground);
     for (const d of built.decor) r.objects.addChild(d);
@@ -609,7 +628,7 @@ export class Game {
     if (!w) return null;
     const inv = w.hero.inv;
     return {
-      worldTime: w.time,
+      worldTime: this.gameClock.timeSeconds,
       region: w.zone.areaId,
       hasItem: (id) => inv.bag.some((it) => it.base === id) || Object.values(inv.equip).some((it) => it?.base === id),
     };
@@ -620,8 +639,8 @@ export class Game {
     this.questLog.update(this.worldState.get(), active, done);
   }
 
-  private npcRumorSparks(w: World): Set<string> {
-    const day = Math.floor(w.time / 90);
+  private npcRumorSparks(_w: World): Set<string> {
+    const day = this.gameClock.day;
     const ctx = { world: this.worldState.get(), day };
     const out = new Set<string>();
     for (const n of this.npcSys.entities()) {
@@ -661,7 +680,7 @@ export class Game {
         return;
       }
     }
-    const day = Math.floor(w.time / 90);
+    const day = this.gameClock.day;
     this.worldState.setGameDay(day);
     const ctx = { world: this.worldState.get(), day };
     const npcId = ent.resolved.def.id;
@@ -726,8 +745,10 @@ export class Game {
     const w = this.world;
     if (!w) return;
     w.time += dt;
-    this.worldState.setGameDay(Math.floor(w.time / 90));
-    this.worldState.tickPending(Math.floor(w.time / 90), this.consequenceRuntime());
+    this.gameClock.advance(dt);
+    this.worldState.setGameDay(this.gameClock.day);
+    this.worldState.tickPending(this.gameClock.day, this.consequenceRuntime());
+    this.dayNight?.update(dt, w.zone.name);
     this.flushPendingItemGrants();
     this.questAnchors.update(w);
     const h = w.hero;
@@ -738,7 +759,10 @@ export class Game {
     this.portals.update(dt);
     this.camera.follow(h.pos, dt);
     this.parallax.update(this.camera.pos);
-    this.hud.update(dt, h, this.camera);
+    this.hud.update(dt, h, this.camera, {
+      period: clockPeriodLabel(this.gameClock.view.isNight),
+      time: formatClockTime(this.gameClock.timeSeconds),
+    });
     this.labels.update(w.drops, this.input.altHeld || this.input.labelsToggled, this.camera);
     this.npcLabels.update(this.npcSys.entities(), this.camera, this.npcRumorSparks(w));
     this.npcSys.update(dt);

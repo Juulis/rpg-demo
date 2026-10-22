@@ -28,6 +28,8 @@ export interface GameRecord {
   stage: number;
   runes: number;
   city: string;
+  /** Total speltid för dygnscykeln (sekunder). */
+  worldTime?: number;
 }
 
 export interface SaveFile {

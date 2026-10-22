@@ -115,6 +115,7 @@ export class AutoSaveService {
         stage: g?.stage ?? 0,
         runes: g?.runes ?? 0,
         city: g?.city ?? 'besatt',
+        ...(typeof g?.worldTime === 'number' ? { worldTime: g.worldTime } : {}),
       },
       savedAt: Date.now(),
       worldState: snap.worldState ?? cur.worldState,
