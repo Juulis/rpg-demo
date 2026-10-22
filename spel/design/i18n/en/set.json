@@ -1,0 +1,72 @@
+{
+  "tempelriddarens_ed": {
+    "name": "Templar's Oath",
+    "theme": "The last knights, sworn to keep the graves shut.",
+    "pieces": {
+      "edens_klinga": { "name": "Oathblade" },
+      "edens_mur": { "name": "Oathwall" },
+      "edens_visir": { "name": "Oath Visor" },
+      "edens_pansar": { "name": "Oathplate" },
+      "edens_steg": { "name": "Oathstride" }
+    }
+  },
+  "bergsklanens_raseri": {
+    "name": "Fury of the Mountain Clan",
+    "theme": "A clan that devoured its own dead rather than leave them to the demons.",
+    "pieces": {
+      "klanhovdingens_yxa": { "name": "Clanchief's Axe" },
+      "forfadernas_skalle": { "name": "Skull of the Forefathers" },
+      "vargpalsen": { "name": "The Wolfpelt" },
+      "blodnavarna": { "name": "Bloodfists" },
+      "trofebaltet": { "name": "Trophy Belt" }
+    }
+  },
+  "jaktgudinnans_dottrar": {
+    "name": "Daughters of the Huntress",
+    "theme": "Amazons who hunted in the ruins when all others fled.",
+    "pieces": {
+      "dottrarnas_spjut": { "name": "Spear of the Daughters" },
+      "manbagen": { "name": "Moonbow" },
+      "jagarinnans_hatta": { "name": "Huntress's Hood" },
+      "skugglader": { "name": "Shadowhide" },
+      "tysta_steg": { "name": "Silent Steps" }
+    }
+  },
+  "gravvaktarens_arv": {
+    "name": "Gravewarden's Legacy",
+    "theme": "Gear of those who guarded the dead, before the dead rose.",
+    "pieces": {
+      "vaktarens_hammare": { "name": "Warden's Hammer" },
+      "vaktarens_lock": { "name": "Warden's Lid" },
+      "vaktarens_brynja": { "name": "Warden's Mail" },
+      "vaktarens_grepp": { "name": "Warden's Grip" },
+      "vaktarens_ben": { "name": "Warden's Bone" }
+    }
+  },
+  "askvandrarens_borda": {
+    "name": "Ashwalker's Burden",
+    "theme": "A pilgrim who walked into Ashenhold and never walked out.",
+    "bonuses": { "5": { "magic_unlock_preview": { "note": "Grants mana once magic awakens. Until then, +30 stamina." } } },
+    "pieces": {
+      "pilgrimens_torn": { "name": "Pilgrim's Thorn" },
+      "den_svartade_rustningen": { "name": "The Blackened Armor" },
+      "botgordeln": { "name": "Penitent's Girdle" },
+      "askvagen": { "name": "The Ash Road" },
+      "den_branda_runan": { "name": "The Burnt Rune" }
+    }
+  },
+  "benviskarens_drakt": {
+    "name": "Bonewhisperer's Garb",
+    "theme": "A hermit who dwelt among the bones of Wolfstead and learned to hear the dead whisper through them.",
+    "bonuses": {
+      "5": { "de_dodas_visk": { "effect": "Your next hit is a guaranteed Crushing Blow, and nearby enemies (radius 5) falter for 1 s." } }
+    },
+    "pieces": {
+      "viskarens_skalle": { "name": "Whisperer's Skull" },
+      "viskarens_revben": { "name": "Whisperer's Ribs" },
+      "viskarens_fingrar": { "name": "Whisperer's Fingers" },
+      "viskarens_kotor": { "name": "Whisperer's Spine" },
+      "viskarens_steg": { "name": "Whisperer's Steps" }
+    }
+  }
+}

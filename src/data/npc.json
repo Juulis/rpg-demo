@@ -1,7 +1,7 @@
 {
   "meta": {
     "sprite_ref": "public/assets/2d/sprites/npc/npc.json",
-    "note": "pos = världsenheter. tile = byrutnät (gamla_byn). tillstand_varianter nycklar matchar world_state.npc_states."
+    "note": "pos = världsenheter. tile = byrutnät (gamla_byn). tillstand_varianter nycklar matchar world_state.npc_states. Full design: spel/design/npc.json."
   },
   "npcs": [
     {
@@ -12,7 +12,59 @@
       "pos": [4, 11],
       "act": 1,
       "name": "Gamla Ylva",
-      "default_line": "Håll dig nära elden, barn. Mörkret lyssnar.",
+      "default_line": "Runorna sover, barn. Men de drömmer.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "tor_kolare",
+      "sprite": "tor_kolare",
+      "area": "startskogen",
+      "zone": "forest",
+      "pos": [9, 12],
+      "act": 1,
+      "name": "Tor Kolare",
+      "default_line": "Har du guld så har jag varor. Har du inte, ha en trevlig dag.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "lilla_mira",
+      "sprite": "lilla_mira",
+      "area": "startskogen",
+      "zone": "forest",
+      "pos": [6, 14],
+      "act": 1,
+      "name": "Lilla Mira",
+      "default_line": "Har du sett min bror? Han hade nya sandaler.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "viskaren",
+      "sprite": "viskaren",
+      "area": "startskogen",
+      "zone": "forest",
+      "pos": [2, 6],
+      "act": 1,
+      "name": "Viskaren",
+      "default_line": "Hör du dem? Nej. Du hör aldrig.",
+      "tillstand_varianter": {
+        "dod": { "hidden": true }
+      }
+    },
+    {
+      "id": "hedda_jagare",
+      "sprite": "hedda_jagare",
+      "area": "vargaby",
+      "zone": "forest",
+      "pos": [20, 28],
+      "act": 1,
+      "name": "Hedda",
+      "default_line": "Päls, ben, pilar. Det är vad Vargaby har nu.",
       "tillstand_varianter": {
         "dod": { "hidden": true }
       }
@@ -25,7 +77,7 @@
       "tile": [2, 17],
       "act": 1,
       "name": "Bror",
-      "default_line": "Ingen passerar utan tillstånd. Inte ens du.",
+      "default_line": "Håll dig på stigen. Skogen är hungrig.",
       "tillstand_varianter": {
         "dod": { "hidden": true }
       }
@@ -38,7 +90,7 @@
       "tile": [9, 9],
       "act": 1,
       "name": "Sigrun",
-      "default_line": "Sätt dig. Jag ser till såren innan de ser dig.",
+      "default_line": "Sitt ner. Låt mig se på dig.",
       "tillstand_varianter": {
         "dod": { "hidden": true }
       }
@@ -90,7 +142,7 @@
       "tile": [18, 11],
       "act": 1,
       "name": "Olle",
-      "default_line": "Värmen är svag men ärlig. Drick innan du går.",
+      "default_line": "Sätt dig! Första stopet är på mig.",
       "tillstand_varianter": {
         "dod": { "hidden": true }
       }
@@ -116,7 +168,7 @@
       "tile": [4, 19],
       "act": 1,
       "name": "Ingrid",
-      "default_line": "Vakterna står kvar även när hoppet flyr.",
+      "default_line": "Byn är under mitt skydd.",
       "tillstand_varianter": {
         "dod": { "hidden": true }
       }

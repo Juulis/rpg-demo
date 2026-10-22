@@ -1,31 +1,47 @@
 {
   "gamla_ylva": {
     "name": "Old Ylva",
-    "default_line": "Stay close to the fire, child. The dark is listening."
+    "default_line": "The runes sleep, child. But they dream."
+  },
+  "tor_kolare": {
+    "name": "Tor the Collier",
+    "default_line": "Got gold? Then I've got goods. If not, have a pleasant day."
+  },
+  "lilla_mira": {
+    "name": "Little Mira",
+    "default_line": "Have you seen my brother? He had new sandals."
+  },
+  "viskaren": {
+    "name": "The Whisperer",
+    "default_line": "Do you hear them? No. You never hear."
+  },
+  "hedda_jagare": {
+    "name": "Hedda",
+    "default_line": "Fur, bone, arrows. That's all Wolfstead has now."
   },
   "bror_vakt": {
     "name": "Bror",
-    "default_line": "No one passes without leave. Not even you."
+    "default_line": "Keep to the path. The forest is hungry."
   },
   "sigrun_helare": {
     "name": "Sigrun",
-    "default_line": "Sit. I will tend your wounds before they tend to you."
+    "default_line": "Sit down. Let me look at you."
   },
   "gravvaktaren_ebbe": {
-    "name": "Ebbe",
-    "default_line": "The graves grow restless at night. I keep them still."
+    "name": "Ebbe the Gravewarden",
+    "default_line": "No one should come here. Yet here you are."
   },
   "marta_torghandlare": {
-    "name": "Märta",
-    "default_line": "Everything has a price. Sometimes two."
+    "name": "Marta",
+    "default_line": "New faces! New faces at last!"
   },
   "gunnar_jarnhand": {
-    "name": "Gunnar",
-    "default_line": "Steel must hold. People too, if they are allowed."
+    "name": "Gunnar Ironhand",
+    "default_line": "I don't forge anymore. But I sell."
   },
   "olle_vardshus": {
     "name": "Olle",
-    "default_line": "The warmth is faint but honest. Drink before you go."
+    "default_line": "Sit down! First round's on me."
   },
   "sara_benlasare": {
     "name": "Sara",
@@ -33,6 +49,6 @@
   },
   "vaktkapten_ingrid": {
     "name": "Ingrid",
-    "default_line": "The guards remain even when hope runs."
+    "default_line": "The village is under my protection."
   }
 }

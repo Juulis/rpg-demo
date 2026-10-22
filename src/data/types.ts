@@ -215,4 +215,5 @@ export interface GameData {
   attributes: Attributes;
   lorebook: Lorebook;
   npc: import('./npcTypes').NpcDataFile;
+  dialoger: import('./dialogTypes').DialogDataFile;
 }

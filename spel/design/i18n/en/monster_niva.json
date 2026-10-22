@@ -1,0 +1,102 @@
+{
+  "champion": {
+    "name": "Champion"
+  },
+  "unik": {
+    "name": "Unique Monster"
+  },
+  "skogsvarg": {
+    "name": "Wolf"
+  },
+  "vargbest": {
+    "name": "Warg Brute"
+  },
+  "taggsvin": {
+    "name": "Quillboar"
+  },
+  "skuggvarg": {
+    "name": "Grey Wolf"
+  },
+  "gravargsledare": {
+    "name": "Grey Wolf Packleader"
+  },
+  "ruttbjorn": {
+    "name": "Rot Bear"
+  },
+  "grabjornen_ulvhild": {
+    "name": "Ulvhild the Greybear"
+  },
+  "skelett_hund": {
+    "name": "Bone Hound"
+  },
+  "skelett_krigare": {
+    "name": "Skeleton Warrior"
+  },
+  "skelett_bagskytt": {
+    "name": "Skeleton Archer"
+  },
+  "skelett_runprast": {
+    "name": "Rune Priest"
+  },
+  "skelett_vakt": {
+    "name": "Skeleton Guardian"
+  },
+  "skelett_kapten": {
+    "name": "Skeleton Captain"
+  },
+  "benkungen_valdemar": {
+    "name": "Valdemar the Bone King"
+  },
+  "dimgast": {
+    "name": "Mist Wraith"
+  },
+  "klagokvinna": {
+    "name": "Wailing Hag"
+  },
+  "trasknacken": {
+    "name": "Bog Nix"
+  },
+  "trasdrottningen": {
+    "name": "The Bog Queen"
+  },
+  "gruvspindel": {
+    "name": "Mine Spider"
+  },
+  "syrabagge": {
+    "name": "Acid Beetle"
+  },
+  "kitinvakt": {
+    "name": "Chitin Guard"
+  },
+  "spinnmodern": {
+    "name": "The Broodmother"
+  },
+  "askimp": {
+    "name": "Ash Imp"
+  },
+  "eldpiska_demon": {
+    "name": "Flamelash Demon"
+  },
+  "hornslaktare": {
+    "name": "Hornbutcher"
+  },
+  "askriddare": {
+    "name": "Ash Knight"
+  },
+  "askfursten_morvath": {
+    "name": "Morvath the Ash Prince"
+  },
+  "smittbarare": {
+    "name": "Blight Carrier"
+  },
+  "galen_munk": {
+    "name": "Mad Monk"
+  },
+  "kottklump": {
+    "name": "Fleshmound"
+  },
+  "fadern_av_smittan": {
+    "name": "The Blightfather"
+  },
+  "unique_names": ["Gorm the Rotten", "Old Ash", "Black Sigrid", "Bloodfang", "Grey Hilding", "Cold Märta", "The Stump", "Corpsethirst"]
+}

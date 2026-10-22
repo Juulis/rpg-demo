@@ -4,7 +4,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'legacy-3d', 'node_modules', 'src/assets/gen'] },
+  { ignores: ['dist', 'legacy-3d', 'node_modules', 'src/assets/gen', 'spel/design'] },
   js.configs.recommended,
   ...tseslint.configs.strict,
   {

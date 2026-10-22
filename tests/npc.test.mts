@@ -33,7 +33,7 @@ const text = new Text();
 setNpcLocale('en');
 const ylva = ylvaDef;
 assert.equal(npcName(text, ylva), 'Old Ylva');
-assert.ok(npcLine(text, ylva).includes('fire'));
+assert.ok(npcLine(text, ylva).includes('dream') || npcLine(text, ylva).includes('fire'));
 
 setNpcLocale('sv');
 assert.equal(npcName(text, ylva), 'Gamla Ylva');

@@ -1,0 +1,2126 @@
+{
+  "meta": {
+    "version": "1.0",
+    "regel": "Visa den första repliken per typ vars villkor är sant, mest specifika villkor först. Tomt villkor = standard. Villkor använder samma nycklar som rykten.json och quests.json (npc_state, quest_status, quest_val, rykte_aktivt, faction_rep_gte, faction_rep_lt, bosses_killed_gte, runes_active_gte).",
+    "audio": "audio/npc/<npc-id>/<replik-id>.ogg",
+    "typer": ["halsning", "rykte", "quest", "bark", "avsked"]
+  },
+  "npcs": [
+    {
+      "npc": "gamla_ylva",
+      "namn": "Gamla Ylva",
+      "rostprofil": {
+        "kon": "kvinna",
+        "alder": 78,
+        "klang": "hes, låg, sprucken",
+        "tempo": "långsamt",
+        "accent": "norrländsk",
+        "kansla": "trött visdom, ömhet"
+      },
+      "repliker": [
+        {
+          "id": "ylva_halsning_01",
+          "typ": "halsning",
+          "text": "Runorna sover, barn. Men de drömmer.",
+          "villkor": {},
+          "audio": "audio/npc/gamla_ylva/ylva_halsning_01.ogg"
+        },
+        {
+          "id": "ylva_halsning_02",
+          "typ": "halsning",
+          "text": "Du väckte dem. Jag kände det i benen.",
+          "villkor": {
+            "runes_active_gte": 3
+          },
+          "audio": "audio/npc/gamla_ylva/ylva_halsning_02.ogg"
+        },
+        {
+          "id": "ylva_halsning_03",
+          "typ": "halsning",
+          "text": "Den fjärde stenen, barn. Allt handlar om den.",
+          "villkor": {
+            "npc_state": {
+              "gamla_ylva": "sokare"
+            }
+          },
+          "audio": "audio/npc/gamla_ylva/ylva_halsning_03.ogg"
+        },
+        {
+          "id": "ylva_rykte_01",
+          "typ": "rykte",
+          "text": "Runorna i skogen sover men drömmer.",
+          "villkor": {
+            "rykte_aktivt": "rykte_runorna_sover"
+          },
+          "rykte": "rykte_runorna_sover",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_01.ogg"
+        },
+        {
+          "id": "ylva_rykte_02",
+          "typ": "rykte",
+          "text": "Någon har väckt runorna. Den röda porten står öppen i skogens mitt.",
+          "villkor": {
+            "rykte_aktivt": "rykte_portalen_oppen"
+          },
+          "rykte": "rykte_portalen_oppen",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_02.ogg"
+        },
+        {
+          "id": "ylva_rykte_03",
+          "typ": "rykte",
+          "text": "Lilla Mira har slutat vänta vid vägen. Hon hjälper Sigrun nu.",
+          "villkor": {
+            "rykte_aktivt": "rykte_mira_vet"
+          },
+          "rykte": "rykte_mira_vet",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_03.ogg"
+        },
+        {
+          "id": "ylva_rykte_04",
+          "typ": "rykte",
+          "text": "Viskaren sitter vid Ylvas eld nu. Han viskar inte längre.",
+          "villkor": {
+            "rykte_aktivt": "rykte_viskaren_tyst"
+          },
+          "rykte": "rykte_viskaren_tyst",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_04.ogg"
+        },
+        {
+          "id": "ylva_rykte_05",
+          "typ": "rykte",
+          "text": "Bror begravde sin son i björnens päls. Det står ett nytt kors vid lägret.",
+          "villkor": {
+            "rykte_aktivt": "rykte_bror_begraver"
+          },
+          "rykte": "rykte_bror_begraver",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_05.ogg"
+        },
+        {
+          "id": "ylva_rykte_06",
+          "typ": "rykte",
+          "text": "Ylva säger att runornas ristare själv släckte den fjärde stenen. Hon pratar om att tända den igen.",
+          "villkor": {
+            "rykte_aktivt": "rykte_ristaren_sanning"
+          },
+          "rykte": "rykte_ristaren_sanning",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_06.ogg"
+        },
+        {
+          "id": "ylva_rykte_07",
+          "typ": "rykte",
+          "text": "Ylva berättar om runornas ristare, en hjälte som dog i strid.",
+          "villkor": {
+            "rykte_aktivt": "rykte_ristaren_hjalte"
+          },
+          "rykte": "rykte_ristaren_hjalte",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_07.ogg"
+        },
+        {
+          "id": "ylva_rykte_08",
+          "typ": "rykte",
+          "text": "Det sägs att det fanns en fjärde runsten. Den ligger på sprickans botten.",
+          "villkor": {
+            "rykte_aktivt": "rykte_fjarde_stenen"
+          },
+          "rykte": "rykte_fjarde_stenen",
+          "audio": "audio/npc/gamla_ylva/ylva_rykte_08.ogg"
+        },
+        {
+          "id": "ylva_quest_01",
+          "typ": "quest",
+          "text": "Ingen minns vem som ristade stenarna. Men stenarna minns. Titta på dem i månsken, barn.",
+          "villkor": {
+            "quest_status": {
+              "runornas_ristare": "ej_startad"
+            }
+          },
+          "quest": "runornas_ristare",
+          "fas": "start",
+          "audio": "audio/npc/gamla_ylva/ylva_quest_01.ogg"
+        },
+        {
+          "id": "ylva_quest_02",
+          "typ": "quest",
+          "text": "Titta på stenarna i månsken, barn.",
+          "villkor": {
+            "quest_status": {
+              "runornas_ristare": "aktiv"
+            }
+          },
+          "quest": "runornas_ristare",
+          "fas": "pagar",
+          "audio": "audio/npc/gamla_ylva/ylva_quest_02.ogg"
+        },
+        {
+          "id": "ylva_quest_03",
+          "typ": "quest",
+          "text": "Han släckte den själv? Då är det han som väntar där nere. Då måste någon tända den igen.",
+          "villkor": {
+            "quest_val": {
+              "runornas_ristare": "sanningen"
+            }
+          },
+          "quest": "runornas_ristare",
+          "fas": "klar",
+          "val": "sanningen",
+          "audio": "audio/npc/gamla_ylva/ylva_quest_03.ogg"
+        },
+        {
+          "id": "ylva_quest_04",
+          "typ": "quest",
+          "text": "En hjälte, alltså. Jag visste det. Runorna gjordes av någon modig.",
+          "villkor": {
+            "quest_val": {
+              "runornas_ristare": "skona"
+            }
+          },
+          "quest": "runornas_ristare",
+          "fas": "klar",
+          "val": "skona",
+          "audio": "audio/npc/gamla_ylva/ylva_quest_04.ogg"
+        },
+        {
+          "id": "ylva_bark_01",
+          "typ": "bark",
+          "text": "Stenarna drömmer i natt.",
+          "villkor": {},
+          "audio": "audio/npc/gamla_ylva/ylva_bark_01.ogg"
+        },
+        {
+          "id": "ylva_bark_02",
+          "typ": "bark",
+          "text": "Håll elden vid liv.",
+          "villkor": {},
+          "audio": "audio/npc/gamla_ylva/ylva_bark_02.ogg"
+        },
+        {
+          "id": "ylva_bark_03",
+          "typ": "bark",
+          "text": "Askan, barn. Andas inte askan.",
+          "villkor": {},
+          "audio": "audio/npc/gamla_ylva/ylva_bark_03.ogg"
+        },
+        {
+          "id": "ylva_bark_04",
+          "typ": "bark",
+          "text": "Jag minns klockorna.",
+          "villkor": {},
+          "audio": "audio/npc/gamla_ylva/ylva_bark_04.ogg"
+        },
+        {
+          "id": "ylva_bark_05",
+          "typ": "bark",
+          "text": "Han släckte den själv. Själv.",
+          "villkor": {
+            "npc_state": {
+              "gamla_ylva": "sokare"
+            }
+          },
+          "audio": "audio/npc/gamla_ylva/ylva_bark_05.ogg"
+        },
+        {
+          "id": "ylva_avsked_01",
+          "typ": "avsked",
+          "text": "Gå varsamt, barn.",
+          "villkor": {},
+          "audio": "audio/npc/gamla_ylva/ylva_avsked_01.ogg"
+        },
+        {
+          "id": "ylva_avsked_02",
+          "typ": "avsked",
+          "text": "Runorna ser dig.",
+          "villkor": {},
+          "audio": "audio/npc/gamla_ylva/ylva_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "tor_kolare",
+      "namn": "Tor Kolare",
+      "rostprofil": {
+        "kon": "man",
+        "alder": 50,
+        "klang": "bred, rå, bullrig",
+        "tempo": "snabbt",
+        "accent": "småländsk",
+        "kansla": "skämtsam, snål"
+      },
+      "repliker": [
+        {
+          "id": "tor_halsning_01",
+          "typ": "halsning",
+          "text": "Har du guld så har jag varor.",
+          "villkor": {},
+          "audio": "audio/npc/tor_kolare/tor_halsning_01.ogg"
+        },
+        {
+          "id": "tor_halsning_02",
+          "typ": "halsning",
+          "text": "Ah, min bästa kund! Nästan.",
+          "villkor": {
+            "faction_rep_gte": {
+              "de_kvarvarande": 30
+            }
+          },
+          "audio": "audio/npc/tor_kolare/tor_halsning_02.ogg"
+        },
+        {
+          "id": "tor_rykte_01",
+          "typ": "rykte",
+          "text": "Vargarna blir fler för varje natt.",
+          "villkor": {
+            "rykte_aktivt": "rykte_vargarna_okar"
+          },
+          "rykte": "rykte_vargarna_okar",
+          "audio": "audio/npc/tor_kolare/tor_rykte_01.ogg"
+        },
+        {
+          "id": "tor_rykte_02",
+          "typ": "rykte",
+          "text": "Gråbjörnen i Vargaby är död. Hedda sägs ha gråtit av lycka.",
+          "villkor": {
+            "rykte_aktivt": "rykte_ulvhild_dod"
+          },
+          "rykte": "rykte_ulvhild_dod",
+          "audio": "audio/npc/tor_kolare/tor_rykte_02.ogg"
+        },
+        {
+          "id": "tor_rykte_03",
+          "typ": "rykte",
+          "text": "Ulvhilds päls hänger i Heddas jaktstuga. Hon sover om nätterna nu.",
+          "villkor": {
+            "rykte_aktivt": "rykte_hedda_palsen"
+          },
+          "rykte": "rykte_hedda_palsen",
+          "audio": "audio/npc/tor_kolare/tor_rykte_03.ogg"
+        },
+        {
+          "id": "tor_bark_01",
+          "typ": "bark",
+          "text": "Ben! Jag köper ben!",
+          "villkor": {},
+          "audio": "audio/npc/tor_kolare/tor_bark_01.ogg"
+        },
+        {
+          "id": "tor_bark_02",
+          "typ": "bark",
+          "text": "Billigt idag. Nästan.",
+          "villkor": {},
+          "audio": "audio/npc/tor_kolare/tor_bark_02.ogg"
+        },
+        {
+          "id": "tor_bark_03",
+          "typ": "bark",
+          "text": "Någon som sett min häst?",
+          "villkor": {},
+          "audio": "audio/npc/tor_kolare/tor_bark_03.ogg"
+        },
+        {
+          "id": "tor_bark_04",
+          "typ": "bark",
+          "text": "Guld blir inte sämre av blod.",
+          "villkor": {},
+          "audio": "audio/npc/tor_kolare/tor_bark_04.ogg"
+        },
+        {
+          "id": "tor_avsked_01",
+          "typ": "avsked",
+          "text": "Kom tillbaka med guld!",
+          "villkor": {},
+          "audio": "audio/npc/tor_kolare/tor_avsked_01.ogg"
+        },
+        {
+          "id": "tor_avsked_02",
+          "typ": "avsked",
+          "text": "Lycka till. Du behöver den.",
+          "villkor": {},
+          "audio": "audio/npc/tor_kolare/tor_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "sigrun_helare",
+      "namn": "Sigrun",
+      "rostprofil": {
+        "kon": "kvinna",
+        "alder": 27,
+        "klang": "klar, mjuk",
+        "tempo": "lugnt",
+        "accent": "rikssvenska",
+        "kansla": "omtanke, trötthet"
+      },
+      "repliker": [
+        {
+          "id": "sigrun_halsning_01",
+          "typ": "halsning",
+          "text": "Sitt ner. Låt mig se på dig.",
+          "villkor": {},
+          "audio": "audio/npc/sigrun_helare/sigrun_halsning_01.ogg"
+        },
+        {
+          "id": "sigrun_halsning_02",
+          "typ": "halsning",
+          "text": "Mira har lätta händer. Hon gör mig gott.",
+          "villkor": {
+            "npc_state": {
+              "lilla_mira": "hjalper_sigrun"
+            }
+          },
+          "audio": "audio/npc/sigrun_helare/sigrun_halsning_02.ogg"
+        },
+        {
+          "id": "sigrun_rykte_01",
+          "typ": "rykte",
+          "text": "Smittan sprider sig. Bett som blir gröna är dödsdomar.",
+          "villkor": {
+            "rykte_aktivt": "rykte_smittan_sprider_sig"
+          },
+          "rykte": "rykte_smittan_sprider_sig",
+          "audio": "audio/npc/sigrun_helare/sigrun_rykte_01.ogg"
+        },
+        {
+          "id": "sigrun_rykte_02",
+          "typ": "rykte",
+          "text": "Lilla Mira har slutat vänta vid vägen. Hon hjälper Sigrun nu.",
+          "villkor": {
+            "rykte_aktivt": "rykte_mira_vet"
+          },
+          "rykte": "rykte_mira_vet",
+          "audio": "audio/npc/sigrun_helare/sigrun_rykte_02.ogg"
+        },
+        {
+          "id": "sigrun_rykte_03",
+          "typ": "rykte",
+          "text": "Bror begravde sin son i björnens päls. Det står ett nytt kors vid lägret.",
+          "villkor": {
+            "rykte_aktivt": "rykte_bror_begraver"
+          },
+          "rykte": "rykte_bror_begraver",
+          "audio": "audio/npc/sigrun_helare/sigrun_rykte_03.ogg"
+        },
+        {
+          "id": "sigrun_bark_01",
+          "typ": "bark",
+          "text": "Vatten, någon. Rent vatten.",
+          "villkor": {},
+          "audio": "audio/npc/sigrun_helare/sigrun_bark_01.ogg"
+        },
+        {
+          "id": "sigrun_bark_02",
+          "typ": "bark",
+          "text": "Bett som blir gröna, kom hit.",
+          "villkor": {},
+          "audio": "audio/npc/sigrun_helare/sigrun_bark_02.ogg"
+        },
+        {
+          "id": "sigrun_bark_03",
+          "typ": "bark",
+          "text": "Andas lugnt.",
+          "villkor": {},
+          "audio": "audio/npc/sigrun_helare/sigrun_bark_03.ogg"
+        },
+        {
+          "id": "sigrun_bark_04",
+          "typ": "bark",
+          "text": "Örterna räcker inte länge.",
+          "villkor": {},
+          "audio": "audio/npc/sigrun_helare/sigrun_bark_04.ogg"
+        },
+        {
+          "id": "sigrun_avsked_01",
+          "typ": "avsked",
+          "text": "Kom tillbaka hel.",
+          "villkor": {},
+          "audio": "audio/npc/sigrun_helare/sigrun_avsked_01.ogg"
+        },
+        {
+          "id": "sigrun_avsked_02",
+          "typ": "avsked",
+          "text": "Andas genom tyg.",
+          "villkor": {},
+          "audio": "audio/npc/sigrun_helare/sigrun_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "bror_vakt",
+      "namn": "Bror",
+      "rostprofil": {
+        "kon": "man",
+        "alder": 58,
+        "klang": "djup, grusig",
+        "tempo": "långsamt, kort",
+        "accent": "jämtländsk",
+        "kansla": "vaksam, sorg"
+      },
+      "repliker": [
+        {
+          "id": "bror_halsning_01",
+          "typ": "halsning",
+          "text": "Håll dig på stigen. Skogen är hungrig.",
+          "villkor": {},
+          "audio": "audio/npc/bror_vakt/bror_halsning_01.ogg"
+        },
+        {
+          "id": "bror_halsning_02",
+          "typ": "halsning",
+          "text": "Du valde jägaren. Gå din väg.",
+          "villkor": {
+            "npc_state": {
+              "bror_vakt": "bitter"
+            }
+          },
+          "audio": "audio/npc/bror_vakt/bror_halsning_02.ogg"
+        },
+        {
+          "id": "bror_halsning_03",
+          "typ": "halsning",
+          "text": "Han vilar nu. Tack vare dig.",
+          "villkor": {
+            "npc_state": {
+              "bror_vakt": "fridfull"
+            }
+          },
+          "audio": "audio/npc/bror_vakt/bror_halsning_03.ogg"
+        },
+        {
+          "id": "bror_rykte_01",
+          "typ": "rykte",
+          "text": "Vargarna blir fler för varje natt.",
+          "villkor": {
+            "rykte_aktivt": "rykte_vargarna_okar"
+          },
+          "rykte": "rykte_vargarna_okar",
+          "audio": "audio/npc/bror_vakt/bror_rykte_01.ogg"
+        },
+        {
+          "id": "bror_rykte_02",
+          "typ": "rykte",
+          "text": "Skelett har setts vid vägrösena i norr.",
+          "villkor": {
+            "rykte_aktivt": "rykte_skelett_vid_rosena"
+          },
+          "rykte": "rykte_skelett_vid_rosena",
+          "audio": "audio/npc/bror_vakt/bror_rykte_02.ogg"
+        },
+        {
+          "id": "bror_rykte_03",
+          "typ": "rykte",
+          "text": "Viskaren sitter vid Ylvas eld nu. Han viskar inte längre.",
+          "villkor": {
+            "rykte_aktivt": "rykte_viskaren_tyst"
+          },
+          "rykte": "rykte_viskaren_tyst",
+          "audio": "audio/npc/bror_vakt/bror_rykte_03.ogg"
+        },
+        {
+          "id": "bror_rykte_04",
+          "typ": "rykte",
+          "text": "Bror begravde sin son i björnens päls. Det står ett nytt kors vid lägret.",
+          "villkor": {
+            "rykte_aktivt": "rykte_bror_begraver"
+          },
+          "rykte": "rykte_bror_begraver",
+          "audio": "audio/npc/bror_vakt/bror_rykte_04.ogg"
+        },
+        {
+          "id": "bror_quest_01",
+          "typ": "quest",
+          "text": "Min pojke ligger någonstans i hennes ide. Jag vill begrava honom i det som tog honom.",
+          "villkor": {
+            "quest_status": {
+              "ulvhilds_pals": "ej_startad"
+            }
+          },
+          "quest": "ulvhilds_pals",
+          "fas": "start",
+          "audio": "audio/npc/bror_vakt/bror_quest_01.ogg"
+        },
+        {
+          "id": "bror_quest_02",
+          "typ": "quest",
+          "text": "Ulvhild lever ännu. Jag känner det.",
+          "villkor": {
+            "quest_status": {
+              "ulvhilds_pals": "aktiv"
+            }
+          },
+          "quest": "ulvhilds_pals",
+          "fas": "pagar",
+          "audio": "audio/npc/bror_vakt/bror_quest_02.ogg"
+        },
+        {
+          "id": "bror_quest_03",
+          "typ": "quest",
+          "text": "Tack. Han får vila nu. Ta yxan, jag kan inte se på den.",
+          "villkor": {
+            "quest_val": {
+              "ulvhilds_pals": "ge_bror"
+            }
+          },
+          "quest": "ulvhilds_pals",
+          "fas": "klar",
+          "val": "ge_bror",
+          "audio": "audio/npc/bror_vakt/bror_quest_03.ogg"
+        },
+        {
+          "id": "bror_bark_01",
+          "typ": "bark",
+          "text": "Facklan brinner. Allt lugnt.",
+          "villkor": {},
+          "audio": "audio/npc/bror_vakt/bror_bark_01.ogg"
+        },
+        {
+          "id": "bror_bark_02",
+          "typ": "bark",
+          "text": "Vargar i norr i natt.",
+          "villkor": {},
+          "audio": "audio/npc/bror_vakt/bror_bark_02.ogg"
+        },
+        {
+          "id": "bror_bark_03",
+          "typ": "bark",
+          "text": "Stanna på stigen.",
+          "villkor": {},
+          "audio": "audio/npc/bror_vakt/bror_bark_03.ogg"
+        },
+        {
+          "id": "bror_bark_04",
+          "typ": "bark",
+          "text": "Jag ser dig, skogen.",
+          "villkor": {},
+          "audio": "audio/npc/bror_vakt/bror_bark_04.ogg"
+        },
+        {
+          "id": "bror_bark_05",
+          "typ": "bark",
+          "text": "Min pojke ligger kvar därute.",
+          "villkor": {
+            "npc_state": {
+              "bror_vakt": "bitter"
+            }
+          },
+          "audio": "audio/npc/bror_vakt/bror_bark_05.ogg"
+        },
+        {
+          "id": "bror_bark_06",
+          "typ": "bark",
+          "text": "Det är en bra natt för vakt.",
+          "villkor": {
+            "npc_state": {
+              "bror_vakt": "fridfull"
+            }
+          },
+          "audio": "audio/npc/bror_vakt/bror_bark_06.ogg"
+        },
+        {
+          "id": "bror_avsked_01",
+          "typ": "avsked",
+          "text": "Gå i dagsljus.",
+          "villkor": {},
+          "audio": "audio/npc/bror_vakt/bror_avsked_01.ogg"
+        },
+        {
+          "id": "bror_avsked_02",
+          "typ": "avsked",
+          "text": "Spjutet framåt.",
+          "villkor": {},
+          "audio": "audio/npc/bror_vakt/bror_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "lilla_mira",
+      "namn": "Lilla Mira",
+      "rostprofil": {
+        "kon": "flicka",
+        "alder": 8,
+        "klang": "ljus, tunn",
+        "tempo": "tvekande",
+        "accent": "rikssvenska",
+        "kansla": "hopp, rädsla"
+      },
+      "repliker": [
+        {
+          "id": "mira_halsning_01",
+          "typ": "halsning",
+          "text": "Har du sett min bror?",
+          "villkor": {},
+          "audio": "audio/npc/lilla_mira/mira_halsning_01.ogg"
+        },
+        {
+          "id": "mira_halsning_02",
+          "typ": "halsning",
+          "text": "Jag hjälper Sigrun nu.",
+          "villkor": {
+            "npc_state": {
+              "lilla_mira": "hjalper_sigrun"
+            }
+          },
+          "audio": "audio/npc/lilla_mira/mira_halsning_02.ogg"
+        },
+        {
+          "id": "mira_halsning_03",
+          "typ": "halsning",
+          "text": "Han är inte här. Du sa att han var här.",
+          "villkor": {
+            "npc_state": {
+              "lilla_mira": "vandrar_mot_vargaby"
+            }
+          },
+          "audio": "audio/npc/lilla_mira/mira_halsning_03.ogg"
+        },
+        {
+          "id": "mira_rykte_01",
+          "typ": "rykte",
+          "text": "Ett barn flydde mot Vargaby i nya sandaler och kom aldrig fram.",
+          "villkor": {
+            "rykte_aktivt": "rykte_flyktingens_sandaler"
+          },
+          "rykte": "rykte_flyktingens_sandaler",
+          "audio": "audio/npc/lilla_mira/mira_rykte_01.ogg"
+        },
+        {
+          "id": "mira_rykte_02",
+          "typ": "rykte",
+          "text": "Lilla Mira säger att någon sett hennes bror i Vargaby. Hon vill gå dit.",
+          "villkor": {
+            "rykte_aktivt": "rykte_mira_hoppas"
+          },
+          "rykte": "rykte_mira_hoppas",
+          "audio": "audio/npc/lilla_mira/mira_rykte_02.ogg"
+        },
+        {
+          "id": "mira_quest_01",
+          "typ": "quest",
+          "text": "Har du sett min bror? Han sprang mot Vargaby. Han hade nya sandaler. Kan du leta efter honom?",
+          "villkor": {
+            "quest_status": {
+              "miras_bror": "ej_startad"
+            }
+          },
+          "quest": "miras_bror",
+          "fas": "start",
+          "audio": "audio/npc/lilla_mira/mira_quest_01.ogg"
+        },
+        {
+          "id": "mira_quest_02",
+          "typ": "quest",
+          "text": "Har du hittat honom? Sandalerna var nya.",
+          "villkor": {
+            "quest_status": {
+              "miras_bror": "aktiv"
+            }
+          },
+          "quest": "miras_bror",
+          "fas": "pagar",
+          "audio": "audio/npc/lilla_mira/mira_quest_02.ogg"
+        },
+        {
+          "id": "mira_quest_03",
+          "typ": "quest",
+          "text": "De är hans. Jag visste. Ta dockan. Han skulle vilja att någon hade den.",
+          "villkor": {
+            "quest_val": {
+              "miras_bror": "ge_sandalerna"
+            }
+          },
+          "quest": "miras_bror",
+          "fas": "klar",
+          "val": "ge_sandalerna",
+          "audio": "audio/npc/lilla_mira/mira_quest_03.ogg"
+        },
+        {
+          "id": "mira_quest_04",
+          "typ": "quest",
+          "text": "Lever han? Jag visste det! Jag ska gå dit en dag.",
+          "villkor": {
+            "quest_val": {
+              "miras_bror": "behall_och_ljug"
+            }
+          },
+          "quest": "miras_bror",
+          "fas": "klar",
+          "val": "behall_och_ljug",
+          "audio": "audio/npc/lilla_mira/mira_quest_04.ogg"
+        },
+        {
+          "id": "mira_bark_01",
+          "typ": "bark",
+          "text": "Han var alltid snabbast.",
+          "villkor": {},
+          "audio": "audio/npc/lilla_mira/mira_bark_01.ogg"
+        },
+        {
+          "id": "mira_bark_02",
+          "typ": "bark",
+          "text": "Vargarna sjöng den natten.",
+          "villkor": {},
+          "audio": "audio/npc/lilla_mira/mira_bark_02.ogg"
+        },
+        {
+          "id": "mira_bark_03",
+          "typ": "bark",
+          "text": "Jag väntar.",
+          "villkor": {},
+          "audio": "audio/npc/lilla_mira/mira_bark_03.ogg"
+        },
+        {
+          "id": "mira_bark_04",
+          "typ": "bark",
+          "text": "Har du sett honom?",
+          "villkor": {},
+          "audio": "audio/npc/lilla_mira/mira_bark_04.ogg"
+        },
+        {
+          "id": "mira_bark_05",
+          "typ": "bark",
+          "text": "Sigrun! Jag har hämtat mer vatten!",
+          "villkor": {
+            "npc_state": {
+              "lilla_mira": "hjalper_sigrun"
+            }
+          },
+          "audio": "audio/npc/lilla_mira/mira_bark_05.ogg"
+        },
+        {
+          "id": "mira_bark_06",
+          "typ": "bark",
+          "text": "Har någon sett en pojke med nya sandaler?",
+          "villkor": {
+            "npc_state": {
+              "lilla_mira": "vandrar_mot_vargaby"
+            }
+          },
+          "audio": "audio/npc/lilla_mira/mira_bark_06.ogg"
+        },
+        {
+          "id": "mira_avsked_01",
+          "typ": "avsked",
+          "text": "Säg till om du ser honom.",
+          "villkor": {},
+          "audio": "audio/npc/lilla_mira/mira_avsked_01.ogg"
+        },
+        {
+          "id": "mira_avsked_02",
+          "typ": "avsked",
+          "text": "Hej då.",
+          "villkor": {},
+          "audio": "audio/npc/lilla_mira/mira_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "viskaren",
+      "namn": "Viskaren",
+      "rostprofil": {
+        "kon": "man",
+        "alder": 65,
+        "klang": "viskande, väsande",
+        "tempo": "ojämnt",
+        "accent": "ingen tydlig",
+        "kansla": "galenskap, ömhet"
+      },
+      "repliker": [
+        {
+          "id": "viskaren_halsning_01",
+          "typ": "halsning",
+          "text": "Hör du dem? Nej. Du hör aldrig.",
+          "villkor": {},
+          "audio": "audio/npc/viskaren/viskaren_halsning_01.ogg"
+        },
+        {
+          "id": "viskaren_halsning_02",
+          "typ": "halsning",
+          "text": "Det är tyst nu. Jag hade glömt hur tyst låter.",
+          "villkor": {
+            "npc_state": {
+              "viskaren": "lugn"
+            }
+          },
+          "audio": "audio/npc/viskaren/viskaren_halsning_02.ogg"
+        },
+        {
+          "id": "viskaren_halsning_03",
+          "typ": "halsning",
+          "text": "Skallen pratar med dig nu, inte med mig.",
+          "villkor": {
+            "npc_state": {
+              "viskaren": "besatt"
+            }
+          },
+          "audio": "audio/npc/viskaren/viskaren_halsning_03.ogg"
+        },
+        {
+          "id": "viskaren_rykte_01",
+          "typ": "rykte",
+          "text": "En eremit viskar till ben vid ett röse i nordväst.",
+          "villkor": {
+            "rykte_aktivt": "rykte_benviskaren"
+          },
+          "rykte": "rykte_benviskaren",
+          "audio": "audio/npc/viskaren/viskaren_rykte_01.ogg"
+        },
+        {
+          "id": "viskaren_rykte_02",
+          "typ": "rykte",
+          "text": "Viskaren skrattar om nätterna. Han säger att skallen har valt.",
+          "villkor": {
+            "rykte_aktivt": "rykte_viskaren_skrattar"
+          },
+          "rykte": "rykte_viskaren_skrattar",
+          "audio": "audio/npc/viskaren/viskaren_rykte_02.ogg"
+        },
+        {
+          "id": "viskaren_quest_01",
+          "typ": "quest",
+          "text": "Min bror viskar. Varje natt. Han ligger kvar i huset i Vargaby. Hämta honom åt mig.",
+          "villkor": {
+            "quest_status": {
+              "benens_visk": "ej_startad"
+            }
+          },
+          "quest": "benens_visk",
+          "fas": "start",
+          "audio": "audio/npc/viskaren/viskaren_quest_01.ogg"
+        },
+        {
+          "id": "viskaren_quest_02",
+          "typ": "quest",
+          "text": "Han viskar fortfarande. Hör du inte?",
+          "villkor": {
+            "quest_status": {
+              "benens_visk": "aktiv"
+            }
+          },
+          "quest": "benens_visk",
+          "fas": "pagar",
+          "audio": "audio/npc/viskaren/viskaren_quest_02.ogg"
+        },
+        {
+          "id": "viskaren_quest_03",
+          "typ": "quest",
+          "text": "Tyst. Äntligen tyst. Tack. Ta fingrarna, de pekar inte på dig längre.",
+          "villkor": {
+            "quest_val": {
+              "benens_visk": "ge_skallen"
+            }
+          },
+          "quest": "benens_visk",
+          "fas": "klar",
+          "val": "ge_skallen",
+          "audio": "audio/npc/viskaren/viskaren_quest_03.ogg"
+        },
+        {
+          "id": "viskaren_quest_04",
+          "typ": "quest",
+          "text": "Han valde dig. Hör du honom nu? Nej. Du kommer att höra.",
+          "villkor": {
+            "quest_val": {
+              "benens_visk": "behall_skallen"
+            }
+          },
+          "quest": "benens_visk",
+          "fas": "klar",
+          "val": "behall_skallen",
+          "audio": "audio/npc/viskaren/viskaren_quest_04.ogg"
+        },
+        {
+          "id": "viskaren_bark_01",
+          "typ": "bark",
+          "text": "Benen minns.",
+          "villkor": {},
+          "audio": "audio/npc/viskaren/viskaren_bark_01.ogg"
+        },
+        {
+          "id": "viskaren_bark_02",
+          "typ": "bark",
+          "text": "Tyst. De pratar.",
+          "villkor": {},
+          "audio": "audio/npc/viskaren/viskaren_bark_02.ogg"
+        },
+        {
+          "id": "viskaren_bark_03",
+          "typ": "bark",
+          "text": "Vargarna låter mig vara.",
+          "villkor": {},
+          "audio": "audio/npc/viskaren/viskaren_bark_03.ogg"
+        },
+        {
+          "id": "viskaren_bark_04",
+          "typ": "bark",
+          "text": "Din tur kommer.",
+          "villkor": {},
+          "audio": "audio/npc/viskaren/viskaren_bark_04.ogg"
+        },
+        {
+          "id": "viskaren_bark_05",
+          "typ": "bark",
+          "text": "Värm dig. Elden viskar inte.",
+          "villkor": {
+            "npc_state": {
+              "viskaren": "lugn"
+            }
+          },
+          "audio": "audio/npc/viskaren/viskaren_bark_05.ogg"
+        },
+        {
+          "id": "viskaren_bark_06",
+          "typ": "bark",
+          "text": "Han valde dig. Han valde dig.",
+          "villkor": {
+            "npc_state": {
+              "viskaren": "besatt"
+            }
+          },
+          "audio": "audio/npc/viskaren/viskaren_bark_06.ogg"
+        },
+        {
+          "id": "viskaren_avsked_01",
+          "typ": "avsked",
+          "text": "De följer dig.",
+          "villkor": {},
+          "audio": "audio/npc/viskaren/viskaren_avsked_01.ogg"
+        },
+        {
+          "id": "viskaren_avsked_02",
+          "typ": "avsked",
+          "text": "Lyssna nu.",
+          "villkor": {},
+          "audio": "audio/npc/viskaren/viskaren_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "hedda_jagare",
+      "namn": "Hedda",
+      "rostprofil": {
+        "kon": "kvinna",
+        "alder": 40,
+        "klang": "stark, skrovlig",
+        "tempo": "rakt",
+        "accent": "värmländsk",
+        "kansla": "hård, ilsken humor"
+      },
+      "repliker": [
+        {
+          "id": "hedda_halsning_01",
+          "typ": "halsning",
+          "text": "Päls, ben, pilar. Det är vad Vargaby har.",
+          "villkor": {},
+          "audio": "audio/npc/hedda_jagare/hedda_halsning_01.ogg"
+        },
+        {
+          "id": "hedda_halsning_02",
+          "typ": "halsning",
+          "text": "Vargaby har inget kvar för mig.",
+          "villkor": {
+            "npc_state": {
+              "hedda_jagare": "lamnar"
+            }
+          },
+          "audio": "audio/npc/hedda_jagare/hedda_halsning_02.ogg"
+        },
+        {
+          "id": "hedda_rykte_01",
+          "typ": "rykte",
+          "text": "Gråbjörnen i Vargaby är död. Hedda sägs ha gråtit av lycka.",
+          "villkor": {
+            "rykte_aktivt": "rykte_ulvhild_dod"
+          },
+          "rykte": "rykte_ulvhild_dod",
+          "audio": "audio/npc/hedda_jagare/hedda_rykte_01.ogg"
+        },
+        {
+          "id": "hedda_rykte_02",
+          "typ": "rykte",
+          "text": "En gråvarg med kedja runt halsen leder flockarna.",
+          "villkor": {
+            "rykte_aktivt": "rykte_gravargsledaren"
+          },
+          "rykte": "rykte_gravargsledaren",
+          "audio": "audio/npc/hedda_jagare/hedda_rykte_02.ogg"
+        },
+        {
+          "id": "hedda_rykte_03",
+          "typ": "rykte",
+          "text": "Lilla Mira säger att någon sett hennes bror i Vargaby. Hon vill gå dit.",
+          "villkor": {
+            "rykte_aktivt": "rykte_mira_hoppas"
+          },
+          "rykte": "rykte_mira_hoppas",
+          "audio": "audio/npc/hedda_jagare/hedda_rykte_03.ogg"
+        },
+        {
+          "id": "hedda_rykte_04",
+          "typ": "rykte",
+          "text": "Ulvhilds päls hänger i Heddas jaktstuga. Hon sover om nätterna nu.",
+          "villkor": {
+            "rykte_aktivt": "rykte_hedda_palsen"
+          },
+          "rykte": "rykte_hedda_palsen",
+          "audio": "audio/npc/hedda_jagare/hedda_rykte_04.ogg"
+        },
+        {
+          "id": "hedda_quest_01",
+          "typ": "quest",
+          "text": "Ulvhild åt min man. Jag vill ha hennes päls på min vägg.",
+          "villkor": {
+            "quest_status": {
+              "ulvhilds_pals": "ej_startad"
+            }
+          },
+          "quest": "ulvhilds_pals",
+          "fas": "start",
+          "audio": "audio/npc/hedda_jagare/hedda_quest_01.ogg"
+        },
+        {
+          "id": "hedda_quest_02",
+          "typ": "quest",
+          "text": "Ulvhild lever ännu. Jag känner det.",
+          "villkor": {
+            "quest_status": {
+              "ulvhilds_pals": "aktiv"
+            }
+          },
+          "quest": "ulvhilds_pals",
+          "fas": "pagar",
+          "audio": "audio/npc/hedda_jagare/hedda_quest_02.ogg"
+        },
+        {
+          "id": "hedda_quest_03",
+          "typ": "quest",
+          "text": "Där hänger hon. Nu kan jag sova.",
+          "villkor": {
+            "quest_val": {
+              "ulvhilds_pals": "ge_hedda"
+            }
+          },
+          "quest": "ulvhilds_pals",
+          "fas": "klar",
+          "val": "ge_hedda",
+          "audio": "audio/npc/hedda_jagare/hedda_quest_03.ogg"
+        },
+        {
+          "id": "hedda_bark_01",
+          "typ": "bark",
+          "text": "Färskt kött i morgon.",
+          "villkor": {},
+          "audio": "audio/npc/hedda_jagare/hedda_bark_01.ogg"
+        },
+        {
+          "id": "hedda_bark_02",
+          "typ": "bark",
+          "text": "Gråvargarna flyttar söderut.",
+          "villkor": {},
+          "audio": "audio/npc/hedda_jagare/hedda_bark_02.ogg"
+        },
+        {
+          "id": "hedda_bark_03",
+          "typ": "bark",
+          "text": "Håll kniven vass.",
+          "villkor": {},
+          "audio": "audio/npc/hedda_jagare/hedda_bark_03.ogg"
+        },
+        {
+          "id": "hedda_bark_04",
+          "typ": "bark",
+          "text": "Ulvhild, du ska kvävas.",
+          "villkor": {},
+          "audio": "audio/npc/hedda_jagare/hedda_bark_04.ogg"
+        },
+        {
+          "id": "hedda_avsked_01",
+          "typ": "avsked",
+          "text": "Jaga väl.",
+          "villkor": {},
+          "audio": "audio/npc/hedda_jagare/hedda_avsked_01.ogg"
+        },
+        {
+          "id": "hedda_avsked_02",
+          "typ": "avsked",
+          "text": "Kom med päls nästa gång.",
+          "villkor": {},
+          "audio": "audio/npc/hedda_jagare/hedda_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "gravvaktaren_ebbe",
+      "namn": "Gravvaktaren Ebbe",
+      "rostprofil": {
+        "kon": "man",
+        "alder": 80,
+        "klang": "högtidlig, ihålig",
+        "tempo": "mycket långsamt",
+        "accent": "gammaldags",
+        "kansla": "skuld, värdighet"
+      },
+      "repliker": [
+        {
+          "id": "ebbe_halsning_01",
+          "typ": "halsning",
+          "text": "Ingen borde komma hit. Ändå kom du.",
+          "villkor": {},
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_halsning_01.ogg"
+        },
+        {
+          "id": "ebbe_halsning_02",
+          "typ": "halsning",
+          "text": "Barnen vill höra krönikan igen.",
+          "villkor": {
+            "npc_state": {
+              "gravvaktaren_ebbe": "berattar_for_barn"
+            }
+          },
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_halsning_02.ogg"
+        },
+        {
+          "id": "ebbe_halsning_03",
+          "typ": "halsning",
+          "text": "Du igen. De döda minns vad du gjorde.",
+          "villkor": {
+            "faction_rep_lt": {
+              "gravvaktarna": -20
+            }
+          },
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_halsning_03.ogg"
+        },
+        {
+          "id": "ebbe_rykte_01",
+          "typ": "rykte",
+          "text": "Hövdingen Valdemar bär en krona som binder hela byn.",
+          "villkor": {
+            "rykte_aktivt": "rykte_benkungen"
+          },
+          "rykte": "rykte_benkungen",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_rykte_01.ogg"
+        },
+        {
+          "id": "ebbe_rykte_02",
+          "typ": "rykte",
+          "text": "Benkungen har fallit. De döda i Den gamla byn ligger stilla.",
+          "villkor": {
+            "rykte_aktivt": "rykte_benkungen_dod"
+          },
+          "rykte": "rykte_benkungen_dod",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_rykte_02.ogg"
+        },
+        {
+          "id": "ebbe_rykte_03",
+          "typ": "rykte",
+          "text": "Gravvaktarnas utrustning ligger kvar där de föll.",
+          "villkor": {
+            "rykte_aktivt": "rykte_gravvaktarens_arv"
+          },
+          "rykte": "rykte_gravvaktarens_arv",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_rykte_03.ogg"
+        },
+        {
+          "id": "ebbe_rykte_04",
+          "typ": "rykte",
+          "text": "Ebbe läser gravvaktarnas krönika för barnen vid portalen.",
+          "villkor": {
+            "rykte_aktivt": "rykte_kronikan_ebbe"
+          },
+          "rykte": "rykte_kronikan_ebbe",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_rykte_04.ogg"
+        },
+        {
+          "id": "ebbe_rykte_05",
+          "typ": "rykte",
+          "text": "Valdemar vilar i hövdingagraven med sin signet. Kyrkogården är stilla.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_vilar"
+          },
+          "rykte": "rykte_valdemar_vilar",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_rykte_05.ogg"
+        },
+        {
+          "id": "ebbe_rykte_06",
+          "typ": "rykte",
+          "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_sara"
+          },
+          "rykte": "rykte_valdemar_sara",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_rykte_06.ogg"
+        },
+        {
+          "id": "ebbe_quest_01",
+          "typ": "quest",
+          "text": "Mina bröder föll där nere. Jag hörde dem sjunga, sedan inget. Ta reda på hur de dog.",
+          "villkor": {
+            "quest_status": {
+              "gravvaktarnas_sista_strid": "ej_startad"
+            }
+          },
+          "quest": "gravvaktarnas_sista_strid",
+          "fas": "start",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_01.ogg"
+        },
+        {
+          "id": "ebbe_quest_02",
+          "typ": "quest",
+          "text": "Kryptan väntar. Mina bröder väntar.",
+          "villkor": {
+            "quest_status": {
+              "gravvaktarnas_sista_strid": "aktiv"
+            }
+          },
+          "quest": "gravvaktarnas_sista_strid",
+          "fas": "pagar",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_02.ogg"
+        },
+        {
+          "id": "ebbe_quest_03",
+          "typ": "quest",
+          "text": "De stod kvar. Alla. Till sista mannen. Ta locket. Det var vår kaptens.",
+          "villkor": {
+            "quest_val": {
+              "gravvaktarnas_sista_strid": "ge_ebbe"
+            }
+          },
+          "quest": "gravvaktarnas_sista_strid",
+          "fas": "klar",
+          "val": "ge_ebbe",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_03.ogg"
+        },
+        {
+          "id": "ebbe_quest_04",
+          "typ": "quest",
+          "text": "Min farfar? Han höll dörren? Då ska jag hålla porten.",
+          "villkor": {
+            "quest_val": {
+              "gravvaktarnas_sista_strid": "ge_ingrid"
+            }
+          },
+          "quest": "gravvaktarnas_sista_strid",
+          "fas": "klar",
+          "val": "ge_ingrid",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_04.ogg"
+        },
+        {
+          "id": "ebbe_quest_05",
+          "typ": "quest",
+          "text": "Kronan styr honom, inte han själv. Fäll honom, och låt oss begrava en hövding, inte ett monster.",
+          "villkor": {
+            "quest_status": {
+              "begrav_benkungen": "ej_startad"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "start",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_05.ogg"
+        },
+        {
+          "id": "ebbe_quest_06",
+          "typ": "quest",
+          "text": "Valdemar väntar på sin grav.",
+          "villkor": {
+            "quest_status": {
+              "begrav_benkungen": "aktiv"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "pagar",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_06.ogg"
+        },
+        {
+          "id": "ebbe_quest_07",
+          "typ": "quest",
+          "text": "Vila, Valdemar. Byn är din igen.",
+          "villkor": {
+            "quest_val": {
+              "begrav_benkungen": "begrav_med_signet"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "klar",
+          "val": "begrav_med_signet",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_07.ogg"
+        },
+        {
+          "id": "ebbe_quest_08",
+          "typ": "quest",
+          "text": "Bär den väl. Den var tung för honom också.",
+          "villkor": {
+            "quest_val": {
+              "begrav_benkungen": "behall_signeten"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "klar",
+          "val": "behall_signeten",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_08.ogg"
+        },
+        {
+          "id": "ebbe_quest_09",
+          "typ": "quest",
+          "text": "Du gav honom till benläsaren? Han får väl tala med henne, då.",
+          "villkor": {
+            "quest_val": {
+              "begrav_benkungen": "ge_sara"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "klar",
+          "val": "ge_sara",
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_quest_09.ogg"
+        },
+        {
+          "id": "ebbe_bark_01",
+          "typ": "bark",
+          "text": "Krossa benen. Stick inte.",
+          "villkor": {},
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_bark_01.ogg"
+        },
+        {
+          "id": "ebbe_bark_02",
+          "typ": "bark",
+          "text": "Lyktan brinner för de döda.",
+          "villkor": {},
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_bark_02.ogg"
+        },
+        {
+          "id": "ebbe_bark_03",
+          "typ": "bark",
+          "text": "Tvåhundra år. Och sedan inget.",
+          "villkor": {},
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_bark_03.ogg"
+        },
+        {
+          "id": "ebbe_bark_04",
+          "typ": "bark",
+          "text": "Vila, bröder.",
+          "villkor": {},
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_bark_04.ogg"
+        },
+        {
+          "id": "ebbe_bark_05",
+          "typ": "bark",
+          "text": "Och då stod Ebbes bröder kvar, till sista mannen.",
+          "villkor": {
+            "npc_state": {
+              "gravvaktaren_ebbe": "berattar_for_barn"
+            }
+          },
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_bark_05.ogg"
+        },
+        {
+          "id": "ebbe_avsked_01",
+          "typ": "avsked",
+          "text": "Må de döda ligga stilla.",
+          "villkor": {},
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_avsked_01.ogg"
+        },
+        {
+          "id": "ebbe_avsked_02",
+          "typ": "avsked",
+          "text": "Gå med ljuset.",
+          "villkor": {},
+          "audio": "audio/npc/gravvaktaren_ebbe/ebbe_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "marta_torghandlare",
+      "namn": "Marta",
+      "rostprofil": {
+        "kon": "kvinna",
+        "alder": 45,
+        "klang": "varm, pratig",
+        "tempo": "snabbt",
+        "accent": "skånsk",
+        "kansla": "nyfiken, glad"
+      },
+      "repliker": [
+        {
+          "id": "marta_halsning_01",
+          "typ": "halsning",
+          "text": "Nya ansikten! Äntligen nya ansikten!",
+          "villkor": {},
+          "audio": "audio/npc/marta_torghandlare/marta_halsning_01.ogg"
+        },
+        {
+          "id": "marta_halsning_02",
+          "typ": "halsning",
+          "text": "Hjälten själv! Kom, kom, titta!",
+          "villkor": {
+            "bosses_killed_gte": 2
+          },
+          "audio": "audio/npc/marta_torghandlare/marta_halsning_02.ogg"
+        },
+        {
+          "id": "marta_rykte_01",
+          "typ": "rykte",
+          "text": "Folk flyttar tillbaka till Den gamla byn. Det luktar bröd igen.",
+          "villkor": {
+            "rykte_aktivt": "rykte_byn_vaknar"
+          },
+          "rykte": "rykte_byn_vaknar",
+          "audio": "audio/npc/marta_torghandlare/marta_rykte_01.ogg"
+        },
+        {
+          "id": "marta_rykte_02",
+          "typ": "rykte",
+          "text": "Klockorna i Dimmerstrand ringer under vattnet.",
+          "villkor": {
+            "rykte_aktivt": "rykte_dimmerstrand"
+          },
+          "rykte": "rykte_dimmerstrand",
+          "audio": "audio/npc/marta_torghandlare/marta_rykte_02.ogg"
+        },
+        {
+          "id": "marta_rykte_03",
+          "typ": "rykte",
+          "text": "Ebbe läser gravvaktarnas krönika för barnen vid portalen.",
+          "villkor": {
+            "rykte_aktivt": "rykte_kronikan_ebbe"
+          },
+          "rykte": "rykte_kronikan_ebbe",
+          "audio": "audio/npc/marta_torghandlare/marta_rykte_03.ogg"
+        },
+        {
+          "id": "marta_rykte_04",
+          "typ": "rykte",
+          "text": "Benkungen har fallit. De döda i Den gamla byn ligger stilla.",
+          "villkor": {
+            "rykte_aktivt": "rykte_benkungen_dod"
+          },
+          "rykte": "rykte_benkungen_dod",
+          "audio": "audio/npc/marta_torghandlare/marta_rykte_04.ogg"
+        },
+        {
+          "id": "marta_rykte_05",
+          "typ": "rykte",
+          "text": "Valdemar vilar i hövdingagraven med sin signet. Kyrkogården är stilla.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_vilar"
+          },
+          "rykte": "rykte_valdemar_vilar",
+          "audio": "audio/npc/marta_torghandlare/marta_rykte_05.ogg"
+        },
+        {
+          "id": "marta_bark_01",
+          "typ": "bark",
+          "text": "Krukor! Tyg! Hälsodrycker!",
+          "villkor": {},
+          "audio": "audio/npc/marta_torghandlare/marta_bark_01.ogg"
+        },
+        {
+          "id": "marta_bark_02",
+          "typ": "bark",
+          "text": "Har ni hört det senaste?",
+          "villkor": {},
+          "audio": "audio/npc/marta_torghandlare/marta_bark_02.ogg"
+        },
+        {
+          "id": "marta_bark_03",
+          "typ": "bark",
+          "text": "Bröd i morgon, kanske.",
+          "villkor": {},
+          "audio": "audio/npc/marta_torghandlare/marta_bark_03.ogg"
+        },
+        {
+          "id": "marta_bark_04",
+          "typ": "bark",
+          "text": "Kom och titta!",
+          "villkor": {},
+          "audio": "audio/npc/marta_torghandlare/marta_bark_04.ogg"
+        },
+        {
+          "id": "marta_avsked_01",
+          "typ": "avsked",
+          "text": "Kom snart igen!",
+          "villkor": {},
+          "audio": "audio/npc/marta_torghandlare/marta_avsked_01.ogg"
+        },
+        {
+          "id": "marta_avsked_02",
+          "typ": "avsked",
+          "text": "Säg till dina vänner!",
+          "villkor": {},
+          "audio": "audio/npc/marta_torghandlare/marta_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "gunnar_jarnhand",
+      "namn": "Gunnar Järnhand",
+      "rostprofil": {
+        "kon": "man",
+        "alder": 55,
+        "klang": "mörk, kärv",
+        "tempo": "kort",
+        "accent": "dalmål",
+        "kansla": "bitterhet, stolthet"
+      },
+      "repliker": [
+        {
+          "id": "gunnar_halsning_01",
+          "typ": "halsning",
+          "text": "Jag smider inte längre. Men jag säljer.",
+          "villkor": {},
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_halsning_01.ogg"
+        },
+        {
+          "id": "gunnar_halsning_02",
+          "typ": "halsning",
+          "text": "Du har bra stål på dig. Inte mitt, men bra.",
+          "villkor": {
+            "faction_rep_gte": {
+              "de_kvarvarande": 30
+            }
+          },
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_halsning_02.ogg"
+        },
+        {
+          "id": "gunnar_rykte_01",
+          "typ": "rykte",
+          "text": "Smeden som smidde Runsmidd klinga dog samma natt.",
+          "villkor": {
+            "rykte_aktivt": "rykte_runsmidd_klinga"
+          },
+          "rykte": "rykte_runsmidd_klinga",
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_rykte_01.ogg"
+        },
+        {
+          "id": "gunnar_rykte_02",
+          "typ": "rykte",
+          "text": "Askeborg brinner fortfarande, trettio år senare.",
+          "villkor": {
+            "rykte_aktivt": "rykte_askeborg_brinner"
+          },
+          "rykte": "rykte_askeborg_brinner",
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_rykte_02.ogg"
+        },
+        {
+          "id": "gunnar_bark_01",
+          "typ": "bark",
+          "text": "Ingen härd. Aldrig mer.",
+          "villkor": {},
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_bark_01.ogg"
+        },
+        {
+          "id": "gunnar_bark_02",
+          "typ": "bark",
+          "text": "Stål är stål.",
+          "villkor": {},
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_bark_02.ogg"
+        },
+        {
+          "id": "gunnar_bark_03",
+          "typ": "bark",
+          "text": "Köper vapen. Allt du drar från de döda.",
+          "villkor": {},
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_bark_03.ogg"
+        },
+        {
+          "id": "gunnar_bark_04",
+          "typ": "bark",
+          "text": "Hm.",
+          "villkor": {},
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_bark_04.ogg"
+        },
+        {
+          "id": "gunnar_avsked_01",
+          "typ": "avsked",
+          "text": "Hm. Gå.",
+          "villkor": {},
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_avsked_01.ogg"
+        },
+        {
+          "id": "gunnar_avsked_02",
+          "typ": "avsked",
+          "text": "Kom tillbaka med stål.",
+          "villkor": {},
+          "audio": "audio/npc/gunnar_jarnhand/gunnar_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "vaktkapten_ingrid",
+      "namn": "Vaktkapten Ingrid",
+      "rostprofil": {
+        "kon": "kvinna",
+        "alder": 38,
+        "klang": "fast, befallande",
+        "tempo": "bestämt",
+        "accent": "rikssvenska",
+        "kansla": "disciplin, beskydd"
+      },
+      "repliker": [
+        {
+          "id": "ingrid_halsning_01",
+          "typ": "halsning",
+          "text": "Byn är under mitt skydd.",
+          "villkor": {},
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_halsning_01.ogg"
+        },
+        {
+          "id": "ingrid_halsning_02",
+          "typ": "halsning",
+          "text": "Gravvaktarna lever i oss nu.",
+          "villkor": {
+            "npc_state": {
+              "vaktkapten_ingrid": "gravvaktare"
+            }
+          },
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_halsning_02.ogg"
+        },
+        {
+          "id": "ingrid_halsning_03",
+          "typ": "halsning",
+          "text": "Ebbe är död. Någon måste vakta porten.",
+          "villkor": {
+            "npc_state": {
+              "vaktkapten_ingrid": "vaktar_porten"
+            }
+          },
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_halsning_03.ogg"
+        },
+        {
+          "id": "ingrid_rykte_01",
+          "typ": "rykte",
+          "text": "Folk flyttar tillbaka till Den gamla byn. Det luktar bröd igen.",
+          "villkor": {
+            "rykte_aktivt": "rykte_byn_vaknar"
+          },
+          "rykte": "rykte_byn_vaknar",
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_rykte_01.ogg"
+        },
+        {
+          "id": "ingrid_rykte_02",
+          "typ": "rykte",
+          "text": "Byn har vakter nu. Bönder med spjut, men de står kvar.",
+          "villkor": {
+            "rykte_aktivt": "rykte_vakter_i_byn"
+          },
+          "rykte": "rykte_vakter_i_byn",
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_rykte_02.ogg"
+        },
+        {
+          "id": "ingrid_rykte_03",
+          "typ": "rykte",
+          "text": "Vaktkapten Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
+          "villkor": {
+            "rykte_aktivt": "rykte_kronikan_ingrid"
+          },
+          "rykte": "rykte_kronikan_ingrid",
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_rykte_03.ogg"
+        },
+        {
+          "id": "ingrid_rykte_04",
+          "typ": "rykte",
+          "text": "{hjalte} bär hövdingens signet. Vissa säger att byn har en ny hövding.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_signet"
+          },
+          "rykte": "rykte_valdemar_signet",
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_rykte_04.ogg"
+        },
+        {
+          "id": "ingrid_bark_01",
+          "typ": "bark",
+          "text": "Vakten står!",
+          "villkor": {},
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_bark_01.ogg"
+        },
+        {
+          "id": "ingrid_bark_02",
+          "typ": "bark",
+          "text": "Facklor upp vid porten.",
+          "villkor": {},
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_bark_02.ogg"
+        },
+        {
+          "id": "ingrid_bark_03",
+          "typ": "bark",
+          "text": "Kyrkogården, håll ögonen öppna.",
+          "villkor": {},
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_bark_03.ogg"
+        },
+        {
+          "id": "ingrid_bark_04",
+          "typ": "bark",
+          "text": "Sköldarna upp!",
+          "villkor": {},
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_bark_04.ogg"
+        },
+        {
+          "id": "ingrid_bark_05",
+          "typ": "bark",
+          "text": "Gryningsövning! Sköldarna upp!",
+          "villkor": {
+            "npc_state": {
+              "vaktkapten_ingrid": "gravvaktare"
+            }
+          },
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_bark_05.ogg"
+        },
+        {
+          "id": "ingrid_bark_06",
+          "typ": "bark",
+          "text": "Lyktan ska tändas igen. En dag.",
+          "villkor": {
+            "npc_state": {
+              "vaktkapten_ingrid": "vaktar_porten"
+            }
+          },
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_bark_06.ogg"
+        },
+        {
+          "id": "ingrid_avsked_01",
+          "typ": "avsked",
+          "text": "Håll dig vaksam.",
+          "villkor": {},
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_avsked_01.ogg"
+        },
+        {
+          "id": "ingrid_avsked_02",
+          "typ": "avsked",
+          "text": "Byn tackar dig.",
+          "villkor": {},
+          "audio": "audio/npc/vaktkapten_ingrid/ingrid_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "olle_vardshus",
+      "namn": "Olle",
+      "rostprofil": {
+        "kon": "man",
+        "alder": 48,
+        "klang": "glad, hög",
+        "tempo": "pladdrigt",
+        "accent": "göteborgsk",
+        "kansla": "munter, överdriven"
+      },
+      "repliker": [
+        {
+          "id": "olle_halsning_01",
+          "typ": "halsning",
+          "text": "Sätt dig! Första stopet är på mig.",
+          "villkor": {},
+          "audio": "audio/npc/olle_vardshus/olle_halsning_01.ogg"
+        },
+        {
+          "id": "olle_halsning_02",
+          "typ": "halsning",
+          "text": "Där är du ju! Alla pratar om dig.",
+          "villkor": {
+            "bosses_killed_gte": 1
+          },
+          "audio": "audio/npc/olle_vardshus/olle_halsning_02.ogg"
+        },
+        {
+          "id": "olle_rykte_01",
+          "typ": "rykte",
+          "text": "Klockorna i Dimmerstrand ringer under vattnet.",
+          "villkor": {
+            "rykte_aktivt": "rykte_dimmerstrand"
+          },
+          "rykte": "rykte_dimmerstrand",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_01.ogg"
+        },
+        {
+          "id": "olle_rykte_02",
+          "typ": "rykte",
+          "text": "Någon har sett ljus i Askeborg igen. Inte eld. Något annat.",
+          "villkor": {
+            "rykte_aktivt": "rykte_askeborg_ljus"
+          },
+          "rykte": "rykte_askeborg_ljus",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_02.ogg"
+        },
+        {
+          "id": "olle_rykte_03",
+          "typ": "rykte",
+          "text": "{hjalte} har dödat {antal_bossar} av mörkrets furstar. Folk börjar hoppas.",
+          "villkor": {
+            "rykte_aktivt": "rykte_hjalten"
+          },
+          "rykte": "rykte_hjalten",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_03.ogg"
+        },
+        {
+          "id": "olle_rykte_04",
+          "typ": "rykte",
+          "text": "Gråbjörnen i Vargaby är död. Hedda sägs ha gråtit av lycka.",
+          "villkor": {
+            "rykte_aktivt": "rykte_ulvhild_dod"
+          },
+          "rykte": "rykte_ulvhild_dod",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_04.ogg"
+        },
+        {
+          "id": "olle_rykte_05",
+          "typ": "rykte",
+          "text": "Ulvhilds päls hänger i Heddas jaktstuga. Hon sover om nätterna nu.",
+          "villkor": {
+            "rykte_aktivt": "rykte_hedda_palsen"
+          },
+          "rykte": "rykte_hedda_palsen",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_05.ogg"
+        },
+        {
+          "id": "olle_rykte_06",
+          "typ": "rykte",
+          "text": "Ylva säger att runornas ristare själv släckte den fjärde stenen. Hon pratar om att tända den igen.",
+          "villkor": {
+            "rykte_aktivt": "rykte_ristaren_sanning"
+          },
+          "rykte": "rykte_ristaren_sanning",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_06.ogg"
+        },
+        {
+          "id": "olle_rykte_07",
+          "typ": "rykte",
+          "text": "Vaktkapten Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
+          "villkor": {
+            "rykte_aktivt": "rykte_kronikan_ingrid"
+          },
+          "rykte": "rykte_kronikan_ingrid",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_07.ogg"
+        },
+        {
+          "id": "olle_rykte_08",
+          "typ": "rykte",
+          "text": "Benkungen har fallit. De döda i Den gamla byn ligger stilla.",
+          "villkor": {
+            "rykte_aktivt": "rykte_benkungen_dod"
+          },
+          "rykte": "rykte_benkungen_dod",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_08.ogg"
+        },
+        {
+          "id": "olle_rykte_09",
+          "typ": "rykte",
+          "text": "Valdemar vilar i hövdingagraven med sin signet. Kyrkogården är stilla.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_vilar"
+          },
+          "rykte": "rykte_valdemar_vilar",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_09.ogg"
+        },
+        {
+          "id": "olle_rykte_10",
+          "typ": "rykte",
+          "text": "{hjalte} bär hövdingens signet. Vissa säger att byn har en ny hövding.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_signet"
+          },
+          "rykte": "rykte_valdemar_signet",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_10.ogg"
+        },
+        {
+          "id": "olle_rykte_11",
+          "typ": "rykte",
+          "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_sara"
+          },
+          "rykte": "rykte_valdemar_sara",
+          "audio": "audio/npc/olle_vardshus/olle_rykte_11.ogg"
+        },
+        {
+          "id": "olle_bark_01",
+          "typ": "bark",
+          "text": "Öl! Varmt öl!",
+          "villkor": {},
+          "audio": "audio/npc/olle_vardshus/olle_bark_01.ogg"
+        },
+        {
+          "id": "olle_bark_02",
+          "typ": "bark",
+          "text": "Hälften är lögn, andra hälften värre!",
+          "villkor": {},
+          "audio": "audio/npc/olle_vardshus/olle_bark_02.ogg"
+        },
+        {
+          "id": "olle_bark_03",
+          "typ": "bark",
+          "text": "Har ni hört om Dimmerstrand?",
+          "villkor": {},
+          "audio": "audio/npc/olle_vardshus/olle_bark_03.ogg"
+        },
+        {
+          "id": "olle_bark_04",
+          "typ": "bark",
+          "text": "Skål för hjälten!",
+          "villkor": {},
+          "audio": "audio/npc/olle_vardshus/olle_bark_04.ogg"
+        },
+        {
+          "id": "olle_avsked_01",
+          "typ": "avsked",
+          "text": "Nästa stop är ditt!",
+          "villkor": {},
+          "audio": "audio/npc/olle_vardshus/olle_avsked_01.ogg"
+        },
+        {
+          "id": "olle_avsked_02",
+          "typ": "avsked",
+          "text": "Kom tillbaka med en historia!",
+          "villkor": {},
+          "audio": "audio/npc/olle_vardshus/olle_avsked_02.ogg"
+        }
+      ]
+    },
+    {
+      "npc": "sara_benlasare",
+      "namn": "Sara Benläsare",
+      "rostprofil": {
+        "kon": "kvinna",
+        "alder": 33,
+        "klang": "viskande, mjuk",
+        "tempo": "långsamt",
+        "accent": "ingen tydlig",
+        "kansla": "kuslig, lugn"
+      },
+      "repliker": [
+        {
+          "id": "sara_halsning_01",
+          "typ": "halsning",
+          "text": "Ben berättar. Smycken lyssnar.",
+          "villkor": {},
+          "audio": "audio/npc/sara_benlasare/sara_halsning_01.ogg"
+        },
+        {
+          "id": "sara_halsning_02",
+          "typ": "halsning",
+          "text": "Valdemar talar med mig nu. Han är arg.",
+          "villkor": {
+            "npc_state": {
+              "sara_benlasare": "altare"
+            }
+          },
+          "audio": "audio/npc/sara_benlasare/sara_halsning_02.ogg"
+        },
+        {
+          "id": "sara_rykte_01",
+          "typ": "rykte",
+          "text": "En eremit viskar till ben vid ett röse i nordväst.",
+          "villkor": {
+            "rykte_aktivt": "rykte_benviskaren"
+          },
+          "rykte": "rykte_benviskaren",
+          "audio": "audio/npc/sara_benlasare/sara_rykte_01.ogg"
+        },
+        {
+          "id": "sara_rykte_02",
+          "typ": "rykte",
+          "text": "Folk säger att {hjalte} bär {foremal}. Sådant har ingen sett på trettio år.",
+          "villkor": {
+            "rykte_aktivt": "rykte_legendariskt_hittat"
+          },
+          "rykte": "rykte_legendariskt_hittat",
+          "audio": "audio/npc/sara_benlasare/sara_rykte_02.ogg"
+        },
+        {
+          "id": "sara_rykte_03",
+          "typ": "rykte",
+          "text": "Viskaren skrattar om nätterna. Han säger att skallen har valt.",
+          "villkor": {
+            "rykte_aktivt": "rykte_viskaren_skrattar"
+          },
+          "rykte": "rykte_viskaren_skrattar",
+          "audio": "audio/npc/sara_benlasare/sara_rykte_03.ogg"
+        },
+        {
+          "id": "sara_rykte_04",
+          "typ": "rykte",
+          "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+          "villkor": {
+            "rykte_aktivt": "rykte_valdemar_sara"
+          },
+          "rykte": "rykte_valdemar_sara",
+          "audio": "audio/npc/sara_benlasare/sara_rykte_04.ogg"
+        },
+        {
+          "id": "sara_bark_01",
+          "typ": "bark",
+          "text": "Benen talar tydligare om natten.",
+          "villkor": {},
+          "audio": "audio/npc/sara_benlasare/sara_bark_01.ogg"
+        },
+        {
+          "id": "sara_bark_02",
+          "typ": "bark",
+          "text": "Smycken från de döda.",
+          "villkor": {},
+          "audio": "audio/npc/sara_benlasare/sara_bark_02.ogg"
+        },
+        {
+          "id": "sara_bark_03",
+          "typ": "bark",
+          "text": "Viskaren var min lärare.",
+          "villkor": {},
+          "audio": "audio/npc/sara_benlasare/sara_bark_03.ogg"
+        },
+        {
+          "id": "sara_bark_04",
+          "typ": "bark",
+          "text": "Kom närmare.",
+          "villkor": {},
+          "audio": "audio/npc/sara_benlasare/sara_bark_04.ogg"
+        },
+        {
+          "id": "sara_avsked_01",
+          "typ": "avsked",
+          "text": "Benen väntar.",
+          "villkor": {},
+          "audio": "audio/npc/sara_benlasare/sara_avsked_01.ogg"
+        },
+        {
+          "id": "sara_avsked_02",
+          "typ": "avsked",
+          "text": "Kom på natten.",
+          "villkor": {},
+          "audio": "audio/npc/sara_benlasare/sara_avsked_02.ogg"
+        },
+        {
+          "id": "sara_quest_01",
+          "typ": "quest",
+          "text": "Valdemars ben talar. Ge dem till mig, så lyssnar jag.",
+          "villkor": {
+            "quest_status": {
+              "begrav_benkungen": "ej_startad"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "start",
+          "audio": "audio/npc/sara_benlasare/sara_quest_01.ogg"
+        },
+        {
+          "id": "sara_quest_02",
+          "typ": "quest",
+          "text": "Benen väntar. Signeten också.",
+          "villkor": {
+            "quest_status": {
+              "begrav_benkungen": "aktiv"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "pagar",
+          "audio": "audio/npc/sara_benlasare/sara_quest_02.ogg"
+        },
+        {
+          "id": "sara_quest_03",
+          "typ": "quest",
+          "text": "Han är min nu. Han är mycket arg. Tack.",
+          "villkor": {
+            "quest_val": {
+              "begrav_benkungen": "ge_sara"
+            }
+          },
+          "quest": "begrav_benkungen",
+          "fas": "klar",
+          "val": "ge_sara",
+          "audio": "audio/npc/sara_benlasare/sara_quest_03.ogg"
+        }
+      ]
+    }
+  ]
+}

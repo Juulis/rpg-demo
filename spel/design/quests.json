@@ -1,0 +1,1277 @@
+{
+  "meta": {
+    "version": "1.0",
+    "regler": [
+      "Inga döda X eller samla X.",
+      "Inga spärrar: quests blockerar aldrig rörelse, kan göras i valfri ordning.",
+      "Bossar kan dödas innan questen tagits; redan_gjort beskriver hur questen hoppar fram.",
+      "Val påverkar rykten och NPC:er men stänger aldrig världen.",
+      "Inga hylsor, ingen ändring av föremål."
+    ],
+    "trigger_typer": {
+      "prata_med": "npc",
+      "prata_med_en_av": "npc[]",
+      "gå_in_i": "region, ankare (valfritt)",
+      "inspektera": "ankare, region och tid (valfritt)",
+      "inspektera_alla": "ankare[], tid",
+      "plocka_upp": "item",
+      "boss_killed": "boss",
+      "någon_av": "val[]"
+    },
+    "questforemal": "Id som börjar med quest_ är questföremål: tar ingen inventarieplats, kan inte säljas, försvinner efter valet.",
+    "world_state_tillagg": {
+      "quests": {
+        "<quest_id>": {
+          "status": "ej_startad | aktiv | klar",
+          "steg": "<steg_id>",
+          "val": "<val_id>"
+        }
+      }
+    },
+    "konsekvenssystem": {
+      "princip": "Alla val ändrar world_state permanent per hjälte. Effekter körs i ordning. Inga effekter får spärra rörelse; quest_exclude stänger bara en questväg.",
+      "effekttyper": {
+        "flag_set": {
+          "falt": {
+            "flag": "str",
+            "value": "bool|int|str"
+          },
+          "beskrivning": "Sätter en flagga i world_state.flags."
+        },
+        "value_add": {
+          "falt": {
+            "key": "str",
+            "delta": "int"
+          },
+          "beskrivning": "Ändrar ett numeriskt värde i world_state.values."
+        },
+        "faction_rep": {
+          "falt": {
+            "faktion": "str",
+            "delta": "int"
+          },
+          "beskrivning": "Ändrar fraktionens rykte, intervall −100 till 100."
+        },
+        "npc_state": {
+          "falt": {
+            "npc": "str",
+            "state": "variant id | dod",
+            "delay_dygn": "int (valfritt)"
+          },
+          "beskrivning": "Byter NPC:ns tillståndsvariant (npc.json tillstand_varianter) eller dödar NPC:n."
+        },
+        "npc_location": {
+          "falt": {
+            "npc": "str",
+            "omrade": "str",
+            "plats": "str"
+          },
+          "beskrivning": "Flyttar NPC:n permanent."
+        },
+        "npc_faction": {
+          "falt": {
+            "npc": "str",
+            "faktion": "str"
+          },
+          "beskrivning": "NPC:n byter sida."
+        },
+        "town_growth": {
+          "falt": {
+            "town": "str",
+            "delta": "int"
+          },
+          "beskrivning": "Växtpoäng för en by eller stad. Påverkar antal invånare och dekor; negativt ger förfall. Byter aldrig stadstillstånd själv."
+        },
+        "merchant_stock": {
+          "falt": {
+            "npc": "str",
+            "add": "list",
+            "remove": "list",
+            "prisfaktor_mult": "float"
+          },
+          "beskrivning": "Ändrar en handlares utbud och priser."
+        },
+        "area_change": {
+          "falt": {
+            "region": "str",
+            "andring": "miljo | spawn_mult | ljus | npc_narvaro",
+            "value": "any",
+            "ankare": "str (valfritt)"
+          },
+          "beskrivning": "Permanent förändring av ett område. spawn_mult påverkar bara framtida games; aldrig en spärr."
+        },
+        "rumor_add": {
+          "falt": {
+            "rykte": "str"
+          },
+          "beskrivning": "Aktiverar ett rykte direkt (utöver villkorsstyrda rykten)."
+        },
+        "quest_exclude": {
+          "falt": {
+            "quest": "str",
+            "val": "str (valfritt)",
+            "steg": "str (valfritt)"
+          },
+          "beskrivning": "Utesluter en questväg eller ett val. Stänger aldrig ett område eller en boss."
+        },
+        "quest_alt_giver": {
+          "falt": {
+            "quest": "str",
+            "npc": "str"
+          },
+          "beskrivning": "Byter vem som ger en quest när ordinarie givare är borta."
+        },
+        "item_grant": {
+          "falt": {
+            "item": "str"
+          },
+          "beskrivning": "Ger ett föremål (legendariskt, setdel eller bas)."
+        },
+        "xp_grant": {
+          "falt": {
+            "amount": "int"
+          },
+          "beskrivning": "Ger XP."
+        }
+      },
+      "bygg_ordning": [
+        "flag_set",
+        "item_grant",
+        "xp_grant",
+        "rumor_add",
+        "faction_rep",
+        "npc_state",
+        "npc_location",
+        "merchant_stock",
+        "town_growth",
+        "area_change",
+        "npc_faction",
+        "quest_exclude",
+        "quest_alt_giver",
+        "value_add"
+      ],
+      "fraktioner": {
+        "de_kvarvarande": 0,
+        "gravvaktarna": 0,
+        "askans_barn": -20,
+        "spillrorna": 0,
+        "intervall": [-100, 100],
+        "effekt": "Över 30: handlare ger 5 % rabatt och fler repliker. Under −30: fraktionens NPC:er hälsar kallt och vissa barks ändras. Aldrig spärrar."
+      },
+      "world_state_exempel": {
+        "flags": {
+          "mira_ljog": true
+        },
+        "values": {
+          "gamla_byn_hopp": 3
+        },
+        "faction_rep": {
+          "de_kvarvarande": 10,
+          "gravvaktarna": -5,
+          "askans_barn": 0,
+          "spillrorna": 0
+        },
+        "npc_states": {
+          "gravvaktaren_ebbe": {
+            "state": "dod",
+            "since_day": 14
+          }
+        },
+        "npc_locations": {
+          "viskaren": {
+            "omrade": "startlagret",
+            "plats": "lagerelden"
+          }
+        },
+        "npc_factions": {},
+        "town_growth": {
+          "gamla_byn": 4,
+          "startlagret": 2
+        },
+        "merchant_mods": {
+          "hedda_jagare": {
+            "add": [],
+            "remove": [],
+            "prisfaktor_mult": 0.9
+          }
+        },
+        "area_changes": [
+          {
+            "region": "gamla_byn",
+            "andring": "ljus",
+            "ankare": "kyrkogarden",
+            "value": "stilla_ljus"
+          }
+        ],
+        "quests": {
+          "miras_bror": {
+            "status": "klar",
+            "val": "behall_och_ljug"
+          }
+        },
+        "quest_excludes": [
+          {
+            "quest": "gravvaktarnas_sista_strid",
+            "val": "ge_ebbe"
+          }
+        ],
+        "rumors_active": ["rykte_mira_hoppas"],
+        "pending": [
+          {
+            "effect": {
+              "typ": "npc_state",
+              "npc": "gravvaktaren_ebbe",
+              "state": "dod"
+            },
+            "due_day": 17
+          }
+        ]
+      },
+      "sparas": "per hjälte i sparfilen, inte per game"
+    }
+  },
+  "akt_1": [
+    {
+      "id": "miras_bror",
+      "namn": "Sandalerna i mossan",
+      "givare": "lilla_mira",
+      "akt": "akt_1",
+      "plats": ["startlagret", "startskogen", "vargstigen", "vargaby"],
+      "rekommenderad_niva": [2, 4],
+      "beskrivning": "Lilla Mira väntar på sin bror som sprang mot Vargaby natten demonerna kom. Hjälten följer hans spår genom skogen och hittar vad som blev kvar.",
+      "start": {
+        "typ": "prata_med",
+        "npc": "lilla_mira"
+      },
+      "steg": [
+        {
+          "id": "spar_i_skogen",
+          "text": "Hitta barnsandalen i mossan på vägen mot Vargaby.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "startskogen_barnsandal"
+          }
+        },
+        {
+          "id": "kolarkojan",
+          "text": "Följ spåren till den övergivna kolarkojan längs Vargastigen.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "vargstigen",
+            "ankare": "kolarkojan"
+          }
+        },
+        {
+          "id": "sanningen",
+          "text": "I kojan finns pojkens sista spår. Flyktingens sandaler ligger under golvet, bevakade av en vargbest (champion).",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "flyktingens_sandaler"
+          },
+          "garanterad_drop": "flyktingens_sandaler"
+        },
+        {
+          "id": "tillbaka",
+          "text": "Bestäm vad Mira ska få veta.",
+          "trigger": {
+            "typ": "prata_med",
+            "npc": "lilla_mira"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "ge_sandalerna",
+          "text": "Ge sandalerna till Mira och berätta sanningen.",
+          "konsekvens": {
+            "belöning_item": "miras_docka",
+            "rykte": "rykte_mira_vet",
+            "npc": {
+              "lilla_mira": "slutar vänta vid vägen, hjälper Sigrun i helartältet"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "miras_docka"
+            },
+            {
+              "typ": "npc_state",
+              "npc": "lilla_mira",
+              "state": "hjalper_sigrun"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "lilla_mira",
+              "omrade": "startlagret",
+              "plats": "helartaltet"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 10
+            },
+            {
+              "typ": "town_growth",
+              "town": "startlagret",
+              "delta": 1
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_mira_vet"
+            }
+          ]
+        },
+        {
+          "id": "behall_och_ljug",
+          "text": "Behåll sandalerna och säg att brodern lever i Vargaby.",
+          "konsekvens": {
+            "belöning_item": "flyktingens_sandaler (behålls)",
+            "rykte": "rykte_mira_hoppas",
+            "npc": {
+              "lilla_mira": "fortsätter vänta, går senare till Vargaby när den återbefolkas och frågar efter brodern hos Hedda"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "flag_set",
+              "flag": "mira_ljog",
+              "value": true
+            },
+            {
+              "typ": "npc_state",
+              "npc": "lilla_mira",
+              "state": "vandrar_mot_vargaby"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "lilla_mira",
+              "omrade": "vargaby",
+              "plats": "vargaby_port"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_mira_hoppas"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": -5
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om sandalerna redan plockats upp hoppar questen till steget tillbaka.",
+      "belöning": {
+        "xp": 234,
+        "xp_andel": "45 % av nivå 3",
+        "item": "miras_docka eller flyktingens_sandaler"
+      },
+      "repliker": {
+        "start": "Har du sett min bror? Han sprang mot Vargaby. Han hade nya sandaler. Kan du leta efter honom?",
+        "klar_ge": "De är hans. Jag visste. Ta dockan. Han skulle vilja att någon hade den.",
+        "klar_behall": "Lever han? Jag visste det! Jag ska gå dit en dag."
+      },
+      "rykten": ["rykte_flyktingens_sandaler", "rykte_mira_vet", "rykte_mira_hoppas"],
+      "boss": null
+    },
+    {
+      "id": "benens_visk",
+      "namn": "Benens visk",
+      "givare": "viskaren",
+      "akt": "akt_1",
+      "plats": ["startskogen", "vargaby"],
+      "rekommenderad_niva": [4, 6],
+      "beskrivning": "Viskaren säger att hans brors skalle ligger kvar i hans gamla hus i Vargaby och viskar hans namn om nätterna. Han vill ha den tillbaka, eller vill han?",
+      "start": {
+        "typ": "prata_med",
+        "npc": "viskaren"
+      },
+      "steg": [
+        {
+          "id": "benhuset",
+          "text": "Hitta Viskarens gamla hus i Vargaby, där benen ligger sorterade i högar.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "vargaby",
+            "ankare": "viskarens_hus"
+          }
+        },
+        {
+          "id": "lyssna",
+          "text": "Stå i huset efter mörkrets inbrott och lyssna. En av skallarna viskar.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "viskarens_hus_skallar",
+            "tid": ["20:00", "06:00"]
+          }
+        },
+        {
+          "id": "skallen",
+          "text": "Ta skallen. Två ruttnande lik (unika följeslagare) reser sig.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "viskarens_skalle"
+          },
+          "garanterad_drop": "viskarens_skalle"
+        },
+        {
+          "id": "atervand",
+          "text": "Gå tillbaka till Viskaren.",
+          "trigger": {
+            "typ": "prata_med",
+            "npc": "viskaren"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "ge_skallen",
+          "text": "Ge skallen till Viskaren.",
+          "konsekvens": {
+            "belöning_item": "viskarens_fingrar",
+            "rykte": "rykte_viskaren_tyst",
+            "npc": {
+              "viskaren": "blir tyst och lugn, flyttar in i lägret och sitter vid Ylvas eld",
+              "sara_benlasare": "blir besviken när hon dyker upp"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "viskarens_fingrar"
+            },
+            {
+              "typ": "npc_state",
+              "npc": "viskaren",
+              "state": "lugn"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "viskaren",
+              "omrade": "startlagret",
+              "plats": "lagerelden"
+            },
+            {
+              "typ": "area_change",
+              "region": "startskogen",
+              "andring": "spawn_mult",
+              "ankare": "skog_nordvast",
+              "value": {
+                "vandrande_skelett": 0
+              }
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_viskaren_tyst"
+            }
+          ]
+        },
+        {
+          "id": "behall_skallen",
+          "text": "Behåll skallen (den är en del av Benviskarens dräkt).",
+          "konsekvens": {
+            "belöning_item": "viskarens_skalle (behålls)",
+            "rykte": "rykte_viskaren_skrattar",
+            "npc": {
+              "viskaren": "skrattar och säger att skallen valde dig; ger en fri ledtråd om var resten av dräkten droppar",
+              "sara_benlasare": "vill köpa skallen dyrt"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "npc_state",
+              "npc": "viskaren",
+              "state": "besatt"
+            },
+            {
+              "typ": "merchant_stock",
+              "npc": "sara_benlasare",
+              "add": ["viskarens_skalle (köper för 3x pris)"],
+              "remove": [],
+              "prisfaktor_mult": 1.0
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "gravvaktarna",
+              "delta": -5
+            },
+            {
+              "typ": "area_change",
+              "region": "startskogen",
+              "andring": "miljo",
+              "ankare": "skog_nordvast",
+              "value": "benhögar viskar hörbart på natten"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_viskaren_skrattar"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om skallen redan hittats går questen direkt till atervand.",
+      "belöning": {
+        "xp": 447,
+        "xp_andel": "40 % av nivå 5",
+        "item": "viskarens_fingrar eller viskarens_skalle"
+      },
+      "repliker": {
+        "start": "Min bror viskar. Varje natt. Han ligger kvar i huset i Vargaby. Hämta honom åt mig.",
+        "klar_ge": "Tyst. Äntligen tyst. Tack. Ta fingrarna, de pekar inte på dig längre.",
+        "klar_behall": "Han valde dig. Hör du honom nu? Nej. Du kommer att höra."
+      },
+      "rykten": ["rykte_benviskaren", "rykte_viskaren_tyst", "rykte_viskaren_skrattar"],
+      "boss": null
+    },
+    {
+      "id": "ulvhilds_pals",
+      "namn": "Gråbjörnens päls",
+      "givare": "hedda_jagare",
+      "alternativ_givare": "bror_vakt",
+      "akt": "akt_1",
+      "plats": ["vargaby", "ulvhilds_ide"],
+      "rekommenderad_niva": [5, 7],
+      "beskrivning": "Ulvhild åt Heddas man och Brors son. Båda vill ha hennes päls, av olika skäl. Hedda för hämnd, Bror för att begrava sonen i den.",
+      "start": {
+        "typ": "någon_av",
+        "val": [
+          {
+            "typ": "prata_med",
+            "npc": "hedda_jagare"
+          },
+          {
+            "typ": "prata_med",
+            "npc": "bror_vakt"
+          }
+        ]
+      },
+      "steg": [
+        {
+          "id": "spar",
+          "text": "Hitta kedjorna vid ingången till Ulvhilds ide i Vargaby.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "ulvhilds_ide"
+          }
+        },
+        {
+          "id": "ulvhild",
+          "text": "Fäll Gråbjörnen Ulvhild.",
+          "trigger": {
+            "typ": "boss_killed",
+            "boss": "grabjornen_ulvhild"
+          }
+        },
+        {
+          "id": "palsen",
+          "text": "Ta Ulvhilds päls (questföremål) och hitta Brors sons halsband av vargtänder bland benen i idet.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_ulvhilds_pals"
+          }
+        },
+        {
+          "id": "valet",
+          "text": "Välj vem som får pälsen.",
+          "trigger": {
+            "typ": "prata_med_en_av",
+            "npc": ["hedda_jagare", "bror_vakt"]
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "ge_hedda",
+          "text": "Ge pälsen till Hedda.",
+          "konsekvens": {
+            "belöning_item": "vargblodets_band",
+            "rykte": "rykte_hedda_palsen",
+            "npc": {
+              "hedda_jagare": "hänger pälsen i jaktstugan, säljer med 10 % rabatt till hjälten",
+              "bror_vakt": "blir kort i tonen men står kvar på vakt"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "vargblodets_band"
+            },
+            {
+              "typ": "merchant_stock",
+              "npc": "hedda_jagare",
+              "add": ["ulvhilds_pals_dekor"],
+              "remove": [],
+              "prisfaktor_mult": 0.9
+            },
+            {
+              "typ": "npc_state",
+              "npc": "bror_vakt",
+              "state": "bitter"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": -5
+            },
+            {
+              "typ": "town_growth",
+              "town": "vargaby",
+              "delta": 2
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_hedda_palsen"
+            }
+          ]
+        },
+        {
+          "id": "ge_bror",
+          "text": "Ge pälsen och halsbandet till Bror.",
+          "konsekvens": {
+            "belöning_item": "likatarens_kake",
+            "rykte": "rykte_bror_begraver",
+            "npc": {
+              "bror_vakt": "begraver sonen vid lägret, nytt gravkors, Bror börjar le igen",
+              "hedda_jagare": "säger att hjälten valde fel, men handlar ändå"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "likatarens_kake"
+            },
+            {
+              "typ": "npc_state",
+              "npc": "bror_vakt",
+              "state": "fridfull"
+            },
+            {
+              "typ": "area_change",
+              "region": "startlagret",
+              "andring": "miljo",
+              "ankare": "gravkorsen",
+              "value": "nytt gravkors med vargtandshalsband"
+            },
+            {
+              "typ": "npc_state",
+              "npc": "hedda_jagare",
+              "state": "lamnar"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "hedda_jagare",
+              "omrade": "dimmerstrand",
+              "plats": "dimmerstrand_brygga"
+            },
+            {
+              "typ": "town_growth",
+              "town": "vargaby",
+              "delta": -1
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 10
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_bror_begraver"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om Ulvhild redan är död börjar questen på steget palsen; pälsen ligger kvar i idet.",
+      "belöning": {
+        "xp": 588,
+        "xp_andel": "40 % av nivå 6",
+        "item": "vargblodets_band eller likatarens_kake"
+      },
+      "repliker": {
+        "start_hedda": "Ulvhild åt min man. Jag vill ha hennes päls på min vägg.",
+        "start_bror": "Min pojke ligger någonstans i hennes ide. Jag vill begrava honom i det som tog honom.",
+        "klar_hedda": "Där hänger hon. Nu kan jag sova.",
+        "klar_bror": "Tack. Han får vila nu. Ta yxan, jag kan inte se på den."
+      },
+      "rykten": ["rykte_ulvhild_dod", "rykte_hedda_palsen", "rykte_bror_begraver"],
+      "boss": "grabjornen_ulvhild"
+    },
+    {
+      "id": "runornas_ristare",
+      "namn": "Runornas ristare",
+      "givare": "gamla_ylva",
+      "akt": "akt_1",
+      "plats": ["startskogen", "gamla_byn", "kapellets_krypta"],
+      "rekommenderad_niva": [3, 10],
+      "beskrivning": "Ylva vill veta vem som ristade runorna. Varje runsten bär ett litet märke som bara syns i månsken. Märkena leder till kryptan under Benkungens kapell.",
+      "start": {
+        "typ": "prata_med",
+        "npc": "gamla_ylva"
+      },
+      "steg": [
+        {
+          "id": "markena",
+          "text": "Undersök runstenarna på natten. Varje sten visar en del av ett tecken: en mejsel, ett öga, en spricka.",
+          "trigger": {
+            "typ": "inspektera_alla",
+            "ankare": ["runsten_1", "runsten_2", "runsten_3"],
+            "tid": ["20:00", "06:00"]
+          }
+        },
+        {
+          "id": "ylva_tolkar",
+          "text": "Visa tecknen för Ylva. Hon känner igen kapellets gamla symbol.",
+          "trigger": {
+            "typ": "prata_med",
+            "npc": "gamla_ylva"
+          }
+        },
+        {
+          "id": "kryptan",
+          "text": "Hitta ristarens vägg djupt i Kapellets krypta, bakom Benkungens tron.",
+          "trigger": {
+            "typ": "inspektera",
+            "region": "kapellets_krypta",
+            "ankare": "ristarens_vagg"
+          }
+        },
+        {
+          "id": "mejseln",
+          "text": "Ta mejseln som ligger kvar under väggen och läs inskriften om den fjärde stenen.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "ristarens_mejsel"
+          },
+          "garanterad_drop": "ristarens_mejsel"
+        },
+        {
+          "id": "berätta",
+          "text": "Berätta för Ylva vad du läste.",
+          "trigger": {
+            "typ": "prata_med",
+            "npc": "gamla_ylva"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "sanningen",
+          "text": "Berätta allt, även att ristaren själv släckte den fjärde stenen.",
+          "konsekvens": {
+            "rykte": "rykte_ristaren_sanning",
+            "npc": {
+              "gamla_ylva": "tystnar en dag, sedan börjar hon tala om att tända den fjärde stenen (krok till akt 5)"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "ristarens_mejsel"
+            },
+            {
+              "typ": "npc_state",
+              "npc": "gamla_ylva",
+              "state": "sokare"
+            },
+            {
+              "typ": "flag_set",
+              "flag": "ristarens_sanning",
+              "value": true
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "askans_barn",
+              "delta": -10
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_ristaren_sanning"
+            }
+          ]
+        },
+        {
+          "id": "skona",
+          "text": "Berätta bara om mejseln och säg att ristaren dog i strid.",
+          "konsekvens": {
+            "rykte": "rykte_ristaren_hjalte",
+            "npc": {
+              "gamla_ylva": "blir glad, men Fyrvaktaren Hulda i akt 5 vet sanningen och säger det rakt ut"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "ristarens_mejsel"
+            },
+            {
+              "typ": "flag_set",
+              "flag": "ristarens_sanning",
+              "value": false
+            },
+            {
+              "typ": "quest_alt_giver",
+              "quest": "tand_stenen",
+              "npc": "fyrvaktaren_hulda"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 5
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_ristaren_hjalte"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om kryptan redan besökts och mejseln hittats räcker det att undersöka stenarna och prata med Ylva.",
+      "belöning": {
+        "xp": 1131,
+        "xp_andel": "50 % av nivå 8",
+        "item": "ristarens_mejsel"
+      },
+      "repliker": {
+        "start": "Ingen minns vem som ristade stenarna. Men stenarna minns. Titta på dem i månsken, barn.",
+        "klar_sanning": "Han släckte den själv? Då är det han som väntar där nere. Då måste någon tända den igen.",
+        "klar_skona": "En hjälte, alltså. Jag visste det. Runorna gjordes av någon modig."
+      },
+      "rykten": ["rykte_runorna_sover", "rykte_ristaren_sanning", "rykte_ristaren_hjalte", "rykte_fjarde_stenen"],
+      "boss": null
+    },
+    {
+      "id": "gravvaktarnas_sista_strid",
+      "namn": "Gravvaktarnas sista strid",
+      "givare": "gravvaktaren_ebbe",
+      "akt": "akt_1",
+      "plats": ["gamla_byn", "gravasen", "kapellets_krypta"],
+      "rekommenderad_niva": [7, 9],
+      "beskrivning": "Ebbe är den siste gravvaktaren. Hans bröder föll i kryptan natten de döda reste sig, och deras krönika försvann med dem. Han vill veta hur de dog.",
+      "start": {
+        "typ": "prata_med",
+        "npc": "gravvaktaren_ebbe"
+      },
+      "steg": [
+        {
+          "id": "gravasen",
+          "text": "Hitta den sista gravvaktarens kropp på Gravåsen, med en nyckel i handen.",
+          "trigger": {
+            "typ": "inspektera",
+            "region": "gravasen",
+            "ankare": "gravvaktarens_kropp"
+          }
+        },
+        {
+          "id": "kryptan",
+          "text": "Öppna gravvaktarnas kammare i Kapellets krypta med nyckeln. Kammaren vaktas av en Skelettväktare (unik) som en gång var deras kapten.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "kapellets_krypta",
+            "ankare": "gravvaktarnas_kammare"
+          }
+        },
+        {
+          "id": "kronikan",
+          "text": "Ta gravvaktarnas krönika (questföremål).",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_gravvaktarnas_kronika"
+          }
+        },
+        {
+          "id": "valet",
+          "text": "Bestäm vem krönikan tillhör.",
+          "trigger": {
+            "typ": "prata_med_en_av",
+            "npc": ["gravvaktaren_ebbe", "vaktkapten_ingrid"]
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "ge_ebbe",
+          "text": "Ge krönikan till Ebbe.",
+          "konsekvens": {
+            "belöning_item": "vaktarens_lock (set: gravvaktarens_arv)",
+            "rykte": "rykte_kronikan_ebbe",
+            "npc": {
+              "gravvaktaren_ebbe": "läser krönikan för de nya bybornas barn vid portalgläntan"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "vaktarens_lock"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "gravvaktarna",
+              "delta": 15
+            },
+            {
+              "typ": "npc_state",
+              "npc": "gravvaktaren_ebbe",
+              "state": "berattar_for_barn"
+            },
+            {
+              "typ": "town_growth",
+              "town": "gamla_byn",
+              "delta": 1
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_kronikan_ebbe"
+            }
+          ]
+        },
+        {
+          "id": "ge_ingrid",
+          "text": "Ge krönikan till Vaktkapten Ingrid, vars farfar står i den (om hon finns i byn, annars läggs den i hennes vakthus).",
+          "konsekvens": {
+            "belöning_item": "vaktarens_brynja (set: gravvaktarens_arv)",
+            "rykte": "rykte_kronikan_ingrid",
+            "npc": {
+              "vaktkapten_ingrid": "börjar utbilda vakterna i gravvaktarnas sätt, bär farfaderns emblem",
+              "gravvaktaren_ebbe": "respekterar valet, säger att orden lever i henne"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "vaktarens_brynja"
+            },
+            {
+              "typ": "npc_faction",
+              "npc": "vaktkapten_ingrid",
+              "faktion": "gravvaktarna"
+            },
+            {
+              "typ": "npc_state",
+              "npc": "vaktkapten_ingrid",
+              "state": "gravvaktare"
+            },
+            {
+              "typ": "area_change",
+              "region": "gamla_byn",
+              "andring": "npc_narvaro",
+              "ankare": "byporten",
+              "value": "vakter i gravvaktarnas grå"
+            },
+            {
+              "typ": "town_growth",
+              "town": "gamla_byn",
+              "delta": 2
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "gravvaktarna",
+              "delta": 10
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_kronikan_ingrid"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om kammaren redan rensats ligger krönikan kvar där.",
+      "belöning": {
+        "xp": 905,
+        "xp_andel": "40 % av nivå 8",
+        "item": "vaktarens_lock eller vaktarens_brynja"
+      },
+      "repliker": {
+        "start": "Mina bröder föll där nere. Jag hörde dem sjunga, sedan inget. Ta reda på hur de dog.",
+        "klar_ebbe": "De stod kvar. Alla. Till sista mannen. Ta locket. Det var vår kaptens.",
+        "klar_ingrid": "Min farfar? Han höll dörren? Då ska jag hålla porten."
+      },
+      "rykten": ["rykte_gravvaktarens_arv", "rykte_kronikan_ebbe", "rykte_kronikan_ingrid"],
+      "boss": null
+    },
+    {
+      "id": "begrav_benkungen",
+      "namn": "Begrav Benkungen",
+      "givare": "gravvaktaren_ebbe",
+      "alternativ_givare": "sara_benlasare",
+      "akt": "akt_1",
+      "plats": ["gamla_byn", "kapellets_krypta"],
+      "rekommenderad_niva": [9, 11],
+      "beskrivning": "Valdemar var en god hövding innan kronan tog honom. Ebbe vill att han begravs som en man. Sara vill ha hans signet för sina egna skäl.",
+      "start": {
+        "typ": "någon_av",
+        "val": [
+          {
+            "typ": "prata_med",
+            "npc": "gravvaktaren_ebbe"
+          },
+          {
+            "typ": "boss_killed",
+            "boss": "benkungen_valdemar"
+          }
+        ]
+      },
+      "steg": [
+        {
+          "id": "benkungen",
+          "text": "Fäll Benkungen Valdemar i kapellet.",
+          "trigger": {
+            "typ": "boss_killed",
+            "boss": "benkungen_valdemar"
+          }
+        },
+        {
+          "id": "signeten",
+          "text": "Bland hans ben ligger hövdingens signet (questföremål tills valet görs).",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_valdemars_signet"
+          }
+        },
+        {
+          "id": "graven",
+          "text": "Bär hans ben till hövdingagraven på kyrkogården och bestäm vad som händer med signeten.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "hovdingagraven"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "begrav_med_signet",
+          "text": "Begrav Valdemar med signeten.",
+          "konsekvens": {
+            "belöning_xp_bonus": 474,
+            "rykte": "rykte_valdemar_vilar",
+            "npc": {
+              "gravvaktaren_ebbe": "håller en ceremoni; kyrkogården blir en lugn plats med ljus",
+              "olle_vardshus": "döper ett öl efter Valdemar"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "xp_grant",
+              "amount": 474
+            },
+            {
+              "typ": "area_change",
+              "region": "gamla_byn",
+              "andring": "ljus",
+              "ankare": "kyrkogarden",
+              "value": "stilla_ljus"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "gravvaktarna",
+              "delta": 20
+            },
+            {
+              "typ": "town_growth",
+              "town": "gamla_byn",
+              "delta": 2
+            },
+            {
+              "typ": "merchant_stock",
+              "npc": "olle_vardshus",
+              "add": ["valdemars_ol (läker 25 HP)"],
+              "remove": [],
+              "prisfaktor_mult": 1.0
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_valdemar_vilar"
+            }
+          ]
+        },
+        {
+          "id": "behall_signeten",
+          "text": "Begrav honom men behåll signeten.",
+          "konsekvens": {
+            "belöning_item": "hovdingens_signet",
+            "rykte": "rykte_valdemar_signet",
+            "npc": {
+              "gravvaktaren_ebbe": "godtar det, säger att byn nu bärs av hjälten"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "hovdingens_signet"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 10
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "gravvaktarna",
+              "delta": -5
+            },
+            {
+              "typ": "value_add",
+              "key": "gamla_byn_hopp",
+              "delta": 1
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_valdemar_signet"
+            }
+          ]
+        },
+        {
+          "id": "ge_sara",
+          "text": "Ge benen och signeten till Sara Benläsare.",
+          "konsekvens": {
+            "belöning_item": "benviskarens set del (slumpad, viskarens_revben eller viskarens_kotor)",
+            "rykte": "rykte_valdemar_sara",
+            "npc": {
+              "sara_benlasare": "bygger ett benaltare i kapellet, säljer till hjälten med 15 % rabatt",
+              "gravvaktaren_ebbe": "vänder hjälten ryggen i tre speldygn, sedan förlåter han"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "viskarens_revben"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "gravvaktarna",
+              "delta": -25
+            },
+            {
+              "typ": "merchant_stock",
+              "npc": "sara_benlasare",
+              "add": ["benviskarens_drakt delar (Set)"],
+              "remove": [],
+              "prisfaktor_mult": 0.85
+            },
+            {
+              "typ": "area_change",
+              "region": "gamla_byn",
+              "andring": "miljo",
+              "ankare": "kapellet",
+              "value": "benaltare, rött ljus"
+            },
+            {
+              "typ": "npc_state",
+              "npc": "gravvaktaren_ebbe",
+              "state": "dod",
+              "delay_dygn": 3
+            },
+            {
+              "typ": "quest_exclude",
+              "quest": "gravvaktarnas_sista_strid",
+              "val": "ge_ebbe"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "vaktkapten_ingrid",
+              "omrade": "gamla_byn",
+              "plats": "portalgladet"
+            },
+            {
+              "typ": "town_growth",
+              "town": "gamla_byn",
+              "delta": -1
+            },
+            {
+              "typ": "npc_state",
+              "npc": "vaktkapten_ingrid",
+              "state": "vaktar_porten"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_valdemar_sara"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_ebbe_dod"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om Benkungen dödats innan questen börjar startar den direkt på steget signeten och Ebbe kommer själv fram till hjälten.",
+      "belöning": {
+        "xp": 1423,
+        "xp_andel": "45 % av nivå 10",
+        "item": "hovdingens_signet, setdel eller extra XP"
+      },
+      "repliker": {
+        "start": "Kronan styr honom, inte han själv. Fäll honom, och låt oss begrava en hövding, inte ett monster.",
+        "klar_begrav": "Vila, Valdemar. Byn är din igen.",
+        "klar_signet": "Bär den väl. Den var tung för honom också.",
+        "klar_sara": "Du gav honom till benläsaren? Han får väl tala med henne, då."
+      },
+      "rykten": ["rykte_benkungen", "rykte_benkungen_dod", "rykte_valdemar_vilar", "rykte_valdemar_signet", "rykte_valdemar_sara"],
+      "boss": "benkungen_valdemar"
+    }
+  ],
+  "skisser": [
+    {
+      "id": "klockorna_under_vattnet",
+      "namn": "Klockorna under vattnet",
+      "givare": "lova_fiskarankan",
+      "akt": "akt_2",
+      "karna": "Följ klockornas ljud genom dimman till Den sjunkna kyrkan och ta reda på varför Träsdrottningen håller de drunknade kvar. Val: befria Lovas man eller låta honom vakta stranden.",
+      "belöning": "XP 45 % av nivå 14, Korpmoderns båge eller Dimvandrarens handskar"
+    },
+    {
+      "id": "korpmoderns_sista_flykt",
+      "namn": "Korpmoderns sista flykt",
+      "givare": "lova_fiskarankan",
+      "akt": "akt_2",
+      "karna": "Korparna leder hjälten över ebbstigarna till Korpholmarna där Korpmodern väntar. Val: döda henne eller lösa hennes förbannelse så korparna blir hjältens vakter över Dimmerstrand.",
+      "belöning": "XP 40 % av nivå 13, korpmoderns_bage"
+    },
+    {
+      "id": "jarnmunkens_las",
+      "namn": "Järnmunkens lås",
+      "givare": "broder_elias",
+      "akt": "akt_3",
+      "karna": "Elias öppnade dörren som skulle hållit bröderna inne. Hitta Järnmunken i Järnklostret och välj: döda honom eller låta Elias tala med honom en sista gång.",
+      "belöning": "XP 45 % av nivå 17, jarnmunkens_gordel"
+    },
+    {
+      "id": "martas_dotter",
+      "namn": "Martas dotter",
+      "givare": "marta_torghandlare",
+      "akt": "akt_3",
+      "karna": "Martas dotter flydde till Kopparberg. Spåren leder till gruvdjupen och en gruppbild bland nät och kristaller. Val om vad Marta får veta.",
+      "belöning": "XP 40 % av nivå 16, klockarens_hammare"
+    },
+    {
+      "id": "den_fjarde_stenen",
+      "namn": "Den fjärde stenen",
+      "givare": "rask_avfallen",
+      "akt": "akt_4",
+      "karna": "Rask vet att kulten letar efter den fjärde stenen. Smyg genom Kultens katakomber, avslöja Askans profet och hitta kartan till sprickans botten.",
+      "belöning": "XP 50 % av nivå 23, tystnadens_stilett"
+    },
+    {
+      "id": "pilgrimens_vag",
+      "namn": "Pilgrimens väg",
+      "givare": "rask_avfallen",
+      "akt": "akt_4",
+      "karna": "Följ pilgrimens bönerader i träden längs askvägen till Askeborgs port och vidare in. Val: begrava hans stav eller bära den till Den brända katedralen.",
+      "belöning": "XP 45 % av nivå 21, del av Askvandrarens börda"
+    },
+    {
+      "id": "ljuset_som_haller",
+      "namn": "Ljuset som håller",
+      "givare": "fyrvaktaren_hulda",
+      "akt": "akt_5",
+      "karna": "Varför håller fyren smittan borta? Ljuset är en runsten. Hitta varifrån den kom och skydda fyren när Fadern av smittan sänder sin församling.",
+      "belöning": "XP 45 % av nivå 26, smittfaderns_kapa"
+    },
+    {
+      "id": "tand_stenen",
+      "namn": "Tänd stenen",
+      "givare": "gamla_ylva",
+      "akt": "akt_5",
+      "karna": "Med ristarens mejsel och sanningen från kryptan går hjälten till sprickans botten. Möt Den slocknade. Val: tänd den fjärde stenen och stäng sprickan, eller ta dess kraft (låser upp magi).",
+      "belöning": "XP 50 % av nivå 30, magi låses upp, nytt legendariskt föremål planeras"
+    }
+  ]
+}
