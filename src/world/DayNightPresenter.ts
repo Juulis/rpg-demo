@@ -23,7 +23,6 @@ export class DayNightPresenter {
   private screenW = 0;
   private screenH = 0;
   private nightCryT = 8;
-  private areaId = '';
 
   constructor(
     screenLayer: Container,
@@ -36,9 +35,6 @@ export class DayNightPresenter {
     worldEffects.addChild(this.torches);
     this.shade.eventMode = 'none';
     this.torches.eventMode = 'none';
-    bus.on('zone_enter', ({ areaId }) => {
-      this.areaId = areaId;
-    });
   }
 
   resize(w: number, h: number): void {
