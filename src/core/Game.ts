@@ -69,6 +69,7 @@ import { clockPeriodLabel, setClockLocale } from '../world/clockText';
 import { WorldStateService } from '../world/WorldStateService';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
 import { locomotionPlaybackRate } from '../render/locomotionPlayback';
+import { FOREST_VARGABY_PORTAL_X, FOREST_VARGABY_PORTAL_Y } from '../world/forestConstants';
 import { ZoneFactory } from '../world/ZoneFactory';
 
 const CLASS_TINT: Record<string, number> = { riddare: 0xffffff, barbar: 0xffd2b8, amazonkrigare: 0xffe6c8 };
@@ -301,7 +302,10 @@ export class Game {
     for (const id of s.killed) this.ctx.session.killed.add(id);
     if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
     this.gameClock.load(g?.worldTime);
-    if (this.camera) this.enterZone(h.zone === 'village' ? 'village' : 'forest', h.resumePos ?? undefined);
+    if (this.camera) {
+      const zn: ZoneName = h.zone === 'village' || h.zone === 'wolfstead' ? h.zone : 'forest';
+      this.enterZone(zn, h.resumePos ?? undefined);
+    }
   }
 
   /** U2:s SaveBackend (#19) registreras här; motorn använder den för fyndregistret (loreboken). */
@@ -351,6 +355,7 @@ export class Game {
     this.worldState.resetForNewRun();
     this.worldState.setRunesActive(0);
     this.worldState.setCityState('gamla_byn', 'besatt');
+    this.worldState.setCityState('vargaby', 'besatt');
     this.gameClock.resetForNewHero();
     this.bus.emit('new_game', { seed: s.seed });
     this.enterZone('forest');
@@ -382,13 +387,20 @@ export class Game {
   private travel(target: ZoneName): void {
     if (this.switching) return;
     this.switching = true;
+    const from = this.heroState.zone as ZoneName;
     const fade = document.getElementById('fade');
     fade?.classList.add('on');
     setTimeout(() => {
-      this.enterZone(target, target === 'forest' ? { x: 0, y: 4 } : undefined);
+      this.enterZone(target, this.portalSpawn(target, from));
       fade?.classList.remove('on');
       setTimeout(() => (this.switching = false), 800);
     }, 380);
+  }
+
+  private portalSpawn(target: ZoneName, from: ZoneName): Vec2 | undefined {
+    if (target === 'forest' && from === 'wolfstead') return { x: FOREST_VARGABY_PORTAL_X - 4, y: FOREST_VARGABY_PORTAL_Y };
+    if (target === 'forest' && from === 'village') return { x: 0, y: 4 };
+    return undefined;
   }
 
   /** Bygger zonen, placerar hjälten, befolkar monster och skickar zone_enter när allt är klart. */
@@ -453,7 +465,9 @@ export class Game {
     hero.moveTarget = null;
     this.targetMonster = null;
     this.targetDrop = null;
-    this.factory.populate(this.world, hs.city);
+    const areaId = zone.areaId;
+    const citySpawn = this.worldState.get().city_states[areaId] ?? (areaId === 'gamla_byn' ? hs.city : 'besatt');
+    this.factory.populate(this.world, citySpawn);
     syncProximitySpawns(this.world, this.factory, hs.pos);
     this.portals.attach(built.runeSprites);
     this.parallax.set(
@@ -470,7 +484,8 @@ export class Game {
     this.npcSys.sync(this.world);
     this.worldAmbientSys.sync(this.world, this.ctx.session.seed);
     this.worldFighterSys.sync(this.world, this.ctx.session.seed);
-    this.hud.flash(this.text.t(name === 'village' ? 'msg.zone_village' : 'msg.zone_forest'));
+    const zoneMsg = name === 'village' ? 'msg.zone_village' : name === 'wolfstead' ? 'msg.zone_wolfstead' : 'msg.zone_forest';
+    this.hud.flash(this.text.t(zoneMsg));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
     this.bus.emit('zone_enter', { name, areaId: zone.areaId });
@@ -494,6 +509,7 @@ export class Game {
       runes: z.runes,
       portals: z.portals,
       cleared: z.cleared,
+      arena: z.arena,
     });
     if (z.circle) v.circle = z.circle;
     if (z.rect) v.rect = z.rect;
@@ -998,7 +1014,13 @@ export class Game {
     const portal = w.zone.portals.find((p) => Math.hypot(p.x - pw.x, p.y - pw.y) < 2);
     if (portal) {
       this.tip.show(
-        `<div class="tn">${t.t('tooltip.portal')}</div><div class="tb">${t.t(portal.target === 'village' ? 'tooltip.portal_to_village' : 'tooltip.portal_to_forest')}</div>`,
+        `<div class="tn">${t.t('tooltip.portal')}</div><div class="tb">${t.t(
+          portal.target === 'village'
+            ? 'tooltip.portal_to_village'
+            : portal.target === 'wolfstead'
+              ? 'tooltip.portal_to_wolfstead'
+              : 'tooltip.portal_to_forest',
+        )}</div>`,
         x,
         y,
       );

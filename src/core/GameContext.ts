@@ -87,6 +87,7 @@ export interface ZoneView {
   portals: readonly PortalView[];
   /** Rensade delområden (bara information, ingen spärr). */
   cleared: Readonly<Record<string, boolean>>;
+  arena?: { x0: number; y0: number; x1: number; y1: number } | null;
 }
 
 /** Sparbar ögonblicksbild av hjälte + session (Game.getSnapshot / Game.loadHero). */

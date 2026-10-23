@@ -11,3 +11,6 @@ export const FOREST_SPAWN_ACTIVE_RADIUS = 52;
 /** Mark-chunks laddas inom denna radie runt hjälten. */
 export const FOREST_GROUND_CHUNK_RADIUS = 70;
 export const FOREST_GROUND_CHUNK_TILES = 16;
+/** Östra vägport till Vargaby (världsenheter). */
+export const FOREST_VARGABY_PORTAL_X = FOREST_PLAY_RADIUS - 10;
+export const FOREST_VARGABY_PORTAL_Y = 0;
