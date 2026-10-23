@@ -21,6 +21,7 @@ import type { Item } from '../logic/loot/types';
 import { AssetStore, dirIndex } from '../render/Assets';
 import { Camera } from '../render/Camera';
 import { DirSprite } from '../render/DirSprite';
+import { buildHeroEquipmentView } from '../render/heroEquipmentView';
 import { scaleKForWorldHeightM, shadowRadiusForWorldHeightM, worldHeightMForHeroOrNpc } from '../render/figureWorldHeights';
 import type { StripAnimSprite } from '../render/StripAnimSprite';
 import { Iso } from '../render/Iso';
@@ -430,8 +431,10 @@ export class Game {
       this.world && this.world.hero.inv.bag === hs.inv && this.world.hero.cls.id === hs.cls
         ? this.rebindHero(this.world.hero, heroView)
         : new Hero(hs, this.loot, heroView);
+    this.syncHeroEquipmentView(hero);
     hero.inv.onChange = () => {
       hero.recalc();
+      this.syncHeroEquipmentView(hero);
       if (this.invUI.isOpen()) this.invUI.render();
     };
     const zone: Zone = built.zone;
@@ -494,6 +497,11 @@ export class Game {
   private rebindHero(h: Hero, view: DirSprite): Hero {
     h.view = view;
     return h;
+  }
+
+  private syncHeroEquipmentView(hero: Hero): void {
+    const view = buildHeroEquipmentView(hero.cls.id, this.assets.heroes.knightEquipment, hero.inv.equip, this.loot);
+    hero.view.setEquipmentView(view);
   }
 
   private syncZoneView(z: Zone): void {

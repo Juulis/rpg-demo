@@ -1,0 +1,278 @@
+{
+ "image": "riddare_idle_skold_8dir.png",
+ "frameW": 171,
+ "frameH": 283,
+ "anchor": [
+  85,
+  277
+ ],
+ "dirs": [
+  "S",
+  "SV",
+  "V",
+  "NV",
+  "N",
+  "NO",
+  "O",
+  "SO"
+ ],
+ "rects": [
+  {
+   "dir": "S",
+   "x": 0,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  },
+  {
+   "dir": "SV",
+   "x": 171,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  },
+  {
+   "dir": "V",
+   "x": 342,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  },
+  {
+   "dir": "NV",
+   "x": 513,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  },
+  {
+   "dir": "N",
+   "x": 684,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  },
+  {
+   "dir": "NO",
+   "x": 855,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  },
+  {
+   "dir": "O",
+   "x": 1026,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  },
+  {
+   "dir": "SO",
+   "x": 1197,
+   "y": 0,
+   "w": 171,
+   "h": 283
+  }
+ ],
+ "layer": "skold",
+ "order": {
+  "S": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "svard_fram",
+   "skold"
+  ],
+  "SV": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "svard_fram",
+   "skold"
+  ],
+  "V": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "svard_fram",
+   "skold"
+  ],
+  "NV": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "svard_fram",
+   "skold"
+  ],
+  "N": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "svard_fram",
+   "skold"
+  ],
+  "NO": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "skold",
+   "svard_fram"
+  ],
+  "O": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "svard_fram",
+   "skold"
+  ],
+  "SO": [
+   "svard_bak",
+   "bas",
+   "rustning",
+   "hjalm",
+   "svard_fram",
+   "skold"
+  ]
+ },
+ "orderPerVapen": {
+  "svard": {
+   "S": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "SV": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "V": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "NV": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "N": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "NO": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "svard_fram"
+   ],
+   "O": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ],
+   "SO": [
+    "svard_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "svard_fram",
+    "skold"
+   ]
+  },
+  "yxa": {
+   "S": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "SV": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "V": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "NV": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "N": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "NO": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "skold",
+    "yxa_fram"
+   ],
+   "O": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ],
+   "SO": [
+    "yxa_bak",
+    "bas",
+    "rustning",
+    "hjalm",
+    "yxa_fram",
+    "skold"
+   ]
+  }
+ }
+}
