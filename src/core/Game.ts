@@ -957,12 +957,19 @@ export class Game {
           sp * dt,
           h.moveTarget && !this.targetMonster ? Math.hypot(h.moveTarget.x - h.pos.x, h.moveTarget.y - h.pos.y) : Infinity,
         );
+        const start = { x: h.pos.x, y: h.pos.y };
         h.pos.x += (vx / len) * step;
         h.pos.y += (vy / len) * step;
         s.facing = Math.atan2(vx, vy);
         const before = { ...h.pos };
         w.zone.collide(h.pos, 0.5);
         if (h.moveTarget && Math.hypot(before.x - h.pos.x, before.y - h.pos.y) > step * 0.9) h.moveTarget = null;
+        // står hjälten i praktiken still (fast mot hinder eller framme) ska gånganimationen inte spelas
+        const moved = Math.hypot(h.pos.x - start.x, h.pos.y - start.y);
+        if (moved < Math.max(step * 0.25, 1e-4)) {
+          h.moving = false;
+          if (!this.targetMonster) h.moveTarget = null;
+        }
         if (Math.floor(w.time * 3) !== Math.floor((w.time - dt) * 3)) this.bus.emit('step', undefined);
       }
     }
