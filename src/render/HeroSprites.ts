@@ -1,4 +1,5 @@
 import type { Anim, AnimSet } from './spriteAnim';
+import { KnightEquipmentSprites } from './KnightEquipmentSprites';
 import { loadSheet8dir, type TexLoader } from './sheet8dir';
 
 const HERO_SCALE = 0.55;
@@ -10,7 +11,7 @@ const HERO_CLASS_SHEETS: readonly { cls: string; folder: string; prefix: string 
 ];
 
 /** NV/NO i run-arket är profil — använd walk-rader, snabbare fps i run. */
-function patchRunDiagonals(run: Anim, walk: Anim): void {
+export function patchRunDiagonals(run: Anim, walk: Anim): void {
   for (const d of [3, 5]) {
     if (walk.frames[d]?.length) run.frames[d] = walk.frames[d];
     if (walk.alignX?.[d]) {
@@ -53,6 +54,7 @@ async function emergencySet(tex: TexLoader): Promise<AnimSet> {
 export class HeroSprites {
   private readonly byClass = new Map<string, AnimSet>();
   private fallback: AnimSet | null = null;
+  readonly knightEquipment = new KnightEquipmentSprites();
 
   async load(tex: TexLoader): Promise<void> {
     for (const { cls, folder, prefix } of HERO_CLASS_SHEETS) {
@@ -81,6 +83,7 @@ export class HeroSprites {
     const riddare = this.byClass.get('riddare');
     this.fallback = riddare ?? (await emergencySet(tex));
     if (!riddare) this.byClass.set('riddare', this.fallback);
+    await this.knightEquipment.load(tex);
   }
 
   hasDedicated(cls: string): boolean {

@@ -1,10 +1,15 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
+import { equipmentDrawOrder, equipmentDrawOrderUnarmed, type UtrustningLayer } from './heroEquipment';
+import type { HeroEquipmentViewState } from './heroEquipmentView';
 import type { Anim, AnimName, AnimSet } from './spriteAnim';
 import { animDisplayScale, animSetRefHeight } from './spriteLayout';
 
 /** Animerad 8-riktningsfigur med skugga. Fotpunkt = containerns origo. */
 export class DirSprite extends Container {
   readonly sprite = new Sprite();
+  private readonly layerRoot = new Container();
+  private readonly layerSprites: Sprite[] = [];
+  private equipment: HeroEquipmentViewState | null = null;
   private readonly shadow = new Graphics();
   private anim: AnimName = 'idle';
   private t = 0;
@@ -26,7 +31,26 @@ export class DirSprite extends Container {
     super();
     this.refH = animSetRefHeight(set);
     this.shadow.ellipse(0, 0, shadowR, shadowR / 2).fill({ color: 0x000000, alpha: 0.35 });
-    this.addChild(this.shadow, this.sprite);
+    this.addChild(this.shadow, this.layerRoot, this.sprite);
+    this.apply();
+  }
+
+  /** Riddare paper-doll; null = enkel sprite (amazon/barbar). */
+  setEquipmentView(state: HeroEquipmentViewState | null): void {
+    this.equipment = state;
+    if (!state) {
+      this.layerRoot.visible = false;
+      this.sprite.visible = true;
+      return;
+    }
+    this.layerRoot.visible = true;
+    this.sprite.visible = false;
+    const maxLayers = 8;
+    while (this.layerSprites.length < maxLayers) {
+      const sp = new Sprite();
+      this.layerSprites.push(sp);
+      this.layerRoot.addChild(sp);
+    }
     this.apply();
   }
 
@@ -91,13 +115,57 @@ export class DirSprite extends Container {
       f = row.length - 1;
       this.done = true;
     }
-    const tex = row[f];
-    if (tex) this.sprite.texture = tex;
     const mirror = single && this.mirrorSingle && this.dir >= 4;
     const ax = a.alignX?.[single ? 0 : this.dir]?.[f] ?? 0;
     const ay = a.alignY?.[single ? 0 : this.dir]?.[f] ?? 0;
-    this.sprite.anchor.set(a.anchor[0] / a.w, a.anchor[1] / a.h);
     const k = animDisplayScale(this.scaleK, this.refH, a);
+    const d = single ? 0 : this.dir;
+
+    if (this.equipment) {
+      const layerAnims = this.equipment.layersByAnim[this.anim] ?? this.equipment.layersByAnim.idle;
+      const drawOrders = this.equipment.drawOrdersByAnim[this.anim];
+      if (!layerAnims || !drawOrders) {
+        for (const sp of this.layerSprites) sp.visible = false;
+        return;
+      }
+      const order =
+        this.equipment.weaponVisual == null
+          ? equipmentDrawOrderUnarmed(drawOrders, d, this.equipment.activeLayers)
+          : equipmentDrawOrder(drawOrders, this.equipment.weaponVisual, d, this.equipment.activeLayers);
+      order.forEach((layerName, i) => {
+        const sp = this.layerSprites[i];
+        if (!sp) return;
+        const la = layerAnims[layerName as UtrustningLayer];
+        if (!la) {
+          sp.visible = false;
+          return;
+        }
+        const lSingle = !!la.single;
+        const lRow = la.frames[lSingle ? 0 : d] ?? la.frames[0];
+        const lTex = lRow?.[f];
+        if (!lTex) {
+          sp.visible = false;
+          return;
+        }
+        sp.visible = true;
+        sp.texture = lTex;
+        const lax = la.alignX?.[lSingle ? 0 : d]?.[f] ?? ax;
+        const lay = la.alignY?.[lSingle ? 0 : d]?.[f] ?? ay;
+        sp.anchor.set(la.anchor[0] / la.w, la.anchor[1] / la.h);
+        sp.scale.set(mirror ? -k : k, k);
+        sp.x = lax * k * (mirror ? -1 : 1);
+        sp.y = lay * k + this.bobY;
+      });
+      for (let i = order.length; i < this.layerSprites.length; i++) {
+        const sp = this.layerSprites[i];
+        if (sp) sp.visible = false;
+      }
+      return;
+    }
+
+    const tex = row[f];
+    if (tex) this.sprite.texture = tex;
+    this.sprite.anchor.set(a.anchor[0] / a.w, a.anchor[1] / a.h);
     this.sprite.scale.set(mirror ? -k : k, k);
     this.sprite.x = ax * k * (mirror ? -1 : 1);
     this.sprite.y = ay * k + this.bobY;
