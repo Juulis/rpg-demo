@@ -142,15 +142,18 @@ export class DirSprite extends Container {
         }
         const lSingle = !!la.single;
         const lRow = la.frames[lSingle ? 0 : d] ?? la.frames[0];
-        const lTex = lRow?.[f];
+        const lLen = lRow?.length ?? 0;
+        let lf = la === a ? f : Math.floor(this.t * (la.fps || a.fps));
+        if (lLen > 0) lf = la.loop === false ? Math.min(lf, lLen - 1) : lf % lLen;
+        const lTex = lRow?.[lf];
         if (!lTex) {
           sp.visible = false;
           return;
         }
         sp.visible = true;
         sp.texture = lTex;
-        const lax = la.alignX?.[lSingle ? 0 : d]?.[f] ?? ax;
-        const lay = la.alignY?.[lSingle ? 0 : d]?.[f] ?? ay;
+        const lax = la.alignX?.[lSingle ? 0 : d]?.[lf] ?? ax;
+        const lay = la.alignY?.[lSingle ? 0 : d]?.[lf] ?? ay;
         sp.anchor.set(la.anchor[0] / la.w, la.anchor[1] / la.h);
         sp.scale.set(mirror ? -k : k, k);
         sp.x = lax * k * (mirror ? -1 : 1);
