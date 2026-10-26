@@ -341,6 +341,23 @@
 .rk-tip .setB.on {
   color: #00c400;
 }
+#invWin .setActiveH {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #3a3020;
+  color: #00c400;
+  font-size: 12px;
+}
+#invWin .setActiveSet {
+  color: #c8bca0;
+  font-size: 12px;
+  margin-top: 4px;
+}
+#invWin .setActiveLine {
+  color: #00c400;
+  font-size: 11px;
+  padding-left: 6px;
+}
 #lootLabels {
   position: fixed;
   inset: 0;

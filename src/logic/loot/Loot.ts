@@ -20,6 +20,7 @@ import type {
   SetPiece,
   Slot,
 } from './types';
+import { emptyMergedSetBonuses, mergeSetBonusEntry, validateSetBonusDefinitions } from './setBonuses';
 
 /** Seedad slump per drop (mulberry32) så att buggar kan återskapas. */
 export class LootRng {
@@ -81,6 +82,9 @@ export interface HeroStats {
   bleed: number;
   vs: Dict<number>;
   setActive: string[];
+  immuneKnockback: boolean;
+  resistDarkMagic: number;
+  skillBonus: Dict<Dict<unknown>>;
   twoHanded: boolean;
 }
 export interface ItemStats extends Dict<number | Num2 | undefined> {
@@ -157,6 +161,8 @@ export class Loot {
     const sets = (DATA.sets as unknown as { sets: SetDef[] }).sets;
     this.SETS = Object.fromEntries(sets.map((s) => [s.id, s]));
     for (const s of sets) for (const p of s.pieces) this.SETPIECE[s.id + ':' + p.base] = { set: s, piece: p };
+    const setIssues = validateSetBonusDefinitions(sets);
+    for (const msg of setIssues) console.warn(`[set] ${msg}`);
   }
 
   // ----- bastyp -----
@@ -487,6 +493,7 @@ export class Loot {
       regenPen = Math.max(regenPen, base.stamina_regen_penalty ?? 0);
     }
     const setActive: string[] = [];
+    const mergedSets = emptyMergedSetBonuses();
     for (const [sid, n] of Object.entries(this.setCounts(equip))) {
       const s = this.SETS[sid];
       if (!s || (s.class && s.class !== 'alla' && s.class !== cls.id)) continue;
@@ -497,7 +504,8 @@ export class Loot {
             if (bk === 'block_chance' && typeof bv === 'number') block += bv;
             else if (bk === 'defense' && typeof bv === 'number') itemDef += bv;
             else if (bk === 'magic_unlock_preview') add('stamina', (bv as { mana?: number }).mana);
-            else add(bk, bv);
+            else if (typeof bv === 'number') add(bk, bv);
+            else mergeSetBonusEntry(mergedSets, bk, bv);
           }
         }
     }
@@ -540,6 +548,9 @@ export class Loot {
       bleed: v('bleed_dps'),
       vs: { ododa: v('vs_ododa_damage_pct'), bestar: v('vs_bestar_damage_pct'), demoner: v('vs_demoner_damage_pct') },
       setActive,
+      immuneKnockback: mergedSets.immuneKnockback,
+      resistDarkMagic: mergedSets.resistDarkMagic + v('resist_dark_magic'),
+      skillBonus: mergedSets.skillBonus,
       twoHanded: !!w?.two_handed,
     };
   }

@@ -1,0 +1,78 @@
+{
+  "tempelriddarens_ed": {
+    "name": "Templar's Oath",
+    "theme": "The last knights, sworn to keep the graves shut.",
+    "pieces": {
+      "edens_klinga": { "name": "Oathblade" },
+      "edens_mur": { "name": "Oathwall" },
+      "edens_visir": { "name": "Oath Visor" },
+      "edens_pansar": { "name": "Oathplate" },
+      "edens_steg": { "name": "Oathstride" }
+    },
+    "bonuses": {
+      "5": {
+        "skill_bonus": "Shield Bash stuns 1 s longer",
+        "immune_knockback": "Immune to knockback"
+      }
+    }
+  },
+  "bergsklanens_raseri": {
+    "name": "Fury of the Mountain Clan",
+    "theme": "A clan that devoured its own dead rather than leave them to the demons.",
+    "pieces": {
+      "klanhovdingens_yxa": { "name": "Clanchief's Axe" },
+      "forfadernas_skalle": { "name": "Skull of the Forefathers" },
+      "vargpalsen": { "name": "The Wolfpelt" },
+      "blodnavarna": { "name": "Bloodfists" },
+      "trofebaltet": { "name": "Trophy Belt" }
+    },
+    "bonuses": {
+      "5": {
+        "skill_bonus": "Berserk lasts 4 s longer with no damage-taken penalty"
+      }
+    }
+  },
+  "jaktgudinnans_dottrar": {
+    "name": "Daughters of the Huntress",
+    "theme": "Amazons who hunted in the ruins when all others fled.",
+    "pieces": {
+      "dottrarnas_spjut": { "name": "Spear of the Daughters" },
+      "manbagen": { "name": "Moonbow" },
+      "jagarinnans_hatta": { "name": "Huntress's Hood" },
+      "skugglader": { "name": "Shadowhide" },
+      "tysta_steg": { "name": "Silent Steps" }
+    },
+    "bonuses": {
+      "5": {
+        "skill_bonus": "Javelin Toss throws 2 extra javelins"
+      }
+    }
+  },
+  "gravvaktarens_arv": {
+    "name": "Gravewarden's Legacy",
+    "theme": "Gear of those who guarded the dead, before the dead rose.",
+    "pieces": {
+      "vaktarens_hammare": { "name": "Warden's Hammer" },
+      "vaktarens_lock": { "name": "Warden's Lid" },
+      "vaktarens_brynja": { "name": "Warden's Mail" },
+      "vaktarens_grepp": { "name": "Warden's Grip" },
+      "vaktarens_ben": { "name": "Warden's Bone" }
+    }
+  },
+  "askvandrarens_borda": {
+    "name": "Ashwalker's Burden",
+    "theme": "A pilgrim who walked into Ashenhold and never walked out.",
+    "pieces": {
+      "pilgrimens_torn": { "name": "Pilgrim's Thorn" },
+      "den_svartade_rustningen": { "name": "The Blackened Armor" },
+      "botgordeln": { "name": "Penitent's Girdle" },
+      "askvagen": { "name": "The Ash Road" },
+      "den_branda_runan": { "name": "The Burnt Rune" }
+    },
+    "bonuses": {
+      "5": {
+        "magic_unlock_preview": "Grants mana once magic awakens. Until then, +30 stamina."
+      }
+    }
+  }
+}

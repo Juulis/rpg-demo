@@ -86,6 +86,11 @@ export const SV = {
     drop: 'Släng',
     cancel: 'Avbryt',
     drop_confirm: 'Släng {name} på marken?',
+    active_set_bonuses: 'Aktiva setbonusar',
+  },
+  set_bonus: {
+    immune_knockback: 'Immun mot knuff',
+    magic_unlock_preview: 'Ger mana när magi låses upp, annars +30 uthållighet',
   },
   stat: {
     life: 'Liv',

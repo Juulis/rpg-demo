@@ -1,0 +1,31 @@
+{
+  "tempelriddarens_ed": {
+    "bonuses": {
+      "5": {
+        "skill_bonus": "Sköldslag bedövar 1 s längre",
+        "immune_knockback": "Immun mot knuff"
+      }
+    }
+  },
+  "bergsklanens_raseri": {
+    "bonuses": {
+      "5": {
+        "skill_bonus": "Berserkerrus 4 s längre utan skadestraff"
+      }
+    }
+  },
+  "jaktgudinnans_dottrar": {
+    "bonuses": {
+      "5": {
+        "skill_bonus": "Kastspjut kastar 2 extra spjut"
+      }
+    }
+  },
+  "askvandrarens_borda": {
+    "bonuses": {
+      "5": {
+        "magic_unlock_preview": "Ger mana när magi låses upp, annars +30 uthållighet."
+      }
+    }
+  }
+}

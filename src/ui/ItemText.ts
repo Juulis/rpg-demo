@@ -1,3 +1,4 @@
+import { formatSetBonusTier, setLocalizedName } from '../data/setText';
 import type { HeroModel as Hero } from '../logic/HeroModel';
 import type { HeroStats, Loot } from '../logic/loot/Loot';
 import type { Equip, Item } from '../logic/loot/types';
@@ -104,18 +105,16 @@ export class ItemText {
     const eq = hero.inv.equip;
     const n = L.setCounts(eq)[set.id] ?? 0;
     const wrong = !!set.class && set.class !== 'alla' && set.class !== hero.cls.id;
-    let h = `<div class="setH">${this.text.data('set', set.id, 'name', set.name)} (${n}/${set.pieces.length})${wrong ? ` <span class="bad">– ${this.text.t('tooltip.set_class_only', { cls: set.class ?? '' })}</span>` : ''}</div>`;
+    let h = `<div class="setH">${setLocalizedName(set.id, set.name)} (${n}/${set.pieces.length})${wrong ? ` <span class="bad">– ${this.text.t('tooltip.set_class_only', { cls: set.class ?? '' })}</span>` : ''}</div>`;
     h += set.pieces
       .map(
         (p) =>
-          `<div class="setP ${Object.values(eq).some((e) => e?.set === set.id && e.base === p.base) ? 'on' : ''}">${this.text.data('set', p.id, 'name', p.name)}</div>`,
+          `<div class="setP ${Object.values(eq).some((e) => e?.set === set.id && e.base === p.base) ? 'on' : ''}">${setLocalizedName(p.id, p.name)}</div>`,
       )
       .join('');
+    const statLine = (k: string, v: number) => this.stat(k, v);
     for (const [k, bon] of Object.entries(set.bonuses)) {
-      const parts = Object.entries(bon)
-        .map(([bk, bv]) => (typeof bv === 'number' ? this.stat(bk, bv) : bk.replace(/_/g, ' ')))
-        .filter(Boolean)
-        .join(', ');
+      const parts = formatSetBonusTier(this.text, set.id, k, bon as Record<string, unknown>, statLine);
       h += `<div class="setB ${n >= +k && !wrong ? 'on' : ''}">${this.text.t('tooltip.set_parts', { n: k })}: ${parts}</div>`;
     }
     return h;

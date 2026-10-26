@@ -6,6 +6,7 @@ import type { Loot } from '../logic/loot/Loot';
 import { SLOTS, type Item, type Slot } from '../logic/loot/types';
 import { assetUrl, type AssetStore } from '../render/Assets';
 import type { Text, TextKey } from '../text/Text';
+import { formatSetBonusTier, setLocalizedName } from '../data/setText';
 import type { ItemText } from './ItemText';
 import type { Tooltip } from './Tooltip';
 import { discardNeedsConfirm } from '../logic/inventoryDiscard';
@@ -206,6 +207,28 @@ export class InventoryUI {
     const t = this.text;
     const hit = this.L.hitChance(st.AR, 15 + 8 * lv, lv, lv);
     const row = (k: TextKey, v: string | number): string => `<div><span>${t.t(k)}</span><b>${v}</b></div>`;
+    let setBlock = '';
+    const bySet = new Map<string, string[]>();
+    for (const tag of st.setActive) {
+      const [sid, tier] = tag.split(':');
+      const def = sid ? this.L.SETS[sid] : undefined;
+      if (!sid || !tier || !def) continue;
+      const line = formatSetBonusTier(this.text, sid, tier, def.bonuses[tier] as Record<string, unknown>, (k, v) =>
+        this.itemText.stat(k, v),
+      );
+      if (!line) continue;
+      const list = bySet.get(sid) ?? [];
+      list.push(`${t.t('tooltip.set_parts', { n: tier })}: ${line}`);
+      bySet.set(sid, list);
+    }
+    if (bySet.size) {
+      setBlock = `<div class="setActiveH">${t.t('inv.active_set_bonuses')}</div>`;
+      for (const [sid, lines] of bySet) {
+        const name = setLocalizedName(sid, this.L.SETS[sid]?.name ?? sid);
+        setBlock += `<div class="setActiveSet">${name}</div>`;
+        for (const ln of lines) setBlock += `<div class="setActiveLine">${ln}</div>`;
+      }
+    }
     this.statBox.innerHTML =
       `<h4>${t.data('klasser', hero.cls.id, 'name', hero.cls.name)} · ${t.t('hud.level', { level: lv })}</h4>` +
       row('stat.life', st.maxHp) +
@@ -217,6 +240,7 @@ export class InventoryUI {
       row('stat.crit', pct(st.crit)) +
       row('stat.mf', Math.round(st.mf) + ' %') +
       row('stat.speed', st.speed.toFixed(2)) +
+      setBlock +
       `<div class="gold"><span>${t.t('inv.gold')}</span><b>${hero.s.gold}</b></div>`;
   }
 
