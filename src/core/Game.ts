@@ -66,6 +66,7 @@ import type { Zone, ZoneName } from '../world/Zone';
 import { DevCheatsView } from '../dev/DevCheatsView';
 import { formatClockTime, GameClock } from '../world/GameClock';
 import { DayNightPresenter } from '../world/DayNightPresenter';
+import { setSetLocale } from '../data/setText';
 import { clockPeriodLabel, setClockLocale } from '../world/clockText';
 import { WorldStateService } from '../world/WorldStateService';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
@@ -234,6 +235,7 @@ export class Game {
     this.bus.on('map_toggle', ({ open }) => document.body.classList.toggle('map-open', open));
     this.bus.on('locale_changed', ({ locale }) => {
       setClockLocale(locale);
+      setSetLocale(locale);
       this.hud.relabel();
       this.invUI.relabel();
     });
