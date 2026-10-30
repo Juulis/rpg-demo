@@ -24,6 +24,15 @@ assert.ok((beast.mat ?? 0) > 0 && !('dryck' in beast));
 const tier1 = DATA.drops.potion_weights_by_tier['1'];
 assert.ok(tier1.torkat_kott > 0);
 
+for (const boss of Object.values(DATA.drops.bosses)) {
+  for (const g of boss.guaranteed ?? []) {
+    assert.ok(
+      DATA.items.potions.some((p) => p.id === g.item),
+      `boss drop ${g.item}`,
+    );
+  }
+}
+
 assert.ok(!JSON.stringify(SV).match(/halsodryck|Livsdryck|potion/i));
 
 console.log('natural-consumables.test.mts: ok');
