@@ -404,6 +404,136 @@
       },
       "talare": ["vaktkapten_ingrid", "olle_vardshus", "marta_torghandlare"],
       "prioritet": 5
+    },
+    {
+      "id": "rykte_arvid_vilar",
+      "text": "Klockorna under vattnet har tystnat. Lova sover i ett riktigt hus nu.",
+      "villkor": {
+        "quest_val": {
+          "klockorna_under_vattnet": "befria_arvid"
+        }
+      },
+      "talare": ["lova_fiskarankan", "olle_vardshus", "marta_torghandlare"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_arvid_vakar",
+      "text": "Det går en man med lykta längs stranden vid Dimmerstrand om nätterna. Han gör ingen illa.",
+      "villkor": {
+        "quest_val": {
+          "klockorna_under_vattnet": "arvid_vaktar"
+        }
+      },
+      "talare": ["lova_fiskarankan", "olle_vardshus"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_korpmodern_dod",
+      "text": "Korpholmarna är tomma. Inte en fågel kvar.",
+      "villkor": {
+        "quest_val": {
+          "korpmoderns_sista_flykt": "bryt_kransen"
+        }
+      },
+      "talare": ["lova_fiskarankan", "olle_vardshus"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_korparna_vaktar",
+      "text": "Korparna i Dimmerstrand skriker när något kommer. Folk har börjat lita på dem.",
+      "villkor": {
+        "quest_val": {
+          "korpmoderns_sista_flykt": "los_forbannelsen"
+        }
+      },
+      "talare": ["lova_fiskarankan", "olle_vardshus", "marta_torghandlare"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_jarnmunken_dod",
+      "text": "Järnmunken är död. Hans gördel bärs av en främling nu.",
+      "villkor": {
+        "quest_val": {
+          "jarnmunkens_las": "avsluta_sjalv"
+        }
+      },
+      "talare": ["broder_elias", "olle_vardshus"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_elias_forlaten",
+      "text": "Broder Elias bor i Järnklostret nu. Det lyser vid altaret om nätterna.",
+      "villkor": {
+        "quest_val": {
+          "jarnmunkens_las": "lat_elias_tala"
+        }
+      },
+      "talare": ["broder_elias", "olle_vardshus", "sigrun_helare"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_hanna_vilar",
+      "text": "Marta har en målad bild i ståndet. Fråga inte om den.",
+      "villkor": {
+        "quest_val": {
+          "martas_dotter": "beratta_sanningen"
+        }
+      },
+      "talare": ["olle_vardshus", "gunnar_jarnhand"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_marta_hoppas",
+      "text": "Marta säger att hennes Hanna lever längre in i bergen. Hon frågar alla från Kopparberg.",
+      "villkor": {
+        "quest_val": {
+          "martas_dotter": "ge_hopp"
+        }
+      },
+      "talare": ["marta_torghandlare", "olle_vardshus"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_profeten_dod",
+      "text": "Askans profet är död. Under masken var han en av gravvaktarna.",
+      "villkor": {
+        "boss_killed": "askans_profet"
+      },
+      "talare": ["rask_avfallen", "gravvaktaren_ebbe", "olle_vardshus"],
+      "prioritet": 4
+    },
+    {
+      "id": "rykte_rask_angrar",
+      "text": "Den avfallne sitter vid lägerelden och läser en karta av ben högt för den som orkar lyssna.",
+      "villkor": {
+        "quest_val": {
+          "den_fjarde_stenen": "rask_behaller"
+        }
+      },
+      "talare": ["gamla_ylva", "bror_vakt", "rask_avfallen"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_pilgrimen_vilar",
+      "text": "Vid Askeborgs port står en stav i en liten grav. Där brinner ett ljus som aldrig slocknar.",
+      "villkor": {
+        "quest_val": {
+          "pilgrimens_vag": "begrav_staven"
+        }
+      },
+      "talare": ["rask_avfallen", "olle_vardshus"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_pilgrimen_altaret",
+      "text": "Någon bar en pilgrimsstav ända in i Morvaths katedral. Den glöder fortfarande.",
+      "villkor": {
+        "quest_val": {
+          "pilgrimens_vag": "bar_staven"
+        }
+      },
+      "talare": ["rask_avfallen", "olle_vardshus"],
+      "prioritet": 3
     }
   ]
 }

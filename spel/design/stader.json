@@ -86,14 +86,14 @@
     },
     {
       "id": "snabbresa",
-      "desc": "Snabbresa mellan återbefolkade städer."
+      "desc": "Stadens vägsten blir waypoint. Gratis resa mellan aktiva waypoints, röda portalen ingår alltid."
     },
     {
       "id": "helare",
-      "desc": "Läker gratis och tar bort gift."
+      "desc": "Läker gratis till full HP och uthållighet och tar bort gift."
     }
   ],
-  "settlers_rule": "Invandrare anländer gradvis (1 per 2 min spel) upp till nivåns spann. Varje 10 invånare ger +5 % rabatt hos handlare.",
+  "settlers_rule": "Invandrare anländer gradvis (1 per 2 min spel) upp till nivåns spann. Varje 10 invånare ger 5 % rabatt hos stadens handlare, tak 20 % (se prissystem).",
   "raid_rule": "Borttagen: rensade städer får inga nya monster (D2 spawnmodell).",
   "cities": [
     {
@@ -105,7 +105,10 @@
       "boss": "grabjornen_ulvhild",
       "access": "Väg österut från startskogen.",
       "boss_level": 6,
-      "recommended_level": 4
+      "recommended_level": 4,
+      "tjanst_npc": {
+        "handlare": "hedda_jagare"
+      }
     },
     {
       "id": "gamla_byn",
@@ -118,7 +121,13 @@
       "data_file": "portal_by.json",
       "unique_reward": "benkungens_krona",
       "boss_level": 10,
-      "recommended_level": 7
+      "recommended_level": 7,
+      "tjanst_npc": {
+        "handlare": "marta_torghandlare",
+        "vapenhandlare": "gunnar_jarnhand",
+        "kuriosahandlare": "sara_benlasare",
+        "tavern_uppdrag": "olle_vardshus"
+      }
     },
     {
       "id": "dimmerstrand",
@@ -128,7 +137,8 @@
       "family": "gastar",
       "boss": "trasdrottningen",
       "access": "Väg västerut, alltid öppen.",
-      "boss_level": 14
+      "boss_level": 14,
+      "tjanst_npc": {}
     },
     {
       "id": "kopparberg",
@@ -138,7 +148,8 @@
       "family": "insekter",
       "boss": "spinnmodern",
       "access": "Väg norrut genom bergen, alltid öppen.",
-      "boss_level": 18
+      "boss_level": 18,
+      "tjanst_npc": {}
     },
     {
       "id": "askeborg",
@@ -148,12 +159,101 @@
       "family": "demoner",
       "boss": "askfursten_morvath",
       "access": "Väg söderut genom askfälten, alltid öppen.",
-      "boss_level": 25
+      "boss_level": 25,
+      "tjanst_npc": {}
     }
   ],
   "level_note": "Monsternivåer är statiska per område och skalas aldrig efter hjälten. Startskogen 1 till 3 före första staden. Förvridna (fadern_av_smittan nivå 28) är reserverade för framtida slutområde 24 till 28.",
   "design_rule": "Inga rörelsespärrar: alla städer går att besöka när som helst. Svårigheten styrs bara av monstrens nivå. recommended_level är ren information.",
   "service_rule": "Inga tjänster ändrar föremål (ingen smedja, inga uppgraderingar, inga hylsor).",
   "npc_ref": "npc.json",
-  "akter_ref": "akter.json"
+  "akter_ref": "akter.json",
+  "prissystem": {
+    "grundvarde": {
+      "utrustning": "värde = 8 + 4 x item_level, gånger kvalitetsfaktor. Gäller vapen, rustning, sköldar, amuletter, ringar och benföremål.",
+      "kvalitetsfaktor": {
+        "normal": 1.0,
+        "magic": 2.5,
+        "rare": 5.0,
+        "set": 8.0,
+        "legendary": 12.0
+      },
+      "mat_fast_pris": {
+        "torkat_kott": 12,
+        "skogsörtste": 12,
+        "vargblod": 30,
+        "rokerat_hogrev": 35,
+        "varlbrygd": 120
+      },
+      "mat_not": "Enligt #35. Om koden fortfarande har drycker gäller samma pris: liten_halsodryck 12, uthallighetsdryck 12, stor_halsodryck 35, foryngringsdryck 120.",
+      "ammo": {
+        "pilar_20": 20,
+        "kastspjut_5": 20
+      },
+      "material": {
+        "timmer": 6,
+        "sten": 6,
+        "jarn": 15,
+        "benflisa": 4
+      }
+    },
+    "kopa": "pris = rint(värde x prisfaktor_salj x rabattfaktor x prisfaktor_mult), minst sälj värdet + 1 så att köp och sälj aldrig ger vinst.",
+    "rabattfaktor": "1 minus invånarrabatt minus fraktionsrabatt, lägst 0,7.",
+    "invanarrabatt": "5 % per 10 invånare i staden, tak 20 %.",
+    "fraktionsrabatt": "de_kvarvarande rykte 30 eller mer ger 5 %, 60 eller mer ger 10 %. Under minus 30 blir det minus 10 % (dyrare). Fraktionsbundna handlare (t.ex. sara_benlasare) använder sin egen fraktion.",
+    "prisfaktor_mult": "Från konsekvenssystemet (merchant_stock). Multipliceras in efter rabatten, gäller bara den NPC:n.",
+    "salja": "pris = rint(värde x prisfaktor_kop). Påverkas inte av rabatt. Minst 1 guld.",
+    "ej_saljbart": "Questföremål (id börjar med quest_) går inte att sälja och syns gråa i handelsfönstret.",
+    "set_och_legendariska": "Kan säljas men säljs aldrig i butik. Loreboken behåller upplåsningen.",
+    "aterkop": "De 10 senast sålda föremålen kan köpas tillbaka till samma pris tills hjälten lämnar staden.",
+    "lager": "Lagret rullas vid varje nytt game med stadens ilvl = stadens boss_level (startlägret 3). Samma regler som drop: bastyp item_level <= ilvl."
+  },
+  "service_detail": {
+    "handlare": {
+      "oppnas": "aterbefolkad_1",
+      "saljer": ["mat enligt #35, obegränsat", "pilar och kastspjut", "timmer och sten", "vapen och rustning Normal, 6 platser"],
+      "koper": "allt utom questföremål",
+      "prisfaktor_salj": 1.15,
+      "prisfaktor_kop": 0.3,
+      "lager_platser": 12
+    },
+    "vapenhandlare": {
+      "oppnas": "aterbefolkad_2",
+      "saljer": ["vapen, rustning och sköldar, Normal 60 % och Magisk 40 %", "järn"],
+      "koper": ["vapen", "rustning", "skold", "ben"],
+      "prisfaktor_salj": 1.25,
+      "prisfaktor_kop": 0.35,
+      "lager_platser": 18
+    },
+    "kuriosahandlare": {
+      "oppnas": "aterbefolkad_3",
+      "saljer": ["amuletter, ringar och benföremål, Magisk 70 % och Sällsynt 30 %"],
+      "koper": ["amulett", "ring", "ben"],
+      "prisfaktor_salj": 1.4,
+      "prisfaktor_kop": 0.4,
+      "lager_platser": 10
+    },
+    "helare": {
+      "oppnas": "aterbefolkad_3",
+      "tjanst": "Gratis: full HP, full uthållighet, tar bort gift, brännskada och förbannelse.",
+      "saljer": ["skogsörtste", "rokerat_hogrev", "varlbrygd"],
+      "koper": [],
+      "prisfaktor_salj": 1.0
+    },
+    "snabbresa": {
+      "oppnas": "aterbefolkad_3",
+      "kostnad": 0,
+      "beskrivning": "Stadens vägsten väcks. Gratis resa mellan alla aktiva waypoints."
+    },
+    "ingen_andring": "Ingen tjänst ändrar föremål. Ingen smedja, inga hylsor, ingen identifiering, ingen reparation."
+  },
+  "snabbresa": {
+    "natverk": "varld_stor.json meta.waypoints. rod_portal är alltid med. Varje stad lägger till sin vägsten (id <stad>_vagsten) när den når aterbefolkad_3.",
+    "aktivering": "En waypoint aktiveras första gången hjälten går fram till den. Röda portalen aktiveras så, utan runkrav. En stads vägsten måste både vara byggd (aterbefolkad_3) och besökt.",
+    "resa": "Fråga vid valfri aktiv waypoint, välj mål i en lista. Gratis, ingen nedkylning. Lista visar namn och rekommenderad nivå.",
+    "lore": "Vägstenarna är bitar av ristarens runor. Invånarna gräver fram dem och reser dem på torget. De glöder rött som portalen. Hjälten använder kraften men styr den inte.",
+    "sparas": "Per hjälte, som stadstillstånd.",
+    "ingen_sparr": "Allt går att gå till fots. Snabbresa sparar bara tid."
+  },
+  "tjanst_npc_regel": "Saknas en NPC för en tjänst i en stad används en generisk NPC av rätt roll tills en egen NPC designas. Lägret har alltid tor_kolare (handlare) och sigrun_helare (gratis helning), oberoende av städer."
 }

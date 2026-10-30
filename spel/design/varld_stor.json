@@ -1,0 +1,2009 @@
+{
+  "meta": {
+    "version": "1.0",
+    "del": "GitHub Juulis/rpg-demo #85, del B",
+    "startpunkt": {
+      "region": "startlagret",
+      "poi": "startlagret_by",
+      "chunk": [0, 0]
+    },
+    "chunk": {
+      "storlek_rutor": 64,
+      "seed": "chunk_seed = hash(game_seed, cx, cy), game_seed enligt spawnzoner.json meta.seed_rule",
+      "region_for_chunk": "närmaste region vars chunk ligger inom dess radie (chebyshev). Övriga chunkar är mellanmark: biom och huvudfamilj från närmaste region, undertyper från biomens lista inom ringens band.",
+      "generering": "Varje chunk rullas en gång per game när den laddas (D2). Inga respawns."
+    },
+    "zonmodell": {
+      "avstand": "euklidiskt i chunkar från startpunkt",
+      "ringar": [
+        {
+          "ring": 0,
+          "fran": 0,
+          "till": 2,
+          "nivaband": [1, 3]
+        },
+        {
+          "ring": 1,
+          "fran": 2,
+          "till": 4,
+          "nivaband": [3, 6]
+        },
+        {
+          "ring": 2,
+          "fran": 4,
+          "till": 6,
+          "nivaband": [7, 10]
+        },
+        {
+          "ring": 3,
+          "fran": 6,
+          "till": 8,
+          "nivaband": [10, 15]
+        },
+        {
+          "ring": 4,
+          "fran": 8,
+          "till": 10,
+          "nivaband": [14, 19]
+        },
+        {
+          "ring": 5,
+          "fran": 10,
+          "till": 12,
+          "nivaband": [19, 25]
+        },
+        {
+          "ring": 6,
+          "fran": 12,
+          "till": 15,
+          "nivaband": [24, 30]
+        },
+        {
+          "ring": 7,
+          "fran": 15,
+          "till": null,
+          "nivaband": [28, 30]
+        }
+      ],
+      "regel": "Ringen väljer vilka undertyper som får spawna: undertypens fasta nivå ska ligga inom ringens band. Stats skalas aldrig.",
+      "ytterkant": "Ring 7 och utåt återanvänder band 28 till 30 tills maxnivån höjs."
+    },
+    "regler": [
+      "Inga rörelsespärrar: inga krav på att döda alla, rensa eller ha nivå på vägar eller regioner. Bara monsternivån styr svårigheten.",
+      "Statiska monsternivåer: fasta stats per undertyp (monsterfamiljer.json).",
+      "D2 spawn: rullas en gång per game, ingen respawn.",
+      "Inga ädelstenar, hylsor eller system som ändrar föremål.",
+      "Quests är aldrig döda X eller samla X.",
+      "Monstermix mellan familjer är avstängd (spawnzoner.json meta.mixed_spawn_enabled = false): en chunk eller region spawnar bara sin huvudfamilj."
+    ],
+    "refs": [
+      "akter.json",
+      "stader.json",
+      "spawnzoner.json",
+      "monsterfamiljer.json",
+      "monster_niva.json",
+      "quests.json",
+      "npc.json",
+      "portal_by.json"
+    ],
+    "nya_id": {
+      "regioner": ["kolarmon", "sodra_mon", "myrkanten", "brandkanten", "fjallfoten", "rokkarret", "glodstranden", "brandkusten"]
+    },
+    "atkomst": {
+      "oppen": "vanlig chunk i den öppna världen",
+      "teleport": "instans (grotta, bana, bossplats eller händelse) med ingång i öppna världen. Teleporten är alltid öppen, inga krav, så det är ingen rörelsespärr."
+    },
+    "waypoints": {
+      "regel": "Snabbresepunkter utan krav. Röda portalen är en waypoint, inget runkrav. Norra vägen till Den gamla byn är alltid öppen.",
+      "punkter": ["rod_portal"],
+      "stadsvagstenar": "Varje stad lägger till <stad>_vagsten när den når aterbefolkad_3 och hjälten har besökt den. Se stader.json snabbresa."
+    },
+    "beslutat": [
+      "Askfälten är ett eget biom, ask.",
+      "Röda portalen är en waypoint utan runkrav.",
+      "Varje biom får egna monster, befintliga undertyper är platshållare tills UI gör nya.",
+      "Instanser nås med teleport som alltid är öppen. Bosslåset i portal_by.json (arenan låses under striden) är godkänt av Juulis."
+    ]
+  },
+  "biomer": {
+    "skog": {
+      "namn": "Skog",
+      "kansla": "Tät granskog i dimma, runstenar, kolarkojor, klösmärken. Hemmet som blivit främmande.",
+      "resurser": ["timmer", "guld i övergivna hus"],
+      "tiles": ["mossa", "barr", "stig", "rötter", "glänta"],
+      "dekor": ["gran", "björk", "runsten", "kolmila", "gravkors av björk", "vägrös"],
+      "variant": {},
+      "id": "skog",
+      "monsterfamiljer": {
+        "bestar": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn"],
+        "forvridna": ["forvriden_jagare", "smittad_bybo"],
+        "ododa": ["skelett_hund", "skelett_krigare", "skelett_bagskytt", "skelett_runprast", "skelett_vakt", "skelett_kapten"]
+      },
+      "nivaband": [1, 10],
+      "regioner": [
+        "startlagret",
+        "startskogen",
+        "vargstigen",
+        "vargaby",
+        "ulvhilds_ide",
+        "kolarmon",
+        "sodra_mon",
+        "gravasen",
+        "gamla_byn",
+        "kapellets_krypta"
+      ],
+      "mal": [
+        {
+          "poi": "kolarkojorna",
+          "quest_mall": "spar"
+        },
+        {
+          "poi": "kolmilan",
+          "quest_mall": "budbarare"
+        },
+        {
+          "poi": "vargaby_by",
+          "quest_mall": "val_tva_npc"
+        },
+        {
+          "poi": "brunna_garden",
+          "quest_mall": "aterlamning"
+        }
+      ],
+      "egna_monster": [
+        {
+          "id": "skog_vargar",
+          "roll": "Vargar och björnar",
+          "familj": "bestar",
+          "nivaband": [1, 6],
+          "undertyper_nu": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "skog_kolare",
+          "roll": "Förvridna kolare",
+          "familj": "forvridna",
+          "nivaband": [3, 5],
+          "undertyper_nu": ["forvriden_jagare", "smittad_bybo"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "skog_gravfolk",
+          "roll": "Gravfolk",
+          "familj": "ododa",
+          "nivaband": [7, 10],
+          "undertyper_nu": ["skelett_hund", "skelett_krigare", "skelett_bagskytt", "skelett_runprast", "skelett_vakt", "skelett_kapten"],
+          "platshallare": false,
+          "ersatts_av": null
+        }
+      ],
+      "overgangar": [
+        {
+          "till": "trask",
+          "beskrivning": "mossa blir myr, spång tar över stigen"
+        },
+        {
+          "till": "fjall",
+          "beskrivning": "granar glesnar till vindtall och ljung"
+        },
+        {
+          "till": "ask",
+          "beskrivning": "svarta stammar, sotig mossa"
+        }
+      ]
+    },
+    "trask": {
+      "namn": "Träsk",
+      "kansla": "Myr, spångar och stilla vatten. Lyktor som rör sig, klockor under ytan.",
+      "resurser": ["timmer (sjunket virke)", "guld i sjunkna gårdar"],
+      "tiles": ["myr", "grunt vatten", "spång", "vass", "torv"],
+      "dekor": ["döda tallar", "bläckfärgade gölar", "spånglyktor", "sjunkna båtar"],
+      "variant": {
+        "rutt": "Sjuk skog och giftträsk, svulster som pulserar."
+      },
+      "id": "trask",
+      "monsterfamiljer": {
+        "ododa": ["skelett_hund", "skelett_krigare", "skelett_bagskytt"],
+        "gastar": ["dimgast", "klagokvinna", "trasknacken"],
+        "forvridna": ["smittbarare", "galen_munk", "kottklump"]
+      },
+      "nivaband": [7, 30],
+      "regioner": ["myrkanten", "dimvagen", "dimmerstrand", "rokkarret", "ruttmarken", "smittans_katedral", "sprickans_botten"],
+      "mal": [
+        {
+          "poi": "sjunkna_garden",
+          "quest_mall": "mysterium"
+        },
+        {
+          "poi": "hedkapellet",
+          "quest_mall": "spar"
+        },
+        {
+          "poi": "rokkarrets_ruin",
+          "quest_mall": "aterlamning"
+        },
+        {
+          "poi": "andande_lunden",
+          "quest_mall": "mysterium"
+        }
+      ],
+      "egna_monster": [
+        {
+          "id": "trask_myrlik",
+          "roll": "Myrlik",
+          "familj": "ododa",
+          "nivaband": [7, 9],
+          "undertyper_nu": ["skelett_hund", "skelett_krigare", "skelett_bagskytt"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp myrlik"
+        },
+        {
+          "id": "trask_gastar",
+          "roll": "Dimgastar",
+          "familj": "gastar",
+          "nivaband": [10, 14],
+          "undertyper_nu": ["dimgast", "klagokvinna", "trasknacken"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "trask_rutt",
+          "roll": "Ruttfolk",
+          "familj": "forvridna",
+          "nivaband": [24, 28],
+          "undertyper_nu": ["smittbarare", "galen_munk", "kottklump"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "trask_sprickvasen",
+          "roll": "Sprickans väsen",
+          "familj": "forvridna",
+          "nivaband": [29, 30],
+          "undertyper_nu": ["kottklump"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp sprickväsen"
+        }
+      ],
+      "overgangar": [
+        {
+          "till": "skog",
+          "beskrivning": "mossa blir myr, spång tar över stigen"
+        },
+        {
+          "till": "kust",
+          "beskrivning": "vass blir tång, myr blir ebbsand"
+        },
+        {
+          "till": "ask",
+          "beskrivning": "rykande gölar, sotig vass"
+        }
+      ]
+    },
+    "fjall": {
+      "namn": "Fjäll",
+      "kansla": "Kal sluttning, vind och tallar. Gruvhål och kloster som tystnat.",
+      "resurser": ["sten", "järn"],
+      "tiles": ["sten", "grus", "ljung", "snöfläck", "bergsväg"],
+      "dekor": ["vindtall", "rösen", "gruvvagnar", "silkesnät", "kristaller"],
+      "variant": {},
+      "id": "fjall",
+      "monsterfamiljer": {
+        "gastar": ["dimgast", "klagokvinna"],
+        "insekter": ["gruvspindel", "syrabagge", "kitinvakt"],
+        "forvridna": ["forvriden_gruvarbetare"]
+      },
+      "nivaband": [11, 19],
+      "regioner": ["fjallfoten", "bergsvagen", "kopparberg", "jarnklostret", "gruvdjupen"],
+      "mal": [
+        {
+          "poi": "fabodlagret",
+          "quest_mall": "eskort"
+        },
+        {
+          "poi": "vaktstugan",
+          "quest_mall": "spar"
+        },
+        {
+          "poi": "schaktlampan",
+          "quest_mall": "mysterium"
+        }
+      ],
+      "egna_monster": [
+        {
+          "id": "fjall_vattar",
+          "roll": "Fjällvättar",
+          "familj": "gastar",
+          "nivaband": [11, 13],
+          "undertyper_nu": ["dimgast", "klagokvinna"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp fjällvätte"
+        },
+        {
+          "id": "fjall_bergsulvar",
+          "roll": "Bergsulvar",
+          "familj": "bestar",
+          "nivaband": [14, 15],
+          "undertyper_nu": ["gruvspindel"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp bergsulv"
+        },
+        {
+          "id": "fjall_gruvkryp",
+          "roll": "Gruvkryp",
+          "familj": "insekter",
+          "nivaband": [15, 19],
+          "undertyper_nu": ["gruvspindel", "syrabagge", "kitinvakt"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "fjall_jarnbroder",
+          "roll": "Järnbröder",
+          "familj": "forvridna",
+          "nivaband": [16, 17],
+          "undertyper_nu": ["forvriden_gruvarbetare"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp järnbroder"
+        }
+      ],
+      "overgangar": [
+        {
+          "till": "skog",
+          "beskrivning": "granar glesnar till vindtall och ljung"
+        }
+      ]
+    },
+    "kust": {
+      "namn": "Kust",
+      "kansla": "Klippor, fågelberg och ebb. Korpar, vrak och fyrar.",
+      "resurser": ["sten", "timmer (drivved)", "guld i vrak"],
+      "tiles": ["klippa", "sand", "tång", "ebbsand", "grunt vatten"],
+      "dekor": ["vrak", "båtar med nät", "korpar", "fyr", "bryggor"],
+      "variant": {},
+      "id": "kust",
+      "monsterfamiljer": {
+        "gastar": ["klagokvinna", "trasknacken"],
+        "ododa": ["drunknad"]
+      },
+      "nivaband": [12, 15],
+      "regioner": ["korpholmarna", "sjunkna_kyrkan", "sista_ljuset"],
+      "mal": [
+        {
+          "poi": "korpvarden",
+          "quest_mall": "spar"
+        },
+        {
+          "poi": "sjunkna_kyrkans_port",
+          "quest_mall": "mysterium"
+        }
+      ],
+      "egna_monster": [
+        {
+          "id": "kust_korpfolk",
+          "roll": "Korpfolk",
+          "familj": "gastar",
+          "nivaband": [12, 13],
+          "undertyper_nu": ["klagokvinna", "trasknacken"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp korpfolk"
+        },
+        {
+          "id": "kust_drunknade",
+          "roll": "Klockans drunknade",
+          "familj": "ododa",
+          "nivaband": [14, 15],
+          "undertyper_nu": ["drunknad"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp klockdrunknad"
+        }
+      ],
+      "overgangar": [
+        {
+          "till": "trask",
+          "beskrivning": "vass blir tång, myr blir ebbsand"
+        },
+        {
+          "till": "ask",
+          "beskrivning": "sand blir aska, vraken pyr"
+        }
+      ]
+    },
+    "ask": {
+      "namn": "Askfält",
+      "kansla": "Förbränd slätt och brinnande stad vid havet. Aska som snö, glödande sprickor, kultens tecken i blod.",
+      "resurser": ["sten", "järn (smälta statyer)", "guld i brända hus"],
+      "tiles": ["aska", "sotig jord", "glödspricka", "lavasten", "bränd väg"],
+      "dekor": ["svarta stammar", "smälta statyer", "kulttecken", "pilgrimsstavar", "rökpelare"],
+      "variant": {},
+      "id": "ask",
+      "monsterfamiljer": {
+        "ododa": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt"],
+        "insekter": ["gruvspindel", "syrabagge", "kitinvakt"],
+        "demoner": ["askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
+        "forvridna": ["askkultist"]
+      },
+      "nivaband": [8, 25],
+      "regioner": ["brandkanten", "glodstranden", "askfalten", "askeborg", "kultens_katakomber", "katedralen", "brandkusten"],
+      "mal": [
+        {
+          "poi": "glodvraket",
+          "quest_mall": "mysterium"
+        },
+        {
+          "poi": "brandkustens_lager",
+          "quest_mall": "eskort"
+        },
+        {
+          "poi": "askeborgs_stadsport",
+          "quest_mall": "aterlamning"
+        },
+        {
+          "poi": "brandkantens_lager",
+          "quest_mall": "val_tva_npc"
+        }
+      ],
+      "egna_monster": [
+        {
+          "id": "ask_brandben",
+          "roll": "Kolnade skelett",
+          "familj": "ododa",
+          "nivaband": [8, 10],
+          "undertyper_nu": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp kolnat skelett"
+        },
+        {
+          "id": "ask_glodbaggar",
+          "roll": "Glödbaggar",
+          "familj": "insekter",
+          "nivaband": [15, 18],
+          "undertyper_nu": ["gruvspindel", "syrabagge", "kitinvakt"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp glödbagge"
+        },
+        {
+          "id": "ask_demoner",
+          "roll": "Askdemoner",
+          "familj": "demoner",
+          "nivaband": [19, 25],
+          "undertyper_nu": ["askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "ask_kultens_praster",
+          "roll": "Askans präster",
+          "familj": "forvridna",
+          "nivaband": [22, 24],
+          "undertyper_nu": ["askkultist"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp askpräst"
+        },
+        {
+          "id": "ask_katedralvaktare",
+          "roll": "Katedralväktare",
+          "familj": "demoner",
+          "nivaband": [24, 25],
+          "undertyper_nu": ["hornslaktare", "askriddare"],
+          "platshallare": true,
+          "ersatts_av": "ny undertyp katedralväktare"
+        }
+      ],
+      "overgangar": [
+        {
+          "till": "skog",
+          "beskrivning": "svarta stammar, sotig mossa"
+        },
+        {
+          "till": "trask",
+          "beskrivning": "rykande gölar, sotig vass"
+        },
+        {
+          "till": "kust",
+          "beskrivning": "sand blir aska, vraken pyr"
+        }
+      ]
+    }
+  },
+  "regioner": [
+    {
+      "id": "startlagret",
+      "namn": "Lägret vid skogsbrynet",
+      "biom": "skog",
+      "typ": "by",
+      "chunk": [0, 0],
+      "radie": 1,
+      "ringzon": 0,
+      "nivaband": [1, 1],
+      "grannar": ["kolarmon", "sodra_mon", "startskogen"],
+      "vagar": ["vag_ostra", "vag_vastra", "askvagen"],
+      "byar": ["startlagret_by"],
+      "poi": ["startlagret_by"],
+      "monsterfamilj": null,
+      "undertyper": [],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": false,
+      "akt": "akt_1",
+      "sakert": true,
+      "monsterplatser": [],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "startskogen",
+      "namn": "Startskogen",
+      "biom": "skog",
+      "typ": "vildmark",
+      "chunk": [1, 1],
+      "radie": 1,
+      "ringzon": 0,
+      "nivaband": [1, 3],
+      "grannar": ["gravasen", "startlagret", "vargstigen"],
+      "vagar": ["vag_ostra", "vag_norra"],
+      "byar": [],
+      "poi": ["rod_portal", "runsten_ristarens", "viskarens_lager"],
+      "monsterfamilj": "bestar",
+      "undertyper": ["skogsvarg", "vargbest"],
+      "boss": null,
+      "spawnzoner": ["startskogen"],
+      "genererad_spawn": false,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_vargar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "vargstigen",
+      "namn": "Vargstigen",
+      "biom": "skog",
+      "typ": "vildmark",
+      "chunk": [2, 0],
+      "radie": 1,
+      "ringzon": 1,
+      "nivaband": [3, 4],
+      "grannar": ["startskogen", "vargaby"],
+      "vagar": ["vag_ostra"],
+      "byar": [],
+      "poi": ["kolarkojorna"],
+      "monsterfamilj": "bestar",
+      "undertyper": ["vargbest", "taggsvin"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_vargar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "vargaby",
+      "namn": "Vargaby",
+      "biom": "skog",
+      "typ": "stad",
+      "chunk": [3, 1],
+      "radie": 1,
+      "ringzon": 1,
+      "nivaband": [4, 6],
+      "grannar": ["ulvhilds_ide", "vargstigen"],
+      "vagar": ["vag_ostra", "stig_idet"],
+      "byar": ["vargaby_by"],
+      "poi": ["vargaby_by", "vargaby_kyrka"],
+      "monsterfamilj": "bestar",
+      "undertyper": ["taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn"],
+      "boss": "grabjornen_ulvhild",
+      "spawnzoner": ["vargaby"],
+      "genererad_spawn": false,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_vargar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "ulvhilds_ide",
+      "namn": "Ulvhilds ide",
+      "biom": "skog",
+      "typ": "bana",
+      "chunk": [3, 2],
+      "radie": 0,
+      "ringzon": 1,
+      "nivaband": [6, 6],
+      "grannar": ["vargaby"],
+      "vagar": ["stig_idet"],
+      "byar": [],
+      "poi": ["ulvhilds_ide_ingang"],
+      "monsterfamilj": "bestar",
+      "undertyper": ["gravargsledare", "ruttbjorn"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_vargar"],
+      "atkomst": "teleport",
+      "ingang_poi": "ulvhilds_ide_ingang"
+    },
+    {
+      "id": "kolarmon",
+      "namn": "Kolarmon",
+      "biom": "skog",
+      "typ": "vildmark",
+      "chunk": [-2, 1],
+      "radie": 1,
+      "ringzon": 1,
+      "nivaband": [3, 5],
+      "grannar": ["gravasen", "myrkanten", "startlagret"],
+      "vagar": ["vag_vastra", "kolarstigen"],
+      "byar": [],
+      "poi": ["kolmilan"],
+      "monsterfamilj": "bestar",
+      "undertyper": ["vargbest", "taggsvin", "skuggvarg"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_vargar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "sodra_mon",
+      "namn": "Södra mon",
+      "biom": "skog",
+      "typ": "vildmark",
+      "chunk": [0, -3],
+      "radie": 1,
+      "ringzon": 1,
+      "nivaband": [3, 5],
+      "grannar": ["brandkanten", "startlagret"],
+      "vagar": ["askvagen"],
+      "byar": [],
+      "poi": ["brunna_garden"],
+      "monsterfamilj": "forvridna",
+      "undertyper": ["forvriden_jagare", "smittad_bybo"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_kolare"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "gravasen",
+      "namn": "Gravåsen",
+      "biom": "skog",
+      "typ": "vildmark",
+      "chunk": [-1, 4],
+      "radie": 1,
+      "ringzon": 2,
+      "nivaband": [7, 8],
+      "grannar": ["gamla_byn", "kolarmon", "startskogen"],
+      "vagar": ["vag_norra", "kolarstigen"],
+      "byar": [],
+      "poi": ["gravhogarna"],
+      "monsterfamilj": "ododa",
+      "undertyper": ["skelett_hund", "skelett_krigare"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_gravfolk"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "gamla_byn",
+      "namn": "Den gamla byn",
+      "biom": "skog",
+      "typ": "stad",
+      "chunk": [0, 5],
+      "radie": 1,
+      "ringzon": 2,
+      "nivaband": [7, 9],
+      "grannar": ["fjallfoten", "gravasen", "kapellets_krypta"],
+      "vagar": ["vag_norra", "stig_kryptan"],
+      "byar": ["gamla_byn_by"],
+      "poi": ["gamla_byn_by", "gamla_byn_kyrkogard", "gamla_byn_kapell"],
+      "monsterfamilj": "ododa",
+      "undertyper": ["skelett_hund", "skelett_krigare", "skelett_bagskytt", "skelett_runprast", "skelett_vakt", "skelett_kapten"],
+      "boss": "benkungen_valdemar",
+      "spawnzoner": ["gamla_byn"],
+      "genererad_spawn": false,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_gravfolk"],
+      "atkomst": "oppen",
+      "boss_poi": "gamla_byn_kyrkogard"
+    },
+    {
+      "id": "kapellets_krypta",
+      "namn": "Kapellets krypta",
+      "biom": "skog",
+      "typ": "bana",
+      "chunk": [1, 5],
+      "radie": 0,
+      "ringzon": 2,
+      "nivaband": [9, 10],
+      "grannar": ["gamla_byn"],
+      "vagar": ["stig_kryptan"],
+      "byar": [],
+      "poi": ["kryptans_port"],
+      "monsterfamilj": "ododa",
+      "undertyper": ["skelett_vakt", "skelett_kapten"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["skog_gravfolk"],
+      "atkomst": "teleport",
+      "ingang_poi": "kryptans_port"
+    },
+    {
+      "id": "myrkanten",
+      "namn": "Myrkanten",
+      "biom": "trask",
+      "typ": "vildmark",
+      "chunk": [-4, 1],
+      "radie": 1,
+      "ringzon": 2,
+      "nivaband": [7, 9],
+      "grannar": ["dimvagen", "kolarmon"],
+      "vagar": ["vag_vastra"],
+      "byar": [],
+      "poi": ["sjunkna_garden"],
+      "monsterfamilj": "ododa",
+      "undertyper": ["skelett_hund", "skelett_krigare", "skelett_bagskytt"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["trask_myrlik"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "brandkanten",
+      "namn": "Brandkanten",
+      "biom": "ask",
+      "typ": "vildmark",
+      "chunk": [0, -5],
+      "radie": 1,
+      "ringzon": 2,
+      "nivaband": [8, 10],
+      "grannar": ["rokkarret", "sodra_mon"],
+      "vagar": ["askvagen"],
+      "byar": [],
+      "poi": ["brandkantens_lager"],
+      "monsterfamilj": "ododa",
+      "undertyper": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_1",
+      "sakert": false,
+      "monsterplatser": ["ask_brandben"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "dimvagen",
+      "namn": "Dimvägen",
+      "biom": "trask",
+      "typ": "vildmark",
+      "chunk": [-6, 1],
+      "radie": 1,
+      "ringzon": 3,
+      "nivaband": [10, 11],
+      "grannar": ["dimmerstrand", "myrkanten"],
+      "vagar": ["vag_vastra"],
+      "byar": [],
+      "poi": ["hedkapellet"],
+      "monsterfamilj": "gastar",
+      "undertyper": ["dimgast"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_2",
+      "sakert": false,
+      "monsterplatser": ["trask_gastar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "dimmerstrand",
+      "namn": "Dimmerstrand",
+      "biom": "trask",
+      "typ": "stad",
+      "chunk": [-7, 0],
+      "radie": 1,
+      "ringzon": 3,
+      "nivaband": [11, 14],
+      "grannar": ["dimvagen", "korpholmarna", "sjunkna_kyrkan"],
+      "vagar": ["vag_vastra", "ebbstigen", "klockstigen"],
+      "byar": ["dimmerstrand_by"],
+      "poi": ["dimmerstrand_by"],
+      "monsterfamilj": "gastar",
+      "undertyper": ["dimgast", "klagokvinna", "trasknacken"],
+      "boss": "trasdrottningen",
+      "spawnzoner": ["dimmerstrand"],
+      "genererad_spawn": false,
+      "akt": "akt_2",
+      "sakert": false,
+      "monsterplatser": ["trask_gastar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "korpholmarna",
+      "namn": "Korpholmarna",
+      "biom": "kust",
+      "typ": "vildmark",
+      "chunk": [-7, 3],
+      "radie": 1,
+      "ringzon": 3,
+      "nivaband": [12, 13],
+      "grannar": ["dimmerstrand"],
+      "vagar": ["ebbstigen"],
+      "byar": [],
+      "poi": ["korpvarden", "fagelberget"],
+      "monsterfamilj": "gastar",
+      "undertyper": ["klagokvinna", "trasknacken"],
+      "boss": "korpmodern",
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_2",
+      "sakert": false,
+      "monsterplatser": ["kust_korpfolk"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "sjunkna_kyrkan",
+      "namn": "Den sjunkna kyrkan",
+      "biom": "kust",
+      "typ": "bana",
+      "chunk": [-7, -3],
+      "radie": 0,
+      "ringzon": 3,
+      "nivaband": [14, 15],
+      "grannar": ["dimmerstrand"],
+      "vagar": ["klockstigen"],
+      "byar": [],
+      "poi": ["sjunkna_kyrkans_port"],
+      "monsterfamilj": "ododa",
+      "undertyper": ["drunknad"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_2",
+      "sakert": false,
+      "monsterplatser": ["kust_drunknade"],
+      "atkomst": "teleport",
+      "ingang_poi": "sjunkna_kyrkans_port"
+    },
+    {
+      "id": "fjallfoten",
+      "namn": "Fjällfoten",
+      "biom": "fjall",
+      "typ": "vildmark",
+      "chunk": [0, 7],
+      "radie": 1,
+      "ringzon": 3,
+      "nivaband": [11, 13],
+      "grannar": ["bergsvagen", "gamla_byn"],
+      "vagar": ["vag_norra"],
+      "byar": [],
+      "poi": ["fabodlagret"],
+      "monsterfamilj": "gastar",
+      "undertyper": ["dimgast", "klagokvinna"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_2",
+      "sakert": false,
+      "monsterplatser": ["fjall_vattar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "rokkarret",
+      "namn": "Rökkärret",
+      "biom": "trask",
+      "typ": "vildmark",
+      "chunk": [0, -7],
+      "radie": 1,
+      "ringzon": 3,
+      "nivaband": [12, 14],
+      "grannar": ["brandkanten", "glodstranden"],
+      "vagar": ["askvagen"],
+      "byar": [],
+      "poi": ["rokkarrets_ruin"],
+      "monsterfamilj": "gastar",
+      "undertyper": ["klagokvinna", "trasknacken"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_2",
+      "sakert": false,
+      "monsterplatser": ["trask_gastar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "bergsvagen",
+      "namn": "Bergsvägen",
+      "biom": "fjall",
+      "typ": "vildmark",
+      "chunk": [0, 8],
+      "radie": 1,
+      "ringzon": 4,
+      "nivaband": [14, 15],
+      "grannar": ["fjallfoten", "kopparberg"],
+      "vagar": ["vag_norra"],
+      "byar": [],
+      "poi": ["vaktstugan"],
+      "monsterfamilj": "insekter",
+      "undertyper": ["gruvspindel"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_3",
+      "sakert": false,
+      "monsterplatser": ["fjall_bergsulvar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "kopparberg",
+      "namn": "Kopparberg",
+      "biom": "fjall",
+      "typ": "stad",
+      "chunk": [0, 9],
+      "radie": 1,
+      "ringzon": 4,
+      "nivaband": [15, 18],
+      "grannar": ["bergsvagen", "gruvdjupen", "jarnklostret"],
+      "vagar": ["vag_norra", "stig_klostret", "schaktet"],
+      "byar": ["kopparberg_by"],
+      "poi": ["kopparberg_by", "gruvlaven"],
+      "monsterfamilj": "insekter",
+      "undertyper": ["gruvspindel", "syrabagge", "kitinvakt"],
+      "boss": "spinnmodern",
+      "spawnzoner": ["kopparberg"],
+      "genererad_spawn": false,
+      "akt": "akt_3",
+      "sakert": false,
+      "monsterplatser": ["fjall_gruvkryp"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "jarnklostret",
+      "namn": "Järnklostret",
+      "biom": "fjall",
+      "typ": "bana",
+      "chunk": [-2, 9],
+      "radie": 0,
+      "ringzon": 4,
+      "nivaband": [16, 17],
+      "grannar": ["kopparberg"],
+      "vagar": ["stig_klostret"],
+      "byar": [],
+      "poi": ["jarnklostrets_port"],
+      "monsterfamilj": "forvridna",
+      "undertyper": ["forvriden_gruvarbetare"],
+      "boss": "jarnmunken",
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_3",
+      "sakert": false,
+      "monsterplatser": ["fjall_jarnbroder"],
+      "atkomst": "teleport",
+      "ingang_poi": "jarnklostrets_port"
+    },
+    {
+      "id": "gruvdjupen",
+      "namn": "Gruvdjupen",
+      "biom": "fjall",
+      "typ": "bana",
+      "chunk": [1, 9],
+      "radie": 0,
+      "ringzon": 4,
+      "nivaband": [17, 19],
+      "grannar": ["kopparberg"],
+      "vagar": ["schaktet"],
+      "byar": [],
+      "poi": ["schaktlampan"],
+      "monsterfamilj": "insekter",
+      "undertyper": ["kitinvakt"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_3",
+      "sakert": false,
+      "monsterplatser": ["fjall_gruvkryp"],
+      "atkomst": "teleport",
+      "ingang_poi": "gruvlaven"
+    },
+    {
+      "id": "glodstranden",
+      "namn": "Glödstranden",
+      "biom": "ask",
+      "typ": "vildmark",
+      "chunk": [0, -9],
+      "radie": 1,
+      "ringzon": 4,
+      "nivaband": [15, 18],
+      "grannar": ["askfalten", "rokkarret"],
+      "vagar": ["askvagen"],
+      "byar": [],
+      "poi": ["glodvraket"],
+      "monsterfamilj": "insekter",
+      "undertyper": ["gruvspindel", "syrabagge", "kitinvakt"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_3",
+      "sakert": false,
+      "monsterplatser": ["ask_glodbaggar"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "askfalten",
+      "namn": "Askfälten",
+      "biom": "ask",
+      "typ": "vildmark",
+      "chunk": [0, -10],
+      "radie": 1,
+      "ringzon": 5,
+      "nivaband": [19, 20],
+      "grannar": ["askeborg", "brandkusten", "glodstranden"],
+      "vagar": ["askvagen", "kustvagen"],
+      "byar": [],
+      "poi": ["rasks_gomstalle"],
+      "monsterfamilj": "demoner",
+      "undertyper": ["askimp"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_4",
+      "sakert": false,
+      "monsterplatser": ["ask_demoner"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "askeborg",
+      "namn": "Askeborg",
+      "biom": "ask",
+      "typ": "stad",
+      "chunk": [1, -11],
+      "radie": 1,
+      "ringzon": 5,
+      "nivaband": [19, 23],
+      "grannar": ["askfalten", "katedralen", "kultens_katakomber"],
+      "vagar": ["askvagen", "katakomb_trappan", "katedralgatan"],
+      "byar": ["askeborg_by"],
+      "poi": ["askeborg_by", "askeborgs_stadsport"],
+      "monsterfamilj": "demoner",
+      "undertyper": ["askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
+      "boss": "askfursten_morvath",
+      "spawnzoner": ["askeborg"],
+      "genererad_spawn": false,
+      "akt": "akt_4",
+      "sakert": false,
+      "monsterplatser": ["ask_demoner"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "kultens_katakomber",
+      "namn": "Kultens katakomber",
+      "biom": "ask",
+      "typ": "bana",
+      "chunk": [2, -11],
+      "radie": 0,
+      "ringzon": 5,
+      "nivaband": [22, 24],
+      "grannar": ["askeborg"],
+      "vagar": ["katakomb_trappan"],
+      "byar": [],
+      "poi": ["katakombernas_ingang"],
+      "monsterfamilj": "forvridna",
+      "undertyper": ["askkultist"],
+      "boss": "askans_profet",
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_4",
+      "sakert": false,
+      "monsterplatser": ["ask_kultens_praster"],
+      "atkomst": "teleport",
+      "ingang_poi": "katakombernas_ingang"
+    },
+    {
+      "id": "katedralen",
+      "namn": "Den brinnande katedralen",
+      "biom": "ask",
+      "typ": "bana",
+      "chunk": [2, -10],
+      "radie": 0,
+      "ringzon": 5,
+      "nivaband": [24, 25],
+      "grannar": ["askeborg"],
+      "vagar": ["katedralgatan"],
+      "byar": [],
+      "poi": ["katedralens_port"],
+      "monsterfamilj": "demoner",
+      "undertyper": ["hornslaktare", "askriddare"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_4",
+      "sakert": false,
+      "monsterplatser": ["ask_katedralvaktare"],
+      "atkomst": "teleport",
+      "ingang_poi": "katedralens_port"
+    },
+    {
+      "id": "brandkusten",
+      "namn": "Brandkusten",
+      "biom": "ask",
+      "typ": "vildmark",
+      "chunk": [-4, -10],
+      "radie": 1,
+      "ringzon": 5,
+      "nivaband": [19, 22],
+      "grannar": ["askfalten", "sista_ljuset"],
+      "vagar": ["kustvagen"],
+      "byar": [],
+      "poi": ["brandkustens_lager"],
+      "monsterfamilj": "demoner",
+      "undertyper": ["askimp", "eldpiska_demon"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_4",
+      "sakert": false,
+      "monsterplatser": ["ask_demoner"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "sista_ljuset",
+      "namn": "Sista ljuset",
+      "biom": "kust",
+      "typ": "by",
+      "chunk": [-8, -9],
+      "radie": 1,
+      "ringzon": 6,
+      "nivaband": [24, 24],
+      "grannar": ["brandkusten", "ruttmarken"],
+      "vagar": ["kustvagen"],
+      "byar": ["sista_ljuset_by"],
+      "poi": ["sista_ljuset_by", "sista_ljusets_fyr"],
+      "monsterfamilj": null,
+      "undertyper": [],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": false,
+      "akt": "akt_5",
+      "sakert": true,
+      "monsterplatser": [],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "ruttmarken",
+      "namn": "Ruttmarken",
+      "biom": "trask",
+      "variant": "rutt",
+      "typ": "vildmark",
+      "chunk": [-9, -10],
+      "radie": 1,
+      "ringzon": 6,
+      "nivaband": [24, 27],
+      "grannar": ["sista_ljuset", "smittans_katedral"],
+      "vagar": ["kustvagen", "ruttstigen"],
+      "byar": [],
+      "poi": ["andande_lunden"],
+      "monsterfamilj": "forvridna",
+      "undertyper": ["smittbarare", "galen_munk"],
+      "boss": null,
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_5",
+      "sakert": false,
+      "monsterplatser": ["trask_rutt"],
+      "atkomst": "oppen"
+    },
+    {
+      "id": "smittans_katedral",
+      "namn": "Smittans katedral",
+      "biom": "trask",
+      "variant": "rutt",
+      "typ": "bana",
+      "chunk": [-10, -10],
+      "radie": 0,
+      "ringzon": 6,
+      "nivaband": [27, 28],
+      "grannar": ["ruttmarken", "sprickans_botten"],
+      "vagar": ["ruttstigen"],
+      "byar": [],
+      "poi": ["smittans_port"],
+      "monsterfamilj": "forvridna",
+      "undertyper": ["kottklump"],
+      "boss": "fadern_av_smittan",
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_5",
+      "sakert": false,
+      "monsterplatser": ["trask_rutt"],
+      "atkomst": "teleport",
+      "ingang_poi": "smittans_port"
+    },
+    {
+      "id": "sprickans_botten",
+      "namn": "Sprickans botten",
+      "biom": "trask",
+      "variant": "rutt",
+      "typ": "bana",
+      "chunk": [-10, -11],
+      "radie": 0,
+      "ringzon": 6,
+      "nivaband": [29, 30],
+      "grannar": ["smittans_katedral"],
+      "vagar": ["ruttstigen"],
+      "byar": [],
+      "poi": ["fjarde_stenen"],
+      "monsterfamilj": "forvridna",
+      "undertyper": ["kottklump"],
+      "boss": "den_slocknade",
+      "spawnzoner": [],
+      "genererad_spawn": true,
+      "akt": "akt_5",
+      "sakert": false,
+      "monsterplatser": ["trask_sprickvasen"],
+      "atkomst": "teleport",
+      "ingang_poi": "fjarde_stenen"
+    }
+  ],
+  "vagar": [
+    {
+      "id": "vag_ostra",
+      "namn": "Östra vägen",
+      "typ": "väg",
+      "strackning": ["startlagret", "startskogen", "vargstigen", "vargaby"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "stig_idet",
+      "namn": "Stigen till idet",
+      "typ": "stig",
+      "strackning": ["vargaby", "ulvhilds_ide"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "vag_norra",
+      "namn": "Norra vägen",
+      "typ": "väg",
+      "strackning": ["startskogen", "gravasen", "gamla_byn", "fjallfoten", "bergsvagen", "kopparberg"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "stig_kryptan",
+      "namn": "Kapellstigen",
+      "typ": "stig",
+      "strackning": ["gamla_byn", "kapellets_krypta"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "stig_klostret",
+      "namn": "Klosterstigen",
+      "typ": "bergspass",
+      "strackning": ["kopparberg", "jarnklostret"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "schaktet",
+      "namn": "Gruvschaktet",
+      "typ": "schakt",
+      "strackning": ["kopparberg", "gruvdjupen"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "vag_vastra",
+      "namn": "Västra vägen",
+      "typ": "väg",
+      "strackning": ["startlagret", "kolarmon", "myrkanten", "dimvagen", "dimmerstrand"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "kolarstigen",
+      "namn": "Kolarstigen",
+      "typ": "stig",
+      "strackning": ["kolarmon", "gravasen"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "ebbstigen",
+      "namn": "Ebbstigarna",
+      "typ": "ebbstig",
+      "strackning": ["dimmerstrand", "korpholmarna"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "klockstigen",
+      "namn": "Klockstigen",
+      "typ": "spång",
+      "strackning": ["dimmerstrand", "sjunkna_kyrkan"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "askvagen",
+      "namn": "Askvägen (pilgrimens väg)",
+      "typ": "väg",
+      "strackning": ["startlagret", "sodra_mon", "brandkanten", "rokkarret", "glodstranden", "askfalten", "askeborg"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "katakomb_trappan",
+      "namn": "Katakombtrappan",
+      "typ": "trappa",
+      "strackning": ["askeborg", "kultens_katakomber"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "katedralgatan",
+      "namn": "Katedralgatan",
+      "typ": "gata",
+      "strackning": ["askeborg", "katedralen"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "kustvagen",
+      "namn": "Kustvägen",
+      "typ": "väg",
+      "strackning": ["askfalten", "brandkusten", "sista_ljuset", "ruttmarken"],
+      "oppen": "alltid"
+    },
+    {
+      "id": "ruttstigen",
+      "namn": "Ruttstigen",
+      "typ": "stig",
+      "strackning": ["ruttmarken", "smittans_katedral", "sprickans_botten"],
+      "oppen": "alltid"
+    }
+  ],
+  "poi_mallar": {
+    "by": {
+      "npc_roller": ["handlare", "vapenhandlare", "helare", "vakt", "bybo", "berättare"],
+      "tjanster": ["handlare", "vapenhandlare", "vakter", "kuriosahandlare", "tavern_uppdrag", "snabbresa", "helare"],
+      "spawn": "stadens spawnzon enligt stadstillstånd (besatt till aterbefolkad_3)",
+      "questkrokar": ["val_tva_npc", "budbarare", "eskort", "mysterium"]
+    },
+    "lager": {
+      "npc_roller": ["flykting", "jägare", "handlare", "vakt", "helare"],
+      "tjanster": ["handlare", "helare"],
+      "spawn": "ingen inne i lägret, vanlig spawn utanför",
+      "questkrokar": ["budbarare", "eskort", "spar", "val_tva_npc"]
+    },
+    "ruin": {
+      "npc_roller": ["ensam överlevare (valfri)", "ande"],
+      "tjanster": [],
+      "spawn": "regionens undertyper, 1 till 2 grupper, kan ha champion",
+      "questkrokar": ["mysterium", "aterlamning", "spar"]
+    },
+    "grotta": {
+      "npc_roller": [],
+      "tjanster": [],
+      "spawn": "egen bana med regionens undertyper, rullas en gång per game",
+      "questkrokar": ["mysterium", "aterlamning"]
+    },
+    "kyrka": {
+      "npc_roller": ["präst", "gravvaktare", "ande"],
+      "tjanster": ["helare (när befolkad)"],
+      "spawn": "regionens undertyper, kyrkogård som zon",
+      "questkrokar": ["mysterium", "aterlamning", "val_tva_npc"]
+    },
+    "fyr": {
+      "npc_roller": ["fyrvaktare", "fiskare"],
+      "tjanster": ["snabbresa (när tänd)", "handlare"],
+      "spawn": "ingen inne, vanlig spawn på klippan",
+      "questkrokar": ["spar", "eskort", "mysterium"]
+    },
+    "gruva": {
+      "npc_roller": ["gruvarbetare", "förman"],
+      "tjanster": [],
+      "spawn": "schaktzon med regionens undertyper",
+      "questkrokar": ["spar", "eskort", "mysterium"]
+    },
+    "runsten": {
+      "npc_roller": [],
+      "tjanster": [],
+      "spawn": "vanlig spawn runt stenen, aldrig krav på att rensa",
+      "questkrokar": ["mysterium", "spar"]
+    },
+    "portal": {
+      "npc_roller": [],
+      "tjanster": ["snabbresa"],
+      "spawn": "ingen",
+      "questkrokar": [],
+      "waypoint": true,
+      "krav": null
+    },
+    "teleport": {
+      "npc_roller": [],
+      "tjanster": [],
+      "spawn": "ingen vid ingången, instansen rullas en gång per game",
+      "questkrokar": ["mysterium", "aterlamning"],
+      "atkomst": "teleport",
+      "alltid_oppen": true
+    }
+  },
+  "quest_mallar": {
+    "spar": {
+      "namn": "Spår",
+      "monster": "Följ spår (fotspår, blod, bönerader) mellan ankare till en plats där sanningen finns.",
+      "falt": ["givare", "spar_ankare[]", "mal_poi", "val[]"],
+      "steg": [
+        {
+          "trigger": "prata_med",
+          "falt": "givare"
+        },
+        {
+          "trigger": "inspektera",
+          "falt": "spar_ankare[0..n]"
+        },
+        {
+          "trigger": "gå_in_i",
+          "falt": "mal_poi"
+        },
+        {
+          "trigger": "någon_av",
+          "falt": "val[]"
+        }
+      ],
+      "exempel": ["miras_bror", "pilgrimens_vag"]
+    },
+    "budbarare": {
+      "namn": "Budbärare",
+      "monster": "Bär ett brev eller besked mellan två NPC:er i olika byar.",
+      "falt": ["givare", "mottagare", "quest_foremal"],
+      "steg": [
+        {
+          "trigger": "prata_med",
+          "falt": "givare"
+        },
+        {
+          "trigger": "plocka_upp",
+          "falt": "quest_foremal"
+        },
+        {
+          "trigger": "prata_med",
+          "falt": "mottagare"
+        }
+      ],
+      "exempel": []
+    },
+    "mysterium": {
+      "namn": "Mysterium",
+      "monster": "Inspektera ledtrådar på flera platser, sätt ihop svaret och berätta för någon.",
+      "falt": ["givare", "ledtradar[]", "tid (valfritt)", "svar_npc"],
+      "steg": [
+        {
+          "trigger": "prata_med",
+          "falt": "givare"
+        },
+        {
+          "trigger": "inspektera_alla",
+          "falt": "ledtradar[]"
+        },
+        {
+          "trigger": "prata_med",
+          "falt": "svar_npc"
+        }
+      ],
+      "exempel": ["runornas_ristare", "klockorna_under_vattnet"]
+    },
+    "val_tva_npc": {
+      "namn": "Val mellan två NPC:er",
+      "monster": "Två NPC:er vill olika saker med samma sak. Valet ändrar rykten, handlare och fraktioner men stänger aldrig världen.",
+      "falt": ["npc_a", "npc_b", "sak", "konsekvenser_a[]", "konsekvenser_b[]"],
+      "steg": [
+        {
+          "trigger": "prata_med_en_av",
+          "falt": "[npc_a,npc_b]"
+        },
+        {
+          "trigger": "någon_av",
+          "falt": "[val_a,val_b]"
+        }
+      ],
+      "exempel": ["ulvhilds_pals", "begrav_benkungen"]
+    },
+    "eskort": {
+      "namn": "Eskort",
+      "monster": "Följ en NPC längs en väg till en by. Faller NPC:n blir questen ett nytt steg (hitta graven, bär beskedet), aldrig ett misslyckande som spärrar.",
+      "falt": ["npc", "fran_poi", "till_poi", "vag", "reserv_steg"],
+      "steg": [
+        {
+          "trigger": "prata_med",
+          "falt": "npc"
+        },
+        {
+          "trigger": "gå_in_i",
+          "falt": "till_poi"
+        },
+        {
+          "trigger": "prata_med",
+          "falt": "npc eller reserv_steg"
+        }
+      ],
+      "exempel": []
+    },
+    "aterlamning": {
+      "namn": "Återlämning",
+      "monster": "Ett enda namngivet föremål (quest_) ska tillbaka till sin ägare, en grav eller ett altare.",
+      "falt": ["quest_foremal", "fynd_poi", "agare", "mal_poi"],
+      "steg": [
+        {
+          "trigger": "plocka_upp",
+          "falt": "quest_foremal"
+        },
+        {
+          "trigger": "någon_av",
+          "falt": "[lamna_agare,lamna_grav,behall]"
+        }
+      ],
+      "exempel": []
+    }
+  },
+  "pois": [
+    {
+      "id": "startlagret_by",
+      "namn": "Lägret vid skogsbrynet",
+      "typ": "lager",
+      "region": "startlagret",
+      "npc": ["gamla_ylva", "tor_kolare", "sigrun_helare", "bror_vakt", "lilla_mira"],
+      "quests": ["miras_bror", "runornas_ristare", "tand_stenen"],
+      "quest_mallar": [],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "rod_portal",
+      "namn": "Röda portalen",
+      "typ": "portal",
+      "region": "startskogen",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "oppen",
+      "waypoint": true,
+      "krav": null
+    },
+    {
+      "id": "runsten_ristarens",
+      "namn": "Ristarens runstenar",
+      "typ": "runsten",
+      "region": "startskogen",
+      "npc": [],
+      "quests": ["runornas_ristare"],
+      "quest_mallar": ["mysterium"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "viskarens_lager",
+      "namn": "Viskarens eld",
+      "typ": "lager",
+      "region": "startskogen",
+      "npc": ["viskaren"],
+      "quests": ["benens_visk"],
+      "quest_mallar": [],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "kolarkojorna",
+      "namn": "De övergivna kolarkojorna",
+      "typ": "ruin",
+      "region": "vargstigen",
+      "npc": [],
+      "quests": ["miras_bror"],
+      "quest_mallar": ["spar"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "vargaby_by",
+      "namn": "Vargaby",
+      "typ": "by",
+      "region": "vargaby",
+      "npc": ["hedda_jagare"],
+      "quests": ["ulvhilds_pals"],
+      "quest_mallar": ["val_tva_npc"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "vargaby_kyrka",
+      "namn": "Vargabys kyrka",
+      "typ": "kyrka",
+      "region": "vargaby",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["mysterium"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "ulvhilds_ide_ingang",
+      "namn": "Ulvhilds ide",
+      "typ": "grotta",
+      "region": "ulvhilds_ide",
+      "npc": [],
+      "quests": ["ulvhilds_pals"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "kolmilan",
+      "namn": "Kolmilan",
+      "typ": "lager",
+      "region": "kolarmon",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["budbarare", "eskort"],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "brunna_garden",
+      "namn": "Den brunna gården",
+      "typ": "ruin",
+      "region": "sodra_mon",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["aterlamning"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "gravhogarna",
+      "namn": "Gravhögarna",
+      "typ": "ruin",
+      "region": "gravasen",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["mysterium"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "gamla_byn_by",
+      "namn": "Den gamla byn",
+      "typ": "by",
+      "region": "gamla_byn",
+      "npc": ["gravvaktaren_ebbe", "marta_torghandlare", "gunnar_jarnhand", "vaktkapten_ingrid", "olle_vardshus", "sara_benlasare"],
+      "quests": ["gravvaktarnas_sista_strid", "begrav_benkungen", "martas_dotter"],
+      "quest_mallar": ["val_tva_npc"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "gamla_byn_kyrkogard",
+      "namn": "Kyrkogården (Benkungens arena)",
+      "typ": "teleport",
+      "region": "gamla_byn",
+      "npc": [],
+      "quests": ["begrav_benkungen"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport",
+      "boss": "benkungen_valdemar"
+    },
+    {
+      "id": "gamla_byn_kapell",
+      "namn": "Kapellet",
+      "typ": "kyrka",
+      "region": "gamla_byn",
+      "npc": [],
+      "quests": ["gravvaktarnas_sista_strid"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "kryptans_port",
+      "namn": "Kryptans port",
+      "typ": "grotta",
+      "region": "kapellets_krypta",
+      "npc": [],
+      "quests": ["gravvaktarnas_sista_strid"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "sjunkna_garden",
+      "namn": "Den sjunkna gården",
+      "typ": "ruin",
+      "region": "myrkanten",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["mysterium"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "brandkantens_lager",
+      "namn": "Flyktinglägret i brandkanten",
+      "typ": "lager",
+      "region": "brandkanten",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["val_tva_npc", "budbarare"],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "hedkapellet",
+      "namn": "Hedkapellet",
+      "typ": "kyrka",
+      "region": "dimvagen",
+      "npc": [],
+      "quests": ["klockorna_under_vattnet"],
+      "quest_mallar": ["spar"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "dimmerstrand_by",
+      "namn": "Dimmerstrand",
+      "typ": "by",
+      "region": "dimmerstrand",
+      "npc": ["lova_fiskarankan"],
+      "quests": ["klockorna_under_vattnet", "korpmoderns_sista_flykt"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "korpvarden",
+      "namn": "Korpvården",
+      "typ": "fyr",
+      "region": "korpholmarna",
+      "npc": [],
+      "quests": ["korpmoderns_sista_flykt"],
+      "quest_mallar": ["spar"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "fagelberget",
+      "namn": "Fågelberget",
+      "typ": "grotta",
+      "region": "korpholmarna",
+      "npc": [],
+      "quests": ["korpmoderns_sista_flykt"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "sjunkna_kyrkans_port",
+      "namn": "Den sjunkna kyrkans port",
+      "typ": "kyrka",
+      "region": "sjunkna_kyrkan",
+      "npc": [],
+      "quests": ["klockorna_under_vattnet"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "fabodlagret",
+      "namn": "Fäbodlägret",
+      "typ": "lager",
+      "region": "fjallfoten",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["eskort", "budbarare"],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "rokkarrets_ruin",
+      "namn": "Rökkärrets tingshus",
+      "typ": "ruin",
+      "region": "rokkarret",
+      "npc": [],
+      "quests": ["pilgrimens_vag"],
+      "quest_mallar": ["aterlamning"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "vaktstugan",
+      "namn": "Bergsvägens vaktstuga",
+      "typ": "ruin",
+      "region": "bergsvagen",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["spar"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "kopparberg_by",
+      "namn": "Kopparberg",
+      "typ": "by",
+      "region": "kopparberg",
+      "npc": ["broder_elias"],
+      "quests": ["jarnmunkens_las", "martas_dotter"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "gruvlaven",
+      "namn": "Gruvlaven",
+      "typ": "gruva",
+      "region": "kopparberg",
+      "npc": [],
+      "quests": ["martas_dotter"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "jarnklostrets_port",
+      "namn": "Järnklostrets port",
+      "typ": "kyrka",
+      "region": "jarnklostret",
+      "npc": [],
+      "quests": ["jarnmunkens_las"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "schaktlampan",
+      "namn": "Lampan i schaktet",
+      "typ": "gruva",
+      "region": "gruvdjupen",
+      "npc": [],
+      "quests": ["martas_dotter"],
+      "quest_mallar": ["mysterium"],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "glodvraket",
+      "namn": "Vraket på glödstranden",
+      "typ": "ruin",
+      "region": "glodstranden",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["mysterium", "aterlamning"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "rasks_gomstalle",
+      "namn": "Rasks gömställe",
+      "typ": "ruin",
+      "region": "askfalten",
+      "npc": ["rask_avfallen"],
+      "quests": ["den_fjarde_stenen", "pilgrimens_vag"],
+      "quest_mallar": [],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "askeborg_by",
+      "namn": "Askeborg",
+      "typ": "by",
+      "region": "askeborg",
+      "npc": [],
+      "quests": ["pilgrimens_vag"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "askeborgs_stadsport",
+      "namn": "Askeborgs stadsport",
+      "typ": "ruin",
+      "region": "askeborg",
+      "npc": [],
+      "quests": ["pilgrimens_vag"],
+      "quest_mallar": ["aterlamning"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "katakombernas_ingang",
+      "namn": "Katakombernas ingång",
+      "typ": "grotta",
+      "region": "kultens_katakomber",
+      "npc": [],
+      "quests": ["den_fjarde_stenen"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "katedralens_port",
+      "namn": "Katedralens port",
+      "typ": "kyrka",
+      "region": "katedralen",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "brandkustens_lager",
+      "namn": "Saltbrännarnas läger",
+      "typ": "lager",
+      "region": "brandkusten",
+      "npc": [],
+      "quests": [],
+      "quest_mallar": ["eskort", "val_tva_npc"],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "sista_ljuset_by",
+      "namn": "Sista ljuset",
+      "typ": "by",
+      "region": "sista_ljuset",
+      "npc": ["fyrvaktaren_hulda", "kram_handlaren"],
+      "quests": ["ljuset_som_haller"],
+      "quest_mallar": [],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "sista_ljusets_fyr",
+      "namn": "Fyren som aldrig slocknar",
+      "typ": "fyr",
+      "region": "sista_ljuset",
+      "npc": ["fyrvaktaren_hulda"],
+      "quests": ["ljuset_som_haller"],
+      "quest_mallar": [],
+      "sakert": true,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "andande_lunden",
+      "namn": "Den andande lunden",
+      "typ": "ruin",
+      "region": "ruttmarken",
+      "npc": [],
+      "quests": ["ljuset_som_haller"],
+      "quest_mallar": ["mysterium"],
+      "sakert": false,
+      "atkomst": "oppen"
+    },
+    {
+      "id": "smittans_port",
+      "namn": "Smittans port",
+      "typ": "kyrka",
+      "region": "smittans_katedral",
+      "npc": [],
+      "quests": ["ljuset_som_haller"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    },
+    {
+      "id": "fjarde_stenen",
+      "namn": "Den fjärde stenen",
+      "typ": "runsten",
+      "region": "sprickans_botten",
+      "npc": [],
+      "quests": ["tand_stenen", "den_fjarde_stenen"],
+      "quest_mallar": [],
+      "sakert": false,
+      "atkomst": "teleport"
+    }
+  ]
+}

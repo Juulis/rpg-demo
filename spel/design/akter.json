@@ -8,7 +8,7 @@
     ],
     "maxniva": 30,
     "maxniva_forslag": "30 räcker för akt 1 till 5. Föreslå höjning till 35 bara om en svårighetsgrad Mardröm läggs till (alla monster +5 nivåer).",
-    "nya_bossar_status": "planerade, stats räknas med monster_niva.json när akten byggs"
+    "nya_bossar_status": "Underbossar för akt 2 till 4 har fasta stats (monster_niva.json underboss_regel). den_slocknade räknas när akt 5 byggs."
   },
   "akter": [
     {
@@ -145,7 +145,8 @@
           "niva": [12, 13],
           "familjer": ["gastar", "bestar"],
           "status": "ny",
-          "beskrivning": "Korpmoderns hem, nås över ebbstigar."
+          "beskrivning": "Korpmoderns hem, nås över ebbstigar.",
+          "underboss": "korpmodern"
         },
         {
           "id": "sjunkna_kyrkan",
@@ -160,7 +161,8 @@
       ],
       "bossar": ["trasdrottningen"],
       "underbossar_nya": ["korpmodern"],
-      "quest_krokar": ["Lovas man bland de drunknade", "Korpmoderns båge", "Klockorna under vattnet"]
+      "quest_krokar": ["Lovas man bland de drunknade", "Korpmoderns båge", "Klockorna under vattnet"],
+      "quests": ["klockorna_under_vattnet", "korpmoderns_sista_flykt"]
     },
     {
       "id": "akt_3",
@@ -198,7 +200,8 @@
           "niva": [16, 17],
           "familjer": ["forvridna", "ododa"],
           "status": "ny",
-          "beskrivning": "Bröderna som låste in sig. Järnmunkens gördel."
+          "beskrivning": "Bröderna som låste in sig. Järnmunkens gördel.",
+          "underboss": "jarnmunken"
         },
         {
           "id": "gruvdjupen",
@@ -213,7 +216,8 @@
       ],
       "bossar": ["spinnmodern"],
       "underbossar_nya": ["jarnmunken"],
-      "quest_krokar": ["Martas dotter i Kopparberg", "Järnmunkens gördel", "Varför grävde de så djupt"]
+      "quest_krokar": ["Martas dotter i Kopparberg", "Järnmunkens gördel", "Varför grävde de så djupt"],
+      "quests": ["jarnmunkens_las", "martas_dotter"]
     },
     {
       "id": "akt_4",
@@ -251,7 +255,8 @@
           "niva": [22, 24],
           "familjer": ["forvridna", "demoner"],
           "status": "ny",
-          "beskrivning": "Askans barns ritualer kring den fjärde stenen."
+          "beskrivning": "Askans barns ritualer kring den fjärde stenen.",
+          "underboss": "askans_profet"
         },
         {
           "id": "katedralen",
@@ -266,7 +271,8 @@
       ],
       "bossar": ["askfursten_morvath"],
       "underbossar_nya": ["askans_profet"],
-      "quest_krokar": ["Askvandrarens börda", "Den fjärde stenen", "Raskas skuld"]
+      "quest_krokar": ["Askvandrarens börda", "Den fjärde stenen", "Raskas skuld"],
+      "quests": ["den_fjarde_stenen", "pilgrimens_vag"]
     },
     {
       "id": "akt_5",
@@ -328,21 +334,27 @@
       "familj": "gastar",
       "niva": 13,
       "typ": "underboss",
-      "utseende": "Kvinnogestalt av korpfjädrar med båge av idegran."
+      "utseende": "Kvinnogestalt av korpfjädrar med båge av idegran.",
+      "status": "stats klara, se monsterfamiljer.json",
+      "region": "korpholmarna"
     },
     "jarnmunken": {
       "akt": "akt_3",
       "familj": "forvridna",
       "niva": 17,
       "typ": "underboss",
-      "utseende": "Jättelik förvriden munk med järngördel som skär in i köttet."
+      "utseende": "Jättelik förvriden munk med järngördel som skär in i köttet.",
+      "status": "stats klara, se monsterfamiljer.json",
+      "region": "jarnklostret"
     },
     "askans_profet": {
       "akt": "akt_4",
       "familj": "forvridna",
       "niva": 23,
       "typ": "underboss",
-      "utseende": "Kultledare i brinnande kåpa, ansiktet en mask av aska."
+      "utseende": "Kultledare i brinnande kåpa, ansiktet en mask av aska.",
+      "status": "stats klara, se monsterfamiljer.json",
+      "region": "kultens_katakomber"
     },
     "den_slocknade": {
       "akt": "akt_5",

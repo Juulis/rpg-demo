@@ -20,12 +20,14 @@ Världen är övergiven. Demoner och monster har tagit städerna, och de få öv
 - [lore.md](lore.md): världens historia, fraktioner, akter och tidslinje.
 - [akter.json](akter.json): fem akter med regioner, biom, nivåer, bossar och quest krokar.
 - [varld.md](varld.md): levande värld, dygn, miljöberättande, ryktessystem och rutiner.
+- [varld_stor.md](varld_stor.md) och [varld_stor.json](varld_stor.json): den stora sammanhängande världen med chunkar, biomer, ringzoner, regioner, vägar och POI:er.
 - [npc.json](npc.json): NPC:er med roller, rutiner, repliker och handel (akt 1 markerade för grafik först).
 - [rykten.json](rykten.json): alla rykten med villkor.
-- [quests.json](quests.json) och [quests.md](quests.md): quests för akt 1, skisser för akt 2 till 5, konsekvenssystem.
+- [quests.json](quests.json) och [quests.md](quests.md): quests för akt 1 till 4 med underbossar, skisser för akt 5, konsekvenssystem.
 - [dialoger.json](dialoger.json): dialogträd och röstprofiler för akt 1 NPC:er.
 - [klasser.json](klasser.json): klasser, stats, tillväxt, färdigheter, startutrustning.
 - [stader.json](stader.json): stadstillstånd, kostnader för återbefolkning, belöningar, de fem första städerna.
+- [stadstjanster.md](stadstjanster.md): handlare, vapenhandlare, kuriosahandlare, helare och snabbresa, priser i guld (#50).
 - [monsterfamiljer.json](monsterfamiljer.json): sex familjer med svagheter och resistenser.
 - [spawnzoner.json](spawnzoner.json): slumpade spawnpunkter, fiendeurval och vikter per område.
 - [loot_design.md](loot_design.md): lootsystem i Diablo 2 stil, med [loot_kvaliteter.json](loot_kvaliteter.json), [foremal_bas.json](foremal_bas.json), [affix.json](affix.json), [set.json](set.json), [drop_tabeller.json](drop_tabeller.json) och [attribut.json](attribut.json).
@@ -67,7 +69,8 @@ Svag ger 150 % skada, resistent 60 %.
 
 ## Städer
 
-Tillstånd: Besatt, Rensad, Återbefolkad 1 (handlare), 2 (vapenhandlare, vakter), 3 (kuriosahandlare, helare, tavern, snabbresa).
+Tillstånd: Besatt, Rensad, Återbefolkad 1 (handlare), 2 (vapenhandlare, vakter), 3 (kuriosahandlare, helare, tavern, snabbresa). Priser och tjänster i stadstjanster.md.
+Underbossar: Korpmodern (13, Korpholmarna), Järnmunken (17, Järnklostret), Askans profet (23, Kultens katakomber). Stats i quests.md och monsterfamiljer.json.
 Före städerna: Startskogen, nivå 1 till 3, Bestar. Rekommenderad väg: Startskogen (2 till 3 games), Vargaby (1 till 2 games), sedan portalbyn på nivå 6 till 7.
 
 1. Vargaby, nivå 4 till 6, boss nivå 6, Bestar

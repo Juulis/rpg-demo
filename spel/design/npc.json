@@ -521,7 +521,20 @@
       },
       "akt": "akt_1",
       "grafik_prioritet": true,
-      "quests": ["martas_dotter"]
+      "quests": ["martas_dotter"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "vet": {
+          "halsning": "Hon ser glad ut på bilden, eller hur?",
+          "bark": "Köp något nu, innan jag börjar gråta."
+        },
+        "hoppas": {
+          "halsning": "Har du varit i bergen? Har du sett en kvinna med röd duk?",
+          "bark": "Längre in i bergen. Hon var alltid envis."
+        }
+      }
     },
     {
       "id": "gunnar_jarnhand",
@@ -792,7 +805,21 @@
       "quest_krokar": ["Lovas man bland de drunknade.", "Korpmoderns båge."],
       "akt": "akt_2",
       "grafik_prioritet": false,
-      "quests": ["klockorna_under_vattnet", "korpmoderns_sista_flykt"]
+      "quests": ["klockorna_under_vattnet", "korpmoderns_sista_flykt"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "sorjer_i_frid": {
+          "halsning": "Det är tyst på natten nu. Jag vet inte om jag tycker om det.",
+          "bark": "Han vilar. Det är det viktiga.",
+          "plats": "bryggans_hus"
+        },
+        "vaktar_med_arvid": {
+          "halsning": "Han kommer upp när det mörknar. Vi pratar lite.",
+          "bark": "Gå inte för nära vattnet. Han ser efter dig."
+        }
+      }
     },
     {
       "id": "broder_elias",
@@ -840,7 +867,21 @@
       },
       "akt": "akt_3",
       "grafik_prioritet": false,
-      "quests": ["jarnmunkens_las"]
+      "quests": ["jarnmunkens_las"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "sorjer": {
+          "halsning": "Jag ber för honom varje natt. Det hjälper inte, men jag ber.",
+          "bark": "Gördeln var hans botgöring. Nu är den din."
+        },
+        "forlaten": {
+          "halsning": "Klostret är tyst nu. Det är en god tystnad.",
+          "bark": "Han sa mitt namn till sist.",
+          "plats": "kapitelsalen"
+        }
+      }
     },
     {
       "id": "rask_avfallen",
@@ -876,7 +917,17 @@
       "quest_krokar": ["Rask vet var Askvandrarens börda spreds.", "Kultens ritualer kring den fjärde stenen."],
       "akt": "akt_4",
       "grafik_prioritet": false,
-      "quests": ["den_fjarde_stenen", "pilgrimens_vag"]
+      "quests": ["den_fjarde_stenen", "pilgrimens_vag"],
+      "tillstand_varianter": {
+        "standard": {
+          "beskrivning": "Ursprungligt tillstånd."
+        },
+        "angrande": {
+          "halsning": "Sätt dig. Jag läser kartan igen, om du vill.",
+          "bark": "Jag trodde elden renade. Den bara bränner.",
+          "plats": "lagerelden"
+        }
+      }
     },
     {
       "id": "fyrvaktaren_hulda",
