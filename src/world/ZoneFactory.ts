@@ -5,13 +5,7 @@ import { DATA } from '../data';
 import type { AssetStore, DecorId } from '../render/Assets';
 import { Iso, TILE_WORLD } from '../render/Iso';
 import { StripAnimSprite } from '../render/StripAnimSprite';
-import {
-  FOREST_CITY_PORTALS,
-  FOREST_DECOR_MID,
-  FOREST_DECOR_OUTER,
-  FOREST_PLAY_RADIUS,
-  FOREST_SAFE_RADIUS,
-} from './forestConstants';
+import { FOREST_CITY_PORTALS, FOREST_DECOR_MID, FOREST_DECOR_OUTER, FOREST_PLAY_RADIUS, FOREST_SAFE_RADIUS } from './forestConstants';
 import { ForestGroundChunks } from './ForestGroundChunks';
 import {
   CITY_RNG_SEED,
@@ -267,7 +261,8 @@ export class ZoneFactory {
       if (!inside) return R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke']);
       if (road) return R.next() < 0.35 ? 'kullersten_mossig' : 'kullersten';
       if (theme === 'wolf' && inside && ty <= 7 && Math.abs(tx - 16) < 5) return R.pick(['lera_1', 'lera_2', 'stenhog']);
-      if (theme === 'mist') return R.next() < 0.45 ? R.pick(['lera_1', 'lera_2', 'lera_3']) : R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke']);
+      if (theme === 'mist')
+        return R.next() < 0.45 ? R.pick(['lera_1', 'lera_2', 'lera_3']) : R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke']);
       if (theme === 'copper') return R.next() < 0.4 ? 'kullersten' : R.pick(['lera_1', 'lera_2', 'stenhog']);
       if (theme === 'ash') return R.next() < 0.35 ? 'aska' : R.pick(['lera_1', 'lera_2', 'stenhog']);
       return R.next() < 0.3 ? R.pick(['lera_1', 'lera_2', 'lera_3']) : R.pick(['gras_1', 'gras_2', 'gras_3', 'gras_4']);
@@ -280,7 +275,13 @@ export class ZoneFactory {
         this.tile(pickGround(inside, road, tx, ty), w.x / TILE_WORLD, w.y / TILE_WORLD, ground);
       }
     const edgeDecor: DecorId[] =
-      theme === 'mist' ? ['dod_ek', 'gran'] : theme === 'copper' ? ['gran', 'stenhog'] : theme === 'ash' ? ['dod_ek', 'stubbe'] : ['gran', 'dod_ek'];
+      theme === 'mist'
+        ? ['dod_ek', 'gran']
+        : theme === 'copper'
+          ? ['gran', 'stenhog']
+          : theme === 'ash'
+            ? ['dod_ek', 'stubbe']
+            : ['gran', 'dod_ek'];
     for (let i = 0; i < 48; i++) {
       const t = (i / 48) * 4;
       const side = Math.floor(t);
