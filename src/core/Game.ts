@@ -628,9 +628,9 @@ export class Game {
   private quaff(kind: 'hp' | 'st'): void {
     const h = this.world?.hero;
     if (!h) return;
-    const it = h.inv.findPotion(kind);
+    const it = h.inv.findConsumable(kind);
     if (it) h.use(it);
-    else this.hud.flash(this.text.t('msg.no_potions'));
+    else this.hud.flash(this.text.t('msg.no_proviant'));
   }
 
   private monsterAt(sx: number, sy: number): Monster | null {

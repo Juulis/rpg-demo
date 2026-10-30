@@ -9,7 +9,7 @@ export const SV = {
     xp: 'XP {xp} / {need}',
     hp: 'Liv',
     stamina: 'Uthållighet',
-    potions: '{count} st',
+    proviant: '{count} st',
     help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: proviant',
   },
   rumor: {
@@ -32,7 +32,7 @@ export const SV = {
     bag_full: 'Väskan är full',
     need_level: 'Kräver högre nivå',
     no_stamina: 'För lite uthållighet…',
-    no_potions: 'Ingen proviant kvar',
+    no_proviant: 'Ingen proviant kvar',
     level_up: 'Nivå {level}!',
     boss_wakes: '{name} vaknar!',
     boss_vulnerable: '{name} är sårbar!',
