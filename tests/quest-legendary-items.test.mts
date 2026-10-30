@@ -22,12 +22,16 @@ assert.ok(
     'flyktingens_sandaler',
   ),
 );
-assert.ok(!groundHasItemId([{ data: { item: { uid: 'd2', base: 'sandaler', quality: 'normal', affixes: [], ilvl: 1 } } }], 'flyktingens_sandaler'));
+assert.ok(
+  !groundHasItemId([{ data: { item: { uid: 'd2', base: 'sandaler', quality: 'normal', affixes: [], ilvl: 1 } } }], 'flyktingens_sandaler'),
+);
 
 let spawnCalls = 0;
-const lootSys = { spawn: () => {
-  spawnCalls++;
-} } as unknown as LootSystem;
+const lootSys = {
+  spawn: () => {
+    spawnCalls++;
+  },
+} as unknown as LootSystem;
 const bus = new EventBus();
 const svc = new WorldStateService();
 const ws = svc.get();
