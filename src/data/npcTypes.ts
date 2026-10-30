@@ -9,7 +9,7 @@ export interface NpcDef {
   /** Nyckel i assets/2d/sprites/npc/npc.json */
   sprite: string;
   area: string;
-  zone: 'forest' | 'village' | 'wolfstead';
+  zone: 'forest' | 'village' | 'wolfstead' | 'dimmerstrand' | 'kopparberg' | 'askeborg';
   act: number;
   name: string;
   default_line: string;

@@ -69,7 +69,15 @@ export function validateData(): string[] {
   const npcIds = new Set(DATA.npc.npcs.map((n) => n.id));
   for (const n of DATA.npc.npcs) {
     if (!areas.has(n.area)) issues.push(`npc ${n.id}: okänt område ${n.area}`);
-    if (n.zone !== 'forest' && n.zone !== 'village' && n.zone !== 'wolfstead') issues.push(`npc ${n.id}: okänd zon ${n.zone}`);
+    if (
+      n.zone !== 'forest' &&
+      n.zone !== 'village' &&
+      n.zone !== 'wolfstead' &&
+      n.zone !== 'dimmerstrand' &&
+      n.zone !== 'kopparberg' &&
+      n.zone !== 'askeborg'
+    )
+      issues.push(`npc ${n.id}: okänd zon ${n.zone}`);
     if (!n.sprite) issues.push(`npc ${n.id}: sprite saknas`);
     if (!n.pos && !n.tile) issues.push(`npc ${n.id}: pos eller tile krävs`);
   }

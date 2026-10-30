@@ -6,7 +6,7 @@ export interface Rect {
   x1: number;
   y1: number;
 }
-export type ZoneName = 'forest' | 'village' | 'wolfstead';
+export type ZoneName = 'forest' | 'village' | 'wolfstead' | 'dimmerstrand' | 'kopparberg' | 'askeborg';
 
 /** En spelzon i världsenheter: gränser, kolliderare, runor, portaler och arena. Implementerar ZoneView för moduler. */
 export class Zone implements ZoneView {

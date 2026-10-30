@@ -1,8 +1,14 @@
 {
   "msg": {
-    "zone_wolfstead": "Wolfstead"
+    "zone_wolfstead": "Wolfstead",
+    "zone_dimmerstrand": "Dimmerstrand",
+    "zone_kopparberg": "Copperberg",
+    "zone_askeborg": "Askeborg"
   },
   "tooltip": {
-    "portal_to_wolfstead": "Road east to Wolfstead"
+    "portal_to_wolfstead": "Road east to Wolfstead",
+    "portal_to_dimmerstrand": "Road west to Dimshore",
+    "portal_to_kopparberg": "Road north to Copperberg",
+    "portal_to_askeborg": "Road south to Ashburg"
   }
 }
