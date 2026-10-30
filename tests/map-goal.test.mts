@@ -60,6 +60,7 @@ const forest: ZoneView = {
   cleared: {},
 };
 const g3 = goals.goal(forest, { x: 0, y: 0 });
-assert.ok(model.t(g3!.text, g3!.params).includes('runsten'));
+assert.ok(g3);
+assert.ok(model.t(g3.text, g3.params).includes('runsten'));
 
 console.log('map-goal.test.mts: ok');
