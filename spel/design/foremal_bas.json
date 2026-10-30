@@ -1,33 +1,16 @@
 {
   "meta": {
     "version": "1.0",
-    "categories": [
-      "vapen",
-      "rustning",
-      "mat",
-      "amulett",
-      "ring",
-      "guld",
-      "material"
-    ],
+    "categories": ["vapen", "rustning", "mat", "amulett", "ring", "guld", "material"],
     "tiers": {
       "1": {
-        "ilvl": [
-          1,
-          6
-        ]
+        "ilvl": [1, 6]
       },
       "2": {
-        "ilvl": [
-          7,
-          14
-        ]
+        "ilvl": [7, 14]
       },
       "3": {
-        "ilvl": [
-          15,
-          30
-        ]
+        "ilvl": [15, 30]
       }
     },
     "tier_rule": "En bastyp kan droppa om item_level ≤ ilvl (ilvl = monster_level, boss +2). Högsta tillåtna tier vägs 3, lägre 1. Bastyper i tier 1 slutar droppa vid ilvl 20.",
@@ -78,21 +61,9 @@
       }
     },
     "class_affinity": {
-      "amazonkrigare": [
-        "spjut",
-        "bage",
-        "dolk"
-      ],
-      "barbar": [
-        "yxa",
-        "klubba",
-        "svard"
-      ],
-      "riddare": [
-        "svard",
-        "skold",
-        "klubba"
-      ]
+      "amazonkrigare": ["spjut", "bage", "dolk"],
+      "barbar": ["yxa", "klubba", "svard"],
+      "riddare": ["svard", "skold", "klubba"]
     },
     "legendary_rule": "Ett legendariskt föremål kan rullas när kvaliteten blir legendary, basen matchar och level ≤ ilvl. Källor i drop_tabeller.json legendary_sources.",
     "materials": {
@@ -115,10 +86,7 @@
       "category": "vapen",
       "weapon_type": "svard",
       "tier": 1,
-      "damage": [
-        3,
-        7
-      ],
+      "damage": [3, 7],
       "attack_speed": 1.1,
       "range": 1.8,
       "damage_type": "hugg",
@@ -126,11 +94,7 @@
       "requirements": {
         "level": 1
       },
-      "classes": [
-        "riddare",
-        "amazonkrigare",
-        "barbar"
-      ],
+      "classes": ["riddare", "amazonkrigare", "barbar"],
       "item_level": 1,
       "material": "jarn"
     },
@@ -141,10 +105,7 @@
       "category": "vapen",
       "weapon_type": "svard",
       "tier": 2,
-      "damage": [
-        6,
-        12
-      ],
+      "damage": [6, 12],
       "attack_speed": 1,
       "range": 2,
       "damage_type": "hugg",
@@ -152,10 +113,7 @@
       "requirements": {
         "level": 6
       },
-      "classes": [
-        "riddare",
-        "barbar"
-      ],
+      "classes": ["riddare", "barbar"],
       "item_level": 6,
       "material": "jarn"
     },
@@ -166,10 +124,7 @@
       "category": "vapen",
       "weapon_type": "svard",
       "tier": 3,
-      "damage": [
-        11,
-        20
-      ],
+      "damage": [11, 20],
       "attack_speed": 1,
       "range": 2.1,
       "damage_type": "hugg",
@@ -177,9 +132,7 @@
       "requirements": {
         "level": 15
       },
-      "classes": [
-        "riddare"
-      ],
+      "classes": ["riddare"],
       "item_level": 15,
       "material": "jarn"
     },
@@ -190,10 +143,7 @@
       "category": "vapen",
       "weapon_type": "yxa",
       "tier": 1,
-      "damage": [
-        4,
-        8
-      ],
+      "damage": [4, 8],
       "attack_speed": 1,
       "range": 1.7,
       "damage_type": "hugg",
@@ -201,10 +151,7 @@
       "requirements": {
         "level": 1
       },
-      "classes": [
-        "barbar",
-        "riddare"
-      ],
+      "classes": ["barbar", "riddare"],
       "item_level": 1,
       "material": "jarn"
     },
@@ -215,10 +162,7 @@
       "category": "vapen",
       "weapon_type": "yxa",
       "tier": 2,
-      "damage": [
-        7,
-        15
-      ],
+      "damage": [7, 15],
       "attack_speed": 0.9,
       "range": 1.9,
       "damage_type": "hugg",
@@ -226,9 +170,7 @@
       "requirements": {
         "level": 7
       },
-      "classes": [
-        "barbar"
-      ],
+      "classes": ["barbar"],
       "item_level": 7,
       "material": "jarn"
     },
@@ -239,10 +181,7 @@
       "category": "vapen",
       "weapon_type": "yxa",
       "tier": 3,
-      "damage": [
-        14,
-        28
-      ],
+      "damage": [14, 28],
       "attack_speed": 0.75,
       "range": 2.3,
       "damage_type": "hugg",
@@ -250,9 +189,7 @@
       "requirements": {
         "level": 15
       },
-      "classes": [
-        "barbar"
-      ],
+      "classes": ["barbar"],
       "item_level": 15,
       "material": "jarn"
     },
@@ -263,10 +200,7 @@
       "category": "vapen",
       "weapon_type": "klubba",
       "tier": 1,
-      "damage": [
-        3,
-        8
-      ],
+      "damage": [3, 8],
       "attack_speed": 1,
       "range": 1.7,
       "damage_type": "kross",
@@ -274,10 +208,7 @@
       "requirements": {
         "level": 1
       },
-      "classes": [
-        "barbar",
-        "riddare"
-      ],
+      "classes": ["barbar", "riddare"],
       "item_level": 1,
       "material": "tra"
     },
@@ -288,10 +219,7 @@
       "category": "vapen",
       "weapon_type": "klubba",
       "tier": 2,
-      "damage": [
-        8,
-        18
-      ],
+      "damage": [8, 18],
       "attack_speed": 0.8,
       "range": 2,
       "damage_type": "kross",
@@ -299,9 +227,7 @@
       "requirements": {
         "level": 5
       },
-      "classes": [
-        "barbar"
-      ],
+      "classes": ["barbar"],
       "item_level": 5,
       "material": "tra"
     },
@@ -312,10 +238,7 @@
       "category": "vapen",
       "weapon_type": "klubba",
       "tier": 3,
-      "damage": [
-        13,
-        24
-      ],
+      "damage": [13, 24],
       "attack_speed": 0.85,
       "range": 2,
       "damage_type": "kross",
@@ -323,10 +246,7 @@
       "requirements": {
         "level": 15
       },
-      "classes": [
-        "barbar",
-        "riddare"
-      ],
+      "classes": ["barbar", "riddare"],
       "item_level": 15,
       "material": "jarn"
     },
@@ -337,10 +257,7 @@
       "category": "vapen",
       "weapon_type": "spjut",
       "tier": 1,
-      "damage": [
-        4,
-        9
-      ],
+      "damage": [4, 9],
       "attack_speed": 1,
       "range": 2.6,
       "damage_type": "stick",
@@ -348,9 +265,7 @@
       "requirements": {
         "level": 1
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 1,
       "material": "tra"
     },
@@ -361,10 +276,7 @@
       "category": "vapen",
       "weapon_type": "spjut",
       "tier": 2,
-      "damage": [
-        7,
-        15
-      ],
+      "damage": [7, 15],
       "attack_speed": 1,
       "range": 2.9,
       "damage_type": "stick",
@@ -372,10 +284,7 @@
       "requirements": {
         "level": 8
       },
-      "classes": [
-        "amazonkrigare",
-        "riddare"
-      ],
+      "classes": ["amazonkrigare", "riddare"],
       "item_level": 8,
       "material": "jarn"
     },
@@ -386,10 +295,7 @@
       "category": "vapen",
       "weapon_type": "spjut",
       "tier": 3,
-      "damage": [
-        12,
-        24
-      ],
+      "damage": [12, 24],
       "attack_speed": 1.05,
       "range": 3.2,
       "damage_type": "stick",
@@ -397,9 +303,7 @@
       "requirements": {
         "level": 15
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 15,
       "material": "jarn"
     },
@@ -410,10 +314,7 @@
       "category": "vapen",
       "weapon_type": "bage",
       "tier": 1,
-      "damage": [
-        2,
-        7
-      ],
+      "damage": [2, 7],
       "attack_speed": 1.2,
       "range": 14,
       "damage_type": "stick",
@@ -421,9 +322,7 @@
       "requirements": {
         "level": 1
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 1,
       "ammo": "pilar",
       "material": "tra"
@@ -435,10 +334,7 @@
       "category": "vapen",
       "weapon_type": "bage",
       "tier": 2,
-      "damage": [
-        5,
-        12
-      ],
+      "damage": [5, 12],
       "attack_speed": 1,
       "range": 18,
       "damage_type": "stick",
@@ -446,9 +342,7 @@
       "requirements": {
         "level": 8
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 8,
       "ammo": "pilar",
       "material": "tra"
@@ -460,10 +354,7 @@
       "category": "vapen",
       "weapon_type": "bage",
       "tier": 3,
-      "damage": [
-        9,
-        19
-      ],
+      "damage": [9, 19],
       "attack_speed": 1.1,
       "range": 20,
       "damage_type": "stick",
@@ -471,9 +362,7 @@
       "requirements": {
         "level": 15
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 15,
       "ammo": "pilar",
       "material": "tra"
@@ -485,10 +374,7 @@
       "category": "vapen",
       "weapon_type": "dolk",
       "tier": 1,
-      "damage": [
-        2,
-        5
-      ],
+      "damage": [2, 5],
       "attack_speed": 1.4,
       "range": 1.3,
       "damage_type": "stick",
@@ -496,11 +382,7 @@
       "requirements": {
         "level": 1
       },
-      "classes": [
-        "amazonkrigare",
-        "riddare",
-        "barbar"
-      ],
+      "classes": ["amazonkrigare", "riddare", "barbar"],
       "item_level": 1,
       "material": "jarn"
     },
@@ -511,10 +393,7 @@
       "category": "vapen",
       "weapon_type": "dolk",
       "tier": 2,
-      "damage": [
-        4,
-        9
-      ],
+      "damage": [4, 9],
       "attack_speed": 1.5,
       "range": 1.3,
       "damage_type": "stick",
@@ -522,9 +401,7 @@
       "requirements": {
         "level": 9
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 9,
       "material": "jarn"
     },
@@ -535,10 +412,7 @@
       "category": "vapen",
       "weapon_type": "dolk",
       "tier": 3,
-      "damage": [
-        7,
-        14
-      ],
+      "damage": [7, 14],
       "attack_speed": 1.5,
       "range": 1.4,
       "damage_type": "stick",
@@ -546,10 +420,7 @@
       "requirements": {
         "level": 15
       },
-      "classes": [
-        "amazonkrigare",
-        "riddare"
-      ],
+      "classes": ["amazonkrigare", "riddare"],
       "item_level": 15,
       "material": "jarn"
     },
@@ -567,10 +438,7 @@
       "requirements": {
         "level": 1
       },
-      "classes": [
-        "riddare",
-        "barbar"
-      ],
+      "classes": ["riddare", "barbar"],
       "item_level": 1,
       "material": "tra"
     },
@@ -588,9 +456,7 @@
       "requirements": {
         "level": 7
       },
-      "classes": [
-        "riddare"
-      ],
+      "classes": ["riddare"],
       "item_level": 7,
       "material": "jarn"
     },
@@ -608,9 +474,7 @@
       "requirements": {
         "level": 15
       },
-      "classes": [
-        "riddare"
-      ],
+      "classes": ["riddare"],
       "item_level": 15,
       "material": "jarn"
     },
@@ -620,15 +484,10 @@
       "category": "vapen",
       "weapon_type": "spjut",
       "subtype": "kast",
-      "damage": [
-        5,
-        10
-      ],
+      "damage": [5, 10],
       "damage_type": "stick",
       "stack": 10,
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 1,
       "requirements": {
         "level": 1
@@ -657,10 +516,7 @@
       "weapon_type": "dolk",
       "material": "ben",
       "tier": 1,
-      "damage": [
-        2,
-        6
-      ],
+      "damage": [2, 6],
       "attack_speed": 1.4,
       "range": 1.3,
       "damage_type": "stick",
@@ -668,11 +524,7 @@
       "requirements": {
         "level": 2
       },
-      "classes": [
-        "amazonkrigare",
-        "riddare",
-        "barbar"
-      ],
+      "classes": ["amazonkrigare", "riddare", "barbar"],
       "item_level": 2,
       "material_bonus": {
         "life_on_hit": 1
@@ -687,10 +539,7 @@
       "weapon_type": "klubba",
       "material": "ben",
       "tier": 1,
-      "damage": [
-        4,
-        9
-      ],
+      "damage": [4, 9],
       "attack_speed": 1,
       "range": 1.7,
       "damage_type": "kross",
@@ -698,10 +547,7 @@
       "requirements": {
         "level": 3
       },
-      "classes": [
-        "barbar",
-        "riddare"
-      ],
+      "classes": ["barbar", "riddare"],
       "item_level": 3,
       "material_bonus": {
         "life_on_hit": 1
@@ -716,10 +562,7 @@
       "weapon_type": "yxa",
       "material": "ben",
       "tier": 2,
-      "damage": [
-        8,
-        16
-      ],
+      "damage": [8, 16],
       "attack_speed": 0.95,
       "range": 1.9,
       "damage_type": "hugg",
@@ -727,9 +570,7 @@
       "requirements": {
         "level": 10
       },
-      "classes": [
-        "barbar"
-      ],
+      "classes": ["barbar"],
       "item_level": 10,
       "material_bonus": {
         "life_on_hit": 2
@@ -744,10 +585,7 @@
       "weapon_type": "spjut",
       "material": "ben",
       "tier": 2,
-      "damage": [
-        8,
-        16
-      ],
+      "damage": [8, 16],
       "attack_speed": 1,
       "range": 2.9,
       "damage_type": "stick",
@@ -755,9 +593,7 @@
       "requirements": {
         "level": 12
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 12,
       "material_bonus": {
         "life_on_hit": 2
@@ -772,10 +608,7 @@
       "weapon_type": "klubba",
       "material": "ben",
       "tier": 3,
-      "damage": [
-        14,
-        27
-      ],
+      "damage": [14, 27],
       "attack_speed": 0.8,
       "range": 2.1,
       "damage_type": "kross",
@@ -783,9 +616,7 @@
       "requirements": {
         "level": 19
       },
-      "classes": [
-        "barbar"
-      ],
+      "classes": ["barbar"],
       "item_level": 19,
       "material_bonus": {
         "life_on_hit": 3
@@ -800,10 +631,7 @@
       "weapon_type": "dolk",
       "material": "ben",
       "tier": 3,
-      "damage": [
-        8,
-        15
-      ],
+      "damage": [8, 15],
       "attack_speed": 1.5,
       "range": 1.4,
       "damage_type": "stick",
@@ -811,9 +639,7 @@
       "requirements": {
         "level": 22
       },
-      "classes": [
-        "amazonkrigare"
-      ],
+      "classes": ["amazonkrigare"],
       "item_level": 22,
       "material_bonus": {
         "life_on_hit": 3
