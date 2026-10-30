@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0",
-    "categories": ["vapen", "rustning", "dryck", "amulett", "ring", "guld", "material", "ben"],
+    "categories": ["vapen", "rustning", "mat", "amulett", "ring", "guld", "material"],
     "tiers": {
       "1": {
         "ilvl": [1, 6]
@@ -106,8 +106,8 @@
       "weapon_type": "svard",
       "tier": 2,
       "damage": [6, 12],
-      "attack_speed": 1.0,
-      "range": 2.0,
+      "attack_speed": 1,
+      "range": 2,
       "damage_type": "hugg",
       "two_handed": false,
       "requirements": {
@@ -125,7 +125,7 @@
       "weapon_type": "svard",
       "tier": 3,
       "damage": [11, 20],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 2.1,
       "damage_type": "hugg",
       "two_handed": false,
@@ -144,7 +144,7 @@
       "weapon_type": "yxa",
       "tier": 1,
       "damage": [4, 8],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 1.7,
       "damage_type": "hugg",
       "two_handed": false,
@@ -201,7 +201,7 @@
       "weapon_type": "klubba",
       "tier": 1,
       "damage": [3, 8],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 1.7,
       "damage_type": "kross",
       "two_handed": false,
@@ -221,7 +221,7 @@
       "tier": 2,
       "damage": [8, 18],
       "attack_speed": 0.8,
-      "range": 2.0,
+      "range": 2,
       "damage_type": "kross",
       "two_handed": true,
       "requirements": {
@@ -240,7 +240,7 @@
       "tier": 3,
       "damage": [13, 24],
       "attack_speed": 0.85,
-      "range": 2.0,
+      "range": 2,
       "damage_type": "kross",
       "two_handed": false,
       "requirements": {
@@ -258,7 +258,7 @@
       "weapon_type": "spjut",
       "tier": 1,
       "damage": [4, 9],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 2.6,
       "damage_type": "stick",
       "two_handed": true,
@@ -277,7 +277,7 @@
       "weapon_type": "spjut",
       "tier": 2,
       "damage": [7, 15],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 2.9,
       "damage_type": "stick",
       "two_handed": true,
@@ -335,7 +335,7 @@
       "weapon_type": "bage",
       "tier": 2,
       "damage": [5, 12],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 18,
       "damage_type": "stick",
       "two_handed": true,
@@ -434,7 +434,7 @@
       "tier": 1,
       "defense": 2,
       "block_chance": 0.2,
-      "move_penalty": 0.0,
+      "move_penalty": 0,
       "requirements": {
         "level": 1
       },
@@ -540,7 +540,7 @@
       "material": "ben",
       "tier": 1,
       "damage": [4, 9],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 1.7,
       "damage_type": "kross",
       "two_handed": false,
@@ -586,7 +586,7 @@
       "material": "ben",
       "tier": 2,
       "damage": [8, 16],
-      "attack_speed": 1.0,
+      "attack_speed": 1,
       "range": 2.9,
       "damage_type": "stick",
       "two_handed": true,
@@ -1072,33 +1072,58 @@
   ],
   "potions": [
     {
-      "id": "liten_halsodryck",
-      "name": "Liten hälsodryck",
-      "category": "dryck",
-      "heal": 30,
+      "id": "torkat_kott",
+      "name": "Torkat kött",
+      "name_en": "Jerky",
+      "category": "mat",
+      "heal": 12,
+      "heal_over_time": {
+        "total": 18,
+        "duration_s": 8
+      },
       "stack": 10,
       "item_level": 1
     },
     {
-      "id": "stor_halsodryck",
-      "name": "Stor hälsodryck",
-      "category": "dryck",
-      "heal": 70,
+      "id": "rokerat_hogrev",
+      "name": "Rökt hogrev",
+      "name_en": "Smoked haunch",
+      "category": "mat",
+      "heal": 28,
+      "heal_over_time": {
+        "total": 42,
+        "duration_s": 10
+      },
       "stack": 5,
       "item_level": 7
     },
     {
-      "id": "uthallighetsdryck",
-      "name": "Uthållighetsdryck",
-      "category": "dryck",
+      "id": "skogsörtste",
+      "name": "Skogsörtste",
+      "name_en": "Forest herb tea",
+      "category": "mat",
       "stamina": 40,
       "stack": 10,
       "item_level": 1
     },
     {
-      "id": "foryngringsdryck",
-      "name": "Föryngringsdryck",
-      "category": "dryck",
+      "id": "vargblod",
+      "name": "Vargblod",
+      "name_en": "Wolf blood",
+      "category": "mat",
+      "heal": 8,
+      "stamina": 15,
+      "buff_damage_pct": 0.12,
+      "buff_speed_pct": 0.1,
+      "buff_duration_s": 25,
+      "stack": 8,
+      "item_level": 4
+    },
+    {
+      "id": "varlbrygd",
+      "name": "Välbrygd",
+      "name_en": "Herbal tonic",
+      "category": "mat",
       "heal_pct": 0.35,
       "stamina_pct": 0.35,
       "stack": 3,
@@ -1231,7 +1256,7 @@
       "base": "benhjalm",
       "level": 10,
       "fixed": {
-        "defense_pct": 1.0,
+        "defense_pct": 1,
         "stamina": 30,
         "stamina_regen_pct": 0.3,
         "magic_find": 0.25,
@@ -1375,7 +1400,7 @@
         "level": 19
       },
       "fixed": {
-        "damage_pct": 1.0,
+        "damage_pct": 1,
         "range_bonus": 0.5,
         "crit_chance": 0.08,
         "pierce": 2
@@ -1393,7 +1418,7 @@
         "level": 21
       },
       "fixed": {
-        "damage_pct": 1.0,
+        "damage_pct": 1,
         "attack_rating": 80,
         "life_on_hit": 4,
         "vs_demoner_damage_pct": 0.4
@@ -1465,7 +1490,7 @@
         "level": 26
       },
       "fixed": {
-        "defense_pct": 1.0,
+        "defense_pct": 1,
         "life": 40,
         "damage_pct": 0.15,
         "resist_dark_magic": 0.25

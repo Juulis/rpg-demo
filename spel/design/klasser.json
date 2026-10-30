@@ -6,7 +6,7 @@
       "name": "Uthållighet",
       "replaces": "mana",
       "regen_per_s": 8,
-      "regen_delay_s": 1.0,
+      "regen_delay_s": 1,
       "note": "Vanlig attack kostar 0, undanmanöver 20, sprint 10/s."
     },
     "magic": {
@@ -62,7 +62,7 @@
           "affixes": []
         },
         {
-          "item": "liten_halsodryck",
+          "item": "torkat_kott",
           "count": 3,
           "quality": "normal",
           "affixes": []
@@ -171,7 +171,7 @@
           "affixes": []
         },
         {
-          "item": "liten_halsodryck",
+          "item": "torkat_kott",
           "count": 3,
           "quality": "normal",
           "affixes": []
@@ -280,7 +280,7 @@
           "affixes": []
         },
         {
-          "item": "liten_halsodryck",
+          "item": "torkat_kott",
           "count": 2,
           "quality": "normal",
           "affixes": []
@@ -344,7 +344,7 @@
       ],
       "start_check": {
         "weapon": "rostig_kortsvard",
-        "hit_avg": 13.0,
+        "hit_avg": 13,
         "hits_vs_varg_lvl1": 3.8,
         "note": "Varg nivå 1: 50 HP, försvar 0."
       }

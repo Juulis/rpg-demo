@@ -50,7 +50,10 @@
     "zones": {
       "forest": "Den dimmiga skogen",
       "village": "Den gamla byn",
-      "wolfstead": "Vargaby"
+      "wolfstead": "Vargaby",
+      "dimmerstrand": "Dimmerstrand",
+      "kopparberg": "Kopparberg",
+      "askeborg": "Askeborg"
     },
     "areas": {
       "portalgladet": "Portalgläntan",
@@ -68,6 +71,9 @@
     "portal_to_village": "Portal → Den gamla byn",
     "portal_to_forest": "Portal → Skogen",
     "portal_to_wolfstead": "Väg → Vargaby",
+    "portal_to_dimmerstrand": "Väg → Dimmerstrand",
+    "portal_to_kopparberg": "Väg → Kopparberg",
+    "portal_to_askeborg": "Väg → Askeborg",
     "legend": "Tab: stäng karta · ◆ runsten · ● portal · ▲ du · ◯ nästa mål",
     "north": "N"
   },

@@ -18,7 +18,7 @@
   "family_tables": {
     "ododa": {
       "drop_chance": 0.45,
-      "gold_mult": 1.0,
+      "gold_mult": 1,
       "category_weights": {
         "vapen": 30,
         "rustning": 25,
@@ -39,11 +39,10 @@
       "drop_chance": 0.45,
       "gold_mult": 0.6,
       "category_weights": {
-        "dryck": 45,
-        "amulett": 14,
-        "ring": 14,
-        "guld": 7,
-        "ben": 20
+        "mat": 62,
+        "amulett": 16,
+        "ring": 16,
+        "guld": 6
       },
       "gold_chance": 0.4,
       "extra": []
@@ -509,18 +508,18 @@
       "drops": [5, 7],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -556,18 +555,18 @@
       "drops": [5, 7],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -595,18 +594,18 @@
       "drops": [5, 7],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -642,18 +641,18 @@
       "drops": [5, 7],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -689,18 +688,18 @@
       "drops": [5, 7],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -740,18 +739,18 @@
       "drops": [5, 7],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
-          "item": "stor_halsodryck",
+          "item": "rokerat_hogrev",
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -766,21 +765,24 @@
     }
   },
   "potion_weights_by_tier": {
-    "note": "tier enligt ilvl: 1 = 1 till 6, 2 = 7 till 14, 3 = 15+",
     "1": {
-      "liten_halsodryck": 60,
-      "uthallighetsdryck": 40
+      "torkat_kott": 50,
+      "skogsörtste": 35,
+      "vargblod": 15
     },
     "2": {
-      "liten_halsodryck": 35,
-      "stor_halsodryck": 30,
-      "uthallighetsdryck": 35
+      "torkat_kott": 25,
+      "rokerat_hogrev": 30,
+      "skogsörtste": 30,
+      "vargblod": 15
     },
     "3": {
-      "stor_halsodryck": 45,
-      "uthallighetsdryck": 35,
-      "foryngringsdryck": 20
-    }
+      "rokerat_hogrev": 40,
+      "skogsörtste": 25,
+      "vargblod": 15,
+      "varlbrygd": 20
+    },
+    "note": "tier enligt ilvl: 1 = 1 till 6, 2 = 7 till 14, 3 = 15+. Mat och naturliga förbrukningsvaror."
   },
   "elite_loot_ref": "monster_niva.json elites",
   "legendary_sources": {

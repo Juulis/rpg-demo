@@ -71,7 +71,7 @@
   ],
   "roll_order": ["legendary", "set", "rare", "magic", "normal"],
   "fallback": "Om legendary eller set träffar men ingen sådan finns för bastypen och nivån: legendary blir rare med 3 extra affix-värde, set blir magic med max värden.",
-  "non_quality_categories": ["potion", "gold", "material"],
+  "non_quality_categories": ["mat", "gold", "material"],
   "rare_names": {
     "forsta": ["Gravens", "Askans", "Blodets", "Skuggans", "Likets", "Korpens", "Vargens", "Dimmans", "Benets", "Glömskans"],
     "andra": ["Klo", "Bett", "Hand", "Sång", "Vakt", "Törn", "Rop", "Ed", "Börda", "Kyss"]

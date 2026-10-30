@@ -35,7 +35,7 @@ export class NpcSystem {
     this.clear(w);
     const areaId = w.zone.areaId;
     const defs = [
-      ...npcsForZone(w.zone.name as 'forest' | 'village' | 'wolfstead', areaId),
+      ...npcsForZone(w.zone.name as 'forest' | 'village' | 'wolfstead' | 'dimmerstrand' | 'kopparberg' | 'askeborg', areaId),
       ...backgroundVillagerDefs(areaId, this.worldState.get()),
     ];
     const state = this.worldState.get();

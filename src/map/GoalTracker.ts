@@ -1,6 +1,7 @@
 import type { Vec2, ZoneView } from '../core/GameContext';
 import type { VillageZoneDef } from '../data/types';
 import type { Key, Params } from '../i18n/types';
+import { isPlayableCityZone } from '../world/cityZones';
 import type { MapModel } from './MapModel';
 
 export interface Goal {
@@ -16,7 +17,7 @@ export class GoalTracker {
 
   goal(z: ZoneView, hero: Vec2): Goal | null {
     if (z.name === 'village' || z.areaId === 'gamla_byn') return this.villageGoal(z);
-    if (z.name === 'wolfstead' || z.areaId === 'vargaby') {
+    if (isPlayableCityZone(z.name)) {
       const a = z.arena;
       if (a) return { x: (a.x0 + a.x1) / 2, y: (a.y0 + a.y1) / 2, text: 'map.goal_wolf_den' };
     }

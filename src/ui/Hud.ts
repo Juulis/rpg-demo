@@ -121,7 +121,7 @@ export class Hud {
     this.set('xpT', this.text.t('hud.xp', { xp: s.xp, need }));
     this.set('lvl', this.text.t('hud.level', { level: s.level }));
     if (clock) this.set('clock', this.text.t('hud.clock', { period: clock.period, time: clock.time }));
-    this.set('potHp', this.text.t('hud.potions', { count: h.inv.countPotions('hp') }));
+    this.set('potHp', this.text.t('hud.proviant', { count: h.inv.countConsumables('hp') }));
     if (this.msgT > 0 && (this.msgT -= dt) <= 0) this.msg.classList.add('hidden');
     for (const f of [...this.floaters]) {
       f.life -= dt;

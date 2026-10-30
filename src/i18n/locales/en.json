@@ -50,7 +50,10 @@
     "zones": {
       "forest": "The Misty Forest",
       "village": "The Old Village",
-      "wolfstead": "Wolfstead"
+      "wolfstead": "Wolfstead",
+      "dimmerstrand": "Dimshore",
+      "kopparberg": "Copperberg",
+      "askeborg": "Ashburg"
     },
     "areas": {
       "portalgladet": "Portal Glade",
@@ -68,6 +71,9 @@
     "portal_to_village": "Portal → The Old Village",
     "portal_to_forest": "Portal → The Forest",
     "portal_to_wolfstead": "Road → Wolfstead",
+    "portal_to_dimmerstrand": "Road → Dimshore",
+    "portal_to_kopparberg": "Road → Copperberg",
+    "portal_to_askeborg": "Road → Ashburg",
     "legend": "Tab: close map · ◆ runestone · ● portal · ▲ you · ◯ next goal",
     "north": "N"
   },

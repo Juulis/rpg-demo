@@ -1,4 +1,5 @@
 import type { HeroState, ZoneView } from '../core/GameContext';
+import type { Key } from '../i18n/types';
 import { FogOfWar, type Rgba } from './FogOfWar';
 import type { Goal } from './GoalTracker';
 import type { MapModel } from './MapModel';
@@ -120,12 +121,14 @@ export class MapPainter {
         c.fillStyle = '#ff7080';
         c.font = FONT;
         c.textAlign = 'center';
-        const label =
-          pt.target === 'village'
-            ? this.model.t('map.portal_to_village')
-            : pt.target === 'wolfstead'
-              ? this.model.t('map.portal_to_wolfstead')
-              : this.model.t('map.portal_to_forest');
+        const portalLabels: Partial<Record<string, Key>> = {
+          village: 'map.portal_to_village',
+          wolfstead: 'map.portal_to_wolfstead',
+          dimmerstrand: 'map.portal_to_dimmerstrand',
+          kopparberg: 'map.portal_to_kopparberg',
+          askeborg: 'map.portal_to_askeborg',
+        };
+        const label = this.model.t(portalLabels[pt.target] ?? 'map.portal_to_forest');
         c.fillText(label, X(pt.x), Y(pt.y) - Math.max(9, 1.4 * s + 6));
       }
     }
