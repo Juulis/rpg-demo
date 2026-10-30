@@ -93,7 +93,7 @@
     "hp": "Liv",
     "stamina": "Uthållighet",
     "proviant": "{count} st",
-    "help": "Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: proviant"
+    "help": "Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 1–4: färdigheter · Alt+3/4: proviant"
   },
   "msg": {
     "rune_awake": "Runan vaknar! ({n}/3)",

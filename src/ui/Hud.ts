@@ -119,6 +119,10 @@ export class Hud {
     const s = h.s;
     this.width('hp', s.hp / s.maxHp);
     this.set('hpT', `${Math.ceil(s.hp)} / ${s.maxHp}`);
+    const stBar = this.root.querySelector<HTMLElement>('.bar.st');
+    stBar?.classList.remove('hidden');
+    this.width('st', h.stamina / h.maxStamina);
+    this.set('stT', `${Math.ceil(h.stamina)} / ${h.maxStamina}`);
     const need = HeroCls.need(s.level);
     this.width('xp', s.xp / need);
     this.set('xpT', this.text.t('hud.xp', { xp: s.xp, need }));

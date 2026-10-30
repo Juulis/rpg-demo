@@ -1,39 +1,24 @@
 {
   "uthallighet": { "name": "Stamina" },
-  "amazonkrigare": {
-    "name": "Amazon",
-    "role": "Swift. Pierce and reach.",
-    "skills": {
-      "spjutstot": { "name": "Spear Thrust", "effect": "Long thrust: 150% damage, range 3.5, pierces 2 enemies." },
-      "kastspjut": { "name": "Javelin Toss", "effect": "Hurls a javelin for 120% damage, range 14. Consumes javelins." },
-      "vig_undanmanover": { "name": "Nimble Evade", "effect": "Roll 4 units, invulnerable for 0.3 s. Next attack +30% crit chance." },
-      "jagarblick": { "name": "Hunter's Eye", "effect": "Passive: +10% damage to enemies above 80% HP." },
-      "virvelspjut": { "name": "Whirling Spear", "effect": "Spins the spear for 2 s: 60% damage every 0.4 s in radius 3." },
-      "sarande_kast": { "name": "Wounding Throw", "effect": "A throw that bleeds for 8 damage/s over 6 s and slows by 30%." }
-    }
-  },
-  "barbar": {
-    "name": "Barbarian",
-    "role": "Raw strength. Crush and slash.",
-    "skills": {
-      "tungt_slag": { "name": "Heavy Blow", "effect": "Charged blow: 200% damage, knocks down normal enemies for 1 s." },
-      "stridsvral": { "name": "War Cry", "effect": "Enemies within 6 turn on you. You gain +20% damage for 6 s." },
-      "markskakning": { "name": "Earthshaker", "effect": "Strike the ground: 120% damage in radius 4, 40% slow for 3 s." },
-      "blodtorst": { "name": "Bloodthirst", "effect": "Passive: each kill restores 5% of max HP." },
-      "berserkerrus": { "name": "Berserk", "effect": "8 s: +40% damage and attack speed, take 15% more damage." },
-      "yxkast": { "name": "Axe Throw", "effect": "Hurls your weapon for 160% damage. It returns to you." }
-    }
-  },
-  "riddare": {
-    "name": "Knight",
-    "role": "Defense and balance. Slash.",
-    "skills": {
-      "skoldblock": { "name": "Shield Block", "effect": "Hold: blocks 70% of frontal damage, costs 5 stamina per hit." },
-      "skoldslag": { "name": "Shield Bash", "effect": "80% damage, interrupts an enemy attack or spell, knockdown 1.5 s." },
-      "framstot": { "name": "Charge", "effect": "Rush 6 units, 130% damage to the first enemy." },
-      "jarnvilja": { "name": "Iron Will", "effect": "Passive: +5 defense while below 30% HP." },
-      "motattack": { "name": "Riposte", "effect": "A perfect block (0.3 s) triggers a 180% damage counter." },
-      "fanbararens_rop": { "name": "Banner Cry", "effect": "Heals 25% HP and grants +3 defense for 10 s." }
-    }
-  }
+  "amazonkrigare": { "name": "Amazon", "role": "Swift. Pierce and reach." },
+  "barbar": { "name": "Barbarian", "role": "Raw strength. Crush and slash." },
+  "riddare": { "name": "Knight", "role": "Defense and balance. Slash." },
+  "spjutstot": { "name": "Spear Thrust", "effect": "Long thrust: 150% damage, range 3.5, pierces 2 enemies." },
+  "kastspjut": { "name": "Javelin Toss", "effect": "Hurls a javelin for 120% damage, range 14. Consumes javelins." },
+  "vig_undanmanover": { "name": "Nimble Evade", "effect": "Roll 4 units, invulnerable for 0.3 s. Next attack +30% crit chance." },
+  "jagarblick": { "name": "Hunter's Eye", "effect": "Passive: +10% damage to enemies above 80% HP." },
+  "virvelspjut": { "name": "Whirling Spear", "effect": "Spins the spear for 2 s: 60% damage every 0.4 s in radius 3." },
+  "sarande_kast": { "name": "Wounding Throw", "effect": "A throw that bleeds for 8 damage/s over 6 s and slows by 30%." },
+  "tungt_slag": { "name": "Heavy Blow", "effect": "Charged blow: 200% damage, knocks down normal enemies for 1 s." },
+  "stridsvral": { "name": "War Cry", "effect": "Enemies within 6 turn on you. You gain +20% damage for 6 s." },
+  "markskakning": { "name": "Earthshaker", "effect": "Strike the ground: 120% damage in radius 4, 40% slow for 3 s." },
+  "blodtorst": { "name": "Bloodthirst", "effect": "Passive: each kill restores 5% of max HP." },
+  "berserkerrus": { "name": "Berserk", "effect": "8 s: +40% damage and attack speed, take 15% more damage." },
+  "yxkast": { "name": "Axe Throw", "effect": "Hurls your weapon for 160% damage. It returns to you." },
+  "skoldblock": { "name": "Shield Block", "effect": "Hold: blocks 70% of frontal damage, costs 5 stamina per hit." },
+  "skoldslag": { "name": "Shield Bash", "effect": "80% damage, interrupts an enemy attack or spell, knockdown 1.5 s." },
+  "framstot": { "name": "Charge", "effect": "Rush 6 units, 130% damage to the first enemy." },
+  "jarnvilja": { "name": "Iron Will", "effect": "Passive: +5 defense while below 30% HP." },
+  "motattack": { "name": "Riposte", "effect": "A perfect block (0.3 s) triggers a 180% damage counter." },
+  "fanbararens_rop": { "name": "Banner Cry", "effect": "Heals 25% HP and grants +3 defense for 10 s." }
 }

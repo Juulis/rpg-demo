@@ -8,6 +8,7 @@ import type { MonsterSnapshot } from '../logic/CombatRules';
 import type { LootSystem } from './LootSystem';
 import type { World } from './World';
 import { skillUnlocked } from '../logic/skills';
+import { canStartDodge } from '../logic/dodge';
 
 interface HitOpts {
   kb?: number;
@@ -61,7 +62,9 @@ export class CombatSystem {
     this.markPatrolAid(m);
     let mMult = mult * h.combatDamageMult();
     if (h.passiveActive('jagarblick') && m.hp / m.max > 0.8) mMult *= 1.1;
-    const r = w.authority.heroHit(st, h.level, this.snapshot(m), mMult);
+    const extraCrit = h.nextCritBonus;
+    const r = w.authority.heroHit(st, h.level, this.snapshot(m), mMult, extraCrit);
+    if (extraCrit > 0) h.nextCritBonus = 0;
     if (!r.hit) {
       w.fb.float(m.pos, t.t('fx.miss'), 'res', m.view.height2);
       return;
@@ -215,9 +218,9 @@ export class CombatSystem {
     const h = this.w().hero;
     if (!h.s.playing || h.atkCd > 0 || h.atkT > 0) return;
     const attackAnim = h.view.getAnim('attack');
-    h.atkCd = 0.5 / (h.stats.atkSpeed * h.atkSpeedMult());
+    const spd = Math.max(0.25, h.stats.atkSpeed * h.atkSpeedMult());
+    h.atkCd = 0.5 / spd;
     if (attackAnim?.hitFrame !== undefined && attackAnim.frames[0]?.length) {
-      const spd = Math.max(0.25, h.stats.atkSpeed);
       const n = attackAnim.frames[0].length;
       h.atkT = n / attackAnim.fps / spd;
       h.atkHitT = attackAnim.hitFrame / attackAnim.fps / spd;
@@ -265,7 +268,24 @@ export class CombatSystem {
     if (!down) return;
     if (h.skillCdLeft(sk.id) > 0) return;
     if (!skillUnlocked(sk, h.level)) return;
-    if (sk.stamina_cost > 0 && !h.spendStamina(sk.stamina_cost)) {
+    if (sk.id === 'kastspjut' && h.countJavelins() === 0) {
+      w.fb.flash(w.text.t('skill.no_javelin'));
+      return;
+    }
+    if (sk.id === 'vig_undanmanover') {
+      if (
+        !canStartDodge({
+          playing: h.s.playing,
+          dodgeCd: h.dodgeCd,
+          dodgeRemain: h.dodgeRemain,
+          atkT: h.atkT,
+        })
+      ) {
+        return;
+      }
+    }
+    const staminaCost = sk.stamina_cost;
+    if (staminaCost > 0 && !h.spendStamina(staminaCost)) {
       w.fb.flash(w.text.t('skill.no_stamina'));
       return;
     }
@@ -278,6 +298,7 @@ export class CombatSystem {
         break;
       case 'kastspjut':
         if (!h.consumeJavelin()) {
+          h.refundStamina(staminaCost);
           w.fb.flash(w.text.t('skill.no_javelin'));
           return;
         }
@@ -288,6 +309,9 @@ export class CombatSystem {
         if (h.tryDodge(f.x, f.y, 0.35)) {
           h.iframeT = Math.max(h.iframeT, 0.3);
           h.nextCritBonus = 0.3;
+        } else {
+          h.refundStamina(staminaCost);
+          return;
         }
         break;
       }
@@ -430,7 +454,7 @@ export class CombatSystem {
         this.hurt(p.dmg, p.pos, p.from);
         gone = true;
       }
-      if (!gone) {
+      if (!gone && !p.heroShot) {
         for (const f of w.worldFighters) {
           if (!f.alive) continue;
           if (Math.hypot(p.pos.x - f.pos.x, p.pos.y - f.pos.y) < 0.75) {

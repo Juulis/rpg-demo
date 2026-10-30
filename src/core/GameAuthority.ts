@@ -7,7 +7,7 @@ import type { Drop } from '../logic/loot/types';
  * Nu: LocalAuthority (src/logic) i webbläsaren. Senare kan samma logik köras på en server bakom samma interface.
  */
 export interface GameAuthority {
-  heroHit(st: HeroStats, heroLvl: number, m: MonsterSnapshot, mult: number): HeroHitResult;
+  heroHit(st: HeroStats, heroLvl: number, m: MonsterSnapshot, mult: number, extraCritChance?: number): HeroHitResult;
   monsterHit(o: {
     raw: number;
     monsterLvl: number;

@@ -197,6 +197,11 @@ export class HeroModel {
     return true;
   }
 
+  refundStamina(n: number): void {
+    if (n <= 0) return;
+    this.stamina = Math.min(this.maxStamina, this.stamina + n);
+  }
+
   countJavelins(): number {
     return this.inv.bag.reduce((n, it) => n + (this.L.base(it).id === 'kastspjut' ? (it.n ?? 1) : 0), 0);
   }

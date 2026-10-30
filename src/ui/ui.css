@@ -136,6 +136,8 @@
   display: flex;
   gap: 6px;
   align-items: flex-end;
+}
+#hud .skillbar .skill-passives {
   pointer-events: none;
 }
 #hud .skillbar .skill {

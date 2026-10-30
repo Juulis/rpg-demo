@@ -10,7 +10,7 @@ export const SV = {
     hp: 'Liv',
     stamina: 'Uthållighet',
     proviant: '{count} st',
-    help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: proviant',
+    help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 1–4: färdigheter · Alt+3/4: proviant',
   },
   rumor: {
     unknown_item: 'ett legendariskt föremål',
