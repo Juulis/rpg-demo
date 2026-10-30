@@ -260,11 +260,11 @@ export class ZoneFactory {
     const pickGround = (inside: boolean, road: boolean, tx: number, ty: number): string => {
       if (!inside) return R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke']);
       if (road) return R.next() < 0.35 ? 'kullersten_mossig' : 'kullersten';
-      if (theme === 'wolf' && inside && ty <= 7 && Math.abs(tx - 16) < 5) return R.pick(['lera_1', 'lera_2', 'stenhog']);
+      if (theme === 'wolf' && inside && ty <= 7 && Math.abs(tx - 16) < 5) return R.pick(['lera_1', 'lera_2', 'lera_3']);
       if (theme === 'mist')
         return R.next() < 0.45 ? R.pick(['lera_1', 'lera_2', 'lera_3']) : R.pick(['skogsbotten_lov', 'skogsbotten_ormbunke']);
-      if (theme === 'copper') return R.next() < 0.4 ? 'kullersten' : R.pick(['lera_1', 'lera_2', 'stenhog']);
-      if (theme === 'ash') return R.next() < 0.35 ? 'aska' : R.pick(['lera_1', 'lera_2', 'stenhog']);
+      if (theme === 'copper') return R.next() < 0.4 ? 'kullersten' : R.pick(['lera_1', 'lera_2', 'lera_3']);
+      if (theme === 'ash') return R.next() < 0.35 ? 'aska' : R.pick(['lera_1', 'lera_2', 'lera_3']);
       return R.next() < 0.3 ? R.pick(['lera_1', 'lera_2', 'lera_3']) : R.pick(['gras_1', 'gras_2', 'gras_3', 'gras_4']);
     };
     for (let tx = -3; tx < 35; tx++)

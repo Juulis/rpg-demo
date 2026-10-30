@@ -7,7 +7,7 @@ import { DATA } from '../src/data';
 import { SpawnSystem } from '../src/systems/SpawnSystem';
 import { Zone } from '../src/world/Zone';
 import { FOREST_CITY_PORTALS } from '../src/world/forestConstants';
-import { cityAreaId, cityPortTile, PLAYABLE_CITIES } from '../src/world/cityZones';
+import { cityAreaId, cityPortTile, cityArenaTiles, PLAYABLE_CITIES } from '../src/world/cityZones';
 
 const spawn = new SpawnSystem();
 
@@ -26,6 +26,9 @@ for (const zoneName of PLAYABLE_CITIES) {
   const session = createSession(`city-${areaId}`);
   const specs = spawn.roll(area, session, { cityState: 'besatt' });
   assert.ok(specs.length > 0, `${areaId} spawnar monster när besatt`);
+
+  const arena = cityArenaTiles(areaId);
+  assert.deepEqual(arena.center, area.boss?.pos, `${areaId} arena centrum = boss`);
 }
 
 assert.ok(FOREST_CITY_PORTALS.wolfstead.x > 100);

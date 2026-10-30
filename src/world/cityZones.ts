@@ -43,11 +43,9 @@ export function cityPortEntry(zoneName: PlayableCityZone): { entry: { x: number;
 
 export function cityArenaTiles(areaId: string): { center: [number, number]; halfW: number; halfH: number } {
   const area = DATA.spawn.areas.find((a) => a.id === areaId);
-  const norr = area?.spawn_points.find((p) => p.id.endsWith('_norr'));
-  const centrum = area?.spawn_points.find((p) => p.id.endsWith('_centrum'));
-  const anchor = norr ?? centrum ?? { pos: [16, 15] as [number, number] };
-  const [cx, cy] = anchor.pos as [number, number];
-  return { center: [cx, cy], halfW: 8, halfH: 5 };
+  const bossPos = area?.boss?.pos as [number, number] | undefined;
+  const center: [number, number] = bossPos ?? [16, 4];
+  return { center, halfW: 8, halfH: 5 };
 }
 
 export type CityVisualTheme = 'wolf' | 'mist' | 'copper' | 'ash';
