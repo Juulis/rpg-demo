@@ -89,5 +89,15 @@ export function validateData(): string[] {
       issues.push(`rykte ${r.id}: okänt ersatter ${r.ersatter}`);
     }
   }
+  for (const q of DATA.quests.akt_1) {
+    if (!npcIds.has(q.givare)) issues.push(`quest ${q.id}: okänd givare ${q.givare}`);
+    if (q.alternativ_givare && !npcIds.has(q.alternativ_givare)) {
+      issues.push(`quest ${q.id}: okänd alternativ_givare ${q.alternativ_givare}`);
+    }
+    if (!q.steg.length) issues.push(`quest ${q.id}: inga steg`);
+    for (const s of q.steg) {
+      if (!s.id || !s.text) issues.push(`quest ${q.id}: steg saknar id/text`);
+    }
+  }
   return issues;
 }

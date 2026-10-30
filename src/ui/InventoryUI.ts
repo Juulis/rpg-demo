@@ -10,6 +10,7 @@ import { formatSetBonusTier, setLocalizedName } from '../data/setText';
 import type { ItemText } from './ItemText';
 import type { Tooltip } from './Tooltip';
 import { discardNeedsConfirm } from '../logic/inventoryDiscard';
+import { isQuestItemProtected } from '../quest/questItems';
 
 const CELL = 34;
 const SLOT_POS: Record<Slot, [number, number, number, number]> = {
@@ -326,6 +327,10 @@ export class InventoryUI {
 
   private requestDrop(it: Item): void {
     if (!this.hero) return;
+    if (isQuestItemProtected(it)) {
+      this.flash(this.text.t('inv.quest_no_drop'));
+      return;
+    }
     const name = this.L.nameOf(it);
     if (discardNeedsConfirm(it)) {
       this.showConfirm(

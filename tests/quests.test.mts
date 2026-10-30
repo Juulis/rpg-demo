@@ -6,9 +6,10 @@ import assert from 'node:assert/strict';
 import { validateData } from '../src/data/index';
 import { isQuestItemId } from '../src/quest/questItems';
 import { QuestEngine } from '../src/quest/questEngine';
-import { readQuestProgress } from '../src/quest/questProgress';
+import { readQuestProgress, writeQuestProgress } from '../src/quest/questProgress';
 import { initialStepId } from '../src/quest/questAlreadyDone';
 import { questById } from '../src/quest/questCatalog';
+import { questTitle, setQuestLocale } from '../src/quest/questText';
 import { Inventory } from '../src/logic/Inventory';
 import { Loot } from '../src/logic/loot/Loot';
 import { Rng } from '../src/core/Rng';
@@ -52,6 +53,29 @@ const engine2 = new QuestEngine(svc2);
 const hooksSandals = { worldTime: 0, region: 'startskogen', hasItem: () => true };
 engine2.onNpcTalk('lilla_mira', hooksSandals);
 assert.equal(readQuestProgress(svc2.get(), 'miras_bror').steg, 'tillbaka');
+
+const svc3 = new WorldStateService();
+writeQuestProgress(svc3.get(), 'miras_bror', { status: 'aktiv', steg: 'sanningen' });
+const engine3 = new QuestEngine(svc3);
+engine3.onPickup('flyktingens_sandaler', hooks);
+assert.equal(readQuestProgress(svc3.get(), 'miras_bror').steg, 'tillbaka');
+
+const ben = questById('benens_visk');
+assert.ok(ben);
+assert.equal(
+  initialStepId(ben, {
+    ctx: { world: svc.get(), day: 0 },
+    worldTime: 0,
+    hasItem: () => true,
+    region: 'vargaby',
+  }),
+  'atervand',
+);
+
+setQuestLocale('en');
+if (mira) assert.equal(questTitle(mira), 'Sandals in the Moss');
+setQuestLocale('sv');
+
 engine2.onNpcTalk('lilla_mira', hooksSandals);
 const pending = engine2.pendingChoices('lilla_mira', hooksSandals);
 assert.ok(pending.length >= 1);

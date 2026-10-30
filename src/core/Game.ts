@@ -48,8 +48,9 @@ import { QuestAnchorSystem } from '../systems/QuestAnchorSystem';
 import { QuestEncounterSystem } from '../systems/QuestEncounterSystem';
 import { applyFactionGreetingTone } from '../npc/factionGreeting';
 import { readQuestProgress } from '../quest/questProgress';
-import { choiceText, stepText } from '../quest/questText';
+import { choiceText, stepText, setQuestLocale } from '../quest/questText';
 import { closeLoreBook, isLoreBookOpen } from '../lore/LoreBookGate';
+import { isQuestItemProtected } from '../quest/questItems';
 import { QuestLog } from '../ui/QuestLog';
 import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
@@ -238,6 +239,7 @@ export class Game {
     this.bus.on('locale_changed', ({ locale }) => {
       setClockLocale(locale);
       setSetLocale(locale);
+      setQuestLocale(locale);
       this.hud.relabel();
       this.invUI.relabel();
     });
@@ -685,6 +687,10 @@ export class Game {
   }
   private dropItemFromInventory(it: Item): void {
     const w = this.mustWorld();
+    if (isQuestItemProtected(it)) {
+      this.hud.flash(this.text.t('inv.quest_no_drop'));
+      return;
+    }
     const inv = w.hero.inv;
     if (inv.bag.includes(it) || inv.slotOfItem(it)) inv.detach(it);
     this.lootSys.dropFromHero(it);

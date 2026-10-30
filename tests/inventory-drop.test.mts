@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { Inventory } from '../src/logic/Inventory';
 import { discardNeedsConfirm } from '../src/logic/inventoryDiscard';
+import { isQuestItemProtected } from '../src/quest/questItems';
 import { Loot } from '../src/logic/loot/Loot';
 import { Text } from '../src/text/Text';
 import { Rng } from '../src/core/Rng';
@@ -13,7 +14,8 @@ const inv = new Inventory(L, [], {}, () => 1);
 const normal = L.makeItem('torkat_kott', { n: 2 });
 assert.ok(inv.add(normal));
 const questStub = { uid: 'q1', base: 'quest_ulvhilds_pals', quality: 'common', affixes: [], ilvl: 1 };
-assert.ok(discardNeedsConfirm(questStub));
+assert.ok(isQuestItemProtected(questStub));
+assert.equal(discardNeedsConfirm(questStub), false);
 assert.equal(discardNeedsConfirm(normal), false);
 
 inv.detach(normal);

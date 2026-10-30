@@ -10,7 +10,7 @@ export const SV = {
     hp: 'Liv',
     stamina: 'Uthållighet',
     proviant: '{count} st',
-    help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 1–4: färdigheter · Alt+3/4: proviant',
+    help: 'Klick: gå/anfall · F: prata · J: uppdrag · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 1–4: färdigheter · Alt+3/4: proviant',
   },
   rumor: {
     unknown_item: 'ett legendariskt föremål',
@@ -99,6 +99,7 @@ export const SV = {
     drop: 'Släng',
     cancel: 'Avbryt',
     drop_confirm: 'Släng {name} på marken?',
+    quest_no_drop: 'Questföremål kan inte slängas.',
     active_set_bonuses: 'Aktiva setbonusar',
   },
   set_bonus: {

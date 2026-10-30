@@ -11,3 +11,8 @@ const QUEST_ITEM_IDS = new Set([
 export function isQuestItemId(itemId: string): boolean {
   return itemId.startsWith('quest_') || QUEST_ITEM_IDS.has(itemId);
 }
+
+/** Questföremål får inte slängas på marken eller säljas. */
+export function isQuestItemProtected(it: { base: string }): boolean {
+  return isQuestItemId(it.base);
+}

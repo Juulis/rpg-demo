@@ -48,6 +48,12 @@
     "no_stamina": "För lite uthållighet",
     "no_javelin": "Inga kastspjut kvar"
   },
+  "quest": {
+    "log_title": "Uppdrag",
+    "log_hint": "J — stäng",
+    "section_active": "Aktiva",
+    "section_done": "Klara"
+  },
   "audio": {
     "volume": "Volym",
     "sound_on": "Ljud på (M)",
@@ -93,7 +99,7 @@
     "hp": "Liv",
     "stamina": "Uthållighet",
     "proviant": "{count} st",
-    "help": "Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 1–4: färdigheter · Alt+3/4: proviant"
+    "help": "Klick: gå/anfall · F: prata · J: uppdrag · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 1–4: färdigheter · Alt+3/4: proviant"
   },
   "msg": {
     "rune_awake": "Runan vaknar! ({n}/3)",
@@ -165,7 +171,8 @@
   "inv": {
     "title": "Utrustning",
     "hint": "B / I · dra utanför fönstret eller Släng · Shift+högerklick släng · Esc stänger",
-    "gold": "Guld"
+    "gold": "Guld",
+    "quest_no_drop": "Questföremål kan inte slängas."
   },
   "stat": {
     "life": "Liv",
