@@ -170,13 +170,13 @@ export class Inventory {
   lift(it: Item): void {
     this.detach(it);
   }
-  findPotion(kind: 'hp' | 'st'): Item | undefined {
+  findConsumable(kind: 'hp' | 'st'): Item | undefined {
     return this.bag.find((i) => {
       const b = this.L.base(i);
       return isConsumableCategory(b.category) && (kind === 'hp' ? !!(b.heal ?? b.heal_pct) : !!(b.stamina ?? b.stamina_pct));
     });
   }
-  countPotions(kind: 'hp' | 'st'): number {
+  countConsumables(kind: 'hp' | 'st'): number {
     return this.bag.reduce((s, i) => {
       const b = this.L.base(i);
       const ok = isConsumableCategory(b.category) && (kind === 'hp' ? !!(b.heal ?? b.heal_pct) : !!(b.stamina ?? b.stamina_pct));
