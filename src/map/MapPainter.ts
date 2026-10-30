@@ -120,7 +120,18 @@ export class MapPainter {
         c.fillStyle = '#ff7080';
         c.font = FONT;
         c.textAlign = 'center';
-        const label = pt.target === 'village' ? 'Portal → Den gamla byn' : pt.target === 'wolfstead' ? 'Väg → Vargaby' : 'Portal → Skogen';
+        const label =
+          pt.target === 'village'
+            ? 'Portal → Den gamla byn'
+            : pt.target === 'wolfstead'
+              ? 'Väg → Vargaby'
+              : pt.target === 'dimmerstrand'
+                ? 'Väg → Dimmerstrand'
+                : pt.target === 'kopparberg'
+                  ? 'Väg → Kopparberg'
+                  : pt.target === 'askeborg'
+                    ? 'Väg → Askeborg'
+                    : 'Portal → Skogen';
         c.fillText(label, X(pt.x), Y(pt.y) - Math.max(9, 1.4 * s + 6));
       }
     }

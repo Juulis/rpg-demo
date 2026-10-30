@@ -9,6 +9,9 @@ export class MapModel {
     forest: 'Den dimmiga skogen',
     village: 'Den gamla byn',
     wolfstead: 'Vargaby',
+    dimmerstrand: 'Dimmerstrand',
+    kopparberg: 'Kopparberg',
+    askeborg: 'Askeborg',
   };
   static readonly AREA_NAME: Readonly<Record<string, string>> = {
     portalgladet: 'Portalgläntan',

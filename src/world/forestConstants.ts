@@ -1,3 +1,5 @@
+import type { PlayableCityZone } from './cityZones';
+
 /** Bana 1 (Startskogen): ~10× yta jämfört med ursprunglig radie 45. */
 export const FOREST_LEGACY_RADIUS = 45;
 export const FOREST_AREA_SCALE = 10;
@@ -14,3 +16,11 @@ export const FOREST_GROUND_CHUNK_TILES = 16;
 /** Östra vägport till Vargaby (världsenheter). */
 export const FOREST_VARGABY_PORTAL_X = FOREST_PLAY_RADIUS - 10;
 export const FOREST_VARGABY_PORTAL_Y = 0;
+
+/** Skogsportar till spelbara städer (inga spärrar — bara resa). */
+export const FOREST_CITY_PORTALS: Readonly<Record<PlayableCityZone, { x: number; y: number }>> = {
+  wolfstead: { x: FOREST_VARGABY_PORTAL_X, y: FOREST_VARGABY_PORTAL_Y },
+  dimmerstrand: { x: -(FOREST_PLAY_RADIUS - 10), y: 0 },
+  kopparberg: { x: 0, y: -(FOREST_PLAY_RADIUS - 10) },
+  askeborg: { x: 0, y: FOREST_PLAY_RADIUS - 10 },
+};

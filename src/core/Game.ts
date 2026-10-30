@@ -62,7 +62,7 @@ import { merchantNightGreeting } from '../npc/routineText';
 import { getNpcLocale } from '../npc/npcText';
 import { routineForNpc } from '../npc/npcRoutineCatalog';
 import { Tooltip } from '../ui/Tooltip';
-import type { Zone, ZoneName } from '../world/Zone';
+import type { TextKey } from '../text/Text';
 import { DevCheatsView } from '../dev/DevCheatsView';
 import { formatClockTime, GameClock } from '../world/GameClock';
 import { DayNightPresenter } from '../world/DayNightPresenter';
@@ -71,8 +71,10 @@ import { clockPeriodLabel, setClockLocale } from '../world/clockText';
 import { WorldStateService } from '../world/WorldStateService';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
 import { locomotionPlaybackRate } from '../render/locomotionPlayback';
-import { FOREST_VARGABY_PORTAL_X, FOREST_VARGABY_PORTAL_Y } from '../world/forestConstants';
+import { FOREST_CITY_PORTALS } from '../world/forestConstants';
+import { cityPortEntry, cityAreaId, isPlayableCityZone, parseSavedZone, PLAYABLE_CITIES } from '../world/cityZones';
 import { ZoneFactory } from '../world/ZoneFactory';
+import type { Zone, ZoneName } from '../world/Zone';
 
 const CLASS_TINT: Record<string, number> = { riddare: 0xffffff, barbar: 0xffd2b8, amazonkrigare: 0xffe6c8 };
 
@@ -306,8 +308,7 @@ export class Game {
     if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
     this.gameClock.load(g?.worldTime);
     if (this.camera) {
-      const zn: ZoneName = h.zone === 'village' || h.zone === 'wolfstead' ? h.zone : 'forest';
-      this.enterZone(zn, h.resumePos ?? undefined);
+      this.enterZone(parseSavedZone(h.zone), h.resumePos ?? undefined);
     }
   }
 
@@ -357,8 +358,7 @@ export class Game {
     h.resumePos = null;
     this.worldState.resetForNewRun();
     this.worldState.setRunesActive(0);
-    this.worldState.setCityState('gamla_byn', 'besatt');
-    this.worldState.setCityState('vargaby', 'besatt');
+    for (const z of PLAYABLE_CITIES) this.worldState.setCityState(cityAreaId(z), 'besatt');
     this.gameClock.resetForNewHero();
     this.bus.emit('new_game', { seed: s.seed });
     this.enterZone('forest');
@@ -401,8 +401,17 @@ export class Game {
   }
 
   private portalSpawn(target: ZoneName, from: ZoneName): Vec2 | undefined {
-    if (target === 'forest' && from === 'wolfstead') return { x: FOREST_VARGABY_PORTAL_X - 4, y: FOREST_VARGABY_PORTAL_Y };
-    if (target === 'forest' && from === 'village') return { x: 0, y: 4 };
+    if (target === 'forest') {
+      if (from === 'village') return { x: 0, y: 4 };
+      if (isPlayableCityZone(from)) {
+        const p = FOREST_CITY_PORTALS[from];
+        return {
+          x: p.x + (p.x === 0 ? 0 : p.x > 0 ? -4 : 4),
+          y: p.y + (p.y === 0 ? 0 : p.y > 0 ? -4 : 4),
+        };
+      }
+    }
+    if (from === 'forest' && isPlayableCityZone(target)) return cityPortEntry(target).entry;
     return undefined;
   }
 
@@ -489,8 +498,21 @@ export class Game {
     this.npcSys.sync(this.world);
     this.worldAmbientSys.sync(this.world, this.ctx.session.seed);
     this.worldFighterSys.sync(this.world, this.ctx.session.seed);
-    const zoneMsg = name === 'village' ? 'msg.zone_village' : name === 'wolfstead' ? 'msg.zone_wolfstead' : 'msg.zone_forest';
-    this.hud.flash(this.text.t(zoneMsg));
+    const zoneMsgKey: TextKey =
+      name === 'village'
+        ? 'msg.zone_village'
+        : name === 'forest'
+          ? 'msg.zone_forest'
+          : name === 'wolfstead'
+            ? 'msg.zone_wolfstead'
+            : name === 'dimmerstrand'
+              ? 'msg.zone_dimmerstrand'
+              : name === 'kopparberg'
+                ? 'msg.zone_kopparberg'
+                : name === 'askeborg'
+                  ? 'msg.zone_askeborg'
+                  : 'msg.zone_forest';
+    this.hud.flash(this.text.t(zoneMsgKey));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
     this.bus.emit('zone_enter', { name, areaId: zone.areaId });
@@ -1032,11 +1054,15 @@ export class Game {
     if (portal) {
       this.tip.show(
         `<div class="tn">${t.t('tooltip.portal')}</div><div class="tb">${t.t(
-          portal.target === 'village'
-            ? 'tooltip.portal_to_village'
-            : portal.target === 'wolfstead'
-              ? 'tooltip.portal_to_wolfstead'
-              : 'tooltip.portal_to_forest',
+          (
+            {
+              village: 'tooltip.portal_to_village',
+              wolfstead: 'tooltip.portal_to_wolfstead',
+              dimmerstrand: 'tooltip.portal_to_dimmerstrand',
+              kopparberg: 'tooltip.portal_to_kopparberg',
+              askeborg: 'tooltip.portal_to_askeborg',
+            } as const
+          )[portal.target as 'wolfstead'] ?? 'tooltip.portal_to_forest',
         )}</div>`,
         x,
         y,
