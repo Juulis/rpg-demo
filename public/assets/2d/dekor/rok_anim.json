@@ -1,0 +1,13 @@
+{
+ "image": "rok_anim.png",
+ "frames": 8,
+ "frameW": 192,
+ "frameH": 320,
+ "anchor": [
+  40,
+  316
+ ],
+ "fps": 8,
+ "loop": true,
+ "not": "En rad med 8 frames, sömlös loop. Ankare = skorstenens mynning, inte marken. Rita ovanför huset, skala ~0,4."
+}
