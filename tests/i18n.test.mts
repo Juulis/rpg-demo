@@ -17,10 +17,13 @@ async function run(): Promise<void> {
   assert.equal(i18n.locale, 'sv');
   assert.equal(i18n.t('menu.continue'), 'Fortsätt');
   assert.equal(i18n.t('msg.zone_wolfstead'), 'Vargaby');
+  assert.equal(i18n.t('hud.proviant', { count: 2 }), '2 st');
 
   await i18n.setLocale('en');
   assert.equal(i18n.locale, 'en');
   assert.equal(i18n.t('menu.continue'), 'Continue');
+  assert.equal(i18n.t('msg.zone_wolfstead'), 'Wolfstead');
+  assert.equal(i18n.t('msg.no_proviant'), 'No provisions left');
   assert.equal(backend.settings.get(LocaleManager.STORAGE_KEY), 'en');
 
   const missing = i18n.t('menu.this_key_does_not_exist' as 'menu.continue');

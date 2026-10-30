@@ -28,6 +28,11 @@ export class CreateHeroDialog {
     return s;
   }
 
+  resetDraft(): void {
+    this.cls = 'riddare';
+    this.nameDraft = '';
+  }
+
   render(onCreated: (d: SaveFile) => void, onBack: () => void): { root: HTMLElement; focus: () => void } {
     const row = el('div', { class: 'clsrow' });
     const btns = HERO_CLASSES.map((c) => {
@@ -62,9 +67,15 @@ export class CreateHeroDialog {
         err.textContent = this.rosterMsg(e);
         return;
       }
-      this.roster.create(input.value, this.cls).then(onCreated, (x: unknown) => {
-        err.textContent = x instanceof Error ? this.rosterMsg(x.message) : String(x);
-      });
+      this.roster.create(input.value, this.cls).then(
+        (d) => {
+          this.resetDraft();
+          onCreated(d);
+        },
+        (x: unknown) => {
+          err.textContent = x instanceof Error ? this.rosterMsg(x.message) : String(x);
+        },
+      );
     };
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') ok();

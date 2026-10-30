@@ -1,8 +1,15 @@
 import type { Vec2, ZoneView } from '../core/GameContext';
 import type { VillageZoneDef } from '../data/types';
 import type { Key, Params } from '../i18n/types';
-import { isPlayableCityZone } from '../world/cityZones';
+import { isPlayableCityZone, type PlayableCityZone } from '../world/cityZones';
 import type { MapModel } from './MapModel';
+
+const CITY_GOAL: Record<PlayableCityZone, Key> = {
+  wolfstead: 'map.goal_wolf_den',
+  dimmerstrand: 'map.goal_dimmerstrand',
+  kopparberg: 'map.goal_kopparberg',
+  askeborg: 'map.goal_askeborg',
+};
 
 export interface Goal {
   x: number;
@@ -19,7 +26,7 @@ export class GoalTracker {
     if (z.name === 'village' || z.areaId === 'gamla_byn') return this.villageGoal(z);
     if (isPlayableCityZone(z.name)) {
       const a = z.arena;
-      if (a) return { x: (a.x0 + a.x1) / 2, y: (a.y0 + a.y1) / 2, text: 'map.goal_wolf_den' };
+      if (a) return { x: (a.x0 + a.x1) / 2, y: (a.y0 + a.y1) / 2, text: CITY_GOAL[z.name] };
     }
     const inactive = z.runes.filter((r) => !r.active);
     if (inactive.length) {

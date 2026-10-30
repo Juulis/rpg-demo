@@ -58,6 +58,7 @@ export class HeroSelectMenu {
 
   show(): void {
     this.deps.onLeaveGame();
+    this.deleteConfirmHeroId = null;
     if (!this.open) {
       this.open = true;
       this.root.classList.remove('hidden');
@@ -76,6 +77,7 @@ export class HeroSelectMenu {
   }
 
   private start(d: SaveFile, resume: boolean): void {
+    this.deleteConfirmHeroId = null;
     this.hide();
     void this.deps.loader.start(d, resume);
   }
@@ -112,6 +114,7 @@ export class HeroSelectMenu {
       );
       slot.addEventListener('click', () => {
         this.selected = h.id;
+        if (this.deleteConfirmHeroId !== h.id) this.deleteConfirmHeroId = null;
         this.renderList();
       });
       slot.addEventListener('dblclick', () => {
@@ -125,7 +128,16 @@ export class HeroSelectMenu {
       { class: 'btns' },
       button(t('menu.continue'), () => d?.game && this.start(d, true), !d?.game, 'hmCont'),
       button(t('menu.new_game'), () => d && this.start(d, false), !d, 'hmNewGame'),
-      button(t('menu.create_hero'), () => this.renderCreate(), hs.length >= MAX_HEROES, 'hmNewHero'),
+      button(
+        t('menu.create_hero'),
+        () => {
+          this.deleteConfirmHeroId = null;
+          this.deps.create.resetDraft();
+          this.renderCreate();
+        },
+        hs.length >= MAX_HEROES,
+        'hmNewHero',
+      ),
       button(
         t('menu.delete_hero'),
         () => {
@@ -168,12 +180,16 @@ export class HeroSelectMenu {
 
   private renderCreate(): void {
     this.view = 'create';
+    this.deleteConfirmHeroId = null;
     const { root, focus } = this.deps.create.render(
       (d) => {
         this.selected = d.hero.id;
         this.start(d, false);
       },
-      () => this.renderList(),
+      () => {
+        this.deps.create.resetDraft();
+        this.renderList();
+      },
     );
     this.root.replaceChildren(
       this.deps.assets.title(),

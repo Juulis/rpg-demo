@@ -68,6 +68,9 @@
     "goal_portal": "Nästa mål: portalen",
     "goal_area": "Nästa mål: {area}",
     "goal_wolf_den": "Nästa mål: Ulvhilds ide",
+    "goal_dimmerstrand": "Nästa mål: Trasdrottningen",
+    "goal_kopparberg": "Nästa mål: Spinnmodern",
+    "goal_askeborg": "Nästa mål: Askfursten",
     "portal_to_village": "Portal → Den gamla byn",
     "portal_to_forest": "Portal → Skogen",
     "portal_to_wolfstead": "Väg → Vargaby",
@@ -82,20 +85,24 @@
     "xp": "XP {xp} / {need}",
     "hp": "Liv",
     "stamina": "Uthållighet",
-    "potions": "{count} st",
-    "help": "Klick: gå/anfall · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: drycker"
+    "proviant": "{count} st",
+    "help": "Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: proviant"
   },
   "msg": {
     "rune_awake": "Runan vaknar! ({n}/3)",
     "portal_open": "En röd portal öppnar sig i gläntan…",
     "zone_forest": "Den dimmiga skogen",
     "zone_village": "Den gamla byn",
+    "zone_wolfstead": "Vargaby",
+    "zone_dimmerstrand": "Dimmerstrand",
+    "zone_kopparberg": "Kopparberg",
+    "zone_askeborg": "Askeborg",
     "found": "Hittade: {name}",
     "fell": "{name} föll!",
     "bag_full": "Väskan är full",
     "need_level": "Kräver högre nivå",
     "no_stamina": "För lite uthållighet…",
-    "no_potions": "Inga drycker kvar",
+    "no_proviant": "Ingen proviant kvar",
     "level_up": "Nivå {level}!",
     "boss_wakes": "{name} vaknar!",
     "boss_vulnerable": "{name} är sårbar!",
@@ -150,7 +157,7 @@
   },
   "inv": {
     "title": "Utrustning",
-    "hint": "B / I öppnar · Esc stänger",
+    "hint": "B / I · dra utanför fönstret eller Släng · Shift+högerklick släng · Esc stänger",
     "gold": "Guld"
   },
   "stat": {

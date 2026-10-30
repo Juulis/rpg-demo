@@ -68,6 +68,9 @@
     "goal_portal": "Next goal: the portal",
     "goal_area": "Next goal: {area}",
     "goal_wolf_den": "Next goal: Ulvhild's den",
+    "goal_dimmerstrand": "Next goal: The Bog Queen",
+    "goal_kopparberg": "Next goal: The Broodmother",
+    "goal_askeborg": "Next goal: Morvath the Ash Prince",
     "portal_to_village": "Portal → The Old Village",
     "portal_to_forest": "Portal → The Forest",
     "portal_to_wolfstead": "Road → Wolfstead",
@@ -82,20 +85,24 @@
     "xp": "XP {xp} / {need}",
     "hp": "Life",
     "stamina": "Stamina",
-    "potions": "{count} left",
-    "help": "Click: move/attack · Right-click/Q: skill · E: rune · B/I: gear · Alt/Z: items · 3/4: potions"
+    "proviant": "{count} left",
+    "help": "Click: move/attack · F: talk · Right-click/Q: skill · E: rune · B/I: gear · Alt/Z: items · 3/4: provisions"
   },
   "msg": {
     "rune_awake": "The rune awakens! ({n}/3)",
     "portal_open": "A red portal opens in the glade…",
     "zone_forest": "The Misty Forest",
     "zone_village": "The Old Village",
+    "zone_wolfstead": "Wolfstead",
+    "zone_dimmerstrand": "Dimshore",
+    "zone_kopparberg": "Copperberg",
+    "zone_askeborg": "Ashburg",
     "found": "Found: {name}",
     "fell": "{name} has fallen!",
     "bag_full": "Your bag is full",
     "need_level": "Requires a higher level",
     "no_stamina": "Not enough stamina…",
-    "no_potions": "No potions left",
+    "no_proviant": "No provisions left",
     "level_up": "Level {level}!",
     "boss_wakes": "{name} awakens!",
     "boss_vulnerable": "{name} is vulnerable!",
@@ -150,7 +157,7 @@
   },
   "inv": {
     "title": "Equipment",
-    "hint": "B / I to open · Esc to close",
+    "hint": "B / I · drag outside the window or Drop · Shift+right-click to drop · Esc closes",
     "gold": "Gold"
   },
   "stat": {
