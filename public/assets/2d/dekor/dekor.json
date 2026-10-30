@@ -402,5 +402,69 @@
   ],
   "tile": true,
   "not": "Sömlös overlay åt båda håll, repetera över skärmen/kartan, normal blandning."
+ },
+ "hard_kall": {
+  "w": 311,
+  "h": 285,
+  "anchor": [
+   150,
+   281
+  ]
+ },
+ "hard_glod": {
+  "w": 309,
+  "h": 287,
+  "anchor": [
+   152,
+   283
+  ]
+ },
+ "fackla_slackt": {
+  "w": 184,
+  "h": 304,
+  "anchor": [
+   93,
+   300
+  ]
+ },
+ "fackelkorg_tom": {
+  "w": 194,
+  "h": 304,
+  "anchor": [
+   96,
+   300
+  ]
+ },
+ "ortstork": {
+  "w": 293,
+  "h": 286,
+  "anchor": [
+   134,
+   282
+  ]
+ },
+ "huggkubbe": {
+  "w": 327,
+  "h": 296,
+  "anchor": [
+   172,
+   292
+  ]
+ },
+ "hink_kvast": {
+  "w": 263,
+  "h": 292,
+  "anchor": [
+   132,
+   288
+  ]
+ },
+ "lerkrukor": {
+  "w": 272,
+  "h": 252,
+  "anchor": [
+   136,
+   248
+  ]
  }
 }

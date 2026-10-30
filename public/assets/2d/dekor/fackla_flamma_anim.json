@@ -1,0 +1,13 @@
+{
+ "image": "fackla_flamma_anim.png",
+ "frames": 8,
+ "frameW": 56,
+ "frameH": 90,
+ "anchor": [
+  28,
+  84
+ ],
+ "fps": 12,
+ "loop": true,
+ "not": "Ljusbaserad alfa (opremultiplicerad), blendMode add ger mer glöd. Ankare = flammans bas, sätt på toppen av fackla_slackt.png."
+}

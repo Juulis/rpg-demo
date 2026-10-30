@@ -1,0 +1,13 @@
+{
+ "image": "hund_anim.png",
+ "frames": 8,
+ "frameW": 295,
+ "frameH": 222,
+ "anchor": [
+  136,
+  218
+ ],
+ "fps": 8,
+ "loop": true,
+ "not": "En rad med 8 frames, hunden snusar och viftar på svansen. Samma ankare som hund_ruiner.png."
+}
