@@ -41,6 +41,13 @@
   "save": {
     "saved": "Saved"
   },
+  "skill": {
+    "locked": "Unlocks at level {level}",
+    "cooldown": "Cooldown {s} s",
+    "cost": "Cost: {n} stamina",
+    "no_stamina": "Not enough stamina",
+    "no_javelin": "No javelins left"
+  },
   "audio": {
     "volume": "Volume",
     "sound_on": "Sound on (M)",

@@ -7,6 +7,7 @@ import { Iso } from '../render/Iso';
 import type { MonsterSnapshot } from '../logic/CombatRules';
 import type { LootSystem } from './LootSystem';
 import type { World } from './World';
+import { skillUnlocked } from '../logic/skills';
 
 interface HitOpts {
   kb?: number;
@@ -58,7 +59,9 @@ export class CombatSystem {
     if (m.dead) return;
     m.aggroed = true;
     this.markPatrolAid(m);
-    const r = w.authority.heroHit(st, h.level, this.snapshot(m), mult * h.combatDamageMult());
+    let mMult = mult * h.combatDamageMult();
+    if (h.passiveActive('jagarblick') && m.hp / m.max > 0.8) mMult *= 1.1;
+    const r = w.authority.heroHit(st, h.level, this.snapshot(m), mMult);
     if (!r.hit) {
       w.fb.float(m.pos, t.t('fx.miss'), 'res', m.view.height2);
       return;
@@ -147,21 +150,23 @@ export class CombatSystem {
     });
     if (m.boss) this.onBossDefeated(m);
     if (m.heroAidedPatrol) this.onPatrolAidKill();
+    if (w.hero.passiveActive('blodtorst')) w.hero.s.hp = Math.min(w.hero.s.maxHp, w.hero.s.hp + w.hero.s.maxHp * 0.05);
   }
 
   /** Hjälten tar skada. from = varifrån slaget kom (för block), m = anfallaren. */
   hurt(raw: number, from: Vec2 | null, m: Monster | null): void {
     const w = this.w();
     const h = w.hero;
-    const st = h.stats;
+    const st = { ...h.stats, defense: h.effectiveDefense() };
     const t = w.text;
     if (!h.s.playing) return;
     if (h.invulnerable()) return;
     const f = h.forward();
     const to = from ? this.norm({ x: from.x - h.pos.x, y: from.y - h.pos.y }) : null;
     const front = to ? f.x * to.x + f.y * to.y > 0.2 : true;
+    const rawIn = raw * (m?.dmgMult ?? 1) * (h.skillDmgT > 0 && h.skillTakeDmgPct > 0 ? 1 + h.skillTakeDmgPct : 1);
     const r = w.authority.monsterHit({
-      raw: raw * (m?.dmgMult ?? 1),
+      raw: rawIn,
       monsterLvl: m?.lvl ?? h.level,
       st,
       heroLvl: h.level,
@@ -210,7 +215,7 @@ export class CombatSystem {
     const h = this.w().hero;
     if (!h.s.playing || h.atkCd > 0 || h.atkT > 0) return;
     const attackAnim = h.view.getAnim('attack');
-    h.atkCd = 0.5 / h.stats.atkSpeed;
+    h.atkCd = 0.5 / (h.stats.atkSpeed * h.atkSpeedMult());
     if (attackAnim?.hitFrame !== undefined && attackAnim.frames[0]?.length) {
       const spd = Math.max(0.25, h.stats.atkSpeed);
       const n = attackAnim.frames[0].length;
@@ -234,30 +239,135 @@ export class CombatSystem {
     this.arcHit(h.stats.reach, 0.3, 1);
   }
 
-  /** Klassfärdighet (första färdigheten): riddare blockerar medan knappen hålls, amazon spjutstöt, barbar markslag. */
+  /** Q / högerklick / färdighetsknapp 1: första aktiva färdigheten (sköldblock hålls). */
   skill(down: boolean): void {
+    this.useBarSkill(0, down);
+  }
+
+  useBarSkill(slot: number, down = true): void {
+    const h = this.w().hero;
+    const sk = h.barSkills()[slot];
+    if (!sk) return;
+    this.useSkill(sk.id, down);
+  }
+
+  useSkill(id: string, down = true): void {
     const w = this.w();
     const h = w.hero;
     if (!h.s.playing) return;
-    const c = h.cls;
-    const sk = c.skills[0];
-    if (c.id === 'riddare') {
+    const sk = h.cls.skills.find((s) => s.id === id);
+    if (!sk) return;
+
+    if (sk.id === 'skoldblock') {
       h.blocking = down;
       return;
     }
-    if (!down || !sk || h.skillCd > 0) return;
-    h.skillCd = sk.cooldown_s;
-    h.atkT = 0.3;
-    h.atkCd = 0.5;
-    if (c.id === 'amazonkrigare') this.arcHit(3.5, 0.85, 1.5, { kb: 5 }, 2);
-    if (c.id === 'barbar') {
-      this.arcHit(2.4, 0.2, 2.0, { kb: 10, stun: 1 });
-      this.ring(h.pos, 2.4, 0xc8b090, 0.35);
+    if (!down) return;
+    if (h.skillCdLeft(sk.id) > 0) return;
+    if (!skillUnlocked(sk, h.level)) return;
+    if (sk.stamina_cost > 0 && !h.spendStamina(sk.stamina_cost)) {
+      w.fb.flash(w.text.t('skill.no_stamina'));
+      return;
     }
+
+    switch (sk.id) {
+      case 'spjutstot':
+        h.atkT = 0.3;
+        h.atkCd = 0.5;
+        this.arcHit(3.5, 0.85, 1.5, { kb: 5 }, 2);
+        break;
+      case 'kastspjut':
+        if (!h.consumeJavelin()) {
+          w.fb.flash(w.text.t('skill.no_javelin'));
+          return;
+        }
+        this.heroShot(14, 1.2);
+        break;
+      case 'vig_undanmanover': {
+        const f = h.forward();
+        if (h.tryDodge(f.x, f.y, 0.35)) {
+          h.iframeT = Math.max(h.iframeT, 0.3);
+          h.nextCritBonus = 0.3;
+        }
+        break;
+      }
+      case 'virvelspjut':
+        this.arcHit(3, 0.1, 0.6);
+        this.arcHit(3, 0.1, 0.6);
+        break;
+      case 'tungt_slag':
+      case 'markslag':
+        h.atkT = 0.35;
+        this.arcHit(2.4, 0.2, 2.0, { kb: 10, stun: 1 });
+        this.ring(h.pos, 2.4, 0xc8b090, 0.35);
+        break;
+      case 'stridsvral':
+        h.skillDmgPct = 0.2;
+        h.skillDmgT = 6;
+        for (const m of w.monsters) if (!m.dead) m.aggroed = true;
+        break;
+      case 'markskakning':
+        this.arcHit(4, 0.05, 1.2, { kb: 6, stun: 0.5 });
+        this.ring(h.pos, 4, 0x8a7050, 0.4);
+        break;
+      case 'berserkerrus':
+        h.skillDmgPct = 0.4;
+        h.skillAtkSpeedPct = 0.4;
+        h.skillTakeDmgPct = 0.15;
+        h.skillDmgT = 8;
+        break;
+      case 'skoldslag':
+        this.arcHit(2.2, 0.4, 0.8, { kb: 8, stun: 1.5 });
+        break;
+      case 'framstot': {
+        const f = h.forward();
+        h.pos.x += f.x * 6;
+        h.pos.y += f.y * 6;
+        w.zone.collide(h.pos, 0.5);
+        this.arcHit(2.5, 0.5, 1.3, { kb: 12, stun: 0.5 }, 1);
+        break;
+      }
+      case 'motattack':
+        h.blocking = true;
+        h.iframeT = 0.3;
+        this.arcHit(2.8, 0.45, 1.8, { kb: 6 });
+        break;
+      case 'fanbararens_rop':
+        h.s.hp = Math.min(h.s.maxHp, h.s.hp + h.s.maxHp * 0.25);
+        h.bannerDefBonus = 3;
+        h.bannerDefT = 10;
+        break;
+      case 'yxkast':
+        this.heroShot(10, 1.6);
+        break;
+      default:
+        this.arcHit(h.stats.reach, 0.35, 1.2);
+        break;
+    }
+    if (sk.cooldown_s > 0) h.skillCooldowns[sk.id] = sk.cooldown_s;
     w.fb.flash(w.text.data('klasser', sk.id, 'name', sk.name));
   }
 
-  projectile(from: Vec2, to: Vec2, speed: number, dmg: number, kind: 'arrow' | 'fire', src: Monster | null): void {
+  private heroShot(range: number, mult: number): void {
+    const w = this.w();
+    const h = w.hero;
+    const f = h.forward();
+    const speed = 22;
+    this.projectile(h.pos, { x: h.pos.x + f.x * range, y: h.pos.y + f.y * range }, speed, 0, 'arrow', null, {
+      heroShot: true,
+      mult,
+    });
+  }
+
+  projectile(
+    from: Vec2,
+    to: Vec2,
+    speed: number,
+    dmg: number,
+    kind: 'arrow' | 'fire',
+    src: Monster | null,
+    extra?: { heroShot?: boolean; mult?: number },
+  ): void {
     const w = this.w();
     const v = this.norm({ x: to.x - from.x, y: to.y - from.y });
     const view =
@@ -267,7 +377,16 @@ export class CombatSystem {
     const sv = Iso.worldToScreen(v.x, v.y);
     if (kind === 'arrow') view.rotation = Math.atan2(sv.y, sv.x);
     w.objects.addChild(view);
-    w.projectiles.push({ pos: { ...from }, v: { x: v.x * speed, y: v.y * speed }, dmg, life: 3, from: src, view });
+    w.projectiles.push({
+      pos: { ...from },
+      v: { x: v.x * speed, y: v.y * speed },
+      dmg,
+      life: 3,
+      from: src,
+      view,
+      heroShot: extra?.heroShot,
+      mult: extra?.mult,
+    });
   }
 
   /** Ring på marken (telegraf eller effekt). Tas bort efter life sekunder. */
@@ -297,7 +416,17 @@ export class CombatSystem {
       p.view.position.set(s.x, s.y);
       p.view.zIndex = p.pos.x + p.pos.y;
       let gone = p.life <= 0 || !w.zone.contains(p.pos);
-      if (!gone && Math.hypot(p.pos.x - h.pos.x, p.pos.y - h.pos.y) < 0.7) {
+      if (!gone && p.heroShot) {
+        for (const m of w.monsters) {
+          if (m.dead) continue;
+          if (Math.hypot(p.pos.x - m.pos.x, p.pos.y - m.pos.y) < 0.85) {
+            this.damageMonster(m, p.mult ?? 1, { ranged: true });
+            gone = true;
+            break;
+          }
+        }
+      }
+      if (!gone && !p.heroShot && Math.hypot(p.pos.x - h.pos.x, p.pos.y - h.pos.y) < 0.7) {
         this.hurt(p.dmg, p.pos, p.from);
         gone = true;
       }

@@ -21,6 +21,13 @@ export const SV = {
     section_active: 'Aktiva',
     section_done: 'Klara',
   },
+  skill: {
+    locked: 'Låses upp nivå {level}',
+    cooldown: 'Återhämtning {s} s',
+    cost: 'Kostnad: {n} uthållighet',
+    no_stamina: 'För lite uthållighet',
+    no_javelin: 'Inga kastspjut kvar',
+  },
   msg: {
     rune_awake: 'Runan vaknar! ({n}/3)',
     portal_open: 'En röd portal öppnar sig i gläntan…',

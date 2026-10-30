@@ -5,6 +5,7 @@ import type { Text } from '../text/Text';
 import type { FloatKind } from '../systems/World';
 import type { Vec2 } from '../core/GameContext';
 import { HeroModel as HeroCls } from '../logic/HeroModel';
+import { SkillBar } from './SkillBar';
 
 interface Floater {
   el: HTMLDivElement;
@@ -21,6 +22,7 @@ export class Hud {
   private msgT = 0;
   private readonly el: Record<string, HTMLElement> = {};
   private readonly cheatIndicator: HTMLDivElement | null;
+  readonly skills: SkillBar;
 
   constructor(private readonly text: Text) {
     this.root.id = 'hud';
@@ -36,6 +38,7 @@ export class Hud {
       <div class="help"></div>
       <div class="bossbar hidden"><div class="bbName"></div><div class="bbTrack"><i></i></div><div class="bbPhase"></div></div>`;
     document.body.appendChild(this.root);
+    this.skills = new SkillBar(text);
     this.msg.id = 'msg';
     this.msg.className = 'hidden';
     document.body.appendChild(this.msg);
@@ -122,6 +125,7 @@ export class Hud {
     this.set('lvl', this.text.t('hud.level', { level: s.level }));
     if (clock) this.set('clock', this.text.t('hud.clock', { period: clock.period, time: clock.time }));
     this.set('potHp', this.text.t('hud.proviant', { count: h.inv.countConsumables('hp') }));
+    this.skills.update(h);
     if (this.msgT > 0 && (this.msgT -= dt) <= 0) this.msg.classList.add('hidden');
     for (const f of [...this.floaters]) {
       f.life -= dt;
@@ -136,6 +140,7 @@ export class Hud {
   }
 
   dispose(): void {
+    this.skills.dispose();
     this.root.remove();
     this.msg.remove();
     for (const f of this.floaters) f.el.remove();

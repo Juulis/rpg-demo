@@ -41,6 +41,13 @@
   "save": {
     "saved": "Sparat"
   },
+  "skill": {
+    "locked": "Låses upp nivå {level}",
+    "cooldown": "Återhämtning {s} s",
+    "cost": "Kostnad: {n} uthållighet",
+    "no_stamina": "För lite uthållighet",
+    "no_javelin": "Inga kastspjut kvar"
+  },
   "audio": {
     "volume": "Volym",
     "sound_on": "Ljud på (M)",

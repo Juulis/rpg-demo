@@ -111,6 +111,8 @@ export interface EliteLoot {
 export interface Skill {
   id: string;
   name: string;
+  type?: 'aktiv' | 'passiv' | string;
+  unlock_level?: number;
   stamina_cost: number;
   cooldown_s: number;
   effect: string;

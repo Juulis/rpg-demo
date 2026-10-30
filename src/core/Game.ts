@@ -636,6 +636,10 @@ export class Game {
     i.bind('KeyQ', () => this.combat.skill(true));
     i.bind('up:KeyQ', () => this.combat.skill(false));
     i.bind('reset', () => this.combat.skill(false));
+    for (let n = 1; n <= 4; n++) {
+      const slot = n - 1;
+      i.bind(`Digit${n}`, () => this.combat.useBarSkill(slot));
+    }
     canvas.addEventListener('pointerdown', (e) => {
       if (!this.world) return;
       if (this.dead) return this.respawn();
