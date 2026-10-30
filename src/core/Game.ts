@@ -50,7 +50,7 @@ import { applyFactionGreetingTone } from '../npc/factionGreeting';
 import { readQuestProgress } from '../quest/questProgress';
 import { choiceText, stepText, setQuestLocale } from '../quest/questText';
 import { closeLoreBook, isLoreBookOpen } from '../lore/LoreBookGate';
-import { isQuestItemProtected } from '../quest/questItems';
+import { isQuestItemProtected, inventoryHasItemId } from '../quest/questItems';
 import { QuestLog } from '../ui/QuestLog';
 import { NpcBark } from '../ui/NpcBark';
 import { NpcDialog } from '../ui/NpcDialog';
@@ -755,7 +755,7 @@ export class Game {
     return {
       worldTime: this.gameClock.timeSeconds,
       region: w.zone.areaId,
-      hasItem: (id) => inv.bag.some((it) => it.base === id) || Object.values(inv.equip).some((it) => it?.base === id),
+      hasItem: (id) => inventoryHasItemId(inv, id),
     };
   }
 

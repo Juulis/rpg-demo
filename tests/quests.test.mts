@@ -86,10 +86,17 @@ assert.equal(p.val, 'ge_sandalerna');
 assert.equal(svc2.get().faction_rep.de_kvarvarande, 10);
 
 const loot = new Loot(new Text(), new Rng(1));
-const inv = new Inventory(loot, [{ base: 'flyktingens_sandaler' }], {}, () => 1);
-const item = inv.bag[0];
-assert.ok(item);
-inv.remove(item);
+const inv = new Inventory(loot, [], {}, () => 1);
+const questLeg = loot.makeLegendaryItem('flyktingens_sandaler', { ilvl: 2 });
+assert.ok(inv.add(questLeg));
 assert.equal(inv.bag.length, 1);
+inv.remove(questLeg);
+assert.equal(inv.bag.length, 1);
+
+const inv2 = new Inventory(loot, [{ base: 'flyktingens_sandaler' }], {}, () => 1);
+const item = inv2.bag[0];
+assert.ok(item);
+inv2.remove(item);
+assert.equal(inv2.bag.length, 1);
 
 console.log('quests.test.mts: ok');

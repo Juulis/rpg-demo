@@ -233,7 +233,7 @@ export class QuestEncounterSystem {
   private spawnQuestItem(w: World, anchorId: string, baseId: string): void {
     const pos = this.anchorPos(anchorId);
     if (!pos) return;
-    const item = w.L.makeItem(baseId, { quality: 'legendary', ilvl: Math.max(2, w.hero.level) });
+    const item = w.L.makeLegendaryItem(baseId, { ilvl: Math.max(2, w.hero.level) });
     this.loot.spawn(pos, { item });
   }
 }

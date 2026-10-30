@@ -1,5 +1,5 @@
 import type { Loot } from './loot/Loot';
-import { isQuestItemId } from '../quest/questItems';
+import { isQuestItemProtected } from '../quest/questItems';
 import { isConsumableCategory } from './consumables';
 import { SLOTS, type Equip, type Item, type Slot } from './loot/types';
 
@@ -76,7 +76,7 @@ export class Inventory {
     return SLOTS.find((s) => this.equip[s] === it);
   }
   remove(it: Item): void {
-    if (isQuestItemId(it.base)) return;
+    if (isQuestItemProtected(it)) return;
     this.detach(it);
   }
 

@@ -13,7 +13,7 @@ const L = new Loot(new Text(), new Rng(1));
 const inv = new Inventory(L, [], {}, () => 1);
 const normal = L.makeItem('torkat_kott', { n: 2 });
 assert.ok(inv.add(normal));
-const questStub = { uid: 'q1', base: 'quest_ulvhilds_pals', quality: 'common', affixes: [], ilvl: 1 };
+const questStub = { uid: 'q1', base: 'sandaler', leg: 'flyktingens_sandaler', quality: 'legendary', affixes: [], ilvl: 1 };
 assert.ok(isQuestItemProtected(questStub));
 assert.equal(discardNeedsConfirm(questStub), false);
 assert.equal(discardNeedsConfirm(normal), false);
