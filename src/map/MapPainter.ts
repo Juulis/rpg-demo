@@ -1,4 +1,5 @@
 import type { HeroState, ZoneView } from '../core/GameContext';
+import type { Key } from '../i18n/types';
 import { FogOfWar, type Rgba } from './FogOfWar';
 import type { Goal } from './GoalTracker';
 import type { MapModel } from './MapModel';
@@ -120,18 +121,14 @@ export class MapPainter {
         c.fillStyle = '#ff7080';
         c.font = FONT;
         c.textAlign = 'center';
-        const label =
-          pt.target === 'village'
-            ? 'Portal → Den gamla byn'
-            : pt.target === 'wolfstead'
-              ? 'Väg → Vargaby'
-              : pt.target === 'dimmerstrand'
-                ? 'Väg → Dimmerstrand'
-                : pt.target === 'kopparberg'
-                  ? 'Väg → Kopparberg'
-                  : pt.target === 'askeborg'
-                    ? 'Väg → Askeborg'
-                    : 'Portal → Skogen';
+        const portalLabels: Partial<Record<string, Key>> = {
+          village: 'map.portal_to_village',
+          wolfstead: 'map.portal_to_wolfstead',
+          dimmerstrand: 'map.portal_to_dimmerstrand',
+          kopparberg: 'map.portal_to_kopparberg',
+          askeborg: 'map.portal_to_askeborg',
+        };
+        const label = this.model.t(portalLabels[pt.target] ?? 'map.portal_to_forest');
         c.fillText(label, X(pt.x), Y(pt.y) - Math.max(9, 1.4 * s + 6));
       }
     }
@@ -150,7 +147,7 @@ export class MapPainter {
     c.fillStyle = '#f2c46b';
     c.font = FONT;
     c.textAlign = 'center';
-    c.fillText(g.text, x, y + 30);
+    c.fillText(this.model.t(g.text, g.params), x, y + 30);
   }
 
   /** Spelarpil; framåt = (sin, cos) av facing. */

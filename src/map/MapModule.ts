@@ -9,6 +9,7 @@ import { MapModel } from './MapModel';
 import { MapPainter } from './MapPainter';
 import { MapView } from './MapView';
 import { MiniMapView } from './MiniMapView';
+import type { LocaleManager } from '../i18n/LocaleManager';
 
 /**
  * Karta (issue #6): Tab-karta, minikarta, målmarkör och fog of war per hjälte-id.
@@ -28,6 +29,7 @@ export class MapModule implements GameModule {
 
   constructor(
     saves: SaveBackendSource,
+    private readonly i18n: LocaleManager,
     private readonly host: () => HTMLElement = () => document.body,
     private readonly animate = true,
   ) {
@@ -43,7 +45,7 @@ export class MapModule implements GameModule {
 
   init(ctx: GameContext): void {
     this.ctx = ctx;
-    const model = new MapModel(ctx.data);
+    const model = new MapModel(ctx.data, this.i18n);
     const goals = new GoalTracker(model);
     const bus = ctx.bus;
     void this.fogRepo.prepare(ctx.hero.id).then(() => this.resetFog(ctx.hero.id));
