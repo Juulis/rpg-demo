@@ -11,6 +11,7 @@ const NAME_MAX = 16;
 /** Ny hjälte: välj klass, namn med validering i realtid, Enter skapar. */
 export class CreateHeroDialog {
   private cls = 'riddare';
+  private nameDraft = '';
 
   constructor(
     private readonly roster: HeroRoster,
@@ -28,7 +29,6 @@ export class CreateHeroDialog {
   }
 
   render(onCreated: (d: SaveFile) => void, onBack: () => void): { root: HTMLElement; focus: () => void } {
-    this.cls = 'riddare';
     const row = el('div', { class: 'clsrow' });
     const btns = HERO_CLASSES.map((c) => {
       const b = el(
@@ -49,9 +49,11 @@ export class CreateHeroDialog {
       maxlength: String(NAME_MAX),
       placeholder: this.i18n.t('menu.name_placeholder', { min: NAME_MIN, max: NAME_MAX }),
       autocomplete: 'off',
-    });
+    }) as HTMLInputElement;
+    input.value = this.nameDraft;
     const err = el('div', { class: 'hero-err' });
     input.addEventListener('input', () => {
+      this.nameDraft = input.value;
       err.textContent = input.value.trim().length >= NAME_MIN ? this.rosterMsg(this.roster.validName(input.value)) : '';
     });
     const ok = (): void => {

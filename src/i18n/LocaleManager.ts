@@ -6,6 +6,7 @@ import { DataOverlayLoader } from './DataOverlayLoader';
 import { loadDictionary } from './localeRegistry';
 import { Translator } from './Translator';
 import type { Text } from '../text/Text';
+import { SV } from '../text/sv';
 import { DEFAULT_LOCALE, isLocale, type Dictionary, type Key, type Locale, type Params } from './types';
 
 export interface LocaleManagerOptions {
@@ -33,6 +34,8 @@ export class LocaleManager implements GameModule {
   private readonly warned = new Set<string>();
   private readonly listeners = new Set<(l: Locale) => void>();
   private readonly seedDicts: Readonly<Partial<Record<Locale, Dictionary>>>;
+  /** Avbryter in-flight setLocale om användaren byter språk igen. */
+  private localeSwitchGen = 0;
 
   constructor(opts: LocaleManagerOptions = {}) {
     this.dev = opts.dev ?? LocaleManager.isDev();
@@ -70,7 +73,7 @@ export class LocaleManager implements GameModule {
   /** Kopplar motorn Text till LocaleManager + DataLocalizer (anropas från main.ts före Game.start). */
   attachText(text: Text): void {
     text.setProvider({
-      t: (key, params) => this.t(key as Key, params),
+      t: (key, params) => this.textForProvider(key as Key, params),
       data: (file, id, field, svValue) => this.data.field(file, id, field, svValue),
     });
   }
@@ -84,11 +87,14 @@ export class LocaleManager implements GameModule {
   }
 
   async setLocale(locale: Locale): Promise<void> {
-    if (locale === this.current) return;
+    const gen = ++this.localeSwitchGen;
     await this.ensureLocaleData(locale);
+    if (gen !== this.localeSwitchGen) return;
+    const prev = this.current;
     this.current = locale;
     if (this.settings) await this.settings.setSetting(LocaleManager.STORAGE_KEY, locale);
     if (typeof document !== 'undefined') document.documentElement.lang = locale;
+    if (locale === prev) return;
     for (const fn of this.listeners) fn(locale);
     this.bus?.emit('locale_changed', { locale: locale as 'en' | 'sv' });
   }
@@ -110,12 +116,35 @@ export class LocaleManager implements GameModule {
 
   /** Översätt. Pluralisering: ange params.count för nycklar med {one, other}. */
   t(key: Key, params?: Params): string {
+    return this.textForProvider(key, params) ?? key;
+  }
+
+  /** Ordbok (aktivt + sv) och därefter sv.ts — returnerar undefined så Text.t kan falla tillbaka. */
+  private textForProvider(key: Key, params?: Params): string | undefined {
+    const fromDict = this.dictText(key, params);
+    if (fromDict !== undefined) return fromDict;
+    const fromSvTs = this.lookupSvTs(key);
+    if (fromSvTs !== undefined) return fromSvTs;
+    if (this.current !== DEFAULT_LOCALE) {
+      this.missing(`${this.current}:${key}`, `[i18n] Saknar "${key}" för ${this.current}, använder svenska`);
+    }
+    return undefined;
+  }
+
+  private dictText(key: Key, params?: Params): string | undefined {
     const tr = this.translator;
     const entry = tr.lookup(this.current, key);
     if (entry !== undefined) return tr.format(this.current, entry, params);
+    if (this.current === DEFAULT_LOCALE) return undefined;
     const fallback = tr.lookup(DEFAULT_LOCALE, key);
-    this.missing(`${this.current}:${key}`, `[i18n] Saknar "${key}" för ${this.current}, använder svenska`);
-    return fallback !== undefined ? tr.format(DEFAULT_LOCALE, fallback, params) : key;
+    if (fallback !== undefined) return tr.format(DEFAULT_LOCALE, fallback, params);
+    return undefined;
+  }
+
+  private lookupSvTs(key: string): string | undefined {
+    let cur: unknown = SV;
+    for (const part of key.split('.')) cur = (cur as Record<string, unknown> | undefined)?.[part];
+    return typeof cur === 'string' ? cur : undefined;
   }
 
   /** Varnar en gång per nyckel i dev-läge. Används även av DataLocalizer/VoiceResolver. */

@@ -18,6 +18,8 @@ export class HeroSelectMenu {
   private selected: string | null = null;
   private open = false;
   private view: 'list' | 'create' = 'list';
+  /** Håller raderingsbekräftelsen vid språkbyte. */
+  private deleteConfirmHeroId: string | null = null;
   private readonly offLocale: () => void;
 
   constructor(
@@ -124,14 +126,24 @@ export class HeroSelectMenu {
       button(t('menu.continue'), () => d?.game && this.start(d, true), !d?.game, 'hmCont'),
       button(t('menu.new_game'), () => d && this.start(d, false), !d, 'hmNewGame'),
       button(t('menu.create_hero'), () => this.renderCreate(), hs.length >= MAX_HEROES, 'hmNewHero'),
-      button(t('menu.delete_hero'), () => d && btns.replaceWith(this.confirmDelete(d)), !d, 'hmDel'),
+      button(
+        t('menu.delete_hero'),
+        () => {
+          if (!d) return;
+          this.deleteConfirmHeroId = d.hero.id;
+          this.renderList();
+        },
+        !d,
+        'hmDel',
+      ),
     );
+    const actionRow = this.deleteConfirmHeroId && d?.hero.id === this.deleteConfirmHeroId ? this.confirmDelete(d) : btns;
     this.root.replaceChildren(
       assets.title(),
       el('div', { class: 'rubrik', text: t('menu.choose_hero') }),
       el('small', { class: 'slots-free', text: t('menu.slots_free', { count: MAX_HEROES - hs.length }) }),
       slots,
-      btns,
+      actionRow,
       this.deps.picker.render(),
     );
   }
@@ -142,11 +154,15 @@ export class HeroSelectMenu {
       this.deps.i18n.t('menu.delete_yes'),
       () => {
         void this.deps.roster.delete(d.hero.id).then(() => {
+          this.deleteConfirmHeroId = null;
           this.selected = null;
           this.renderList();
         });
       },
-      () => this.renderList(),
+      () => {
+        this.deleteConfirmHeroId = null;
+        this.renderList();
+      },
     );
   }
 

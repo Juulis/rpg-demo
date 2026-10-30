@@ -16,6 +16,7 @@ async function run(): Promise<void> {
   await i18n.bindSettings(backend as never);
   assert.equal(i18n.locale, 'sv');
   assert.equal(i18n.t('menu.continue'), 'Fortsätt');
+  assert.equal(i18n.t('msg.zone_wolfstead'), 'Vargaby');
 
   await i18n.setLocale('en');
   assert.equal(i18n.locale, 'en');
