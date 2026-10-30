@@ -35,6 +35,9 @@ export interface Projectile {
   life: number;
   from: Monster | null;
   view: Container;
+  /** Hjältes kast / färdighetsprojektil. */
+  heroShot?: boolean;
+  mult?: number;
 }
 export type FloatKind = 'hurt' | 'weak' | 'res' | 'crit' | '' | 'gold';
 

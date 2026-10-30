@@ -15,8 +15,8 @@ export class LocalAuthority implements GameAuthority {
     this.rules = rules;
   }
 
-  heroHit(st: HeroStats, heroLvl: number, m: MonsterSnapshot, mult: number) {
-    return this.rules.heroHit(st, heroLvl, m, mult);
+  heroHit(st: HeroStats, heroLvl: number, m: MonsterSnapshot, mult: number, extraCritChance?: number) {
+    return this.rules.heroHit(st, heroLvl, m, mult, extraCritChance);
   }
 
   monsterHit(o: Parameters<GameAuthority['monsterHit']>[0]) {

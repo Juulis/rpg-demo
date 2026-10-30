@@ -39,14 +39,14 @@ export class CombatRules {
     private readonly rng: Rng,
   ) {}
 
-  heroHit(st: HeroStats, heroLvl: number, m: MonsterSnapshot, mult: number): HeroHitResult {
+  heroHit(st: HeroStats, heroLvl: number, m: MonsterSnapshot, mult: number, extraCritChance = 0): HeroHitResult {
     const R = this.rng;
     if (!m.immune && R.next() > this.L.hitChance(st.AR, 15 + 8 * m.lvl + m.defense * 2, heroLvl, m.lvl))
       return { hit: false, dmg: 0, crit: false, strong: 0, fm: 1 };
     const rules = DATA.families.multiplier_rules;
     const type = st.type as DamageType;
     const fm = m.weak.includes(type) ? rules.svag : m.resist.includes(type) ? rules.resistent : 1;
-    const crit = R.next() < st.crit;
+    const crit = R.next() < st.crit + extraCritChance;
     const fam = this.L.monsterFamily(m.id) ?? m.family;
     let dmg = R.float(st.dmgMin, st.dmgMax) * mult * fm * (1 + (st.vs[fam] ?? 0)) * (crit ? DATA.classes.meta.crit_multiplier : 1);
     if (m.shieldedFront) dmg *= 0.5;

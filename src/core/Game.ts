@@ -618,8 +618,17 @@ export class Game {
       this.bus.emit(this.questLog.isOpen ? 'ui_open' : 'ui_close', { panel: 'quests' });
     });
     i.bind('KeyF', () => this.tryTalkNpc());
-    i.bind('Digit3', () => this.quaff('hp'));
-    i.bind('Digit4', () => this.quaff('st'));
+    for (let n = 1; n <= 4; n++) {
+      const slot = n - 1;
+      i.bind(`Digit${n}`, () => {
+        if (this.input.altHeld && (n === 3 || n === 4)) {
+          this.quaff(n === 3 ? 'hp' : 'st');
+          return;
+        }
+        this.combat.useBarSkill(slot, true);
+      });
+      i.bind(`up:Digit${n}`, () => this.combat.useBarSkill(slot, false));
+    }
     i.bind('KeyE', () => {
       const n = this.portals.nearRune();
       if (n >= 0) this.portals.activate(n, false);

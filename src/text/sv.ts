@@ -10,7 +10,7 @@ export const SV = {
     hp: 'Liv',
     stamina: 'Uthållighet',
     proviant: '{count} st',
-    help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 3/4: proviant',
+    help: 'Klick: gå/anfall · F: prata · Högerklick/Q: färdighet · E: runa · B/I: utrustning · Alt/Z: föremål · 1–4: färdigheter · Alt+3/4: proviant',
   },
   rumor: {
     unknown_item: 'ett legendariskt föremål',
@@ -20,6 +20,13 @@ export const SV = {
     log_hint: 'J — stäng',
     section_active: 'Aktiva',
     section_done: 'Klara',
+  },
+  skill: {
+    locked: 'Låses upp nivå {level}',
+    cooldown: 'Återhämtning {s} s',
+    cost: 'Kostnad: {n} uthållighet',
+    no_stamina: 'För lite uthållighet',
+    no_javelin: 'Inga kastspjut kvar',
   },
   msg: {
     rune_awake: 'Runan vaknar! ({n}/3)',

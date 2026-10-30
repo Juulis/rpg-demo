@@ -2,6 +2,7 @@ import type { HeroState, Vec2 } from '../core/GameContext';
 import { DATA } from '../data';
 import type { HeroClass } from '../data/types';
 import { canStartDodge, dodgeProfile } from './dodge';
+import { barActiveSkills, passiveSkills, skillUnlocked } from './skills';
 import type { HeroStats, Loot } from './loot/Loot';
 import { SLOTS, type Equip, type Item } from './loot/types';
 import { Inventory } from './Inventory';
@@ -36,6 +37,19 @@ export class HeroModel {
     this.atkT = 0;
   }
   skillCd = 0;
+  /** Cooldown per färdighets-id (sekunder kvar). */
+  readonly skillCooldowns: Record<string, number> = {};
+  stamina = 100;
+  maxStamina = 100;
+  staminaRegenDelay = 0;
+  /** Temporära färdighetsbuffar. */
+  skillDmgPct = 0;
+  skillDmgT = 0;
+  skillAtkSpeedPct = 0;
+  skillTakeDmgPct = 0;
+  nextCritBonus = 0;
+  bannerDefT = 0;
+  bannerDefBonus = 0;
   curse = 0;
   consumableBuffT = 0;
   consumableDmgPct = 0;
@@ -58,6 +72,8 @@ export class HeroModel {
     this.inv = new Inventory(L, s.inv as Item[], s.equip as Equip, () => this.s.level);
     if (s.fresh) this.startGear();
     this.stats = this.compute();
+    this.stamina = this.stats.maxSt;
+    this.maxStamina = this.stats.maxSt;
     s.hp = s.maxHp = this.stats.maxHp;
   }
 
@@ -76,6 +92,8 @@ export class HeroModel {
   }
   recalc(): void {
     this.stats = this.compute();
+    this.maxStamina = this.stats.maxSt;
+    this.stamina = Math.min(this.stamina, this.maxStamina);
     this.s.maxHp = this.stats.maxHp;
     this.s.hp = Math.min(this.s.hp, this.stats.maxHp);
   }
@@ -86,12 +104,12 @@ export class HeroModel {
     for (const sl of SLOTS) this.inv.equip[sl] = null;
     for (const g of this.cls.start_gear) {
       const b = this.L.B[g.item];
-      if (!b || b.subtype) continue;
+      if (!b) continue;
       const it = this.L.makeItem(g.item, { n: g.count || 1, quality: g.quality || 'normal', ilvl: 1 });
       const sl = this.L.slotOf(b);
       const slot = sl === 'ring' ? 'ring1' : sl;
-      if (this.L.equipable(b) && slot && (SLOTS as readonly string[]).includes(slot) && !this.inv.equip[slot as keyof Equip])
-        this.inv.equip[slot as keyof Equip] = it;
+      const autoEquip = this.L.equipable(b) && b.subtype !== 'kast' && slot && (SLOTS as readonly string[]).includes(slot);
+      if (autoEquip && !this.inv.equip[slot as keyof Equip]) this.inv.equip[slot as keyof Equip] = it;
       else this.inv.add(it);
     }
     this.s.fresh = false;
@@ -143,7 +161,65 @@ export class HeroModel {
   }
 
   combatDamageMult(): number {
-    return this.consumableBuffT > 0 && this.consumableDmgPct > 0 ? 1 + this.consumableDmgPct : 1;
+    let m = 1;
+    if (this.consumableBuffT > 0 && this.consumableDmgPct > 0) m *= 1 + this.consumableDmgPct;
+    if (this.skillDmgT > 0 && this.skillDmgPct > 0) m *= 1 + this.skillDmgPct;
+    return m;
+  }
+
+  atkSpeedMult(): number {
+    return this.skillDmgT > 0 && this.skillAtkSpeedPct > 0 ? 1 + this.skillAtkSpeedPct : 1;
+  }
+
+  passiveActive(id: string): boolean {
+    const sk = this.cls.skills.find((s) => s.id === id);
+    return !!sk && skillUnlocked(sk, this.s.level);
+  }
+
+  barSkills() {
+    return barActiveSkills(this.cls);
+  }
+
+  passives() {
+    return passiveSkills(this.cls);
+  }
+
+  skillCdLeft(id: string): number {
+    const v = this.skillCooldowns[id] ?? 0;
+    return v > 0 ? v : 0;
+  }
+
+  spendStamina(n: number): boolean {
+    if (n <= 0) return true;
+    if (this.stamina < n) return false;
+    this.stamina -= n;
+    this.staminaRegenDelay = DATA.classes.meta.resource?.regen_delay_s ?? 1;
+    return true;
+  }
+
+  refundStamina(n: number): void {
+    if (n <= 0) return;
+    this.stamina = Math.min(this.maxStamina, this.stamina + n);
+  }
+
+  countJavelins(): number {
+    return this.inv.bag.reduce((n, it) => n + (this.L.base(it).id === 'kastspjut' ? (it.n ?? 1) : 0), 0);
+  }
+
+  consumeJavelin(): boolean {
+    const it = this.inv.bag.find((x) => this.L.base(x).id === 'kastspjut' && (x.n ?? 1) > 0);
+    if (!it) return false;
+    it.n = (it.n ?? 1) - 1;
+    if (it.n <= 0) this.inv.lift(it);
+    else this.inv.onChange();
+    return true;
+  }
+
+  effectiveDefense(): number {
+    let d = this.stats.defense;
+    if (this.passiveActive('jarnvilja') && this.s.hp / this.s.maxHp < 0.3) d += 5;
+    if (this.bannerDefT > 0) d += this.bannerDefBonus;
+    return d;
   }
 
   moveSpeedMult(): number {
@@ -207,6 +283,14 @@ export class HeroModel {
     if (this.dodgeRemain > 0) this.dodgeRemain -= dt;
     if (this.dodgeRemain <= 0) this.shieldDodge = false;
     this.skillCd -= dt;
+    for (const id of Object.keys(this.skillCooldowns)) {
+      this.skillCooldowns[id] = Math.max(0, (this.skillCooldowns[id] ?? 0) - dt);
+      if ((this.skillCooldowns[id] ?? 0) <= 0) this.skillCooldowns[id] = 0;
+    }
+    if (this.skillDmgT > 0) this.skillDmgT -= dt;
+    if (this.bannerDefT > 0) this.bannerDefT -= dt;
+    if (this.staminaRegenDelay > 0) this.staminaRegenDelay -= dt;
+    else if (this.stamina < this.maxStamina) this.stamina = Math.min(this.maxStamina, this.stamina + this.stats.regen * dt);
     this.curse -= dt;
     if (this.consumableBuffT > 0) this.consumableBuffT -= dt;
     if (this.hotLeft > 0) {
