@@ -32,3 +32,14 @@ export function inventoryHasItemId(
   const hit = (it: { base: string; leg?: string }) => it.base === id || it.leg === id;
   return inv.bag.some(hit) || Object.values(inv.equip).some((it) => it && hit(it));
 }
+
+/** Markloot på marken: jämför quest-/legendary-id (leg ?? base). */
+export function groundHasItemId(
+  drops: readonly { data: { item?: { base: string; leg?: string } } }[],
+  id: string,
+): boolean {
+  return drops.some((d) => {
+    const it = d.data.item;
+    return !!it && itemLogicId(it) === id;
+  });
+}

@@ -9,6 +9,7 @@ import { canonicalBossId } from '../world/bossIds';
 import type { SpawnSpec } from './SpawnSystem';
 import type { LootSystem } from './LootSystem';
 import type { World } from './World';
+import { groundHasItemId } from '../quest/questItems';
 import type { WorldStateService } from '../world/WorldStateService';
 
 const MIRA_CHAMPION_UID = 'quest:miras_bror:champion';
@@ -153,8 +154,8 @@ export class QuestEncounterSystem {
     return w.monsters.some((m) => m.uid === uid && m.dead <= 0);
   }
 
-  private hasQuestDrop(w: World, baseId: string): boolean {
-    return w.drops.some((d) => d.data.item && (d.data.item as { base?: string }).base === baseId);
+  private hasQuestDrop(w: World, questItemId: string): boolean {
+    return groundHasItemId(w.drops, questItemId);
   }
 
   private anchorPos(anchorId: string): Vec2 | null {

@@ -94,7 +94,7 @@ export class Inventory {
     const snapBag = this.bag.slice();
     const snapEq = { ...this.equip };
     const from = { x: it.x ?? 0, y: it.y ?? 0, inBag: this.bag.includes(it) };
-    this.remove(it);
+    this.detach(it);
     const old = this.equip[slot];
     this.equip[slot] = it;
     delete it.x;
