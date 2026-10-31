@@ -97,12 +97,18 @@ syncBigWorldChunkMonsters(w, cache, factory, worldSeed, gameSeed, w.hero.pos);
 assert.equal(w.monsters.filter((m) => m.uid === spawn.uid).length, 0, 'dödade spawns återuppstår inte');
 
 w.monsters.push({ uid: 'quest:test-npc', pos: { x: 0, y: 12 }, view: { destroy: () => {} } } as never);
+w.monsters.push({ uid: 'startskogen:0:0', pos: { x: 0, y: 0 }, view: { destroy: () => {} } } as never);
 resetBigWorldMonsterSync();
 w.hero.pos.x = span * 3;
 syncBigWorldChunkMonsters(w, cache, factory, worldSeed, gameSeed, w.hero.pos);
 assert.ok(
   w.monsters.some((m) => m.uid === 'quest:test-npc'),
   'quest-monster ska inte tas bort vid chunkbyte',
+);
+assert.equal(
+  w.monsters.filter((m) => m.uid?.startsWith('startskogen:')).length,
+  0,
+  'legacy startskogen-monster ska despawnas långt från hjälten',
 );
 
 const neg = generateChunkWorldData(worldSeed, gameSeed, -3, -4, catalog);

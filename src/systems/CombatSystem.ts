@@ -4,6 +4,9 @@ import type { Vec2 } from '../core/GameContext';
 import type { Monster } from '../entities/Monster';
 import type { WorldFighter } from '../entities/WorldFighter';
 import { Iso } from '../render/Iso';
+import { parseBigWorldSpawnUid, worldToChunk } from '../world/bigWorld/bigWorldCoords';
+import { chunkDistanceFromStart } from '../world/bigWorld/ringZone';
+import { getBigWorldCatalog } from '../world/bigWorld/worldGenerator';
 import type { MonsterSnapshot } from '../logic/CombatRules';
 import type { LootSystem } from './LootSystem';
 import type { World } from './World';
@@ -119,6 +122,16 @@ export class CombatSystem {
     }
   }
 
+  private killDistanceChunks(m: Monster): number {
+    const w = this.w();
+    if (!w.zone.bigWorldStreaming) return 0;
+    const catalog = getBigWorldCatalog();
+    const parsed = m.uid ? parseBigWorldSpawnUid(m.uid) : null;
+    if (parsed) return chunkDistanceFromStart(parsed.cx, parsed.cy, catalog.startChunk);
+    const { cx, cy } = worldToChunk(m.pos.x, m.pos.y);
+    return chunkDistanceFromStart(cx, cy, catalog.startChunk);
+  }
+
   kill(m: Monster): void {
     const w = this.w();
     m.dead = 0.001;
@@ -136,6 +149,7 @@ export class CombatSystem {
       ilvl: Math.min(DATA.monsterLevels.item_level.cap, m.lvl + (m.boss ? 2 : m.elite === 'unik' ? 1 : 0)),
       extraRolls: lo?.extra_rolls ?? 0,
       qualityMult: lo?.quality_mult ?? 1,
+      distanceChunks: this.killDistanceChunks(m),
     });
     const ups = w.hero.gainXp(reward.xp);
     if (ups) {

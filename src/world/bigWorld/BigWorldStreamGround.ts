@@ -126,6 +126,8 @@ export class BigWorldStreamGround extends PixiContainer {
   private readonly cache: ChunkWorldCache;
   private lastCx = NaN;
   private lastCy = NaN;
+  private lastHeroWx = NaN;
+  private lastHeroWy = NaN;
   private activeWorldSeed = 0;
   private activeGameSeed = 0;
   private scene: BigWorldStreamScene | null = null;
@@ -179,6 +181,14 @@ export class BigWorldStreamGround extends PixiContainer {
     return need > 0;
   }
 
+  /** Teleport eller stor hopp — tvinga om chunk-sync och markbygge. */
+  bumpHeroPosition(hero: Vec2): void {
+    this.lastCx = NaN;
+    this.lastCy = NaN;
+    this.lastHeroWx = hero.x;
+    this.lastHeroWy = hero.y;
+  }
+
   sync(
     hero: Vec2,
     worldSeed: number,
@@ -190,6 +200,13 @@ export class BigWorldStreamGround extends PixiContainer {
     this.scene = scene;
     this.allowBuild = renderer != null;
     this.viewBounds = viewBounds;
+    const span = chunkWorldSpan();
+    if (!Number.isNaN(this.lastHeroWx) && Math.hypot(hero.x - this.lastHeroWx, hero.y - this.lastHeroWy) > span * 1.25) {
+      this.lastCx = NaN;
+      this.lastCy = NaN;
+    }
+    this.lastHeroWx = hero.x;
+    this.lastHeroWy = hero.y;
     const { cx, cy } = worldToChunk(hero.x, hero.y);
     const movedChunk = cx !== this.lastCx || cy !== this.lastCy;
     const seedChanged = worldSeed !== this.activeWorldSeed || gameSeed !== this.activeGameSeed;

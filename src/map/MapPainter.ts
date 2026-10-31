@@ -3,6 +3,7 @@ import type { Key } from '../i18n/types';
 import { FogOfWar, type Rgba } from './FogOfWar';
 import type { Goal } from './GoalTracker';
 import type { MapModel } from './MapModel';
+import { drawBigWorldMapLayer } from './bigWorldMapDraw';
 
 /** Världs- till skärmtransform för en ritning. */
 export interface Projection {
@@ -10,6 +11,9 @@ export interface Projection {
   ox: number;
   oy: number;
   mini: boolean;
+  /** Fog-rutnät centrerat på denna världsposition (stor skog). */
+  fogOriginX?: number;
+  fogOriginY?: number;
 }
 
 const FONT = '13px Cinzel, Georgia, serif';
@@ -21,6 +25,10 @@ export class MapPainter {
     /** Hämtar aktuell hjältes fog (byts vid hero_loaded). */
     private readonly fog: () => FogOfWar,
   ) {}
+
+  fogAnchor(): { x: number; y: number } {
+    return this.fog().getAnchor();
+  }
 
   /** Anpassar canvasens upplösning efter CSS-storlek och DPR; returnerar context och CSS-mått. */
   prepare(cv: HTMLCanvasElement): { c: CanvasRenderingContext2D; W: number; H: number } | null {
@@ -38,10 +46,13 @@ export class MapPainter {
     return { c, W, H };
   }
 
-  world(c: CanvasRenderingContext2D, z: ZoneView, p: Projection, fogColor: Rgba): void {
+  world(c: CanvasRenderingContext2D, z: ZoneView, p: Projection, fogColor: Rgba, hero?: Readonly<HeroState>): void {
     const X = (x: number): number => p.ox + x * p.s;
     const Y = (y: number): number => p.oy + y * p.s;
     const s = p.s;
+    if (z.bigWorldStreaming && hero) {
+      drawBigWorldMapLayer(c, hero.pos.x, hero.pos.y, p, { chunkRadius: p.mini ? 3 : 8, showLabels: !p.mini });
+    }
     if (z.circle) {
       c.fillStyle = '#1f2a1f';
       c.beginPath();
@@ -90,10 +101,12 @@ export class MapPainter {
       c.fill();
     }
     const { GRID, CELL, HALF } = FogOfWar;
+    const fogOx = p.fogOriginX ?? (z.bigWorldStreaming && hero ? this.fog().getAnchor().x : 0);
+    const fogOy = p.fogOriginY ?? (z.bigWorldStreaming && hero ? this.fog().getAnchor().y : 0);
     const img = this.fog().grid(z.name).image(GRID, fogColor);
     if (img) {
       c.imageSmoothingEnabled = true;
-      c.drawImage(img, X(-HALF), Y(-HALF), GRID * CELL * s, GRID * CELL * s);
+      c.drawImage(img, X(fogOx - HALF), Y(fogOy - HALF), GRID * CELL * s, GRID * CELL * s);
     }
     // runstenar och portaler syns alltid, oavsett fog
     for (const r of z.runes) {

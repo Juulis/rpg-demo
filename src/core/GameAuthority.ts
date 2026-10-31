@@ -27,5 +27,7 @@ export interface GameAuthority {
     ilvl: number;
     extraRolls: number;
     qualityMult: number;
+    /** Avstånd i chunkar från start (stor skog XP). */
+    distanceChunks?: number;
   }): { xp: number; drops: Drop[] };
 }

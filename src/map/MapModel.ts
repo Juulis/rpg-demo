@@ -1,8 +1,9 @@
-import { villageLayout, type VillageLayout, type ZoneView } from '../core/GameContext';
+import { villageLayout, type HeroState, type VillageLayout, type ZoneView } from '../core/GameContext';
 import type { GameData, VillageZoneDef } from '../data/types';
 import type { LocaleManager } from '../i18n/LocaleManager';
 import type { Key, Params } from '../i18n/types';
 import sv from '../i18n/locales/sv.json';
+import { bigWorldMapBounds } from './bigWorldMapDraw';
 
 export type Bounds = readonly [x0: number, y0: number, x1: number, y1: number];
 
@@ -31,7 +32,8 @@ export class MapModel {
     return this.i18n.t(key, params);
   }
 
-  bounds(z: ZoneView): Bounds {
+  bounds(z: ZoneView, hero?: Readonly<HeroState>): Bounds {
+    if (z.bigWorldStreaming && hero) return bigWorldMapBounds(hero.pos.x, hero.pos.y, 8);
     if (z.rect) return [z.rect[0] - 3, z.rect[0] - 3, z.rect[1] + 3, z.rect[1] + 3];
     const c = z.circle ?? 45;
     return [-c - 3, -c - 3, c + 3, c + 3];

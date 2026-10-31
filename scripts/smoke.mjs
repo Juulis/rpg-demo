@@ -176,13 +176,19 @@ async function runChunkStreamTest(page, modeLabel) {
     if (!crossed) chunkErrs.push('chunkbyte: heroChunk ändrades inte (plain moveHeroBy)');
   }
 
+  try {
+    await waitGroundReady(90000);
+  } catch {
+    chunkErrs.push('mark blev inte klar efter chunkbyte (groundReady)');
+  }
+
   await page.waitForTimeout(2000);
   await page.evaluate(() => window.__smoke?.moveHeroBy(24, 0));
   await page.waitForTimeout(1500);
   const wxAfter = Number((await readMetrics(page)).heroWx);
   if (Math.abs(wxAfter - wxBefore) < 0.5) chunkErrs.push('ingen rörelse efter chunkbyte');
 
-  let chunkProbe = { groundPixel: true, textures: 0, objects: 0, fpsMedian: 99 };
+  let chunkProbe = await readMetrics(page);
   if (captureBuild) {
     chunkProbe = await page.evaluate(async () => {
       const read = () => {
@@ -223,6 +229,10 @@ async function runChunkStreamTest(page, modeLabel) {
     if (chunkProbe.textures > 50) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
     if (chunkProbe.objects > 30_000) chunkErrs.push(`för många byggda mark-objekt: ${chunkProbe.objects}`);
     if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
+  } else {
+    if (!chunkProbe.groundReady) chunkErrs.push('plain: groundReady saknas efter chunkbyte');
+    if (!chunkProbe.groundPixel) chunkErrs.push('plain: groundPixel saknas efter chunkbyte');
+    if (chunkProbe.displayObjects <= 0) chunkErrs.push('plain: inga mark-objekt mätta');
   }
 
   console.log(`chunk-stream (${modeLabel}): ${JSON.stringify({ ...chunkProbe, startChunk })}`);

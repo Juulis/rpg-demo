@@ -59,6 +59,7 @@ if (smokeMetricsEnabled()) {
       w.hero.pos.y = y;
       w.hero.moveTarget = null;
       w.zone.collide(w.hero.pos, 0.5);
+      game.bumpBigWorldHeroPosition();
     };
   }
   (window as unknown as { __smoke?: typeof smoke }).__smoke = smoke;

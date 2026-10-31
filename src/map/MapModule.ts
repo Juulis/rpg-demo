@@ -107,7 +107,11 @@ export class MapModule implements GameModule {
   reveal(): void {
     const ctx = this.ctx;
     if (!ctx || !ctx.hero.playing) return;
-    if (this.fog.reveal(ctx.zone.name, ctx.hero.pos.x, ctx.hero.pos.y) && !this.saveTimer) {
+    const z = ctx.zone;
+    const changed = z.bigWorldStreaming
+      ? this.fog.revealSliding(z.name, ctx.hero.pos.x, ctx.hero.pos.y)
+      : this.fog.reveal(z.name, ctx.hero.pos.x, ctx.hero.pos.y);
+    if (changed && !this.saveTimer) {
       this.saveTimer = setTimeout(() => this.flush(), MapModule.SAVE_MS);
     }
   }

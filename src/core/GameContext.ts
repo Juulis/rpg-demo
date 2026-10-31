@@ -88,6 +88,8 @@ export interface ZoneView {
   /** Rensade delområden (bara information, ingen spärr). */
   cleared: Readonly<Record<string, boolean>>;
   arena?: { x0: number; y0: number; x1: number; y1: number } | null;
+  /** Stor skog med chunk-streaming (#85). */
+  bigWorldStreaming?: boolean;
 }
 
 /** Sparbar ögonblicksbild av hjälte + session (Game.getSnapshot / Game.loadHero). */

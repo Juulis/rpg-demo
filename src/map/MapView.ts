@@ -36,12 +36,20 @@ export class MapView {
     const { c, W, H } = prep;
     c.fillStyle = '#0d0f12d9';
     c.fillRect(0, 0, W, H);
-    const [x0, y0, x1, y1] = this.model.bounds(z);
+    const [x0, y0, x1, y1] = this.model.bounds(z, h);
     const pad = 70;
     const s = Math.min((W - pad * 2) / (x1 - x0), (H - pad * 2 - 40) / (y1 - y0));
-    const p = { s, ox: W / 2 - ((x0 + x1) / 2) * s, oy: H / 2 + 20 - ((y0 + y1) / 2) * s, mini: false };
+    const anchor = z.bigWorldStreaming ? this.painter.fogAnchor() : { x: 0, y: 0 };
+    const p = {
+      s,
+      ox: W / 2 - ((x0 + x1) / 2) * s,
+      oy: H / 2 + 20 - ((y0 + y1) / 2) * s,
+      mini: false,
+      fogOriginX: anchor.x,
+      fogOriginY: anchor.y,
+    };
     c.save();
-    this.painter.world(c, z, p, mapFogColor(clockTime, false));
+    this.painter.world(c, z, p, mapFogColor(clockTime, false), h);
     const g = this.goals.goal(z, h.pos);
     if (g) this.painter.goalRing(c, g, p, 0.5 + 0.5 * Math.sin(time / 250));
     this.painter.hero(c, h, p);

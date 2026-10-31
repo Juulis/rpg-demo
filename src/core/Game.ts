@@ -18,6 +18,7 @@ import { ForestGroundChunks } from '../world/ForestGroundChunks';
 import { BigWorldStreamGround } from '../world/bigWorld/BigWorldStreamGround';
 import { BIG_WORLD_GROUND_VIEW_MARGIN } from '../world/bigWorld/bigWorldConfig';
 import { syncBigWorldChunkMonsters, resetBigWorldMonsterSync } from '../world/bigWorld/syncBigWorldChunkMonsters';
+import { heroInsideStartskogenRegion } from '../world/bigWorld/heroRegion';
 import { smokeMetricsEnabled } from '../dev/smokeGate';
 import { worldToChunk } from '../world/bigWorld/bigWorldCoords';
 import { Input } from '../input/Input';
@@ -213,6 +214,17 @@ export class Game {
   /** Aktuell värld (för tester/debug). */
   get state(): World | null {
     return this.world;
+  }
+
+  /** Efter teleport i stor skog: tvinga mark/chunk-sync (röktest + dev). */
+  bumpBigWorldHeroPosition(): void {
+    const w = this.world;
+    const fg = this.forestGround;
+    if (!w || !(fg instanceof BigWorldStreamGround) || !w.zone.bigWorldStreaming) return;
+    resetBigWorldMonsterSync();
+    fg.bumpHeroPosition(w.hero.pos);
+    const view = this.camera.viewWorldAabb(BIG_WORLD_GROUND_VIEW_MARGIN);
+    fg.sync(w.hero.pos, w.session.worldSeed, w.session.seed, { objects: w.objects, zone: w.zone }, this.renderer.app.renderer, view);
   }
 
   async start(host: HTMLElement): Promise<void> {
@@ -597,6 +609,7 @@ export class Game {
       portals: z.portals,
       cleared: z.cleared,
       arena: z.arena,
+      bigWorldStreaming: z.bigWorldStreaming,
     });
     if (z.circle) v.circle = z.circle;
     if (z.rect) v.rect = z.rect;
@@ -949,7 +962,7 @@ export class Game {
         view,
       );
       syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.worldSeed, w.session.seed, h.pos);
-      if (w.zone.areaId === 'startskogen') syncProximitySpawns(w, this.factory, h.pos);
+      if (heroInsideStartskogenRegion(h.pos)) syncProximitySpawns(w, this.factory, h.pos);
       const hc = worldToChunk(h.pos.x, h.pos.y);
       const fg = this.forestGround;
       if (smokeMetricsEnabled()) {

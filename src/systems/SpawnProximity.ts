@@ -1,11 +1,14 @@
 import type { Vec2 } from '../core/GameContext';
+import type { MonsterFactory } from '../entities/MonsterFactory';
 import { FOREST_SPAWN_ACTIVE_RADIUS } from '../world/forestConstants';
 import type { World } from './World';
-import type { MonsterFactory } from '../entities/MonsterFactory';
+import { heroInsideStartskogenRegion } from '../world/bigWorld/heroRegion';
 
 /** Instansierar köade monster när hjälten är nära (Startskogen). */
 export function syncProximitySpawns(w: World, factory: MonsterFactory, hero: Vec2): void {
-  if (w.zone.areaId !== 'startskogen') return;
+  if (w.zone.bigWorldStreaming) {
+    if (!heroInsideStartskogenRegion(hero)) return;
+  } else if (w.zone.areaId !== 'startskogen') return;
   const r = FOREST_SPAWN_ACTIVE_RADIUS;
   for (const q of w.spawnQueue) {
     if (q.done) continue;

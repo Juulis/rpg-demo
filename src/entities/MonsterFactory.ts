@@ -4,6 +4,7 @@ import { DirSprite } from '../render/DirSprite';
 import { scaleKForWorldHeightM, shadowRadiusForWorldHeightM, worldHeightMForMonster } from '../render/figureWorldHeights';
 import type { SpawnSpec, SpawnSystem } from '../systems/SpawnSystem';
 import type { World } from '../systems/World';
+import { heroInsideStartskogenRegion } from '../world/bigWorld/heroRegion';
 import { Monster } from './Monster';
 import { fullDef, monsterLook } from './MonsterDefs';
 
@@ -35,8 +36,8 @@ export class MonsterFactory {
   /** Spawnlista per game; Startskogen instansierar nära hjälten (se syncProximitySpawns). */
   populate(w: World, cityState: string): void {
     if (w.zone.bigWorldStreaming) {
-      if (w.zone.areaId === 'startskogen') {
-        const area = this.spawn.area(w.zone.areaId);
+      if (heroInsideStartskogenRegion(w.hero.pos)) {
+        const area = this.spawn.area('startskogen');
         const specs = this.spawn.roll(area, w.session, { cityState });
         w.spawnQueue = specs.map((s) => {
           const p = w.zone.toWorld(s.pos);

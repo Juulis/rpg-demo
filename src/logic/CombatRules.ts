@@ -3,6 +3,7 @@ import type { Rng } from '../core/Rng';
 import { DATA } from '../data';
 import type { DamageType } from '../data/types';
 import type { HeroStats, Loot } from './loot/Loot';
+import { xpDistanceMultiplier } from '../world/bigWorld/worldGenerator';
 
 /** Vad reglerna behöver veta om ett monster (ren data, ingen figur). */
 export interface MonsterSnapshot {
@@ -81,11 +82,13 @@ export class CombatRules {
   }
 
   /** XP(L) = round(xp/10 · 3 · L^1,5) × avdrag efter nivåskillnad (boss golv 0,25). */
-  monsterXp(m: Pick<MonsterSnapshot, 'lvl' | 'boss' | 'xp' | 'xpMult'>, heroLvl: number): number {
+  monsterXp(m: Pick<MonsterSnapshot, 'lvl' | 'boss' | 'xp' | 'xpMult'>, heroLvl: number, distanceChunks = 0): number {
     const diff = heroLvl - m.lvl;
     const row = DATA.monsterLevels.xp_penalty.table.find((r) => r.hjalte_minus_monster === Math.max(-8, Math.min(12, diff)));
     let k = row ? row.xp_mult : 1;
     if (m.boss) k = Math.max(0.25, k);
-    return Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
+    const base = Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
+    if (distanceChunks <= 0) return base;
+    return Math.round(base * xpDistanceMultiplier(distanceChunks));
   }
 }

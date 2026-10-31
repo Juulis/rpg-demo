@@ -24,7 +24,7 @@ export class LocalAuthority implements GameAuthority {
   }
 
   killReward(o: Parameters<GameAuthority['killReward']>[0]): { xp: number; drops: Drop[] } {
-    const xp = this.rules.monsterXp(o.m, o.heroLvl);
+    const xp = this.rules.monsterXp(o.m, o.heroLvl, o.distanceChunks ?? 0);
     const mf = effectiveMagicFind(o.mf);
     const { drops } = this.L.rollDrops({ id: o.m.id, mlvl: o.m.lvl, ilvl: o.ilvl, mf, goldFind: o.goldFind, firstKill: o.firstKill });
     for (let i = 0; i < o.extraRolls; i++)

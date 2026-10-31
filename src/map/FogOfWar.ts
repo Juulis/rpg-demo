@@ -41,6 +41,21 @@ export class FogOfWar {
   static readonly HALF = (FogOfWar.GRID * FogOfWar.CELL) / 2;
   private readonly grids = new Map<string, FogGrid>();
   private dirty = false;
+  private anchorX = 0;
+  private anchorY = 0;
+
+  getAnchor(): { x: number; y: number } {
+    return { x: this.anchorX, y: this.anchorY };
+  }
+
+  /** Stor skog: fog-rutnät följer hjälten (sparad grid är relativt ankare). */
+  revealSliding(zone: string, x: number, y: number): boolean {
+    if (Math.hypot(x - this.anchorX, y - this.anchorY) > 28) {
+      this.anchorX = x;
+      this.anchorY = y;
+    }
+    return this.reveal(zone, x - this.anchorX, y - this.anchorY);
+  }
 
   /** loader hämtar sparad fog för zonen (eller null). */
   constructor(private readonly loader: (zone: string) => Uint8Array | null = () => null) {}
