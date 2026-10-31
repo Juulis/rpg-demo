@@ -48,6 +48,12 @@
     "no_stamina": "Not enough stamina",
     "no_javelin": "No javelins left"
   },
+  "quest": {
+    "log_title": "Quest log",
+    "log_hint": "J — close",
+    "section_active": "Active",
+    "section_done": "Completed"
+  },
   "audio": {
     "volume": "Volume",
     "sound_on": "Sound on (M)",
@@ -93,7 +99,7 @@
     "hp": "Life",
     "stamina": "Stamina",
     "proviant": "{count} left",
-    "help": "Click: move/attack · F: talk · Right-click/Q: skill · E: rune · B/I: gear · Alt/Z: items · 1–4: skills · Alt+3/4: provisions"
+    "help": "Click: move/attack · F: talk · J: quests · Right-click/Q: skill · E: rune · B/I: gear · Alt/Z: items · 1–4: skills · Alt+3/4: provisions"
   },
   "msg": {
     "rune_awake": "The rune awakens! ({n}/3)",
@@ -165,7 +171,8 @@
   "inv": {
     "title": "Equipment",
     "hint": "B / I · drag outside the window or Drop · Shift+right-click to drop · Esc closes",
-    "gold": "Gold"
+    "gold": "Gold",
+    "quest_no_drop": "Quest items cannot be dropped."
   },
   "stat": {
     "life": "Life",

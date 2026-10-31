@@ -18,9 +18,11 @@ async function run(): Promise<void> {
   assert.equal(i18n.t('menu.continue'), 'Fortsätt');
   assert.equal(i18n.t('msg.zone_wolfstead'), 'Vargaby');
   assert.equal(i18n.t('hud.proviant', { count: 2 }), '2 st');
+  assert.equal(i18n.t('quest.log_title'), 'Uppdrag');
 
   await i18n.setLocale('en');
   assert.equal(i18n.locale, 'en');
+  assert.equal(i18n.t('quest.log_title'), 'Quest log');
   assert.equal(i18n.t('menu.continue'), 'Continue');
   assert.equal(i18n.t('msg.zone_wolfstead'), 'Wolfstead');
   assert.equal(i18n.t('msg.no_proviant'), 'No provisions left');

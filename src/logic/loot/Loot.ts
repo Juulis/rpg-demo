@@ -213,6 +213,18 @@ export class Loot {
     if (b.stack) it.n = o.n ?? 1;
     return it;
   }
+
+  /** Skapar unikt/legendary föremål (quest-loot m.m.) via legendary-id. */
+  makeLegendaryItem(legId: string, o: Partial<Item> = {}): Item {
+    const leg = this.LEG[legId];
+    if (!leg) throw new Error(`Okänd legendary: ${legId}`);
+    return this.makeItem(leg.base, {
+      quality: 'legendary',
+      leg: leg.id,
+      ilvl: o.ilvl ?? leg.item_level ?? leg.level ?? 1,
+      ...o,
+    });
+  }
   setPiece(it: Item): SetPiece | undefined {
     return it.set ? this.SETPIECE[it.set + ':' + it.base]?.piece : undefined;
   }
