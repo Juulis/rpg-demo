@@ -140,17 +140,26 @@ await chunkPage.waitForFunction(
   { timeout: 90000, polling: 200 },
 );
 
-const startChunk = startProbe.heroChunk || (await readMetrics(chunkPage)).heroChunk;
-await chunkPage.evaluate(() => window.__smoke?.moveHeroBy(140, 0));
-try {
-  await chunkPage.waitForFunction(
-    (prev) => document.documentElement.dataset.heroChunk && document.documentElement.dataset.heroChunk !== prev,
-    startChunk,
-    { timeout: 90000, polling: 250 },
-  );
-} catch {
-  chunkErrs.push('chunkbyte: heroChunk ändrades inte');
+const afterMove = await readMetrics(chunkPage);
+const startChunk = afterMove.heroChunk || '0,0';
+let crossed = false;
+for (let attempt = 0; attempt < 36 && !crossed; attempt++) {
+  await chunkPage.evaluate(() => window.__smoke?.moveHeroBy(48, 0));
+  try {
+    await chunkPage.waitForFunction(
+      (prev) => {
+        const c = document.documentElement.dataset.heroChunk;
+        return !!c && c !== prev;
+      },
+      startChunk,
+      { timeout: 12000, polling: 250 },
+    );
+    crossed = true;
+  } catch {
+    /* CI/SwiftShader: fortsätt nudge tills chunk-index uppdateras */
+  }
 }
+if (!crossed) chunkErrs.push('chunkbyte: heroChunk ändrades inte');
 const wxBefore = Number((await readMetrics(chunkPage)).heroWx);
 await chunkPage.waitForTimeout(2500);
 await chunkPage.evaluate(() => window.__smoke?.moveHeroBy(20, 0));
