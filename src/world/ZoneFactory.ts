@@ -143,7 +143,7 @@ export class ZoneFactory {
     const zone = new Zone('forest', 'startskogen', 4096, 4096);
     zone.bigWorldStreaming = true;
     zone.safeRadius = FOREST_SAFE_RADIUS;
-    zone.entry = applyStartskogenAnchor(4, 4);
+    zone.entry = { x: 0, y: 4 };
     const ground = new BigWorldStreamGround(this.assets);
     const decor: Container[] = [];
     const decorAnims: StripAnimSprite[] = [];
@@ -156,7 +156,7 @@ export class ZoneFactory {
       runeSprites.push(s);
       decor.push(s);
     }
-    const camp = applyStartskogenAnchor(-1.2, 2.6);
+    const camp = { x: -128, y: -128 };
     decor.push(this.decorSprite('eldstad_kall', camp.x, camp.y, 0.34));
     const fire = this.decorAnimSprite('lagereld_anim', camp.x, camp.y, 0.34);
     if (fire) {

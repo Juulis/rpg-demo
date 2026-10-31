@@ -16,6 +16,7 @@ import npc from './npc.json';
 import rykten from './rykten.json';
 import quests from './quests.json';
 import varldStor from './varld_stor.json';
+import varldGenerator from './varldsgenerator.json';
 import type { BigWorldDataFile } from './bigWorldTypes';
 import type { QuestDataFile } from './questTypes';
 import type { RumorDataFile } from './rumorTypes';
@@ -44,6 +45,7 @@ export const DATA: GameData = {
   rykten: rykten as unknown as RumorDataFile,
   quests: quests as unknown as QuestDataFile,
   varldStor: varldStor as unknown as BigWorldDataFile,
+  varldGenerator: varldGenerator as unknown as import('./types').VarldGeneratorFile,
 };
 
 const MONSTERS = new Map<string, MonsterDef>(DATA.families.monsters.map((m) => [m.id, m]));

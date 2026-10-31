@@ -4,7 +4,7 @@ import { bigWorldMapBounds } from '../src/map/bigWorldMapDraw';
 
 assert.ok(isInsideStartskogenChunk(1, 1));
 assert.ok(!isInsideStartskogenChunk(5, 5));
-assert.ok(heroInsideStartskogenRegion({ x: 200, y: 200 }));
+assert.ok(heroInsideStartskogenRegion({ x: 0, y: 0 }), 'origo ligger i Rungläntan (chunk [1,1], radie 1)');
 
 const [x0, , x1] = bigWorldMapBounds(100, 200, 4);
 assert.ok(x1 - x0 > 0);

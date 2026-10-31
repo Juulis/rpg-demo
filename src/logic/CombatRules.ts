@@ -21,6 +21,8 @@ export interface MonsterSnapshot {
   shieldedFront: boolean;
   xp: number;
   xpMult: number;
+  /** Boss-XP skalning per akt när boss_xp_faktor finns i data. */
+  bossAct?: string;
 }
 export interface HeroHitResult {
   hit: boolean;
@@ -81,11 +83,16 @@ export class CombatRules {
   }
 
   /** XP(L) = round(xp/10 · 3 · L^1,5) × avdrag efter nivåskillnad (boss golv 0,25). */
-  monsterXp(m: Pick<MonsterSnapshot, 'lvl' | 'boss' | 'xp' | 'xpMult'>, heroLvl: number): number {
+  monsterXp(m: Pick<MonsterSnapshot, 'lvl' | 'boss' | 'xp' | 'xpMult' | 'bossAct'>, heroLvl: number): number {
     const diff = heroLvl - m.lvl;
     const row = DATA.monsterLevels.xp_penalty.table.find((r) => r.hjalte_minus_monster === Math.max(-8, Math.min(12, diff)));
     let k = row ? row.xp_mult : 1;
     if (m.boss) k = Math.max(0.25, k);
-    return Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
+    let xp = Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
+    if (m.boss && m.bossAct) {
+      const f = DATA.monsterLevels.boss_xp_faktor?.[m.bossAct];
+      if (f != null) xp = Math.round(xp * f);
+    }
+    return xp;
   }
 }

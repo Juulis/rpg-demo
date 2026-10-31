@@ -63,7 +63,7 @@ const stripped = structuredClone(DATA.varldStor);
 stripped.biomer.kust.monsterfamiljer = { gastar: [], ododa: [] };
 stripped.biomer.kust.egna_monster = [];
 const strippedCat = buildBigWorldCatalog(stripped);
-const kustChunk = generateChunkWorldData(5, 5, -10, -7, strippedCat);
+const kustChunk = generateChunkWorldData(5, 5, -8, -5, strippedCat);
 assert.equal(kustChunk.spawnSubtypes.length, 0);
 const stripScan = validateVarldStorSpawnScan(stripped, ctx, {
   seeds: [5],

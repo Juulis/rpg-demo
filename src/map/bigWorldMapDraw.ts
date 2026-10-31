@@ -51,6 +51,7 @@ export function drawBigWorldMapLayer(
     if (Math.abs(rcx - heroChunk.cx) > r + 2 || Math.abs(rcy - heroChunk.cy) > r + 2) continue;
     const wx = rcx * span + span * 0.5;
     const wy = rcy * span + span * 0.5;
+    if (opts.isRevealed && !opts.isRevealed(wx, wy)) continue;
     c.fillStyle = region.sakert ? '#f2c46b' : '#9fc4d4';
     c.beginPath();
     c.arc(X(wx), Y(wy), Math.max(2, 3 * p.s), 0, 7);

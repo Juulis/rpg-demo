@@ -4,7 +4,7 @@ import { FOREST_SPAWN_ACTIVE_RADIUS } from '../forestConstants';
 import type { World } from '../../systems/World';
 import type { SpawnSpec } from '../../systems/SpawnSystem';
 import type { ChunkWorldCache } from './chunkCache';
-import { chunkSpawnToWorld, parseBigWorldSpawnUid, worldToChunk, chunkWorldSpan } from './bigWorldCoords';
+import { chunkSpawnToWorld, parseBigWorldSpawnUid, worldToChunk } from './bigWorldCoords';
 import { BIG_WORLD_MONSTER_SPAWN_BUDGET } from './bigWorldConfig';
 import { releaseStartskogenQueueSlot } from './startskogenSpawn';
 
@@ -27,11 +27,17 @@ const nearChunksBuf: { cx: number; cy: number }[] = [];
 
 function fillNearChunks(wx: number, wy: number, r: number): { cx: number; cy: number }[] {
   nearChunksBuf.length = 0;
-  const span = chunkWorldSpan();
-  const minCx = Math.floor((wx - r) / span);
-  const maxCx = Math.floor((wx + r) / span);
-  const minCy = Math.floor((wy - r) / span);
-  const maxCy = Math.floor((wy + r) / span);
+  const corners = [worldToChunk(wx - r, wy - r), worldToChunk(wx + r, wy - r), worldToChunk(wx - r, wy + r), worldToChunk(wx + r, wy + r)];
+  let minCx = corners[0]!.cx;
+  let maxCx = corners[0]!.cx;
+  let minCy = corners[0]!.cy;
+  let maxCy = corners[0]!.cy;
+  for (const c of corners) {
+    minCx = Math.min(minCx, c.cx);
+    maxCx = Math.max(maxCx, c.cx);
+    minCy = Math.min(minCy, c.cy);
+    maxCy = Math.max(maxCy, c.cy);
+  }
   for (let cx = minCx; cx <= maxCx; cx++) {
     for (let cy = minCy; cy <= maxCy; cy++) nearChunksBuf.push({ cx, cy });
   }

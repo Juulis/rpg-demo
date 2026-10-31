@@ -7,6 +7,23 @@
       "poi": "startlagret_by",
       "chunk": [0, 0]
     },
+    "chunk_koordinater": {
+      "offset_enheter": 192,
+      "origo_chunk": [1, 1],
+      "formel": "chunk = floor((x + offset) / chunk_span); origo (0,0) = mitt Rungläntan [1,1]"
+    },
+    "startskogen_fotavtryck": {
+      "chunk": [1, 1],
+      "legacy_spawn_endast": true,
+      "region_id": "startskogen"
+    },
+    "tathet_regel": {
+      "byar": 0,
+      "stad_spawnzoner": 0,
+      "ring_2_kontroll": 2,
+      "delomrade_ring_0_1": 2,
+      "vildmark_ring_3_plus": 6
+    },
     "chunk": {
       "storlek_rutor": 64,
       "seed": "chunk_seed = hash(game_seed, cx, cy), game_seed enligt spawnzoner.json meta.seed_rule",
@@ -633,7 +650,7 @@
       "biom": "skog",
       "typ": "by",
       "chunk": [0, 0],
-      "radie": 1,
+      "radie": 0,
       "ringzon": 0,
       "nivaband": [1, 1],
       "grannar": ["kolarmon", "sodra_mon", "startskogen"],

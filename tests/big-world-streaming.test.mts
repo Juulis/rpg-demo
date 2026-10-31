@@ -18,23 +18,26 @@ const worldSeed = 424242;
 const gameSeed = 9001;
 const catalog = buildBigWorldCatalog(DATA.varldStor);
 
-const a = generateChunkWorldData(worldSeed, gameSeed, 2, 3, catalog);
-const b = generateChunkWorldData(worldSeed, gameSeed, 2, 3, catalog);
-assert.deepEqual(a.spawns, b.spawns);
-assert.notEqual(generateChunkWorldData(worldSeed + 1, gameSeed, 2, 3, catalog).chunkSeed, a.chunkSeed);
+const spawnCx = -5;
+const spawnCy = -2;
 
-const sameLayout = generateChunkWorldData(worldSeed, gameSeed + 999, 2, 3, catalog);
+const a = generateChunkWorldData(worldSeed, gameSeed, spawnCx, spawnCy, catalog);
+const b = generateChunkWorldData(worldSeed, gameSeed, spawnCx, spawnCy, catalog);
+assert.deepEqual(a.spawns, b.spawns);
+assert.notEqual(generateChunkWorldData(worldSeed + 1, gameSeed, spawnCx, spawnCy, catalog).chunkSeed, a.chunkSeed);
+
+const sameLayout = generateChunkWorldData(worldSeed, gameSeed + 999, spawnCx, spawnCy, catalog);
 assert.equal(sameLayout.chunkSeed, a.chunkSeed);
 assert.notDeepEqual(sameLayout.spawns, a.spawns);
 
 assert.ok(a.spawns.length > 0, 'chunk ska ha spawns');
 const first = a.spawns[0];
-const pos = chunkSpawnToWorld(2, 3, first.localX, first.localY);
+const pos = chunkSpawnToWorld(spawnCx, spawnCy, first.localX, first.localY);
 const back = worldToChunk(pos.x, pos.y);
-assert.equal(back.cx, 2);
-assert.equal(back.cy, 3);
+assert.equal(back.cx, spawnCx);
+assert.equal(back.cy, spawnCy);
 
-assert.deepEqual(parseBigWorldSpawnUid(first.uid), { cx: 2, cy: 3 });
+assert.deepEqual(parseBigWorldSpawnUid(first.uid), { cx: spawnCx, cy: spawnCy });
 
 const side = 2 * BIG_WORLD_CACHE_KEEP_RADIUS + 1;
 const cache = new ChunkWorldCache({ maxEntries: side * side, keepRadius: BIG_WORLD_CACHE_KEEP_RADIUS });
@@ -84,7 +87,7 @@ const factory = {
   },
 } as never;
 const spawn = a.spawns[0];
-const near = chunkSpawnToWorld(2, 3, spawn.localX, spawn.localY);
+const near = chunkSpawnToWorld(spawnCx, spawnCy, spawn.localX, spawn.localY);
 const span = chunkWorldSpan();
 w.hero.pos.x = near.x;
 w.hero.pos.y = near.y;

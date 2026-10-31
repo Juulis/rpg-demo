@@ -15,7 +15,7 @@ import type { SpawnSpec } from '../src/systems/SpawnSystem';
 const skog = DATA.varldStor.regioner.find((r) => r.id === 'startskogen');
 assert.ok(skog);
 const anchor = startskogenLegacyAnchor();
-assert.ok(Math.hypot(anchor.x, anchor.y) > 40, 'legacy spawnzoner ska vara ankade på startskogens chunk, inte origo');
+assert.ok(Math.abs(anchor.x) < 1 && Math.abs(anchor.y) < 1, 'legacy spawnzoner ankade vid Rungläntans mitt (0,0)');
 
 const legacyAtOrigin = offsetToStartskogenAnchor({ x: 0, y: 0 });
 assert.ok(spawnPointInsideStartskogenFootprint(legacyAtOrigin));

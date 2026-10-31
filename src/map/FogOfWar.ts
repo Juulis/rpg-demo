@@ -1,3 +1,5 @@
+import { fogRevealRadiusWorld } from '../world/bigWorld/spawnDensity';
+
 export type Rgba = readonly [number, number, number, number];
 
 /** Ett fog-rutnät för en zon. Bilden (en pixel per ruta) cachas tills fogen ändras. */
@@ -35,6 +37,10 @@ export class FogGrid {
 
 const SAVE_V2 = 2;
 const SECTOR = 32;
+
+function fogRadius(): number {
+  return fogRevealRadiusWorld();
+}
 
 /** Fog of war: lokalt rutnät (legacy skog) eller världsförankrade sektorer (stor skog). */
 export class FogOfWar {
@@ -135,7 +141,8 @@ export class FogOfWar {
 
   revealWorld(zone: string, wx: number, wy: number): boolean {
     this.ensureLoaded(zone);
-    const { CELL, RADIUS } = FogOfWar;
+    const { CELL } = FogOfWar;
+    const RADIUS = fogRadius();
     let changed = false;
     const r = Math.ceil(RADIUS / CELL);
     const cx = Math.floor(wx / CELL);
@@ -163,7 +170,8 @@ export class FogOfWar {
   /** Avslöjar runt (x, y) i lokala koordinater (legacy). */
   reveal(zone: string, x: number, y: number): boolean {
     if (this.worldAnchored) return this.revealWorld(zone, x, y);
-    const { CELL, RADIUS, GRID, HALF } = FogOfWar;
+    const { CELL, GRID, HALF } = FogOfWar;
+    const RADIUS = fogRadius();
     const F = this.grid(zone);
     const saved = this.loader(zone);
     if (saved && saved[0] !== SAVE_V2 && F.cells.every((c) => c === 0)) {

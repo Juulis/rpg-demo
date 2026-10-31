@@ -100,6 +100,8 @@ export interface MonsterLevels {
     unique_names: string[];
   };
   xp_penalty: { table: { hjalte_minus_monster: number; xp_mult: number }[] };
+  /** Per akt (t.ex. akt_1) — datasynk från monster_niva.json. */
+  boss_xp_faktor?: Record<string, number>;
 }
 export interface EliteLoot {
   extra_rolls: number;
@@ -203,6 +205,22 @@ export type { NpcDataFile } from './npcTypes';
 export type LootQualities = typeof import('./loot_kvaliteter.json');
 export type { BigWorldDataFile } from './bigWorldTypes';
 
+export interface VarldGeneratorFile {
+  monsterpooler: {
+    tathet_per_chunk: Record<string, [number, number]>;
+    elit: {
+      mellanmark_champion_chance_per_chunk?: number;
+      mellanmark_champion_min_ring?: number;
+      mellanmark_unika?: boolean;
+    };
+  };
+  karta_och_dimma: {
+    dimma_radie_rutor?: number;
+    dimma_radie_enheter?: number;
+    regel?: string;
+  };
+}
+
 /** All speldata, tillgänglig för moduler via GameContext.data. */
 export interface GameData {
   classes: Classes;
@@ -223,4 +241,5 @@ export interface GameData {
   rykten: import('./rumorTypes').RumorDataFile;
   quests: import('./questTypes').QuestDataFile;
   varldStor: import('./bigWorldTypes').BigWorldDataFile;
+  varldGenerator: VarldGeneratorFile;
 }

@@ -1,18 +1,12 @@
 import type { Vec2 } from '../../core/GameContext';
 import type { SpawnSpec } from '../../systems/SpawnSystem';
 import type { World } from '../../systems/World';
-import { resolveRegionAtChunk } from './regionIndex';
-import { chunkWorldSpan, worldToChunk } from './bigWorldCoords';
-import { getBigWorldCatalog } from './worldGenerator';
-import { isInsideStartskogenChunk } from './heroRegion';
+import { worldToChunk } from './bigWorldCoords';
+import { isLegacyOnlySpawnChunk, runglantanWorldCenter } from './heroRegion';
 
-/** Legacy startskog (spawnzoner) är centrerad på regionens mittchunk — inte världens origo. */
+/** Legacy spawnzoner är i Rungläntans lokala koordinater (origo = värld 0,0). */
 export function startskogenLegacyAnchor(): Vec2 {
-  const region = getBigWorldCatalog().regionById.get('startskogen');
-  if (!region) return { x: 0, y: 0 };
-  const [cx, cy] = region.chunk;
-  const span = chunkWorldSpan();
-  return { x: cx * span + span * 0.5, y: cy * span + span * 0.5 };
+  return runglantanWorldCenter();
 }
 
 export function offsetToStartskogenAnchor(local: Vec2): Vec2 {
@@ -20,17 +14,14 @@ export function offsetToStartskogenAnchor(local: Vec2): Vec2 {
   return { x: local.x + a.x, y: local.y + a.y };
 }
 
-/** Chunk får chunk-genererade monster om legacy-startskogen inte äger ytan. */
+/** Chunk får chunk-genererade monster om legacy-chunken inte äger ytan. */
 export function chunkMonsterSpawnsEnabled(cx: number, cy: number): boolean {
-  if (isInsideStartskogenChunk(cx, cy)) return false;
-  const { region, inside } = resolveRegionAtChunk(cx, cy, getBigWorldCatalog().data.regioner);
-  if (inside && region.genererad_spawn !== true) return false;
-  return true;
+  return !isLegacyOnlySpawnChunk(cx, cy);
 }
 
 export function spawnPointInsideStartskogenFootprint(worldPos: Vec2): boolean {
   const { cx, cy } = worldToChunk(worldPos.x, worldPos.y);
-  return isInsideStartskogenChunk(cx, cy);
+  return isLegacyOnlySpawnChunk(cx, cy);
 }
 
 export function mapStartskogenSpecsToQueue(w: World, specs: readonly SpawnSpec[]): World['spawnQueue'] {

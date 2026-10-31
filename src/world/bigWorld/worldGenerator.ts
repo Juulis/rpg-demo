@@ -7,8 +7,14 @@ import { buildRoadIndex, roadTileInChunk, roadsAtChunk, type RoadIndex } from '.
 import { resolveRegionAtChunk } from './regionIndex';
 import { chunkDistanceFromStart, ringAtChunkDistance } from './ringZone';
 import { planMellanmarkSpawn, filterSubtypesByBand, regionSpawnLevelBand, mellanmarkLevelBand } from './spawnRules';
-import { mellanmarkSpawnCountRange, namedRegionSpawnCountRange, skipSpawnNearRoad, spawnTileNearRoad } from './spawnDensity';
-import { isInsideStartskogenChunk } from './heroRegion';
+import {
+  mellanmarkChampionRoll,
+  mellanmarkSpawnCountRange,
+  regionSpawnCountRange,
+  skipSpawnNearRoad,
+  spawnTileNearRoad,
+} from './spawnDensity';
+import { isLegacyOnlySpawnChunk } from './heroRegion';
 
 export interface BigWorldSpawnRoll {
   uid: string;
@@ -126,7 +132,8 @@ function rollChunkSpawns(
   const allowed = filterSubtypesByBand(subtypes, band);
   if (allowed.length === 0) return [];
   const rng = new Rng(chunkSpawnRollSeed(gameSeed, cx, cy));
-  const range = mellanmark ? mellanmarkSpawnCountRange(ring) : namedRegionSpawnCountRange(region);
+  const champ = mellanmarkChampionRoll();
+  const range = mellanmark ? mellanmarkSpawnCountRange(ring) : regionSpawnCountRange(region, ring, catalog.data);
   const target = rng.int(range);
   const tileSize = catalog.data.meta.chunk?.storlek_rutor ?? 64;
   const hasRoadAtTile = (ccx: number, ccy: number, ti: number, tj: number) => roadTileInChunk(catalog.roads, ccx, ccy, ti, tj, tileSize);
@@ -143,6 +150,11 @@ function rollChunkSpawns(
     const level = fixed[enemy] ?? band[0];
     const uid = `bw:${cx},${cy}:${out.length}:${enemy}`;
     out.push({ uid, enemy, level, localX, localY });
+  }
+  if (mellanmark && ring >= champ.minRing && out.length > 0 && rng.next() < champ.chance) {
+    const idx = rng.int([0, out.length - 1]);
+    const pick = out[idx];
+    if (pick) pick.elite = 'champion';
   }
   return out;
 }
@@ -229,7 +241,7 @@ export function generateChunkWorldData(
       cx,
       cy,
       spawnSubtypes,
-      generatedSpawn && !isInsideStartskogenChunk(cx, cy),
+      generatedSpawn && !isLegacyOnlySpawnChunk(cx, cy),
       spawnBand,
       chunkRing.ring,
       mellanmark,
