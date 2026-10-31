@@ -481,7 +481,10 @@
     "smittbarare": 24,
     "galen_munk": 25,
     "kottklump": 27,
-    "fadern_av_smittan": 28
+    "fadern_av_smittan": 28,
+    "korpmodern": 13,
+    "jarnmunken": 17,
+    "askans_profet": 23
   },
   "examples_fixed": [
     {
@@ -763,5 +766,34 @@
       "defense": 13,
       "xp": 28892
     }
-  ]
+  ],
+  "underboss_regel": {
+    "regel": "Underboss = aktens huvudboss skalad till underbossens nivå med formlerna i scaling, sedan HP x 0,45, skada x 0,85, XP x 0,4. Försvar enligt scaling utan ändring. Familjen styr svag och resistent, inte källbossen.",
+    "loot": "Som boss: ilvl = nivå + 2, gold_mult 5, first_kill_bonus en sällsynt. Questens belöningsföremål ges av questvalet, inte av dropen.",
+    "xp_avdrag": "Bossgolvet 0,25 i xp_penalty gäller även underbossar.",
+    "ej_champion": "Underbossar blir aldrig champion eller unik.",
+    "varden": {
+      "korpmodern": {
+        "level": 13,
+        "hp": 1544,
+        "damage": 44,
+        "defense": 8,
+        "xp": 3937
+      },
+      "jarnmunken": {
+        "level": 17,
+        "hp": 2311,
+        "damage": 57,
+        "defense": 13,
+        "xp": 6729
+      },
+      "askans_profet": {
+        "level": 23,
+        "hp": 4699,
+        "damage": 91,
+        "defense": 16,
+        "xp": 15884
+      }
+    }
+  }
 }

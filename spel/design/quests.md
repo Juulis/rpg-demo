@@ -125,13 +125,151 @@ Val:
 
 Redan gjort: Om Benkungen dödats innan questen börjar startar den direkt på steget signeten och Ebbe kommer själv fram till hjälten.
 
-## Skisser akt 2 till 5
+## Underbossar akt 2 till 4
 
-- **Klockorna under vattnet** (akt 2, Fiskaränkan Lova): Följ klockornas ljud genom dimman till Den sjunkna kyrkan och ta reda på varför Träsdrottningen håller de drunknade kvar. Val: befria Lovas man eller låta honom vakta stranden. Belöning: XP 45 % av nivå 14, Korpmoderns båge eller Dimvandrarens handskar.
-- **Korpmoderns sista flykt** (akt 2, Fiskaränkan Lova): Korparna leder hjälten över ebbstigarna till Korpholmarna där Korpmodern väntar. Val: döda henne eller lösa hennes förbannelse så korparna blir hjältens vakter över Dimmerstrand. Belöning: XP 40 % av nivå 13, korpmoderns_bage.
-- **Järnmunkens lås** (akt 3, Broder Elias): Elias öppnade dörren som skulle hållit bröderna inne. Hitta Järnmunken i Järnklostret och välj: döda honom eller låta Elias tala med honom en sista gång. Belöning: XP 45 % av nivå 17, jarnmunkens_gordel.
-- **Martas dotter** (akt 3, Marta): Martas dotter flydde till Kopparberg. Spåren leder till gruvdjupen och en gruppbild bland nät och kristaller. Val om vad Marta får veta. Belöning: XP 40 % av nivå 16, klockarens_hammare.
-- **Den fjärde stenen** (akt 4, Rask den avfallne): Rask vet att kulten letar efter den fjärde stenen. Smyg genom Kultens katakomber, avslöja Askans profet och hitta kartan till sprickans botten. Belöning: XP 50 % av nivå 23, tystnadens_stilett.
-- **Pilgrimens väg** (akt 4, Rask den avfallne): Följ pilgrimens bönerader i träden längs askvägen till Askeborgs port och vidare in. Val: begrava hans stav eller bära den till Den brända katedralen. Belöning: XP 45 % av nivå 21, del av Askvandrarens börda.
+Stats räknas med monster_niva.json underboss_regel: aktens huvudboss skalad till underbossens nivå, HP x 0,45, skada x 0,85, XP x 0,4. Data i monsterfamiljer.json.
+
+| Namn          | Familj    | Nivå | HP   | Skada | Försvar | XP    | Område             |
+| ------------- | --------- | ---- | ---- | ----- | ------- | ----- | ------------------ |
+| Korpmodern    | gastar    | 13   | 1544 | 44    | 8       | 3937  | korpholmarna       |
+| Järnmunken    | forvridna | 17   | 2311 | 57    | 13      | 6729  | jarnklostret       |
+| Askans profet | forvridna | 23   | 4699 | 91    | 16      | 15884 | kultens_katakomber |
+
+- **Korpmodern**: Underboss. Skjuter tre korpfjäderpilar i solfjäder. Var 20:e sekund kallar hon 2 dimgaster. Under 50 % liv löses hon upp i en korpsvärm och landar på en ny klippa på arenan, sedan skjuter hon igen.
+- **Järnmunken**: Underboss. Långsam och tung. Slår med järnkedjan i en båge framför sig och gör markslag som knuffar. Under 40 % liv river han av en länk ur gördeln och blir snabbare (fart x 1,3) och kallar 2 förvridna gruvarbetare.
+- **Askans profet**: Underboss. Håller avstånd och kastar eldklot. Tänder askcirklar på golvet som bränner den som står kvar. Kallar 2 askkultister var 25:e sekund. Under 30 % liv brinner masken av och han går till närstrid med ritualdolken.
+
+## Akt 2
+
+### Klockorna under vattnet (klockorna_under_vattnet)
+
+Givare: lova_fiskarankan. Rekommenderad nivå 13 till 15. Belöning 2357 XP (45 % av nivå 14).
+
+Lovas man Arvid drunknade när dimman kom. Nu går han upp på stranden om nätterna, och under vattnet ringer kyrkklockor som ingen har ringt på trettio år. Lova vill veta varför han inte får vila.
+
+Steg:
+
+1. Stå på bryggan efter mörkrets inbrott och lyssna. Klockorna hörs ute i dimman.
+2. Följ ljudet till Den sjunkna kyrkan.
+3. Fäll Träsdrottningen. Det är hennes sång som håller de drunknade kvar.
+4. När sången tystnar står en drunknad man kvar vid klockrepet. Han bär Lovas vigselring.
+5. Gå tillbaka till Lova och bestäm vad som händer med Arvid.
+
+Val:
+
+- **Ge ringen till Lova och låt Arvid vila.** Konsekvens: lova_fiskarankan: sörjer i frid, flyttar upp från båten till ett av husen vid bryggan. Föremål: dimvandrarens_handskar. Effekter: item_grant, rumor_add, faction_rep, npc_state, npc_location, town_growth, area_change.
+- **Låt Arvid vakta stranden som förut.** Konsekvens: lova_fiskarankan: sitter kvar i båten och pratar med sin man om nätterna. Extra XP: 786. Effekter: xp_grant, rumor_add, faction_rep, npc_state, area_change, area_change.
+
+Redan gjort: Om Träsdrottningen redan är fälld har klockorna tystnat. Lova säger att Arvid ändå står kvar i kyrkan, och questen startar på steget arvid.
+
+### Korpmoderns sista flykt (korpmoderns_sista_flykt)
+
+Givare: lova_fiskarankan. Rekommenderad nivå 12 till 14. Belöning 1875 XP (40 % av nivå 13).
+
+Korparna på Dimmerstrands tak väntar på sin moder. Korpmodern var en jägerska som bad dimman om vingar när vattnet steg. Hon fick dem, och mer.
+
+Steg:
+
+1. Följ korparna från taken ut mot havet.
+2. Gå över ebbstigarna till Korpholmarna. Stigarna är alltid farbara, vattnet bara skvalpar runt fötterna.
+3. I boet ligger en flätad krans av människohår och idegran. Någon har gråtit här.
+4. Fäll Korpmodern på klipporna.
+5. Ta kransen ur hennes fjädrar och bestäm vad som händer med den.
+
+Val:
+
+- **Bryt kransen. Hon ska aldrig flyga igen.** Konsekvens: lova_fiskarankan: säger att taken är tysta nu, och att hon saknar ljudet. Föremål: korpmoderns_bage. Effekter: item_grant, rumor_add, faction_rep, area_change.
+- **Lägg kransen i havet och lös förbannelsen.** Konsekvens: lova_fiskarankan: matar korparna på bryggan. Extra XP: 703. Effekter: xp_grant, rumor_add, town_growth, area_change, area_change.
+
+Redan gjort: Om Korpmodern redan är fälld ligger kransen kvar i boet. Questen startar på steget kransen när hjälten pratar med Lova eller går in på Korpholmarna.
+
+## Akt 3
+
+### Järnmunkens lås (jarnmunkens_las)
+
+Givare: broder_elias. Rekommenderad nivå 16 till 18. Belöning 3154 XP (45 % av nivå 17).
+
+Bröderna i Järnklostret låste in sig för att inte förvridas. Elias var den ende som öppnade dörren, och smittan gick in. Den starkaste brodern, Härmod, bar en järngördel som botgöring. Nu har järnet vuxit in i köttet.
+
+Steg:
+
+1. Gå till Järnklostret. Porten Elias öppnade står fortfarande på glänt.
+2. Läs brödernas sista böner i kapitelsalen. Den sista sidan handlar om Härmod och gördeln.
+3. Fäll Järnmunken i klostergården.
+4. Han andas fortfarande, och för en stund är han Härmod igen. Bestäm vem som tar farväl.
+
+Val:
+
+- **Avsluta det själv och ta gördeln.** Konsekvens: broder_elias: sörjer, ber vid porten varje natt. Föremål: jarnmunkens_gordel. Effekter: item_grant, rumor_add, faction_rep, npc_state.
+- **Hämta Elias så han får tala med sin bror en sista gång.** Konsekvens: broder_elias: flyttar till klostret, hänger gördeln vid altaret, läker där och säljer välbrygd billigare. Extra XP: 1051. Effekter: xp_grant, rumor_add, faction_rep, npc_state, npc_location, merchant_stock, area_change.
+
+Redan gjort: Om Järnmunken redan är fälld ligger gördeln kvar på hans plats. Steget farvalet blir att bära gördeln till Elias. Valen blir behåll gördeln (samma som avsluta_sjalv) eller ge den till Elias (samma som lat_elias_tala, Elias går själv till klostret för att begrava brodern).
+
+### Martas dotter (martas_dotter)
+
+Givare: marta_torghandlare. Rekommenderad nivå 15 till 17. Belöning 2560 XP (40 % av nivå 16).
+
+Martas dotter Hanna flydde till Kopparberg och gifte sig med gruvans klockare. Inga brev har kommit på tjugo år. Marta frågar varje resenär.
+
+Steg:
+
+1. Leta i gästgiveriet i Kopparberg. Hannas namn är ristat i en bjälke, bredvid klockarens.
+2. Följ klockarens spår ner i Gruvdjupen.
+3. Bland nät och kristaller hänger gruvlagets målade gruppbild. Hanna står längst ut med Martas röda huvudduk. En unik gruvspindel vaktar nätet.
+4. Bredvid nätet ligger klockarens hammare. Han ringde larmklockan tills nätet tog dem båda.
+5. Gå tillbaka till Marta och bestäm vad hon ska få veta.
+
+Val:
+
+- **Ge Marta bilden och berätta sanningen.** Konsekvens: marta_torghandlare: hänger bilden i ståndet, blir tystare en tid och sedan pratsam igen. Effekter: rumor_add, faction_rep, npc_state, town_growth, area_change.
+- **Behåll bilden och säg att Hanna lever längre in i bergen.** Konsekvens: marta_torghandlare: glad, ger rabatt, frågar alla från Kopparberg efter Hanna. Extra XP: 640. Effekter: xp_grant, rumor_add, flag_set, npc_state, merchant_stock.
+
+Redan gjort: Om gruppbilden eller hammaren redan plockats upp hoppar questen till steget tillbaka när hjälten pratar med Marta.
+
+## Akt 4
+
+### Den fjärde stenen (den_fjarde_stenen)
+
+Givare: rask_avfallen. Rekommenderad nivå 22 till 24. Belöning 5515 XP (50 % av nivå 23).
+
+Rask vet att Askans barn letar efter den fjärde stenen. Deras profet vill släcka den en andra gång så att sprickan aldrig kan stängas. Under masken av aska finns en gravvaktare som läste ristarens anteckningar.
+
+Steg:
+
+1. Ta dig ner i Kultens katakomber. Rask säger att vägen går under det brända brunnshuset i Askeborg.
+2. Lyssna vid de tre ritualkamrarna. Profeten predikar om en sten som ska släckas igen.
+3. Fäll Askans profet. När masken brinner av syns gravvaktarnas märke på hans hals.
+4. I hans kåpa ligger en karta ristad i ben. Den visar vägen till sprickans botten.
+5. Gå tillbaka till Rask och bestäm vem som ska bära kartan.
+
+Val:
+
+- **Bär kartan till Gamla Ylva.** Konsekvens: gamla_ylva: blir sökare, pratar bara om den fjärde stenen. rask_avfallen: stannar i ruinen, lättad. Föremål: tystnadens_stilett. Effekter: item_grant, rumor_add, flag_set, faction_rep, npc_state.
+- **Låt Rask behålla kartan och sona sin skuld.** Konsekvens: rask_avfallen: flyttar till lägret vid skogsbrynet, läser kartan högt vid elden. gunnar_jarnhand: muttrar men låter honom vara. Extra XP: 1654. Effekter: xp_grant, rumor_add, flag_set, faction_rep, faction_rep, npc_state, npc_location.
+
+Redan gjort: Om profeten redan är fälld ligger kartan kvar i hans kåpa. Questen startar på steget kartan när hjälten pratar med Rask eller plockar upp kartan.
+
+### Pilgrimens väg (pilgrimens_vag)
+
+Givare: rask_avfallen. Rekommenderad nivå 20 till 22. Belöning 4330 XP (45 % av nivå 21).
+
+En pilgrim gick förbi Raskas ruin och hälsade. Han band böneremsor i de brända träden längs askvägen och gick in genom Askeborgs port. Han kom aldrig ut.
+
+Steg:
+
+1. Följ pilgrimens böneremsor i de brända träden längs askvägen.
+2. Gå in genom Askeborgs port.
+3. Innanför porten ligger pilgrimens stav och en tom ryggsäck. En unik askriddare står vakt.
+4. Bestäm vad som händer med staven: begrav den vid porten eller bär den till altaret i Den brända katedralen.
+
+Val:
+
+- **Begrav staven vid porten.** Konsekvens: Föremål: askvagen (del av Askvandrarens börda). Effekter: item_grant, rumor_add, faction_rep, area_change.
+- **Bär staven till altaret i Den brända katedralen.** Konsekvens: Föremål: pilgrimens_torn (del av Askvandrarens börda). Effekter: item_grant, rumor_add, faction_rep, area_change.
+
+Redan gjort: Om staven redan plockats upp hoppar questen till steget vilan.
+
+## Skisser akt 5
+
 - **Ljuset som håller** (akt 5, Fyrvaktaren Hulda): Varför håller fyren smittan borta? Ljuset är en runsten. Hitta varifrån den kom och skydda fyren när Fadern av smittan sänder sin församling. Belöning: XP 45 % av nivå 26, smittfaderns_kapa.
 - **Tänd stenen** (akt 5, Gamla Ylva): Med ristarens mejsel och sanningen från kryptan går hjälten till sprickans botten. Möt Den slocknade. Val: tänd den fjärde stenen och stäng sprickan, eller ta dess kraft (låser upp magi). Belöning: XP 50 % av nivå 30, magi låses upp, nytt legendariskt föremål planeras.

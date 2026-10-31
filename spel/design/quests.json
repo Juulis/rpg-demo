@@ -1208,55 +1208,941 @@
       "boss": "benkungen_valdemar"
     }
   ],
-  "skisser": [
+  "akt_2": [
     {
       "id": "klockorna_under_vattnet",
       "namn": "Klockorna under vattnet",
       "givare": "lova_fiskarankan",
       "akt": "akt_2",
-      "karna": "Följ klockornas ljud genom dimman till Den sjunkna kyrkan och ta reda på varför Träsdrottningen håller de drunknade kvar. Val: befria Lovas man eller låta honom vakta stranden.",
-      "belöning": "XP 45 % av nivå 14, Korpmoderns båge eller Dimvandrarens handskar"
+      "plats": ["dimmerstrand", "sjunkna_kyrkan"],
+      "rekommenderad_niva": [13, 15],
+      "beskrivning": "Lovas man Arvid drunknade när dimman kom. Nu går han upp på stranden om nätterna, och under vattnet ringer kyrkklockor som ingen har ringt på trettio år. Lova vill veta varför han inte får vila.",
+      "start": {
+        "typ": "någon_av",
+        "val": [
+          {
+            "typ": "prata_med",
+            "npc": "lova_fiskarankan"
+          },
+          {
+            "typ": "boss_killed",
+            "boss": "trasdrottningen"
+          }
+        ]
+      },
+      "steg": [
+        {
+          "id": "klockorna",
+          "text": "Stå på bryggan efter mörkrets inbrott och lyssna. Klockorna hörs ute i dimman.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "dimmerstrand_brygga",
+            "tid": "natt"
+          }
+        },
+        {
+          "id": "kyrkan",
+          "text": "Följ ljudet till Den sjunkna kyrkan.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "sjunkna_kyrkan",
+            "ankare": "klocktornet"
+          }
+        },
+        {
+          "id": "drottningen",
+          "text": "Fäll Träsdrottningen. Det är hennes sång som håller de drunknade kvar.",
+          "trigger": {
+            "typ": "boss_killed",
+            "boss": "trasdrottningen"
+          }
+        },
+        {
+          "id": "arvid",
+          "text": "När sången tystnar står en drunknad man kvar vid klockrepet. Han bär Lovas vigselring.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_lovas_vigselring"
+          },
+          "garanterad_drop": "quest_lovas_vigselring"
+        },
+        {
+          "id": "tillbaka",
+          "text": "Gå tillbaka till Lova och bestäm vad som händer med Arvid.",
+          "trigger": {
+            "typ": "prata_med",
+            "npc": "lova_fiskarankan"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "befria_arvid",
+          "text": "Ge ringen till Lova och låt Arvid vila.",
+          "konsekvens": {
+            "belöning_item": "dimvandrarens_handskar",
+            "rykte": "rykte_arvid_vilar",
+            "npc": {
+              "lova_fiskarankan": "sörjer i frid, flyttar upp från båten till ett av husen vid bryggan"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "dimvandrarens_handskar"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_arvid_vilar"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 10
+            },
+            {
+              "typ": "npc_state",
+              "npc": "lova_fiskarankan",
+              "state": "sorjer_i_frid"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "lova_fiskarankan",
+              "omrade": "dimmerstrand",
+              "plats": "bryggans_hus"
+            },
+            {
+              "typ": "town_growth",
+              "town": "dimmerstrand",
+              "delta": 2
+            },
+            {
+              "typ": "area_change",
+              "region": "dimmerstrand",
+              "andring": "ljus",
+              "ankare": "dimmerstrand_brygga",
+              "value": "dimman lättar vid bryggan"
+            }
+          ]
+        },
+        {
+          "id": "arvid_vaktar",
+          "text": "Låt Arvid vakta stranden som förut.",
+          "konsekvens": {
+            "belöning_xp_bonus": 786,
+            "rykte": "rykte_arvid_vakar",
+            "npc": {
+              "lova_fiskarankan": "sitter kvar i båten och pratar med sin man om nätterna"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "xp_grant",
+              "amount": 786
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_arvid_vakar"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "gravvaktarna",
+              "delta": -5
+            },
+            {
+              "typ": "npc_state",
+              "npc": "lova_fiskarankan",
+              "state": "vaktar_med_arvid"
+            },
+            {
+              "typ": "area_change",
+              "region": "dimvagen",
+              "andring": "spawn_mult",
+              "value": 0.8
+            },
+            {
+              "typ": "area_change",
+              "region": "dimmerstrand",
+              "andring": "miljo",
+              "ankare": "stranden",
+              "value": "en blek gestalt med lykta går längs vattenbrynet om natten"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om Träsdrottningen redan är fälld har klockorna tystnat. Lova säger att Arvid ändå står kvar i kyrkan, och questen startar på steget arvid.",
+      "belöning": {
+        "xp": 2357,
+        "xp_andel": "45 % av nivå 14",
+        "item": "dimvandrarens_handskar eller extra XP"
+      },
+      "repliker": {
+        "start": "Klockorna ringer när han går upp ur vattnet. Ta reda på varför han inte får vila.",
+        "klar_befria": "Då är han tyst nu. Tack. Jag tror jag kan sova i ett hus igen.",
+        "klar_vakta": "Han står där ute med lyktan. Jag vinkar och han vinkar tillbaka."
+      },
+      "rykten": ["rykte_dimmerstrand", "rykte_trasdrottningen_dod", "rykte_arvid_vilar", "rykte_arvid_vakar"],
+      "boss": "trasdrottningen"
     },
     {
       "id": "korpmoderns_sista_flykt",
       "namn": "Korpmoderns sista flykt",
       "givare": "lova_fiskarankan",
       "akt": "akt_2",
-      "karna": "Korparna leder hjälten över ebbstigarna till Korpholmarna där Korpmodern väntar. Val: döda henne eller lösa hennes förbannelse så korparna blir hjältens vakter över Dimmerstrand.",
-      "belöning": "XP 40 % av nivå 13, korpmoderns_bage"
-    },
+      "plats": ["dimmerstrand", "korpholmarna"],
+      "rekommenderad_niva": [12, 14],
+      "beskrivning": "Korparna på Dimmerstrands tak väntar på sin moder. Korpmodern var en jägerska som bad dimman om vingar när vattnet steg. Hon fick dem, och mer.",
+      "start": {
+        "typ": "någon_av",
+        "val": [
+          {
+            "typ": "prata_med",
+            "npc": "lova_fiskarankan"
+          },
+          {
+            "typ": "boss_killed",
+            "boss": "korpmodern"
+          }
+        ]
+      },
+      "steg": [
+        {
+          "id": "korparna",
+          "text": "Följ korparna från taken ut mot havet.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "dimmerstrand_korptaket"
+          }
+        },
+        {
+          "id": "ebbstigen",
+          "text": "Gå över ebbstigarna till Korpholmarna. Stigarna är alltid farbara, vattnet bara skvalpar runt fötterna.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "korpholmarna",
+            "ankare": "ebbstigen"
+          }
+        },
+        {
+          "id": "boet",
+          "text": "I boet ligger en flätad krans av människohår och idegran. Någon har gråtit här.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "korpmoderns_bo"
+          }
+        },
+        {
+          "id": "korpmodern",
+          "text": "Fäll Korpmodern på klipporna.",
+          "trigger": {
+            "typ": "boss_killed",
+            "boss": "korpmodern"
+          }
+        },
+        {
+          "id": "kransen",
+          "text": "Ta kransen ur hennes fjädrar och bestäm vad som händer med den.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_korpkransen"
+          },
+          "garanterad_drop": "quest_korpkransen"
+        }
+      ],
+      "val": [
+        {
+          "id": "bryt_kransen",
+          "text": "Bryt kransen. Hon ska aldrig flyga igen.",
+          "konsekvens": {
+            "belöning_item": "korpmoderns_bage",
+            "rykte": "rykte_korpmodern_dod",
+            "npc": {
+              "lova_fiskarankan": "säger att taken är tysta nu, och att hon saknar ljudet"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "korpmoderns_bage"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_korpmodern_dod"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 5
+            },
+            {
+              "typ": "area_change",
+              "region": "korpholmarna",
+              "andring": "miljo",
+              "value": "tomma bon, ingen fågel hörs"
+            }
+          ]
+        },
+        {
+          "id": "los_forbannelsen",
+          "text": "Lägg kransen i havet och lös förbannelsen.",
+          "konsekvens": {
+            "belöning_xp_bonus": 703,
+            "rykte": "rykte_korparna_vaktar",
+            "npc": {
+              "lova_fiskarankan": "matar korparna på bryggan"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "xp_grant",
+              "amount": 703
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_korparna_vaktar"
+            },
+            {
+              "typ": "town_growth",
+              "town": "dimmerstrand",
+              "delta": 2
+            },
+            {
+              "typ": "area_change",
+              "region": "dimmerstrand",
+              "andring": "npc_narvaro",
+              "value": "korpvakter: korpar på taken skriar när ett monster är inom 15 rutor (bara ljud och ikon, ingen strid)"
+            },
+            {
+              "typ": "area_change",
+              "region": "dimvagen",
+              "andring": "npc_narvaro",
+              "value": "korpvakter"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om Korpmodern redan är fälld ligger kransen kvar i boet. Questen startar på steget kransen när hjälten pratar med Lova eller går in på Korpholmarna.",
+      "belöning": {
+        "xp": 1875,
+        "xp_andel": "40 % av nivå 13",
+        "item": "korpmoderns_bage eller extra XP och korpvakter"
+      },
+      "repliker": {
+        "start": "Korparna tittar på dig. De vill att du följer dem. Gör det inte. Eller gör det.",
+        "klar_bryt": "Taken är tysta. Jag trodde jag skulle bli glad.",
+        "klar_los": "De sitter på bryggan nu. Den stora där, hon tittar på mig som en människa."
+      },
+      "rykten": ["rykte_korpmodern", "rykte_korpmodern_dod", "rykte_korparna_vaktar"],
+      "boss": "korpmodern"
+    }
+  ],
+  "akt_3": [
     {
       "id": "jarnmunkens_las",
       "namn": "Järnmunkens lås",
       "givare": "broder_elias",
       "akt": "akt_3",
-      "karna": "Elias öppnade dörren som skulle hållit bröderna inne. Hitta Järnmunken i Järnklostret och välj: döda honom eller låta Elias tala med honom en sista gång.",
-      "belöning": "XP 45 % av nivå 17, jarnmunkens_gordel"
+      "plats": ["kopparberg", "jarnklostret"],
+      "rekommenderad_niva": [16, 18],
+      "beskrivning": "Bröderna i Järnklostret låste in sig för att inte förvridas. Elias var den ende som öppnade dörren, och smittan gick in. Den starkaste brodern, Härmod, bar en järngördel som botgöring. Nu har järnet vuxit in i köttet.",
+      "start": {
+        "typ": "någon_av",
+        "val": [
+          {
+            "typ": "prata_med",
+            "npc": "broder_elias"
+          },
+          {
+            "typ": "boss_killed",
+            "boss": "jarnmunken"
+          }
+        ]
+      },
+      "steg": [
+        {
+          "id": "porten",
+          "text": "Gå till Järnklostret. Porten Elias öppnade står fortfarande på glänt.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "jarnklostret",
+            "ankare": "klosterporten"
+          }
+        },
+        {
+          "id": "bonboken",
+          "text": "Läs brödernas sista böner i kapitelsalen. Den sista sidan handlar om Härmod och gördeln.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "jarnklostret_bonbok"
+          }
+        },
+        {
+          "id": "jarnmunken",
+          "text": "Fäll Järnmunken i klostergården.",
+          "trigger": {
+            "typ": "boss_killed",
+            "boss": "jarnmunken"
+          }
+        },
+        {
+          "id": "farvalet",
+          "text": "Han andas fortfarande, och för en stund är han Härmod igen. Bestäm vem som tar farväl.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "jarnmunkens_lager"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "avsluta_sjalv",
+          "text": "Avsluta det själv och ta gördeln.",
+          "konsekvens": {
+            "belöning_item": "jarnmunkens_gordel",
+            "rykte": "rykte_jarnmunken_dod",
+            "npc": {
+              "broder_elias": "sörjer, ber vid porten varje natt"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "jarnmunkens_gordel"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_jarnmunken_dod"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 5
+            },
+            {
+              "typ": "npc_state",
+              "npc": "broder_elias",
+              "state": "sorjer"
+            }
+          ]
+        },
+        {
+          "id": "lat_elias_tala",
+          "text": "Hämta Elias så han får tala med sin bror en sista gång.",
+          "konsekvens": {
+            "belöning_xp_bonus": 1051,
+            "rykte": "rykte_elias_forlaten",
+            "npc": {
+              "broder_elias": "flyttar till klostret, hänger gördeln vid altaret, läker där och säljer välbrygd billigare"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "xp_grant",
+              "amount": 1051
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_elias_forlaten"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 10
+            },
+            {
+              "typ": "npc_state",
+              "npc": "broder_elias",
+              "state": "forlaten"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "broder_elias",
+              "omrade": "jarnklostret",
+              "plats": "kapitelsalen"
+            },
+            {
+              "typ": "merchant_stock",
+              "npc": "broder_elias",
+              "add": ["varlbrygd"],
+              "remove": [],
+              "prisfaktor_mult": 0.9
+            },
+            {
+              "typ": "area_change",
+              "region": "jarnklostret",
+              "andring": "ljus",
+              "ankare": "kapitelsalen",
+              "value": "ljus vid altaret, gördeln hänger på en spik"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om Järnmunken redan är fälld ligger gördeln kvar på hans plats. Steget farvalet blir att bära gördeln till Elias. Valen blir behåll gördeln (samma som avsluta_sjalv) eller ge den till Elias (samma som lat_elias_tala, Elias går själv till klostret för att begrava brodern).",
+      "belöning": {
+        "xp": 3154,
+        "xp_andel": "45 % av nivå 17",
+        "item": "jarnmunkens_gordel eller extra XP"
+      },
+      "repliker": {
+        "start": "Jag öppnade dörren. Jag. Gå dit och se vad jag gjorde, och gör det jag inte vågar.",
+        "klar_sjalv": "Bär gördeln väl. Han bar den tyngre än du någonsin kommer.",
+        "klar_elias": "Han sa mitt namn. Efter allt sa han mitt namn."
+      },
+      "rykten": ["rykte_jarnmunkens_gordel", "rykte_jarnmunken_dod", "rykte_elias_forlaten"],
+      "boss": "jarnmunken"
     },
     {
       "id": "martas_dotter",
       "namn": "Martas dotter",
       "givare": "marta_torghandlare",
       "akt": "akt_3",
-      "karna": "Martas dotter flydde till Kopparberg. Spåren leder till gruvdjupen och en gruppbild bland nät och kristaller. Val om vad Marta får veta.",
-      "belöning": "XP 40 % av nivå 16, klockarens_hammare"
-    },
+      "plats": ["gamla_byn", "kopparberg", "gruvdjupen"],
+      "rekommenderad_niva": [15, 17],
+      "beskrivning": "Martas dotter Hanna flydde till Kopparberg och gifte sig med gruvans klockare. Inga brev har kommit på tjugo år. Marta frågar varje resenär.",
+      "start": {
+        "typ": "prata_med",
+        "npc": "marta_torghandlare"
+      },
+      "steg": [
+        {
+          "id": "gastgiveriet",
+          "text": "Leta i gästgiveriet i Kopparberg. Hannas namn är ristat i en bjälke, bredvid klockarens.",
+          "trigger": {
+            "typ": "inspektera",
+            "ankare": "kopparberg_gastgiveri"
+          }
+        },
+        {
+          "id": "gruvdjupen",
+          "text": "Följ klockarens spår ner i Gruvdjupen.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "gruvdjupen",
+            "ankare": "kristallgrottan"
+          }
+        },
+        {
+          "id": "bilden",
+          "text": "Bland nät och kristaller hänger gruvlagets målade gruppbild. Hanna står längst ut med Martas röda huvudduk. En unik gruvspindel vaktar nätet.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_gruppbilden"
+          },
+          "garanterad_drop": "quest_gruppbilden"
+        },
+        {
+          "id": "hammaren",
+          "text": "Bredvid nätet ligger klockarens hammare. Han ringde larmklockan tills nätet tog dem båda.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "klockarens_hammare"
+          },
+          "garanterad_drop": "klockarens_hammare"
+        },
+        {
+          "id": "tillbaka",
+          "text": "Gå tillbaka till Marta och bestäm vad hon ska få veta.",
+          "trigger": {
+            "typ": "prata_med",
+            "npc": "marta_torghandlare"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "beratta_sanningen",
+          "text": "Ge Marta bilden och berätta sanningen.",
+          "konsekvens": {
+            "rykte": "rykte_hanna_vilar",
+            "npc": {
+              "marta_torghandlare": "hänger bilden i ståndet, blir tystare en tid och sedan pratsam igen"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_hanna_vilar"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 10
+            },
+            {
+              "typ": "npc_state",
+              "npc": "marta_torghandlare",
+              "state": "vet"
+            },
+            {
+              "typ": "town_growth",
+              "town": "gamla_byn",
+              "delta": 1
+            },
+            {
+              "typ": "area_change",
+              "region": "gamla_byn",
+              "andring": "miljo",
+              "ankare": "torget",
+              "value": "gruppbilden hänger i Martas stånd"
+            }
+          ]
+        },
+        {
+          "id": "ge_hopp",
+          "text": "Behåll bilden och säg att Hanna lever längre in i bergen.",
+          "konsekvens": {
+            "belöning_xp_bonus": 640,
+            "rykte": "rykte_marta_hoppas",
+            "npc": {
+              "marta_torghandlare": "glad, ger rabatt, frågar alla från Kopparberg efter Hanna"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "xp_grant",
+              "amount": 640
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_marta_hoppas"
+            },
+            {
+              "typ": "flag_set",
+              "flag": "marta_hoppas",
+              "value": true
+            },
+            {
+              "typ": "npc_state",
+              "npc": "marta_torghandlare",
+              "state": "hoppas"
+            },
+            {
+              "typ": "merchant_stock",
+              "npc": "marta_torghandlare",
+              "add": [],
+              "remove": [],
+              "prisfaktor_mult": 0.9
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om gruppbilden eller hammaren redan plockats upp hoppar questen till steget tillbaka när hjälten pratar med Marta.",
+      "belöning": {
+        "xp": 2560,
+        "xp_andel": "40 % av nivå 16",
+        "item": "klockarens_hammare (garanterad i gruvdjupen)"
+      },
+      "repliker": {
+        "start": "Hanna, min Hanna. Hon skrev att klockaren var snäll. Sen kom inga fler brev.",
+        "klar_sanning": "Hon ser glad ut på bilden. Det får räcka.",
+        "klar_hopp": "Längre in i bergen! Jag visste det. Hon var alltid envis."
+      },
+      "rykten": ["rykte_hanna_vilar", "rykte_marta_hoppas"]
+    }
+  ],
+  "akt_4": [
     {
       "id": "den_fjarde_stenen",
       "namn": "Den fjärde stenen",
       "givare": "rask_avfallen",
       "akt": "akt_4",
-      "karna": "Rask vet att kulten letar efter den fjärde stenen. Smyg genom Kultens katakomber, avslöja Askans profet och hitta kartan till sprickans botten.",
-      "belöning": "XP 50 % av nivå 23, tystnadens_stilett"
+      "plats": ["askfalten", "askeborg", "kultens_katakomber"],
+      "rekommenderad_niva": [22, 24],
+      "beskrivning": "Rask vet att Askans barn letar efter den fjärde stenen. Deras profet vill släcka den en andra gång så att sprickan aldrig kan stängas. Under masken av aska finns en gravvaktare som läste ristarens anteckningar.",
+      "start": {
+        "typ": "någon_av",
+        "val": [
+          {
+            "typ": "prata_med",
+            "npc": "rask_avfallen"
+          },
+          {
+            "typ": "boss_killed",
+            "boss": "askans_profet"
+          }
+        ]
+      },
+      "steg": [
+        {
+          "id": "brunnshuset",
+          "text": "Ta dig ner i Kultens katakomber. Rask säger att vägen går under det brända brunnshuset i Askeborg.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "kultens_katakomber",
+            "ankare": "brunnshuset"
+          }
+        },
+        {
+          "id": "ritualerna",
+          "text": "Lyssna vid de tre ritualkamrarna. Profeten predikar om en sten som ska släckas igen.",
+          "trigger": {
+            "typ": "inspektera_alla",
+            "ankare": ["ritualkammare_1", "ritualkammare_2", "ritualkammare_3"]
+          }
+        },
+        {
+          "id": "profeten",
+          "text": "Fäll Askans profet. När masken brinner av syns gravvaktarnas märke på hans hals.",
+          "trigger": {
+            "typ": "boss_killed",
+            "boss": "askans_profet"
+          }
+        },
+        {
+          "id": "kartan",
+          "text": "I hans kåpa ligger en karta ristad i ben. Den visar vägen till sprickans botten.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_sprickans_karta"
+          },
+          "garanterad_drop": "quest_sprickans_karta"
+        },
+        {
+          "id": "tillbaka",
+          "text": "Gå tillbaka till Rask och bestäm vem som ska bära kartan.",
+          "trigger": {
+            "typ": "prata_med",
+            "npc": "rask_avfallen"
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "karta_till_ylva",
+          "text": "Bär kartan till Gamla Ylva.",
+          "konsekvens": {
+            "belöning_item": "tystnadens_stilett",
+            "rykte": "rykte_fjarde_stenen",
+            "npc": {
+              "gamla_ylva": "blir sökare, pratar bara om den fjärde stenen",
+              "rask_avfallen": "stannar i ruinen, lättad"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "tystnadens_stilett"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_fjarde_stenen"
+            },
+            {
+              "typ": "flag_set",
+              "flag": "sprickans_karta",
+              "value": "ylva"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "askans_barn",
+              "delta": -15
+            },
+            {
+              "typ": "npc_state",
+              "npc": "gamla_ylva",
+              "state": "sokare"
+            }
+          ]
+        },
+        {
+          "id": "rask_behaller",
+          "text": "Låt Rask behålla kartan och sona sin skuld.",
+          "konsekvens": {
+            "belöning_xp_bonus": 1654,
+            "rykte": "rykte_rask_angrar",
+            "npc": {
+              "rask_avfallen": "flyttar till lägret vid skogsbrynet, läser kartan högt vid elden",
+              "gunnar_jarnhand": "muttrar men låter honom vara"
+            }
+          },
+          "consequences": [
+            {
+              "typ": "xp_grant",
+              "amount": 1654
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_rask_angrar"
+            },
+            {
+              "typ": "flag_set",
+              "flag": "sprickans_karta",
+              "value": "rask"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 5
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "askans_barn",
+              "delta": -10
+            },
+            {
+              "typ": "npc_state",
+              "npc": "rask_avfallen",
+              "state": "angrande"
+            },
+            {
+              "typ": "npc_location",
+              "npc": "rask_avfallen",
+              "omrade": "startlagret",
+              "plats": "lagerelden"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om profeten redan är fälld ligger kartan kvar i hans kåpa. Questen startar på steget kartan när hjälten pratar med Rask eller plockar upp kartan.",
+      "belöning": {
+        "xp": 5515,
+        "xp_andel": "50 % av nivå 23",
+        "item": "tystnadens_stilett eller extra XP"
+      },
+      "repliker": {
+        "start": "De letar efter den fjärde stenen. Inte för att tända den. För att se till att den aldrig tänds.",
+        "klar_ylva": "Den gamla kvinnan i lägret? Bra. Hon vet vad hon ska göra med den.",
+        "klar_rask": "Jag ska bära den. Det är det minsta jag kan göra."
+      },
+      "rykten": ["rykte_fjarde_stenen", "rykte_profeten_dod", "rykte_rask_angrar"],
+      "boss": "askans_profet"
     },
     {
       "id": "pilgrimens_vag",
       "namn": "Pilgrimens väg",
       "givare": "rask_avfallen",
       "akt": "akt_4",
-      "karna": "Följ pilgrimens bönerader i träden längs askvägen till Askeborgs port och vidare in. Val: begrava hans stav eller bära den till Den brända katedralen.",
-      "belöning": "XP 45 % av nivå 21, del av Askvandrarens börda"
-    },
+      "plats": ["askfalten", "askeborg", "katedralen"],
+      "rekommenderad_niva": [20, 22],
+      "beskrivning": "En pilgrim gick förbi Raskas ruin och hälsade. Han band böneremsor i de brända träden längs askvägen och gick in genom Askeborgs port. Han kom aldrig ut.",
+      "start": {
+        "typ": "prata_med",
+        "npc": "rask_avfallen"
+      },
+      "steg": [
+        {
+          "id": "boneremsorna",
+          "text": "Följ pilgrimens böneremsor i de brända träden längs askvägen.",
+          "trigger": {
+            "typ": "inspektera_alla",
+            "ankare": ["boneremsa_1", "boneremsa_2", "boneremsa_3"]
+          }
+        },
+        {
+          "id": "porten",
+          "text": "Gå in genom Askeborgs port.",
+          "trigger": {
+            "typ": "gå_in_i",
+            "region": "askeborg",
+            "ankare": "askeborgs_port"
+          }
+        },
+        {
+          "id": "staven",
+          "text": "Innanför porten ligger pilgrimens stav och en tom ryggsäck. En unik askriddare står vakt.",
+          "trigger": {
+            "typ": "plocka_upp",
+            "item": "quest_pilgrimens_stav"
+          },
+          "garanterad_drop": "quest_pilgrimens_stav"
+        },
+        {
+          "id": "vilan",
+          "text": "Bestäm vad som händer med staven: begrav den vid porten eller bär den till altaret i Den brända katedralen.",
+          "trigger": {
+            "typ": "någon_av",
+            "val": [
+              {
+                "typ": "inspektera",
+                "ankare": "pilgrimens_grav"
+              },
+              {
+                "typ": "inspektera",
+                "ankare": "katedralens_altare"
+              }
+            ]
+          }
+        }
+      ],
+      "val": [
+        {
+          "id": "begrav_staven",
+          "text": "Begrav staven vid porten.",
+          "valt_genom": "pilgrimens_grav",
+          "konsekvens": {
+            "belöning_item": "askvagen (del av Askvandrarens börda)",
+            "rykte": "rykte_pilgrimen_vilar"
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "askvagen"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_pilgrimen_vilar"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "de_kvarvarande",
+              "delta": 5
+            },
+            {
+              "typ": "area_change",
+              "region": "askeborg",
+              "andring": "miljo",
+              "ankare": "askeborgs_port",
+              "value": "en liten grav med staven, ett svagt ljus om natten"
+            }
+          ]
+        },
+        {
+          "id": "bar_staven",
+          "text": "Bär staven till altaret i Den brända katedralen.",
+          "valt_genom": "katedralens_altare",
+          "konsekvens": {
+            "belöning_item": "pilgrimens_torn (del av Askvandrarens börda)",
+            "rykte": "rykte_pilgrimen_altaret"
+          },
+          "consequences": [
+            {
+              "typ": "item_grant",
+              "item": "pilgrimens_torn"
+            },
+            {
+              "typ": "rumor_add",
+              "rykte": "rykte_pilgrimen_altaret"
+            },
+            {
+              "typ": "faction_rep",
+              "faktion": "askans_barn",
+              "delta": -10
+            },
+            {
+              "typ": "area_change",
+              "region": "katedralen",
+              "andring": "ljus",
+              "ankare": "katedralens_altare",
+              "value": "staven glöder svagt vid altaret"
+            }
+          ]
+        }
+      ],
+      "redan_gjort": "Om staven redan plockats upp hoppar questen till steget vilan.",
+      "belöning": {
+        "xp": 4330,
+        "xp_andel": "45 % av nivå 21",
+        "item": "en del av Askvandrarens börda (askvagen eller pilgrimens_torn)"
+      },
+      "repliker": {
+        "start": "Han hälsade på mig. Ingen hälsar i Askeborg. Ta reda på var han tog vägen.",
+        "klar_begrav": "Vid porten. Ja. Där han såg staden sista gången.",
+        "klar_bar": "Hela vägen till altaret? Då gick han längre än någon av oss."
+      },
+      "rykten": ["rykte_pilgrimen_vilar", "rykte_pilgrimen_altaret"]
+    }
+  ],
+  "skisser": [
     {
       "id": "ljuset_som_haller",
       "namn": "Ljuset som håller",
