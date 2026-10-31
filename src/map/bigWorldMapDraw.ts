@@ -3,7 +3,7 @@ import { chunkDistanceFromStart, ringAtChunkDistance } from '../world/bigWorld/r
 import { getBigWorldCatalog } from '../world/bigWorld/worldGenerator';
 import type { Projection } from './MapPainter';
 
-const RING_FILL: readonly string[] = ['#243028', '#2a3828', '#303820', '#383820', '#403018', '#482818', '#502020', '#581818'];
+const RING_FILL: readonly string[] = ['#3a5040', '#425848', '#4a6048', '#526850', '#5a7050', '#627850', '#6a8050', '#728850'];
 
 function ringColor(ring: number): string {
   const idx = Math.min(ring, RING_FILL.length - 1);
@@ -76,7 +76,10 @@ export function drawBigWorldMapLayer(
     if (pts.length < 2) continue;
     const first = pts[0];
     if (!first) continue;
-    if (opts.isRevealed && !opts.isRevealed(first.x, first.y)) continue;
+    const firstReg = catalog.regionById.get(road.strackning[0] ?? '');
+    const revealWx = firstReg ? chunkMinWorld(firstReg.chunk[0], firstReg.chunk[1]).x : first.x;
+    const revealWy = firstReg ? chunkMinWorld(firstReg.chunk[0], firstReg.chunk[1]).y : first.y;
+    if (opts.isRevealed && !opts.isRevealed(revealWx, revealWy)) continue;
     c.beginPath();
     c.moveTo(X(first.x), Y(first.y));
     for (let i = 1; i < pts.length; i++) {

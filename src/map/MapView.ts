@@ -8,6 +8,7 @@ import type { MapPainter } from './MapPainter';
 export class MapView {
   readonly canvas: HTMLCanvasElement;
   private lastDrawKey = '';
+  private lastZone = '';
 
   constructor(
     private readonly painter: MapPainter,
@@ -29,11 +30,18 @@ export class MapView {
 
   setVisible(v: boolean): void {
     this.canvas.style.display = v ? 'block' : 'none';
+    if (v) this.lastDrawKey = '';
   }
 
   draw(z: ZoneView, h: Readonly<HeroState>, time: number, clockTime = 0): void {
+    if (z.name !== this.lastZone) {
+      this.lastZone = z.name;
+      this.lastDrawKey = '';
+    }
     if (z.bigWorldStreaming) {
-      const key = `${Math.round(h.pos.x / 16)}|${Math.round(h.pos.y / 16)}|${this.painter.fogDirty()}`;
+      const W = this.canvas.clientWidth;
+      const H = this.canvas.clientHeight;
+      const key = `${z.name}|${Math.round(h.pos.x / 16)}|${Math.round(h.pos.y / 16)}|${W}x${H}|${this.painter.fogDirty()}`;
       if (key === this.lastDrawKey) return;
       this.lastDrawKey = key;
     }
@@ -53,8 +61,15 @@ export class MapView {
       mini: false,
       fogOriginX: anchor.x,
       fogOriginY: anchor.y,
+      clipX0: x0,
+      clipY0: y0,
+      clipX1: x1,
+      clipY1: y1,
     };
     c.save();
+    c.beginPath();
+    c.rect(pad, pad, W - pad * 2, H - pad * 2 - 40);
+    c.clip();
     this.painter.world(c, z, p, mapFogColor(clockTime, false), h);
     const g = this.goals.goal(z, h.pos);
     if (g) this.painter.goalRing(c, g, p, 0.5 + 0.5 * Math.sin(time / 250));

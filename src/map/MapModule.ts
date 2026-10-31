@@ -126,7 +126,14 @@ export class MapModule implements GameModule {
     if (!id) return;
     for (const [zone, cells] of this.fog.takeDirty()) {
       if (!cells) continue;
-      this.fogRepo.save(id, zone, cells);
+      void this.fogRepo.save(id, zone, cells).then((ok) => {
+        if (ok) return;
+        if (this.fog.storageQuotaExceeded) {
+          console.warn('[MapModule] Kartdimma: lagringsutrymmet fullt — nya avslöjanden sparas inte.');
+        } else if (this.fogRepo.lastError) {
+          console.warn('[MapModule] Kartdimma kunde inte sparas:', this.fogRepo.lastError);
+        }
+      });
     }
   }
 

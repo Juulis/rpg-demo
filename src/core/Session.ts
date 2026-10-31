@@ -9,8 +9,15 @@ export interface Session {
   seed: number;
   worldSeed: number;
   killed: Set<string>;
+  /** Stor-värld chunk-index efter koordinat-migrering (sparas i game.bwCoordEpoch). */
+  bwCoordEpoch?: number;
 }
 
-export function createSession(seed: number = Rng.newSeed(), killed: Iterable<string> = [], worldSeed: number = seed): Session {
-  return { seed, worldSeed, killed: new Set(killed) };
+export function createSession(
+  seed: number = Rng.newSeed(),
+  killed: Iterable<string> = [],
+  worldSeed: number = seed,
+  bwCoordEpoch?: number,
+): Session {
+  return { seed, worldSeed, killed: new Set(killed), ...(typeof bwCoordEpoch === 'number' ? { bwCoordEpoch } : {}) };
 }

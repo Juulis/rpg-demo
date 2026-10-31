@@ -15,6 +15,10 @@ export interface Projection {
   /** Fog-rutnät centrerat på denna världsposition (stor skog). */
   fogOriginX?: number;
   fogOriginY?: number;
+  clipX0?: number;
+  clipY0?: number;
+  clipX1?: number;
+  clipY1?: number;
 }
 
 const FONT = '13px Cinzel, Georgia, serif';

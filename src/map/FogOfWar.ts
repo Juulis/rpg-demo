@@ -42,6 +42,8 @@ const SAVE_V3 = 3;
 const SECTOR = 32;
 const CHUNK_FOG_BYTES = 512;
 const MAX_FOG_SAVE_BYTES = 512 * 1024;
+/** In-memory chunk-bitmasks kept around the hero (rest stays on disk until re-reveal). */
+const CHUNK_FOG_MEMORY_RADIUS = 12;
 
 function fogRadius(): number {
   return fogRevealRadiusWorld();
@@ -160,10 +162,8 @@ export class FogOfWar {
       const view = new DataView(saved.buffer, saved.byteOffset, saved.byteLength);
       let o = 1;
       while (o + 4 <= saved.length) {
-        let sx = view.getInt16(o, true);
-        let sy = view.getInt16(o + 2, true);
-        if (sx > 400 || sx < -400) sx = view.getUint16(o) > 32767 ? view.getUint16(o) - 65536 : view.getUint16(o);
-        if (sy > 400 || sy < -400) sy = view.getUint16(o + 2) > 32767 ? view.getUint16(o + 2) - 65536 : view.getUint16(o + 2);
+        const sx = view.getInt16(o, true);
+        const sy = view.getInt16(o + 2, true);
         o += 4;
         if (o + SECTOR * SECTOR > saved.length) break;
         for (let ly = 0; ly < SECTOR; ly++) {
@@ -211,8 +211,31 @@ export class FogOfWar {
         if (this.setChunkTile(zone, cx, cy, ti, tj, true)) changed = true;
       }
     }
-    if (changed) this.dirty = true;
+    if (changed) {
+      this.dirty = true;
+      this.trimChunkFogMemory(zone, wx, wy);
+    }
     return changed;
+  }
+
+  /** Släpper avslöjade chunk-bitmasks långt från hjälten (minskar heap vid vandring). */
+  trimChunkFogMemory(zone: string, wx: number, wy: number, radius = CHUNK_FOG_MEMORY_RADIUS): void {
+    const { cx: hcx, cy: hcy } = worldToChunk(wx, wy);
+    const prefix = `${zone}|`;
+    for (const key of this.chunkFog.keys()) {
+      if (!key.startsWith(prefix)) continue;
+      const rest = key.slice(prefix.length);
+      const comma = rest.indexOf(',');
+      if (comma < 0) continue;
+      const cx = Number(rest.slice(0, comma));
+      const cy = Number(rest.slice(comma + 1));
+      if (Number.isNaN(cx) || Number.isNaN(cy)) continue;
+      if (Math.max(Math.abs(cx - hcx), Math.abs(cy - hcy)) > radius) this.chunkFog.delete(key);
+    }
+  }
+
+  chunkFogEntries(): number {
+    return this.chunkFog.size;
   }
 
   isWorldRevealed(zone: string, wx: number, wy: number): boolean {

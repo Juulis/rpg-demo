@@ -1,6 +1,7 @@
 import type { FoundEntry } from '../core/SaveBackend';
 import type { Equipment, ItemInstance } from '../core/GameContext';
 import type { WorldState } from '../world/worldStateTypes';
+import { BIG_WORLD_COORD_EPOCH } from '../world/bigWorld/saveCoordMigrate';
 
 export const SAVE_VERSION = 3;
 export const MAX_HEROES = 8;
@@ -80,4 +81,5 @@ export const newGameRecord = (seed: number): GameRecord => ({
   stage: 0,
   runes: 0,
   city: 'besatt',
+  bwCoordEpoch: BIG_WORLD_COORD_EPOCH,
 });

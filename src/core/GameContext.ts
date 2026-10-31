@@ -107,6 +107,8 @@ export interface HeroSave {
     city: string;
     /** Spelklocka i sekunder (#47). */
     worldTime?: number;
+    /** Stor-värld koordinat-epoch (offset 192); saknas → migreras vid load. */
+    bwCoordEpoch?: number;
   } | null;
   /** Per-hjälte fynd (lorebok); sätts av SaveBackend vid load, inte av Game.getSnapshot(). */
   foundItems?: Record<string, FoundEntry>;

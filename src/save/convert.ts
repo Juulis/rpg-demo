@@ -21,6 +21,7 @@ export function toHeroSave(d: SaveFile): HeroSave {
           stage: g.stage,
           runes: g.runes,
           city: g.city,
+          ...(typeof g.bwCoordEpoch === 'number' ? { bwCoordEpoch: g.bwCoordEpoch } : {}),
         }
       : null,
     ...(d.foundItems ? { foundItems: d.foundItems } : {}),
@@ -57,6 +58,7 @@ export function fromHeroSave(s: HeroSave, foundItems?: Record<string, FoundEntry
           stage: g.stage,
           runes: g.runes,
           city: g.city,
+          ...(typeof g.bwCoordEpoch === 'number' ? { bwCoordEpoch: g.bwCoordEpoch } : {}),
         }
       : null,
   };

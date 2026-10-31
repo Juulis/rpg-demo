@@ -2,6 +2,7 @@ import { EventBus } from './EventBus';
 import type { GameEvents } from './events';
 import type { GameContext, GameModule, HeroSave, HeroState, Vec2, ZoneView } from './GameContext';
 import { createSession } from './Session';
+import { BIG_WORLD_COORD_EPOCH } from '../world/bigWorld/saveCoordMigrate';
 import { Rng } from './Rng';
 import type { GameAuthority } from './GameAuthority';
 import type { FoundRegistry, SaveBackend } from './SaveBackend';
@@ -346,9 +347,10 @@ export class Game {
     h.zone = g?.zone ?? 'forest';
     h.resumePos = g?.pos ? { ...g.pos } : null;
     h.playing = false;
-    const s = g ? createSession(g.seed, g.killed, g.worldSeed ?? g.seed) : createSession();
+    const s = g ? createSession(g.seed, g.killed, g.worldSeed ?? g.seed, g.bwCoordEpoch ?? BIG_WORLD_COORD_EPOCH) : createSession();
     this.ctx.session.seed = s.seed;
     this.ctx.session.worldSeed = s.worldSeed;
+    this.ctx.session.bwCoordEpoch = s.bwCoordEpoch;
     this.ctx.session.killed.clear();
     for (const id of s.killed) this.ctx.session.killed.add(id);
     if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
@@ -388,6 +390,7 @@ export class Game {
         runes: h.runes,
         city: h.city,
         worldTime: this.gameClock.timeSeconds,
+        bwCoordEpoch: this.ctx.session.bwCoordEpoch ?? BIG_WORLD_COORD_EPOCH,
       },
       worldState: this.worldState.snapshot(),
     };
