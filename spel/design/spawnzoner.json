@@ -268,7 +268,8 @@
             "weight": 8
           }
         ]
-      }
+      },
+      "fotavtryck": "Ligger runt världens origo = mitten av chunk [1, 1] (Rungläntan) i storvärlden, se varld_stor.json meta.startskogen_fotavtryck. Lägret med centrum-NPC:erna ligger i startlagret, chunk [0, 0]."
     },
     {
       "id": "gamla_byn",

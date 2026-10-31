@@ -39,7 +39,8 @@
         "brandskelett",
         "myrlik",
         "myrhund",
-        "klockdrunknad"
+        "klockdrunknad",
+        "drunknad_vakt"
       ],
       "boss": "benkungen_valdemar"
     },
@@ -61,7 +62,17 @@
       "weak": ["hugg"],
       "resist": [],
       "boss": "grabjornen_ulvhild",
-      "subtypes": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn", "likatare_varg", "bergsulv"]
+      "subtypes": [
+        "skogsvarg",
+        "vargbest",
+        "taggsvin",
+        "skuggvarg",
+        "gravargsledare",
+        "ruttbjorn",
+        "likatare_varg",
+        "bergsulv",
+        "fjallbjorn"
+      ]
     },
     {
       "id": "gastar",
@@ -71,7 +82,7 @@
       "weak": ["hugg"],
       "resist": ["kross", "stick"],
       "boss": "trasdrottningen",
-      "subtypes": ["dimgast", "klagokvinna", "trasknacken", "gravgast", "fjallvatte", "lyktgast", "havsgast"],
+      "subtypes": ["dimgast", "klagokvinna", "trasknacken", "gravgast", "fjallvatte", "lyktgast", "havsgast", "irrbloss", "dodsljus"],
       "underbossar": ["korpmodern"]
     },
     {
@@ -90,7 +101,10 @@
         "smittad_bybo",
         "forvriden_gruvarbetare",
         "askkultist",
-        "sprickvasen"
+        "sprickvasen",
+        "jarnbroder",
+        "sprickpilgrim",
+        "vriden_jatte"
       ],
       "underbossar": ["jarnmunken", "askans_profet"]
     },
@@ -105,7 +119,7 @@
       "subtypes": ["gruvspindel", "syrabagge", "kitinvakt", "skogsspindel", "trask_igel"]
     }
   ],
-  "monsters_note": "Alla monster av samma typ har EXAKT samma stats. Ingen slumpvariation, ingen nivåskalning. Stats är beräknade en gång med formlerna i monster_niva.json (designverktyg). Skada är ett fast värde per träff. attacks_per_s = 1 / attack_cd.",
+  "monsters_note": "Alla monster av samma typ har EXAKT samma stats. Ingen slumpvariation, ingen nivåskalning. Stats är beräknade en gång med formlerna i monster_niva.json (designverktyg). Skada är ett fast värde per träff. attacks_per_s = 1 / attack_cd. zones genereras ur spawnzoner.json (områden), varld_stor.json (regioners undertyper och boss) och biompoolerna (mellanmark_<biom> när undertypen ligger i något ringband 1 till 7), se spel/design/verktyg/spelregler.py zoner(). Fältet styr inte spawn.",
   "monsters": [
     {
       "id": "skogsvarg",
@@ -145,7 +159,7 @@
       "aggro_range": 10,
       "behavior": "Större, ärrad varg. Jagar i par, biter och river, flyr aldrig.",
       "weapon_type": null,
-      "zones": ["startskogen"],
+      "zones": ["startskogen", "vargstigen", "kolarmon", "mellanmark_skog"],
       "boss": false,
       "design_source": {
         "from": "skogsvarg",
@@ -174,7 +188,7 @@
       "aggro_range": 10,
       "behavior": "Laddar rakt fram i fart 7 efter 1 s varning, kan undvikas.",
       "weapon_type": null,
-      "zones": ["vargaby"],
+      "zones": ["vargaby", "startskogen", "vargstigen", "kolarmon", "mellanmark_skog", "mellanmark_fjall"],
       "boss": false,
       "design_source": {
         "from": "taggsvin",
@@ -196,7 +210,7 @@
       "aggro_range": 12,
       "behavior": "Gråvarg i flock om 2 till 3. Flankerar och biter i tur och ordning.",
       "weapon_type": null,
-      "zones": ["vargaby"],
+      "zones": ["vargaby", "startskogen", "vargstigen", "kolarmon", "mellanmark_skog", "mellanmark_fjall"],
       "boss": false,
       "design_source": {
         "from": "skuggvarg",
@@ -218,7 +232,7 @@
       "aggro_range": 12,
       "behavior": "Leder gråvargarna. Ylar var 12:e s: närliggande vargar får +20 % fart i 5 s.",
       "weapon_type": null,
-      "zones": ["vargaby"],
+      "zones": ["vargaby", "vargstigen", "ulvhilds_ide", "mellanmark_skog"],
       "boss": false,
       "design_source": {
         "from": "skuggvarg",
@@ -246,7 +260,7 @@
       "aggro_range": 8,
       "behavior": "Långsam, slår omkull, rasar under 30 % HP.",
       "weapon_type": null,
-      "zones": ["vargaby"],
+      "zones": ["vargaby", "ulvhilds_ide", "mellanmark_skog", "mellanmark_fjall"],
       "boss": false,
       "design_source": {
         "from": "ruttbjorn",
@@ -272,7 +286,8 @@
       "boss": true,
       "design_source": {
         "from": "grabjornen_ulvhild",
-        "ref_level": 3
+        "ref_level": 3,
+        "xp_bas": 2425
       }
     },
     {
@@ -290,7 +305,7 @@
       "aggro_range": 12,
       "behavior": "Flock. Cirklar runt spelaren och biter i tur och ordning. Flyr kort under 30 % HP.",
       "weapon_type": null,
-      "zones": ["gamla_byn"],
+      "zones": ["gamla_byn", "gravasen", "mellanmark_skog"],
       "boss": false,
       "design_source": {
         "from": "skelett_hund",
@@ -313,7 +328,7 @@
       "aggro_range": 10,
       "behavior": "Samma som skogsmonstret: vandrar, jagar inom 10, närstrid.",
       "weapon_type": "svard",
-      "zones": ["gamla_byn"],
+      "zones": ["gamla_byn", "gravasen", "mellanmark_skog", "mellanmark_fjall", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "skelett_krigare",
@@ -335,7 +350,7 @@
       "aggro_range": 14,
       "behavior": "Håller avstånd 6 till 10, backar om spelaren är närmare än 5, skjuter pil (projektil fart 14).",
       "weapon_type": "bage",
-      "zones": ["gamla_byn"],
+      "zones": ["gamla_byn", "brandkanten", "mellanmark_skog", "mellanmark_fjall", "mellanmark_kust", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "skelett_bagskytt",
@@ -357,7 +372,7 @@
       "aggro_range": 12,
       "behavior": "Stödjer: återupplivar ett dött skelett inom 8 var 10:e sekund (max 2 gånger), annars kastar röd eldboll. Teleporterar 5 bort om träffad i närstrid (cd 6).",
       "weapon_type": "dolk",
-      "zones": ["gamla_byn"],
+      "zones": ["gamla_byn", "brandkanten", "mellanmark_skog", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "skelett_runprast",
@@ -380,7 +395,7 @@
       "aggro_range": 8,
       "behavior": "Långsam tank. Sköldblock: 50 % mindre skada framifrån. Patrullerar fast rutt.",
       "weapon_type": "klubba",
-      "zones": ["gamla_byn"],
+      "zones": ["gamla_byn", "kapellets_krypta", "brandkanten", "mellanmark_skog", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "skelett_vakt",
@@ -403,7 +418,7 @@
       "aggro_range": 10,
       "behavior": "Leder 2 till 3 skelettkrigare. Ropar order: krigarna i närheten får +15 % skada. Hugger i båge.",
       "weapon_type": "svard",
-      "zones": ["gamla_byn"],
+      "zones": ["gamla_byn", "kapellets_krypta", "mellanmark_skog", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "skelett_krigare",
@@ -435,7 +450,8 @@
       "boss": true,
       "design_source": {
         "from": "benkungen_valdemar",
-        "ref_level": 4
+        "ref_level": 4,
+        "xp_bas": 3795
       },
       "uses_dark_magic": true
     },
@@ -454,7 +470,7 @@
       "aggro_range": 10,
       "behavior": "Svävar genom hinder, blir osynlig 2 s efter träff.",
       "weapon_type": null,
-      "zones": ["dimmerstrand"],
+      "zones": ["dimmerstrand", "dimvagen", "mellanmark_trask", "mellanmark_fjall"],
       "boss": false,
       "design_source": {
         "from": "dimgast",
@@ -477,7 +493,7 @@
       "aggro_range": 10,
       "behavior": "Skrik i radie 6 sänker spelarens uthållighetsregen 50 % i 4 s.",
       "weapon_type": null,
-      "zones": ["dimmerstrand"],
+      "zones": ["dimmerstrand", "korpholmarna", "rokkarret", "mellanmark_trask", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "klagokvinna",
@@ -500,7 +516,7 @@
       "aggro_range": 10,
       "behavior": "Drar spelaren mot sig från vatten, räckvidd 6.",
       "weapon_type": null,
-      "zones": ["dimmerstrand"],
+      "zones": ["dimmerstrand", "korpholmarna", "rokkarret", "mellanmark_trask", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "trasknacken",
@@ -519,7 +535,7 @@
       "speed": 3.0,
       "attack_cd": 1.0,
       "attacks_per_s": 1.0,
-      "xp": 11000,
+      "xp": 1100,
       "aggro_range": 10,
       "behavior": "Boss.",
       "weapon_type": null,
@@ -527,7 +543,8 @@
       "boss": true,
       "design_source": {
         "from": "trasdrottningen",
-        "ref_level": 5
+        "ref_level": 5,
+        "xp_bas": 11000
       },
       "dark_magic": true
     },
@@ -546,7 +563,7 @@
       "aggro_range": 10,
       "behavior": "Hoppar från tak, flock 3 till 5.",
       "weapon_type": null,
-      "zones": ["kopparberg"],
+      "zones": ["kopparberg", "glodstranden", "mellanmark_skog", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "gruvspindel",
@@ -568,7 +585,7 @@
       "aggro_range": 10,
       "behavior": "Spottar syra som sänker försvar 3 i 5 s.",
       "weapon_type": null,
-      "zones": ["kopparberg"],
+      "zones": ["kopparberg", "glodstranden", "mellanmark_skog", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "syrabagge",
@@ -590,7 +607,7 @@
       "aggro_range": 10,
       "behavior": "Pansar, svag bakifrån (dubbel skada).",
       "weapon_type": null,
-      "zones": ["kopparberg"],
+      "zones": ["kopparberg", "gruvdjupen", "glodstranden", "mellanmark_skog", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "kitinvakt",
@@ -608,7 +625,7 @@
       "speed": 3.4,
       "attack_cd": 1.0,
       "attacks_per_s": 1.0,
-      "xp": 18328,
+      "xp": 6598,
       "aggro_range": 10,
       "behavior": "Boss.",
       "weapon_type": null,
@@ -616,7 +633,8 @@
       "boss": true,
       "design_source": {
         "from": "spinnmodern",
-        "ref_level": 6
+        "ref_level": 6,
+        "xp_bas": 18328
       }
     },
     {
@@ -634,7 +652,7 @@
       "aggro_range": 10,
       "behavior": "Kastar glöd från avstånd, flyr i närstrid.",
       "weapon_type": null,
-      "zones": ["askeborg"],
+      "zones": ["askeborg", "askfalten", "brandkusten", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "askimp",
@@ -657,7 +675,7 @@
       "aggro_range": 10,
       "behavior": "Piska räckvidd 5, drar spelaren.",
       "weapon_type": null,
-      "zones": ["askeborg"],
+      "zones": ["askeborg", "brandkusten", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "eldpiska_demon",
@@ -680,7 +698,7 @@
       "aggro_range": 10,
       "behavior": "Närstrid, svepande yxa, laddar.",
       "weapon_type": "yxa",
-      "zones": ["askeborg"],
+      "zones": ["askeborg", "katedralen", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "hornslaktare",
@@ -702,7 +720,7 @@
       "aggro_range": 10,
       "behavior": "Fallen riddare i svärtad rustning, besatt av en demon. Blockerar framifrån, hugger med svärd, laddar mot spelaren.",
       "weapon_type": "svard",
-      "zones": ["askeborg"],
+      "zones": ["askeborg", "katedralen", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "hornslaktare",
@@ -726,7 +744,7 @@
       "speed": 3.6,
       "attack_cd": 1.0,
       "attacks_per_s": 1.0,
-      "xp": 45000,
+      "xp": 12150,
       "aggro_range": 10,
       "behavior": "Slutboss för första akten.",
       "weapon_type": null,
@@ -734,7 +752,8 @@
       "boss": true,
       "design_source": {
         "from": "askfursten_morvath",
-        "ref_level": 8
+        "ref_level": 8,
+        "xp_bas": 45000
       },
       "dark_magic": true
     },
@@ -753,7 +772,7 @@
       "aggro_range": 10,
       "behavior": "Exploderar vid död, giftmoln radie 3.",
       "weapon_type": null,
-      "zones": ["framtida_slutomrade"],
+      "zones": ["ruttmarken", "mellanmark_skog", "mellanmark_trask", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "smittbarare",
@@ -775,7 +794,7 @@
       "aggro_range": 10,
       "behavior": "Oförutsägbar, byter mål.",
       "weapon_type": "klubba",
-      "zones": ["framtida_slutomrade"],
+      "zones": ["ruttmarken", "mellanmark_skog", "mellanmark_trask", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "galen_munk",
@@ -797,7 +816,7 @@
       "aggro_range": 10,
       "behavior": "Delar sig i två små vid död.",
       "weapon_type": null,
-      "zones": ["framtida_slutomrade"],
+      "zones": ["smittans_katedral", "mellanmark_trask"],
       "boss": false,
       "design_source": {
         "from": "kottklump",
@@ -819,11 +838,12 @@
       "aggro_range": 10,
       "behavior": "Boss, ej placerad ännu.",
       "weapon_type": null,
-      "zones": ["framtida_slutomrade"],
+      "zones": ["smittans_katedral"],
       "boss": true,
       "design_source": {
         "from": "fadern_av_smittan",
-        "ref_level": 7
+        "ref_level": 7,
+        "xp_bas": 28892
       }
     },
     {
@@ -897,7 +917,7 @@
       "aggro_range": 10,
       "behavior": "Smittad jägare som följer vargflockar och skjuter med båge från avstånd.",
       "weapon_type": "bage",
-      "zones": ["startskogen", "vargaby"],
+      "zones": ["startskogen", "vargaby", "sodra_mon", "mellanmark_skog", "mellanmark_trask", "mellanmark_kust", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "galen_munk",
@@ -953,7 +973,7 @@
       "aggro_range": 10,
       "behavior": "Bybo i tidig förvandling, springer mot hjälten och spyr smitta (gift 3 s).",
       "weapon_type": null,
-      "zones": ["vargaby"],
+      "zones": ["vargaby", "sodra_mon", "mellanmark_skog", "mellanmark_trask", "mellanmark_kust", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "smittbarare",
@@ -1037,7 +1057,7 @@
       "aggro_range": 10,
       "behavior": "Uppsvälld drunknad sjöman med rostigt svärd, kliver upp ur vattnet bakom hjälten.",
       "weapon_type": "svard",
-      "zones": ["dimmerstrand"],
+      "zones": ["dimmerstrand", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "skelett_krigare",
@@ -1065,7 +1085,7 @@
       "aggro_range": 10,
       "behavior": "Jätteigel i dyn, suger blod och läker sig själv 5 HP per träff.",
       "weapon_type": null,
-      "zones": ["dimmerstrand"],
+      "zones": ["dimmerstrand", "mellanmark_skog", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "syrabagge",
@@ -1093,7 +1113,7 @@
       "aggro_range": 10,
       "behavior": "Gruvarbetare med svulster och hacka, gräver sig upp ur väggarna.",
       "weapon_type": "klubba",
-      "zones": ["kopparberg"],
+      "zones": ["kopparberg", "jarnklostret", "mellanmark_fjall"],
       "boss": false,
       "design_source": {
         "from": "galen_munk",
@@ -1121,7 +1141,7 @@
       "aggro_range": 10,
       "behavior": "Liten demon som brutit sig upp genom djupa schakt, kastar glöd och tänder gruvgas.",
       "weapon_type": null,
-      "zones": ["kopparberg"],
+      "zones": ["kopparberg", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "askimp",
@@ -1149,7 +1169,7 @@
       "aggro_range": 10,
       "behavior": "Människa som tillber Askfursten, ritualdolk och självmordsdyk mot hjälten.",
       "weapon_type": "dolk",
-      "zones": ["askeborg"],
+      "zones": ["askeborg", "kultens_katakomber", "mellanmark_fjall", "mellanmark_ask"],
       "boss": false,
       "design_source": {
         "from": "galen_munk",
@@ -1177,7 +1197,7 @@
       "aggro_range": 10,
       "behavior": "Svärtat skelett av en Askeborgsvakt, glöd i revbenen, yxa.",
       "weapon_type": "yxa",
-      "zones": ["askeborg"],
+      "zones": ["askeborg", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "skelett_krigare",
@@ -1205,7 +1225,7 @@
       "aggro_range": 10,
       "behavior": "Dränkt lik ur myren med rostig skära. Står stilla i vattnet tills hjälten är nära, kliver sedan upp och hugger. Ersätter skelettkrigare och skelettbågskytt i träsket tills myrlik bågskytt finns.",
       "weapon_type": "svard",
-      "zones": ["myrkanten"],
+      "zones": ["myrkanten", "mellanmark_trask"],
       "boss": false,
       "design_source": {
         "from": "skelett_krigare",
@@ -1233,7 +1253,7 @@
       "aggro_range": 12,
       "behavior": "Dränkt hund med tång i pälsen. Flock, cirklar runt spelaren och biter i tur och ordning. Flyr kort under 30 % HP.",
       "weapon_type": null,
-      "zones": ["myrkanten"],
+      "zones": ["myrkanten", "mellanmark_trask"],
       "boss": false,
       "design_source": {
         "from": "skelett_hund",
@@ -1262,7 +1282,7 @@
       "aggro_range": 10,
       "behavior": "Liten grå vätte ur stenröset. Smyger fram bland ljungen, blir osynlig 2 s efter träff och dyker upp bakom hjälten.",
       "weapon_type": null,
-      "zones": ["fjallfoten"],
+      "zones": ["fjallfoten", "mellanmark_fjall"],
       "boss": false,
       "design_source": {
         "from": "dimgast",
@@ -1291,7 +1311,7 @@
       "aggro_range": 12,
       "behavior": "Ljusgrå ulv från fjället i flock om 2 till 3. Flankerar på bergsvägen och biter i tur och ordning.",
       "weapon_type": null,
-      "zones": ["bergsvagen"],
+      "zones": ["bergsvagen", "mellanmark_fjall"],
       "boss": false,
       "design_source": {
         "from": "skuggvarg",
@@ -1315,7 +1335,7 @@
       "speed": 3.4,
       "attack_cd": 1.2,
       "attacks_per_s": 0.83,
-      "xp": 3937,
+      "xp": 394,
       "aggro_range": 14,
       "behavior": "Underboss. Skjuter tre korpfjäderpilar i solfjäder. Var 20:e sekund kallar hon 2 dimgaster. Under 50 % liv löses hon upp i en korpsvärm och landar på en ny klippa på arenan, sedan skjuter hon igen.",
       "weapon_type": "bage",
@@ -1330,7 +1350,8 @@
           "dmgm": 0.85,
           "xpm": 0.4
         },
-        "regel": "monster_niva.json underboss_regel"
+        "regel": "monster_niva.json underboss_regel",
+        "xp_bas": 3937
       },
       "dark_magic": true
     },
@@ -1345,7 +1366,7 @@
       "speed": 2.6,
       "attack_cd": 1.8,
       "attacks_per_s": 0.56,
-      "xp": 6729,
+      "xp": 2422,
       "aggro_range": 12,
       "behavior": "Underboss. Långsam och tung. Slår med järnkedjan i en båge framför sig och gör markslag som knuffar. Under 40 % liv river han av en länk ur gördeln och blir snabbare (fart x 1,3) och kallar 2 förvridna gruvarbetare.",
       "weapon_type": "klubba",
@@ -1360,7 +1381,8 @@
           "dmgm": 0.85,
           "xpm": 0.4
         },
-        "regel": "monster_niva.json underboss_regel"
+        "regel": "monster_niva.json underboss_regel",
+        "xp_bas": 6729
       }
     },
     {
@@ -1374,7 +1396,7 @@
       "speed": 3.2,
       "attack_cd": 1.4,
       "attacks_per_s": 0.71,
-      "xp": 15884,
+      "xp": 4289,
       "aggro_range": 14,
       "behavior": "Underboss. Håller avstånd och kastar eldklot. Tänder askcirklar på golvet som bränner den som står kvar. Kallar 2 askkultister var 25:e sekund. Under 30 % liv brinner masken av och han går till närstrid med ritualdolken.",
       "weapon_type": "dolk",
@@ -1389,7 +1411,8 @@
           "dmgm": 0.85,
           "xpm": 0.4
         },
-        "regel": "monster_niva.json underboss_regel"
+        "regel": "monster_niva.json underboss_regel",
+        "xp_bas": 15884
       },
       "dark_magic": true
     },
@@ -1408,7 +1431,7 @@
       "aggro_range": 10,
       "behavior": "Väsen av kött och sten som kryper ur sprickan där världen är tunnast. Långsamt, slår hårt och drar sig ihop när det tar skada.",
       "weapon_type": null,
-      "zones": ["sprickans_botten", "mellanmark"],
+      "zones": ["sprickans_botten", "mellanmark_trask"],
       "boss": false,
       "design_source": {
         "from": "kottklump",
@@ -1436,7 +1459,7 @@
       "aggro_range": 10,
       "behavior": "Ett ljus som svävar över myren. Lockar hjälten mot gölen och drar honom mot sig, räckvidd 6. Slocknar och dyker upp på nytt en bit bort.",
       "weapon_type": null,
-      "zones": ["mellanmark"],
+      "zones": ["mellanmark_trask", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "trasknacken",
@@ -1465,7 +1488,7 @@
       "aggro_range": 10,
       "behavior": "Drunknad klockare med tång i skägget och en rostig klockkläpp som svärd. Kliver upp ur vattnet när kyrkklockan under ytan slår.",
       "weapon_type": "svard",
-      "zones": ["sjunkna_kyrkan", "mellanmark"],
+      "zones": ["sjunkna_kyrkan", "mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "drunknad",
@@ -1493,11 +1516,210 @@
       "aggro_range": 12,
       "behavior": "Stor gast av havsskum och dimma som rullar in med stormen. Drar spelaren mot sig från vattnet, räckvidd 6.",
       "weapon_type": null,
-      "zones": ["mellanmark"],
+      "zones": ["mellanmark_kust"],
       "boss": false,
       "design_source": {
         "from": "trasknacken",
         "from_level": 13,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "irrbloss",
+      "name": "Irrbloss",
+      "family": "gastar",
+      "level": 18,
+      "hp": 461,
+      "damage": 41,
+      "defense": 7,
+      "speed": 2.8,
+      "attack_cd": 2.5,
+      "attacks_per_s": 0.4,
+      "xp": 915,
+      "aggro_range": 10,
+      "behavior": "Litet blåvitt sken som flackar mellan tuvorna och skjuter kalla gnistor, räckvidd 5. Viker undan när hjälten kommer nära.",
+      "weapon_type": null,
+      "zones": ["mellanmark_trask", "mellanmark_kust"],
+      "boss": false,
+      "design_source": {
+        "from": "lyktgast",
+        "from_level": 16,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "fjallbjorn",
+      "name": "Fjällbjörn",
+      "family": "bestar",
+      "level": 14,
+      "hp": 243,
+      "damage": 26,
+      "defense": 6,
+      "speed": 2.8,
+      "attack_cd": 2.0,
+      "attacks_per_s": 0.5,
+      "xp": 281,
+      "aggro_range": 10,
+      "behavior": "Stor gråbjörn från fjällbjörkskogen. Reser sig på bakbenen och slår två gånger i rad.",
+      "weapon_type": null,
+      "zones": ["mellanmark_fjall"],
+      "boss": false,
+      "design_source": {
+        "from": "bergsulv",
+        "from_level": 15,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
+    },
+    {
+      "id": "jarnbroder",
+      "name": "Järnbroder",
+      "family": "forvridna",
+      "level": 18,
+      "hp": 282,
+      "damage": 30,
+      "defense": 6,
+      "speed": 4.0,
+      "attack_cd": 1.2,
+      "attacks_per_s": 0.83,
+      "xp": 687,
+      "aggro_range": 10,
+      "behavior": "Munk från Järnklostret med järnkedjor fastsmidda i huden. Svingar en järnstav och tål mycket.",
+      "weapon_type": "klubba",
+      "zones": ["mellanmark_fjall"],
+      "boss": false,
+      "design_source": {
+        "from": "forvriden_gruvarbetare",
+        "from_level": 16,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
+    },
+    {
+      "id": "drunknad_vakt",
+      "name": "Drunknad vakt",
+      "family": "ododa",
+      "level": 19,
+      "hp": 368,
+      "damage": 38,
+      "defense": 9,
+      "speed": 3.4,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 497,
+      "aggro_range": 10,
+      "behavior": "Askeborgsvakt som drunknade när skeppen sjönk. Rostigt svärd, tång i brynjan, kliver upp ur bränningarna.",
+      "weapon_type": "svard",
+      "zones": ["mellanmark_kust"],
+      "boss": false,
+      "design_source": {
+        "from": "brandskelett",
+        "from_level": 21,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
+    },
+    {
+      "id": "sprickpilgrim",
+      "name": "Sprickpilgrim",
+      "family": "forvridna",
+      "level": 28,
+      "hp": 732,
+      "damage": 58,
+      "defense": 10,
+      "speed": 4.0,
+      "attack_cd": 1.2,
+      "attacks_per_s": 0.83,
+      "xp": 1333,
+      "aggro_range": 10,
+      "behavior": "Pilgrim som gått för nära Sprickan. Huden spräckt som torr lera, slår med pilgrimsstav och kastar sig framåt när hjälten backar.",
+      "weapon_type": "klubba",
+      "zones": ["mellanmark_skog", "mellanmark_trask", "mellanmark_fjall", "mellanmark_ask"],
+      "boss": false,
+      "design_source": {
+        "from": "galen_munk",
+        "from_level": 25,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        },
+        "not": "Mall galen_munk (människa med stav) i stället för köttklumpen, så att ring 7:s vanligaste fiende inte blir ett tungt väsen."
+      }
+    },
+    {
+      "id": "vriden_jatte",
+      "name": "Vriden jätte",
+      "family": "forvridna",
+      "level": 30,
+      "hp": 2709,
+      "damage": 91,
+      "defense": 11,
+      "speed": 2.2,
+      "attack_cd": 2.2,
+      "attacks_per_s": 0.45,
+      "xp": 2464,
+      "aggro_range": 10,
+      "behavior": "Jättelik kropp ihopvuxen av flera människor. Långsam, trampar marken så att stenar flyger.",
+      "weapon_type": null,
+      "zones": ["mellanmark_skog", "mellanmark_trask", "mellanmark_fjall", "mellanmark_ask"],
+      "boss": false,
+      "design_source": {
+        "from": "sprickvasen",
+        "from_level": 29,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
+    },
+    {
+      "id": "dodsljus",
+      "name": "Dödsljus",
+      "family": "gastar",
+      "level": 30,
+      "hp": 1443,
+      "damage": 92,
+      "defense": 12,
+      "speed": 2.6,
+      "attack_cd": 3.0,
+      "attacks_per_s": 0.33,
+      "xp": 1970,
+      "aggro_range": 12,
+      "behavior": "Kallt vitt ljus som stiger ur havet och härmar fyrens sken. Drar hjälten mot vattnet, räckvidd 7.",
+      "weapon_type": null,
+      "zones": ["mellanmark_kust"],
+      "boss": false,
+      "design_source": {
+        "from": "havsgast",
+        "from_level": 28,
         "mods": {
           "hpm": 1.1,
           "dmgm": 1,

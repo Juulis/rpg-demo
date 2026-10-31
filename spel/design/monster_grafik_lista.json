@@ -3,7 +3,7 @@
     "hero_px_h": 155,
     "source": "monsterfamiljer.json",
     "images_dir": "/workspace/spel/grafik/2d/sprites/monster/",
-    "kraver_grafik": "NYA monster utan grafik (ringtäckning 2026-10-31): sprickvasen 230, lyktgast 170, klockdrunknad 190, havsgast 210 (målhöjd enligt grafik/monster_anim/README.md). Fält kraver_grafik: true och malhojd på posterna."
+    "kraver_grafik": "NYA monster utan grafik: sprickvasen 230, lyktgast 170, klockdrunknad 190, havsgast 210 (ringtäckning 2026-10-31); irrbloss 110, fjallbjorn 270, jarnbroder 190, drunknad_vakt 190, sprickpilgrim 190, vriden_jatte 340, dodsljus 220 (PR #123, tunna celler och ring 7); underbossarna korpmodern 270, jarnmunken 290, askans_profet 290. Målhöjd enligt grafik/monster_anim/README.md. Fält kraver_grafik: true och malhojd på posterna."
   },
   "monsters": [
     {
@@ -585,6 +585,139 @@
       "has_image": false,
       "kraver_grafik": true,
       "malhojd": 210
+    },
+    {
+      "id": "irrbloss",
+      "name": "Irrbloss",
+      "family": "gastar",
+      "level": 18,
+      "boss": false,
+      "size_rel_hero": 0.6,
+      "approx_px_h": 93,
+      "look": "Litet blåvitt sken med en svag, mänsklig form i ljuset, svävar lågt över tuvorna.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 110
+    },
+    {
+      "id": "fjallbjorn",
+      "name": "Fjällbjörn",
+      "family": "bestar",
+      "level": 14,
+      "boss": false,
+      "size_rel_hero": 1.5,
+      "approx_px_h": 232,
+      "look": "Stor gråbrun björn med frost i pälsen och ärrad nos, reser sig på bakbenen.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 270
+    },
+    {
+      "id": "jarnbroder",
+      "name": "Järnbroder",
+      "family": "forvridna",
+      "level": 18,
+      "boss": false,
+      "size_rel_hero": 1.05,
+      "approx_px_h": 163,
+      "look": "Munk i sotig kåpa med järnkedjor fastsmidda i huden och en tung järnstav.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 190
+    },
+    {
+      "id": "drunknad_vakt",
+      "name": "Drunknad vakt",
+      "family": "ododa",
+      "level": 19,
+      "boss": false,
+      "size_rel_hero": 1.06,
+      "approx_px_h": 164,
+      "look": "Uppsvälld vakt i rostig Askeborgsbrynja med tång, rostigt svärd, vatten rinner ur hjälmen.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 190
+    },
+    {
+      "id": "sprickpilgrim",
+      "name": "Sprickpilgrim",
+      "family": "forvridna",
+      "level": 28,
+      "boss": false,
+      "size_rel_hero": 1.08,
+      "approx_px_h": 167,
+      "look": "Avmagrad pilgrim med spräckt lerhud och röd glöd i sprickorna, pilgrimsstav.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 190
+    },
+    {
+      "id": "vriden_jatte",
+      "name": "Vriden jätte",
+      "family": "forvridna",
+      "level": 30,
+      "boss": false,
+      "size_rel_hero": 1.9,
+      "approx_px_h": 294,
+      "look": "Jättelik kropp ihopvuxen av flera människor, flera armar, grå hud och röd glöd i sprickorna.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 340
+    },
+    {
+      "id": "dodsljus",
+      "name": "Dödsljus",
+      "family": "gastar",
+      "level": 30,
+      "boss": false,
+      "size_rel_hero": 1.2,
+      "approx_px_h": 186,
+      "look": "Kallt vitt ljus i form av en lång gestalt utan ansikte, släpar havsdimma efter sig.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 220
+    },
+    {
+      "id": "korpmodern",
+      "name": "Korpmodern",
+      "family": "gastar",
+      "level": 13,
+      "boss": false,
+      "size_rel_hero": 1.5,
+      "approx_px_h": 232,
+      "look": "Lång kvinna i kappa av korpfjädrar med båge, korpar kring axlarna, underboss.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 270,
+      "underboss": true
+    },
+    {
+      "id": "jarnmunken",
+      "name": "Järnmunken",
+      "family": "forvridna",
+      "level": 17,
+      "boss": false,
+      "size_rel_hero": 1.6,
+      "approx_px_h": 248,
+      "look": "Väldig munk i järnpansar över kåpan, kedjor och klostrets nycklar i bältet, underboss.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 290,
+      "underboss": true
+    },
+    {
+      "id": "askans_profet",
+      "name": "Askans profet",
+      "family": "forvridna",
+      "level": 23,
+      "boss": false,
+      "size_rel_hero": 1.6,
+      "approx_px_h": 248,
+      "look": "Mager profet i askgrå kåpa med brinnande ögon och en stav av svärtat ben, underboss.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 290,
+      "underboss": true
     }
   ]
 }

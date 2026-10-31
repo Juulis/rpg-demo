@@ -127,13 +127,13 @@ Redan gjort: Om Benkungen dödats innan questen börjar startar den direkt på s
 
 ## Underbossar akt 2 till 4
 
-Stats räknas med monster_niva.json underboss_regel: aktens huvudboss skalad till underbossens nivå, HP x 0,45, skada x 0,85, XP x 0,4. Data i monsterfamiljer.json.
+Stats räknas med monster_niva.json underboss_regel: aktens huvudboss skalad till underbossens nivå, HP x 0,45, skada x 0,85, XP x 0,4 och sedan aktens boss_xp_faktor (monster_niva.json: akt 2 0,1, akt 3 0,36, akt 4 0,27). Data i monsterfamiljer.json.
 
-| Namn          | Familj    | Nivå | HP   | Skada | Försvar | XP    | Område             |
-| ------------- | --------- | ---- | ---- | ----- | ------- | ----- | ------------------ |
-| Korpmodern    | gastar    | 13   | 1544 | 44    | 8       | 3937  | korpholmarna       |
-| Järnmunken    | forvridna | 17   | 2311 | 57    | 13      | 6729  | jarnklostret       |
-| Askans profet | forvridna | 23   | 4699 | 91    | 16      | 15884 | kultens_katakomber |
+| Namn          | Familj    | Nivå | HP   | Skada | Försvar | XP   | Område             |
+| ------------- | --------- | ---- | ---- | ----- | ------- | ---- | ------------------ |
+| Korpmodern    | gastar    | 13   | 1544 | 44    | 8       | 394  | korpholmarna       |
+| Järnmunken    | forvridna | 17   | 2311 | 57    | 13      | 2422 | jarnklostret       |
+| Askans profet | forvridna | 23   | 4699 | 91    | 16      | 4289 | kultens_katakomber |
 
 - **Korpmodern**: Underboss. Skjuter tre korpfjäderpilar i solfjäder. Var 20:e sekund kallar hon 2 dimgaster. Under 50 % liv löses hon upp i en korpsvärm och landar på en ny klippa på arenan, sedan skjuter hon igen.
 - **Järnmunken**: Underboss. Långsam och tung. Slår med järnkedjan i en båge framför sig och gör markslag som knuffar. Under 40 % liv river han av en länk ur gördeln och blir snabbare (fart x 1,3) och kallar 2 förvridna gruvarbetare.

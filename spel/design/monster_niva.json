@@ -501,7 +501,19 @@
     "gravgast": 8,
     "brandskelett": 21,
     "havsgast": 28,
-    "askkultist": 20
+    "askkultist": 20,
+    "irrbloss": 18,
+    "fjallbjorn": 14,
+    "jarnbroder": 18,
+    "drunknad_vakt": 19,
+    "sprickpilgrim": 28,
+    "vriden_jatte": 30,
+    "dodsljus": 30,
+    "drunknad": 12,
+    "vandrande_skelett": 2,
+    "skogsspindel": 2,
+    "trask_igel": 12,
+    "gruvdemon": 17
   },
   "examples_fixed": [
     {
@@ -664,7 +676,7 @@
       "hp": 3773,
       "damage": 55,
       "defense": 8,
-      "xp": 11000
+      "xp": 1100
     },
     {
       "id": "gruvspindel",
@@ -700,7 +712,7 @@
       "hp": 5649,
       "damage": 72,
       "defense": 13,
-      "xp": 18328
+      "xp": 6598
     },
     {
       "id": "askimp",
@@ -745,7 +757,7 @@
       "hp": 12636,
       "damage": 123,
       "defense": 17,
-      "xp": 45000
+      "xp": 12150
     },
     {
       "id": "smittbarare",
@@ -785,7 +797,7 @@
     }
   ],
   "underboss_regel": {
-    "regel": "Underboss = aktens huvudboss skalad till underbossens nivå med formlerna i scaling, sedan HP x 0,45, skada x 0,85, XP x 0,4. Försvar enligt scaling utan ändring. Familjen styr svag och resistent, inte källbossen.",
+    "regel": "Underboss = aktens huvudboss skalad till underbossens nivå med formlerna i scaling, sedan HP x 0,45, skada x 0,85, XP x 0,4 och sedan aktens boss_xp_faktor. Försvar enligt scaling utan ändring. Familjen styr svag och resistent, inte källbossen.",
     "loot": "Som boss: ilvl = nivå + 2, gold_mult 5, first_kill_bonus en sällsynt. Questens belöningsföremål ges av questvalet, inte av dropen.",
     "xp_avdrag": "Bossgolvet 0,25 i xp_penalty gäller även underbossar.",
     "ej_champion": "Underbossar blir aldrig champion eller unik.",
@@ -795,22 +807,44 @@
         "hp": 1544,
         "damage": 44,
         "defense": 8,
-        "xp": 3937
+        "xp": 394
       },
       "jarnmunken": {
         "level": 17,
         "hp": 2311,
         "damage": 57,
         "defense": 13,
-        "xp": 6729
+        "xp": 2422
       },
       "askans_profet": {
         "level": 23,
         "hp": 4699,
         "damage": 91,
         "defense": 16,
-        "xp": 15884
+        "xp": 4289
       }
     }
+  },
+  "boss_xp_faktor": {
+    "regel": "Bossars och underbossars XP = round(xp_bas × faktorn för deras akt). xp_bas = XP enligt scaling (underbossar med underboss_regel XP × 0,4) och står i monsterfamiljer.json design_source.xp_bas. Faktorn räknas fram med spel/design/verktyg/tathet.py --forslag så att målnivån per ring håller (varldsgenerator.json monsterpooler.tathet.malniva_yttre_kant). Akt 1 är kalibrerad i bana1_stor.json och har faktor 1.",
+    "per_akt": {
+      "akt_1": 1.0,
+      "akt_2": 0.1,
+      "akt_3": 0.36,
+      "akt_4": 0.27,
+      "akt_5": 1.0
+    },
+    "bossar": {
+      "grabjornen_ulvhild": "akt_1",
+      "benkungen_valdemar": "akt_1",
+      "trasdrottningen": "akt_2",
+      "korpmodern": "akt_2",
+      "spinnmodern": "akt_3",
+      "jarnmunken": "akt_3",
+      "askfursten_morvath": "akt_4",
+      "askans_profet": "akt_4",
+      "fadern_av_smittan": "akt_5"
+    },
+    "resultat": "tathet.py --forslag 2026-10-31 med mellanmark 0,5 monster per chunk: ring 3 nivå 15, ring 4 nivå 19, ring 5 nivå 24, ring 6 nivå 29 (akt 5 behåller faktor 1; mål 30, inom 1 nivå). Akt 1 oförändrad."
   }
 }

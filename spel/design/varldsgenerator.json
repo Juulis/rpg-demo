@@ -42,48 +42,98 @@
       "3. Biomet saknar helt monster i bandet: använd närmaste regions huvudfamilj och dess undertyper enligt steg 1 till 2. Ska inte inträffa i ring 1 till 7 (se tackning)."
     ],
     "tathet_per_chunk": {
-      "ring_0": [8, 12],
-      "ring_1": [10, 14],
-      "ring_2": [12, 16],
-      "ring_3_och_ut": [12, 18],
-      "not": "Monster per chunk och game i mellanmark. Delområden och namngivna regioner använder sina egna tal (bana1_stor.json, spawnzoner.json)."
+      "ring_0": [0, 1],
+      "ring_1": [0, 1],
+      "ring_2": [0, 1],
+      "ring_3": [0, 1],
+      "ring_4": [0, 1],
+      "ring_5": [0, 1],
+      "ring_6": [0, 1],
+      "ring_7": [0, 1],
+      "ring_3_och_ut": [0, 1],
+      "not": "Monster per chunk och game i mellanmark, slumpat jämnt i intervallet (medel 0,5, alltså en grupp om 1 till 3 ungefär var 4:e chunk). ring_3_och_ut finns kvar för koden och är lika med ring_3 till ring_7. Namngivna regioner och delområden använder sina egna tal (varld_stor.json regioner[].tathet, bana1_stor.json)."
     },
     "grupper": "Grupper om 1 till 3, ledare (gravargsledare, skelett_kapten och liknande) alltid ensam med 2 till 3 av närmaste lägre undertyp som följe.",
-    "elit": "Champions och unika enligt monster_niva.json elites, samma chans som spawnzoner.json startskogen.",
+    "elit": "Mellanmark: bara champions, inga unika. Från ring 2 blir en mellanmarksgrupp champion med chans 0,10 (hela gruppen, monster_niva.json elites.champion), högst en per chunk. Med tätheten 0 till 1 monster per chunk blir det ungefär en championgrupp per 40 chunkar. Ring 0 och 1 har inga champions i mellanmarken. Unika finns bara i namngivna områden enligt spawnzoner.json session_roll.uniques. Rullas med chunk_seed vid spawn som övriga monster. Belöning: elites.champion.loot (en extra rullning, drop 1,0, kvalitet × 1,5) ovanpå undertypens tabell i drop_tabeller.json, XP × 3.",
     "per_biom": [
       {
         "biom": "skog",
-        "nivaband": [1, 29],
-        "pool": "skog_vargar 1 till 6, skog_kolare 3 till 5, skog_gravfolk 7 till 9, utmarksulvar 15, ytterkant (ruttfolk 24 till 25, sprickväsen 29)",
+        "nivaband": [1, 30],
+        "pool": "skog_vargar 1 till 6, skog_kolare 3 till 5, skog_gravfolk 7 till 9, kryp 12 till 18, ytterkant (ruttfolk 24 till 25, sprickpilgrim 28, vriden jätte 30)",
         "ring": [0, 2]
       },
       {
         "biom": "trask",
-        "nivaband": [4, 29],
-        "pool": "lik 4, trask_myrlik 7 till 8, dimgastar 11 till 13, lyktgastar 16, ruttfolk 24 till 27, sprickväsen 29",
-        "ring": [2, 7]
+        "nivaband": [3, 30],
+        "pool": "smittade myrbor 3 till 5, trask_myrlik 7 till 8, dimgastar 11 till 13, lyktgastar och irrbloss 16 till 18, ruttfolk 24 till 27, Sprickans väsen 28 till 30 (sprickväsen vikt 0,25)",
+        "ring": [2, 6]
       },
       {
         "biom": "fjall",
-        "nivaband": [5, 29],
-        "pool": "vargar 5 till 8, fjällvättar 12, bergsulvar 15, gruvkryp 15 till 18, järnbröder 16, galna munkar 25, sprickväsen 29",
+        "nivaband": [4, 30],
+        "pool": "vargar och björnar 4 till 6, frusna stupade 7 till 9, fjällvättar 11 till 12, bergsulvar och fjällbjörnar 14 till 15, gruvkryp 12 till 18, järnbröder 16 till 18, galna munkar 20 till 25, ytterkant 28 till 30",
         "ring": [3, 4]
       },
       {
         "biom": "kust",
-        "nivaband": [4, 28],
-        "pool": "strandlik 4, strandgastar 8, korpfolk 12 till 13, klockdrunknade 15, askvakter 21, havsgastar 28",
-        "ring": [3, 4]
+        "nivaband": [3, 30],
+        "pool": "smittade strandbor 3 till 5, skeppsbrutna skelett 7 till 9, korpfolk 12 till 13, drunknade 12 till 15, lyktgastar 16 till 18, drunknade vakter 19 till 21, havsgastar och dödsljus 28 till 30",
+        "ring": [3, 6]
       },
       {
         "biom": "ask",
-        "nivaband": [4, 29],
-        "pool": "brända lik 4, kolnade skelett 8 till 9, glödbaggar 15 till 18, askdemoner 19 till 23, askans präster 20, sprickväsen 29",
+        "nivaband": [3, 30],
+        "pool": "smittade askbor 3 till 5, kolnade skelett 8 till 9, glödbaggar 12 till 18, askdemoner 17 till 23, askans präster 20, ruttfolk 24 till 25, ytterkant 28 till 30",
         "ring": [2, 5]
       }
     ],
     "familjeregel": "En chunk spawnar en familj, ingen mix. Familjen är huvudfamiljen från närmaste region om biomet har en undertyp av den familjen i ringens band, annars den egna_monster-grupp i biomet vars undertyp ligger närmast malniva(d).",
-    "tackning": "Varje biom har minst en vanlig undertyp (en familj) i varje ringband 1 till 7 (ring 7 band 28 till 30). Kontrolleras med /workspace/tmp/tackning.py. Fallback steg 2 och 3 behövs då inte i mellanmark."
+    "tackning": "Varje biom har i varje ringband 1 till 7 (ring 7 band 28 till 30) minst en familj, och varje familj som finns i en cell har minst 2 undertyper på minst 2 nivåer, eftersom en chunk bara spawnar en familj. Kontrolleras med spel/design/verktyg/tackning.py. Fallback steg 2 och 3 behövs då inte i mellanmark.",
+    "vikter": {
+      "regel": "Undertyp väljs viktat inom familjens pool i cellen. Standardvikt 1. Gruppens fält vikter i varld_stor.json skriver över.",
+      "undertyper": {
+        "sprickvasen": 0.25,
+        "vriden_jatte": 0.5
+      },
+      "max_andel": {
+        "sprickvasen": 0.15,
+        "vriden_jatte": 0.25
+      },
+      "sprickvasen": "Tungt väsen knutet till Sprickans botten (regionens undertyp, full vikt där). I mellanmarken bara i träsket nära Sprickan, ring 6 och 7, vikt 0,25. Andel enligt tackning.py ca 3 procent av mellanmarksspawnen (utan vikter ca 6 procent, mål högst 15).",
+      "vriden_jatte": "Tung (HP 2709), vikt 0,5 så att sprickpilgrimen blir ring 7:s vanliga fiende och jätten mer sällsynt."
+    },
+    "ring_falt": "per_biom.ring = lägsta och högsta ringzon bland biomets regioner i varld_stor.json (t.ex. kust 3 till 6 med Sista ljuset i ring 6). Mellanmarken använder biomets pool i alla ringar 1 till 7.",
+    "tathet": {
+      "regel": "Tätheten är data: tathet_per_chunk per ring för mellanmark, regioner[].tathet i varld_stor.json och monster_per_game i bana1_stor.json. XP per monster är undertypens xp i monsterfamiljer.json med xp_penalty. Räkna om med spel/design/verktyg/tathet.py när något av talen eller monstrens XP ändras.",
+      "utforskad_andel": {
+        "mellanmark": 0.5,
+        "namngivna_ring_0_till_2": 1.0,
+        "namngivna_ring_3_och_ut": 0.5,
+        "bossar": 1.0
+      },
+      "utforskade_mellanmarkschunkar": {
+        "ring_0": 9,
+        "ring_1": 18,
+        "ring_2": 20,
+        "ring_3": 16,
+        "ring_4": 16,
+        "ring_5": 16,
+        "ring_6": 20
+      },
+      "utforskning_not": "Modell: i akt 1 rensas alla namngivna platser (som bana1_stor.json maltavla), längre ut hälften. Mellanmark: hjälten korsar ringen längs vägarna och ser ungefär så många mellanmarkschunkar som anges (högst hälften av ringen).",
+      "malniva_yttre_kant": {
+        "ring_0": 3,
+        "ring_1": 7,
+        "ring_2": 12,
+        "ring_3": 15,
+        "ring_4": 19,
+        "ring_5": 24,
+        "ring_6": 30
+      },
+      "modell_radie": 15,
+      "bossar_xp": "Bossarnas och underbossarnas XP sänks per akt med monster_niva.json boss_xp_faktor (akt 2 0,1, akt 3 0,36, akt 4 0,27, akt 1 och 5 1,0), framräknat med tathet.py --forslag.",
+      "resultat": "tathet.py 2026-10-31, mellanmark 0,5 per chunk: ring 0 nivå 3, ring 1 9, ring 2 13, ring 3 15 (36554 XP), ring 4 19 (65459), ring 5 24 (115803), ring 6 29 (182651). Mål 3, 7, 12, 15, 19, 24, 30."
+    }
   },
   "platser": {
     "typer": {
@@ -196,8 +246,8 @@
       }
     ],
     "regel": "malniva väljer bara vilka undertyper som får spawna (fönster ± 2). Stats är fasta per undertyp, ingen skalning. Namngivna regioner med egen nivaband går före.",
-    "xp": "Hjältens kurva i monster_niva.json hero_xp_curve (100 × n^1,5). Kontroll för akt 1 i bana1_stor.json nivakurva: nivå 7 före ring 2, nivå 11 till 13 före akt 2.",
-    "kontroll_per_ring": "Hjälten ska vara cirka malniva vid ringens inre kant om han utforskar ungefär hälften av ringen. Räkna om med bana1_stor.json metod när tätheten ändras."
+    "xp": "BESLUT: ingen avstånds-XP. Hjältens XP kommer bara från monstrens xp per monster (monsterfamiljer.json, champions och unika med sina xp_mult) med xp_penalty (monster_niva.json). Ingen multiplikator för avstånd, ring eller chunk, inte heller för quest-monster eller bossar. Svårighet styrs enbart av monsternivå efter ring (malniva och ringens band). Kurva: monster_niva.json hero_xp_curve; kontroll akt 1 i bana1_stor.json nivakurva och per ring med spel/design/verktyg/tathet.py.",
+    "kontroll_per_ring": "Målnivå vid ringens yttre kant i monsterpooler.tathet.malniva_yttre_kant. Räknas med spel/design/verktyg/tathet.py när tätheten eller monstrens XP ändras."
   },
   "ljud_och_musik": {
     "musik_regel": "Enligt musik.md: två spår nu. Byte med korsfade 2 sekunder när hjälten går in i eller ut ur en by eller ett läger.",
@@ -269,5 +319,14 @@
     },
     "per_region": "Högst 2 aktiva questankare per chunk så att kartan inte blir rörig. Ring 0 och 1 använder främst platserna i varldshandelser.json och bana1_stor.json.",
     "markering": "Questankare syns inte på kartan förrän questen är aktiv. Världshändelser markeras aldrig."
+  },
+  "karta_och_dimma": {
+    "avslojning": "Kartan avslöjas i en cirkel med radie 14 rutor (28 världsenheter) runt hjälten, mätt från hjältens ruta, uppdaterat när hjälten byter ruta.",
+    "lagring": "Avslöjat lagras per chunk som en bitmask 64 × 64 rutor (512 byte, gärna RLE-packad) i världskoordinater, inte relativt ett ankare. Nyckel cx,cy. Bara chunkar med minst en avslöjad ruta sparas.",
+    "sparfil": "Avslöjade chunkar sparas i sparfilen (karta.avslojat) tillsammans med världens frö world_seed, som skapas en gång per sparfil. Ny sparfil = nytt frö och tom karta. Laddning läser tillbaka masken oförändrad.",
+    "tab_karta": "Tab-kartan och minikartan ritar terräng, vägar och regionnamn bara i avslöjade rutor. Oavslöjat är svart (#000000) över hela kartans fönster, även utanför de laddade chunkarna. Ikoner: besökta byar, läger och städer, besökta waypoints (rod_portal och stadsvägstenar) och hjälten. POI:er syns först när hjälten varit där.",
+    "markeringar": "Questankare syns först när questen är aktiv (questplatser.markering), även i oavslöjat område. Världshändelser markeras aldrig.",
+    "inga_sparrar": "Dimman spärrar ingenting: ingen rörelse, teleport eller snabbresa kräver avslöjad karta. Snabbresa kräver bara att waypointen är besökt (meta.waypoints).",
+    "ingen_tid": "Avslöjat blir aldrig dimma igen och påverkas inte av dygnet."
   }
 }

@@ -66,36 +66,36 @@ Akterna blir riktningar: öster och norr (akt 1), väster (akt 2), norr i fjäll
 
 ## Biomer
 
-Varje biom har egna monsterplatser i `biomer.<id>.egna_monster`: roll, familj, nivåband och `undertyper_nu`. Där `platshallare: true` står används befintliga undertyper tills UI gör den nya undertypen som anges i `ersatts_av`. Regionerna pekar på sina platser med `monsterplatser`. Varje biom har minst en vanlig undertyp i varje ringband 1 till 7, så mellanmarken aldrig står tom (kontroll: /workspace/tmp/tackning.py).
+Varje biom har egna monsterplatser i `biomer.<id>.egna_monster`: roll, familj, nivåband och `undertyper_nu`. Där `platshallare: true` står används befintliga undertyper tills UI gör den nya undertypen som anges i `ersatts_av`. Regionerna pekar på sina platser med `monsterplatser`. En chunk spawnar en familj. Varje biom har minst en familj i varje ringband 1 till 7, och varje familj i en cell har minst 2 undertyper på minst 2 nivåer, så mellanmarken aldrig står tom eller ensidig (kontroll: spel/design/verktyg/tackning.py). Sprickväsen har vikt 0,25 och finns i mellanmarken bara i träsket nära Sprickan.
 
-**Skog** (1 till 29). Tät granskog i dimma, runstenar, kolarkojor.
+**Skog** (1 till 30). Tät granskog i dimma, runstenar, kolarkojor.
 
-- Egna monster: vargar och björnar (bestar 1 till 6), förvridna kolare (3 till 5), gravfolk (odöda 7 till 10). Mellanmark längre ut: ulvar i utmarken (bergsulv 15), ruttfolk och sprickväsen i den sjuka skogen (24 till 29). Inga platshållare.
+- Egna monster: vargar och björnar (bestar 1 till 6), förvridna kolare (3 till 5), gravfolk (odöda 7 till 10). Mellanmark längre ut: kryp i djupskogen (insekter 12 till 18), ruttfolk, sprickpilgrimer och vridna jättar i den sjuka skogen (24 till 30, sprickpilgrim och vriden jätte nya, grafik saknas). Inga platshållare.
 - Resurser: timmer, guld i övergivna hus.
 - Mål: spåret vid kolarkojorna (spår), Kolmilan (budbärare), Ulvhilds päls i Vargaby (val mellan två), den brunna gården (återlämning).
 
-**Träsk** (4 till 29). Myr, spångar, lyktor och klockor under ytan. Variant rutt i Ruttmarken.
+**Träsk** (3 till 30). Myr, spångar, lyktor och klockor under ytan. Variant rutt i Ruttmarken.
 
-- Egna monster: ruttnande lik (4), myrlik och myrhund (7 till 9, grafikspec klar), dimgastar (10 till 14), lyktgastar (16, ny, grafik saknas), ruttfolk (24 till 28), sprickväsen (29, ny, grafik saknas).
+- Egna monster: smittade myrbor (förvridna 3 till 5), myrlik och myrhund (7 till 9, grafikspec klar), dimgastar (10 till 14), lyktgastar och irrbloss (16 till 18, nya, grafik saknas), ruttfolk (24 till 27), Sprickans väsen (sprickpilgrim 28, sprickväsen 29 med vikt 0,25, vriden jätte 30; grafik saknas).
 - Resurser: sjunket timmer, guld i sjunkna gårdar.
 - Mål: den sjunkna gården (mysterium), Hedkapellet (spår), Rökkärrets tingshus (återlämning), den andande lunden (mysterium).
 
-**Fjäll** (5 till 29). Kal sluttning, vind, gruvhål och tysta kloster.
+**Fjäll** (4 till 30). Kal sluttning, vind, gruvhål och tysta kloster.
 
-- Egna monster: fjällvättar (11 till 13, grafikspec klar), bergsulvar (14 till 15, grafikspec klar), gruvkryp (15 till 19), järnbröder (16 till 17, platshållare forvriden_gruvarbetare). Mellanmark: vargar i fjällbjörkskogen (gråvarg och likätarvarg 5 till 8), galna munkar från Järnklostret (25), sprickväsen (29).
+- Egna monster: fjällvättar (dimgast och fjällvätte 11 till 12, fjällvätte grafikspec klar), bergsulvar och fjällbjörnar (14 till 15, fjällbjörn ny, grafik saknas), gruvkryp (12 till 18), järnbröder (forvriden_gruvarbetare 16 och järnbroder 18, ny, grafik saknas). Mellanmark: vargar och björnar i fjällbjörkskogen (4 till 6), frusna stupade på passen (odöda 7 till 9), galna munkar och askpredikanter (20 till 25), sprickpilgrimer och vridna jättar (28 till 30).
 - Resurser: sten, järn.
 - Mål: Fäbodlägret (eskort), vaktstugan (spår), lampan i schaktet (mysterium).
 
-**Kust** (4 till 28, Sista ljuset 24). Klippor, ebb, korpar, vrak och fyrar.
+**Kust** (3 till 30, Sista ljuset 24). Klippor, ebb, korpar, vrak och fyrar.
 
-- Egna monster: lik på stranden (4), strandgastar (gravgast 8), korpfolk (12 till 13, platshållare gastar), klockdrunknade (15, ny, grafik saknas), Askeborgs drunknade vakter (brandskelett 21), havsgastar (28, ny, grafik saknas).
+- Egna monster: smittade strandbor (förvridna 3 till 5), skeppsbrutna skelett (7 till 9), korpfolk (12 till 13, platshållare gastar), drunknade (drunknad 12, klockdrunknad 15), lyktgastar längs fyrkusten (16 till 18), Askeborgs drunknade vakter (drunknad vakt 19, ny, och brandskelett 21), havsgastar och dödsljus (28 till 30, dödsljus ny). Nya utan grafik: klockdrunknad, havsgast, irrbloss, drunknad vakt, dödsljus.
 - Resurser: sten, drivved, guld i vrak.
 - Mål: korpspåret till Korpvården (spår), Den sjunkna kyrkan (mysterium), fyren i Sista ljuset.
 
-**Ask** (4 till 29). Förbränd slätt och brinnande stad vid havet, aska som snö, kulttecken i blod.
+**Ask** (3 till 30). Förbränd slätt och brinnande stad vid havet, aska som snö, kulttecken i blod.
 
 - Regioner: Brandkanten, Glödstranden, Askfälten, Askeborg, Kultens katakomber, Den brinnande katedralen, Brandkusten.
-- Egna monster: kolnade skelett (8 till 10, platshållare skelett), glödbaggar (15 till 18, platshållare kryp), askdemoner (19 till 25), askans präster (22 till 24, platshållare askkultist), katedralväktare (24 till 25, platshållare hornslaktare och askriddare). Mellanmark: brända lik (4), sprickväsen (29). Ruttfolket (smittbarare, galen munk, köttklump) hör till träsket och den sjuka skogen, inte till asken.
+- Egna monster: kolnade skelett (8 till 10, platshållare skelett), glödbaggar (12 till 18, platshållare kryp), askdemoner (17 till 23), askans präster (22 till 24, platshållare askkultist), katedralväktare (24 till 25, platshållare hornslaktare och askriddare). Mellanmark: smittade askbor (3 till 5), ruttfolk vid askgränsen (smittbarare och galen munk 24 till 25), sprickpilgrimer och vridna jättar (28 till 30). Köttklumpen hör bara till träsket.
 - Resurser: sten, järn från smälta statyer, guld i brända hus.
 - Tiles: aska, sotig jord, glödspricka, lavasten, bränd väg. Dekor: svarta stammar, smälta statyer, kulttecken, pilgrimsstavar, rökpelare.
 - Mål: vraket på Glödstranden (mysterium), Saltbrännarnas läger (eskort), Askeborgs port (återlämning), flyktinglägret i Brandkanten (val mellan två).
