@@ -764,7 +764,8 @@
         "enemy": "grabjornen_ulvhild",
         "pos": [16, 4],
         "respawn": false,
-        "level": 6
+        "level": 6,
+        "plats": "Instansen ulvhilds_ide via teleporten ulvhilds_ide_ingang. pos är ingången norr om byn."
       },
       "level_range": [4, 6],
       "spawn_states": {
@@ -860,7 +861,8 @@
             "weight": 10
           }
         ]
-      }
+      },
+      "rensad_regel": "Vargaby blir rensad när alla spawnpunkter här är tömda och Ulvhild är besegrad (bana1_stor.json meta.boss_regel)."
     },
     {
       "id": "dimmerstrand",

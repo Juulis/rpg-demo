@@ -1,0 +1,300 @@
+{
+  "meta": {
+    "version": "1.0",
+    "issue": "GitHub Juulis/rpg-demo #33",
+    "regel": "Små händelser och platser i akt 1 som ger stämning och mening. Inga döda X, inga samla X, ingen questlogg. De ger rykten, flaggor och ibland en liten gåva. Inget spärrar rörelse.",
+    "triggers": "Samma triggertyper som quests.json meta.trigger_typer. tid i HH:MM till HH:MM speltid.",
+    "magi": "Det övernaturliga i händelserna kommer från sprickan och fienderna. Hjälten gör aldrig magi.",
+    "refs": ["bana1_stor.json", "quests.json", "rykten.json", "npc_grupper.json"]
+  },
+  "platser": [
+    {
+      "id": "saknades_roset",
+      "namn": "De saknades röse",
+      "typ": "runsten",
+      "delomrade": "runglantan",
+      "ankare": "saknades_roset",
+      "beskrivning": "Ett vägröse där de kvarvarande ristat namnen på dem som aldrig kom tillbaka. Det kommer färska blommor varje morgon, ingen vet från vem.",
+      "interaktion": "inspektera",
+      "text": "Namnen är många. Ett av dem är nyristat, och stenflisorna ligger kvar på marken."
+    },
+    {
+      "id": "jaktkojan",
+      "namn": "Den uppbrutna jaktkojan",
+      "typ": "ruin",
+      "delomrade": "dimgranarna",
+      "ankare": "jaktkojan",
+      "beskrivning": "En jaktkoja där dörren brutits upp inifrån. På väggen räknar streck dagar, sedan slutar de.",
+      "interaktion": "inspektera",
+      "text": "Fyrtioen streck. Det sista är bara halvt draget."
+    },
+    {
+      "id": "stenbron",
+      "namn": "Den rasade stenbron",
+      "typ": "ruin",
+      "delomrade": "backravinen",
+      "ankare": "stenbron",
+      "beskrivning": "En gammal bro med runtecken i valvet. Halva bron ligger i bäcken. Tecknen liknar runstenarnas.",
+      "interaktion": "inspektera",
+      "text": "Samma hand som ristade runstenarna ristade bron. Någon har hackat bort ett tecken."
+    },
+    {
+      "id": "kolarkojan_middag",
+      "namn": "Kojan med den dukade middagen",
+      "typ": "ruin",
+      "delomrade": "kolarkojorna",
+      "ankare": "kolarkojan_middag",
+      "beskrivning": "Fyra tallrikar, en gryta, en stol omkullvält. Maten ser varm ut men är det inte.",
+      "interaktion": "inspektera",
+      "text": "Fyra tallrikar. Tre har ätits ur."
+    },
+    {
+      "id": "tjardalen",
+      "namn": "Tjärdalen",
+      "typ": "ruin",
+      "delomrade": "milorna",
+      "ankare": "tjardalen",
+      "beskrivning": "En övergiven tjärgrop där svart tjära fortfarande sipprar. Djurspår går runt den, aldrig över.",
+      "interaktion": "inspektera",
+      "text": "Tjäran är varm. Under ytan glimtar något som liknar ben."
+    },
+    {
+      "id": "brunnen",
+      "namn": "Brunnen vid den brunna gården",
+      "typ": "ruin",
+      "delomrade": "brunna_garden",
+      "ankare": "brunnen",
+      "beskrivning": "Gårdens brunn klarade branden. Om natten hörs en vaggvisa nerifrån.",
+      "interaktion": "inspektera",
+      "text": "Vaggvisan tystnar när du lutar dig över kanten. Sedan börjar den om, längre ner."
+    },
+    {
+      "id": "skinnstallningarna",
+      "namn": "Skinnställningarna",
+      "typ": "ruin",
+      "delomrade": "vargaby_utmark",
+      "ankare": "skinnstallningarna",
+      "beskrivning": "Rader av vargskinn som spänts upp för trettio vintrar sedan. Några har klor som fortfarande är blanka.",
+      "interaktion": "inspektera",
+      "text": "Ett av skinnen är grått och mycket större än de andra. Ingen har vågat ta ner det."
+    },
+    {
+      "id": "likbararnas_bar",
+      "namn": "Båren på hygget",
+      "typ": "ruin",
+      "delomrade": "norra_hygget",
+      "ankare": "likbararnas_bar",
+      "beskrivning": "En bår av granstänger lämnad mitt på hygget. Lyktan på den brinner fortfarande.",
+      "interaktion": "inspektera",
+      "text": "Båren är tom. Lyktan har aldrig behövt fyllas på."
+    }
+  ],
+  "handelser": [
+    {
+      "id": "vargringen",
+      "namn": "Vargringen",
+      "delomrade": "runglantan",
+      "nar": "natt, runes_active_lt 3",
+      "vad": "Vargar ylar i en ring runt runstenarna men går aldrig in mellan dem. När en runa vaknar tystnar ylandet den natten.",
+      "trigger": {
+        "typ": "gå_in_i",
+        "region": "startskogen",
+        "ankare": "runglantan",
+        "tid": "20:00 till 06:00"
+      },
+      "villkor": {
+        "runes_active_lt": 3
+      },
+      "effekter": [
+        {
+          "typ": "flag_set",
+          "flag": "sett_vargringen",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_vargringen"
+        }
+      ],
+      "upprepning": "en gång per hjälte, ljudet varje natt"
+    },
+    {
+      "id": "ugglan_som_raknar",
+      "namn": "Ugglan som räknar",
+      "delomrade": "dimgranarna",
+      "nar": "natt",
+      "vad": "En uggla hoar lika många gånger som det finns levande i lägret. Antalet ökar när lägrets hopp ökar.",
+      "trigger": {
+        "typ": "inspektera",
+        "ankare": "jaktkojan",
+        "region": "startskogen",
+        "tid": "20:00 till 06:00"
+      },
+      "effekter": [
+        {
+          "typ": "flag_set",
+          "flag": "hort_ugglan",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_ugglan"
+        }
+      ],
+      "upprepning": "varje natt, ryktet en gång"
+    },
+    {
+      "id": "backen_som_tystnar",
+      "namn": "Bäcken som tystnar",
+      "delomrade": "backravinen",
+      "nar": "slumpas 1 gång per 3 speldygn",
+      "vad": "Bäcken slutar porla i några sekunder. Allt i ravinen står stilla, även dimman. Sedan fortsätter allt som vanligt.",
+      "trigger": {
+        "typ": "gå_in_i",
+        "region": "startskogen",
+        "ankare": "backravinen"
+      },
+      "effekter": [
+        {
+          "typ": "flag_set",
+          "flag": "hort_tystnaden",
+          "value": true
+        }
+      ],
+      "upprepning": "ren stämning, ingen belöning"
+    },
+    {
+      "id": "kojan_dukad",
+      "namn": "Kojan dukas igen",
+      "delomrade": "kolarkojorna",
+      "nar": "varje nytt game",
+      "vad": "Middagen i kojan står dukad igen i varje nytt game, med fyra tallrikar. Den som tar maten får torkat kött.",
+      "trigger": {
+        "typ": "inspektera",
+        "ankare": "kolarkojan_middag",
+        "region": "vargstigen"
+      },
+      "effekter": [
+        {
+          "typ": "item_grant",
+          "item": "torkat_kott",
+          "antal": 1
+        }
+      ],
+      "upprepning": "en gång per game"
+    },
+    {
+      "id": "milan_som_pyr",
+      "namn": "Milan som pyr",
+      "delomrade": "milorna",
+      "nar": "alltid",
+      "vad": "En mila har pyrt i trettio år. Om hjälten lägger timmer på den lyser den upp hela Kolarmon en natt och lägret ser röken.",
+      "trigger": {
+        "typ": "inspektera",
+        "ankare": "kolmilan",
+        "region": "kolarmon"
+      },
+      "kostnad": {
+        "timmer": 1
+      },
+      "effekter": [
+        {
+          "typ": "flag_set",
+          "flag": "tande_milan",
+          "value": true
+        },
+        {
+          "typ": "value_add",
+          "key": "lagrets_hopp",
+          "delta": 1
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_rok_fran_kolarmon"
+        }
+      ],
+      "upprepning": "en gång per hjälte"
+    },
+    {
+      "id": "askregnet",
+      "namn": "Askregnet",
+      "delomrade": "brunna_garden",
+      "nar": "slumpas 1 gång per 4 speldygn",
+      "vad": "Aska faller som snö över Södra mon i en speltimme. Fotspår i askan leder söderut och tar slut mitt på fältet.",
+      "trigger": {
+        "typ": "gå_in_i",
+        "region": "sodra_mon"
+      },
+      "effekter": [
+        {
+          "typ": "flag_set",
+          "flag": "sett_askregnet",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_askan_kommer_norrut"
+        }
+      ],
+      "upprepning": "stämning varje gång, ryktet en gång"
+    },
+    {
+      "id": "klockan_i_natten",
+      "namn": "Klockan i natten",
+      "delomrade": "vargaby_delomrade",
+      "nar": "natt, så länge Vargaby är besatt",
+      "vad": "Kyrkklockan i Vargaby slår tre slag vid midnatt fast repet är avskuret. Efter att Ulvhild fallit slår den aldrig mer.",
+      "trigger": {
+        "typ": "inspektera",
+        "ankare": "vargaby_kyrka",
+        "region": "vargaby",
+        "tid": "23:00 till 01:00"
+      },
+      "villkor": {
+        "boss_not_killed": "grabjornen_ulvhild"
+      },
+      "effekter": [
+        {
+          "typ": "flag_set",
+          "flag": "sett_klockan",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_klockan_utan_rep"
+        }
+      ],
+      "upprepning": "en gång per hjälte"
+    },
+    {
+      "id": "den_stilla_processionen",
+      "namn": "Den stilla processionen",
+      "delomrade": "norra_hygget",
+      "nar": "natt, efter att likbärarna fått hjälp",
+      "vad": "Lyktor rör sig i en rad över hygget mot Gravåsen. Den som följer dem hittar bara Gravåsens högar och en lykta som slocknar.",
+      "trigger": {
+        "typ": "gå_in_i",
+        "region": "startskogen",
+        "ankare": "norra_hygget",
+        "tid": "20:00 till 06:00"
+      },
+      "villkor": {
+        "flag": {
+          "hjalpt_likbararna": true
+        }
+      },
+      "effekter": [
+        {
+          "typ": "flag_set",
+          "flag": "foljt_processionen",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_lyktorna_pa_hygget"
+        }
+      ],
+      "upprepning": "en gång per hjälte"
+    }
+  ]
+}

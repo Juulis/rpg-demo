@@ -86,6 +86,14 @@
       }
     }
   },
+  "bybo_flykting": {
+    "namn": "Refugee by the Fire",
+    "repliker": {
+      "halsning": "Nine days we walked. Without you it would have been ten, and then no more.",
+      "rader": ["The cart made it. It's all we have.", "The wolves followed us all the way to the huts.", "It's warm here. That's enough."]
+    },
+    "quest_krokar": []
+  },
   "viskaren": {
     "namn": "The Whisperer",
     "repliker": {

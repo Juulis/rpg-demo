@@ -35,6 +35,11 @@ Världen är övergiven. Demoner och monster har tagit städerna, och de få öv
 - [arkiv/itemization_ideer.md](arkiv/itemization_ideer.md): arkiverad, inga system för att ändra föremål.
 - [lorebok.json](lorebok.json): lore för alla set, setdelar och legendariska föremål (tangent H).
 - [portal_by.json](portal_by.json) och [portal_by.md](portal_by.md): Den gamla byn, första staden.
+- [bana1_stor.json](bana1_stor.json): stor bana 1 (#33), 10 delområden i ring 0 och 1 med monstertabeller och nivåkurvan till nivå 7.
+- [npc_grupper.json](npc_grupper.json): NPC-grupper ute i världen med fraktion, HP, skada och flaggor och rykten om man hjälper dem.
+- [varldshandelser.json](varldshandelser.json): små världshändelser och platser i akt 1, inga döda X.
+- [vandrare.json](vandrare.json): vandrande handlare och läger med syfte i lore.
+- [varldsgenerator.json](varldsgenerator.json): generatorregler för #85: biomgränser, monsterpooler, platsplacering, nivå per avstånd, ljud och musik per biom, questplatser.
 
 ## Klasser
 
@@ -71,7 +76,7 @@ Svag ger 150 % skada, resistent 60 %.
 
 Tillstånd: Besatt, Rensad, Återbefolkad 1 (handlare), 2 (vapenhandlare, vakter), 3 (kuriosahandlare, helare, tavern, snabbresa). Priser och tjänster i stadstjanster.md.
 Underbossar: Korpmodern (13, Korpholmarna), Järnmunken (17, Järnklostret), Askans profet (23, Kultens katakomber). Stats i quests.md och monsterfamiljer.json.
-Före städerna: Startskogen, nivå 1 till 3, Bestar. Rekommenderad väg: Startskogen (2 till 3 games), Vargaby (1 till 2 games), sedan portalbyn på nivå 6 till 7.
+Före städerna: Startskogen, nivå 1 till 3, Bestar. Rekommenderad väg: Startskogen (2 till 3 games), Vargaby (1 game), sedan portalbyn på nivå 7.
 
 1. Vargaby, nivå 4 till 6, boss nivå 6, Bestar
 2. Den gamla byn (portalbyn), nivå 7 till 9, Benkungen nivå 10, Odöda
@@ -108,7 +113,7 @@ Kvaliteter Normal (vit), Magisk (blå), Sällsynt (gul), Set (grön), Legendaris
 
 ## Progression
 
-Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 1478 plus Gråbjörnen 2425, vilket ger nivå 6 till 7 före portalbyn för den som följer den rekommenderade vägen.
+Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 2025 (20 monster) plus Gråbjörnen 2425, vilket ger nivå 7 före portalbyn för den som följer den rekommenderade vägen. Med stor bana 1 (bana1_stor.json) når hjälten nivå 7 före ring 2 och nivå 11 till 13 före akt 2.
 
 Utvecklare: i activate() när S.count når 3, öppna portalen efter 2 s. Inga nivå eller rensningsvillkor.
 

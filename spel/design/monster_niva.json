@@ -443,12 +443,13 @@
     "path": ["startskogen 1 till 3 (2 till 3 games)", "vargaby 4 till 6 (1 till 2 games, Gråbjörnen en gång)", "gamla_byn 7 till 9"],
     "xp_per_game_simulerat": {
       "startskogen": 123,
-      "vargaby_utan_boss": 1478,
+      "vargaby_utan_boss": 2025,
       "grabjornen_ulvhild": 2425
     },
-    "kalkyl": "2 till 3 skogsgames ger cirka 250 till 370 XP (nivå 2, nära 3 med bonus för lägre nivå). Ett Vargaby game med Gråbjörnen ger cirka 3900 XP till, totalt cirka 4200: nivå 6 (2821), nära 7 (4291). Ett andra Vargaby game ger cirka 5700: nivå 7.",
-    "resultat": "Spelaren når nivå 6 till 7 innan portalbyn.",
-    "xp_curve": "100 × n^1,5, totalt nivå 6: 2821, nivå 7: 4291"
+    "kalkyl": "2 till 3 skogsgames ger cirka 250 till 370 XP (nivå 2, nära 3 med bonus för lägre nivå). Ett Vargaby game (20 monster, cirka 2025 XP, mer med bonus för lägre nivå) med Gråbjörnen ger cirka 4450 XP till, totalt cirka 4700 till 4800: nivå 7 (4291).",
+    "resultat": "Spelaren når nivå 7 innan portalbyn.",
+    "xp_curve": "100 × n^1,5, totalt nivå 6: 2821, nivå 7: 4291",
+    "bana1_stor": "Stor bana 1 (#33): se bana1_stor.json nivakurva. Nivå 7 före ring 2, nivå 11 till 13 före akt 2."
   },
   "fixed_levels": {
     "skogsvarg": 1,

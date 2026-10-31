@@ -1,0 +1,402 @@
+{
+  "meta": {
+    "version": "1.0",
+    "issue": "GitHub Juulis/rpg-demo #33 (för #30 och #31)",
+    "skala": "Bana 1 i koden är idag startskogen (en spelyta, radie cirka 40 världsenheter). Stor bana 1 = ring 0 och 1 i varld_stor.json, uppdelad i 10 delområden som var och ett är ungefär lika stort som dagens startskogen. Totalt 10 gånger ytan. Inga befintliga regioner flyttas.",
+    "regler": [
+      "Inga spärrar: alla delområden är öppna från start, svårighet styrs bara av monsternivå.",
+      "Monstermix är avstängd: varje delområde spawnar bara sin huvudfamilj (spawnzoner.json meta.mixed_spawn_enabled = false).",
+      "Bara befintliga undertyper med fasta stats (monsterfamiljer.json). Inga nya monster behövs.",
+      "D2 spawn: rullas en gång per game, ingen respawn. enemy_table har samma format som spawnzoner.json.",
+      "Inga döda X quests. Liv kommer från npc_grupper.json, varldshandelser.json och vandrare.json."
+    ],
+    "refs": [
+      "varld_stor.json",
+      "spawnzoner.json",
+      "monsterfamiljer.json",
+      "monster_niva.json",
+      "npc_grupper.json",
+      "varldshandelser.json",
+      "vandrare.json"
+    ],
+    "utvecklare": "Varje delområde blir en area i spawnzoner.json när koden byggs: id, family, level_range, enemy_table och session_roll med expected_monsters_per_game = monster_per_game. Spawnpunkter 5 till 8 per delområde, center_safe_radius 12 runt säkra platser.",
+    "chunk_regel": "Delområdets chunk och region gäller före region_for_chunk i varld_stor.json (se varldsgenerator.json biomgranser).",
+    "ring_niva_regel": "Delområdets ring räknas från chunkens avstånd till startpunkten (varld_stor.json meta.zonmodell). Delområdets niva = lägsta och högsta nivå i dess enemy_table och gäller före regionens nivaband.",
+    "ring2_regel": "Ring 2 (gravasen, myrkanten, brandkanten, gamla_byn, kapellets_krypta) delas inte i delområden. Där grannar eller ett delomrade fält i andra filer pekar på ett av dessa id menas hela regionen i varld_stor.json.",
+    "boss_regel": "Gråbjörnen Ulvhild är Vargabys boss (akter.json, stader.json, varld_stor.json region vargaby, spawnzoner.json areas.vargaby.boss). Striden sker i instansen ulvhilds_ide, som nås via teleporten ulvhilds_ide_ingang i Idets skog. Vargaby räknas som rensad när alla spawnpunkter i areas.vargaby är tömda och Ulvhild är besegrad. Delområdena runt byn (Vargabys utmark, Idets skog) påverkar inte stadens tillstånd. I nivåkurvan räknas Ulvhild när Idets skog besöks."
+  },
+  "delomraden": [
+    {
+      "id": "runglantan",
+      "namn": "Rungläntan",
+      "region": "startskogen",
+      "ring": 0,
+      "chunk": [1, 1],
+      "niva": [1, 3],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "skogsvarg",
+          "weight": 85,
+          "group": [1, 3]
+        },
+        {
+          "enemy": "vargbest",
+          "weight": 15,
+          "group": [1, 1]
+        }
+      ],
+      "monster_per_game": 14,
+      "xp_per_game": 87,
+      "miljo": "De tre runstenarna och röda portalen. Vargspår i cirklar runt stenarna, nedtrampad mossa.",
+      "grannar": ["dimgranarna", "backravinen", "kolarkojorna"],
+      "platser": ["saknades_roset"],
+      "handelser": ["vargringen"],
+      "grupper": [],
+      "lager": []
+    },
+    {
+      "id": "dimgranarna",
+      "namn": "Dimgranarna",
+      "region": "startskogen",
+      "ring": 0,
+      "chunk": [0, 1],
+      "niva": [1, 3],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "skogsvarg",
+          "weight": 75,
+          "group": [1, 3]
+        },
+        {
+          "enemy": "vargbest",
+          "weight": 25,
+          "group": [1, 2]
+        }
+      ],
+      "monster_per_game": 16,
+      "xp_per_game": 128,
+      "miljo": "Täta granar där dimman står kvar hela dagen. Gamla snaror, en jaktkoja med dörren uppbruten.",
+      "grannar": ["runglantan", "norra_hygget", "milorna"],
+      "platser": ["jaktkojan"],
+      "handelser": ["ugglan_som_raknar"],
+      "grupper": [],
+      "lager": []
+    },
+    {
+      "id": "backravinen",
+      "namn": "Bäckravinen",
+      "region": "startskogen",
+      "ring": 0,
+      "chunk": [1, -1],
+      "niva": [1, 3],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "skogsvarg",
+          "weight": 50,
+          "group": [1, 3]
+        },
+        {
+          "enemy": "vargbest",
+          "weight": 50,
+          "group": [1, 2]
+        }
+      ],
+      "monster_per_game": 16,
+      "xp_per_game": 209,
+      "miljo": "En smal ravin med svart bäck och en rasad stenbro. Vattnet är kallt även på sommaren.",
+      "grannar": ["runglantan", "brunna_garden"],
+      "platser": ["stenbron"],
+      "handelser": ["backen_som_tystnar"],
+      "grupper": [],
+      "lager": []
+    },
+    {
+      "id": "kolarkojorna",
+      "namn": "Kolarkojorna",
+      "region": "vargstigen",
+      "ring": 1,
+      "chunk": [2, 0],
+      "niva": [3, 4],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "vargbest",
+          "weight": 60,
+          "group": [1, 2]
+        },
+        {
+          "enemy": "taggsvin",
+          "weight": 40,
+          "group": [1, 1]
+        }
+      ],
+      "monster_per_game": 14,
+      "xp_per_game": 467,
+      "miljo": "Östra vägen genom glesnande skog. Övergivna kojor, en middag kvar på bordet, en barnsandal i mossan.",
+      "grannar": ["runglantan", "vargaby_utmark"],
+      "platser": ["kolarkojan_middag"],
+      "handelser": ["kojan_dukad"],
+      "grupper": ["flyktingarna_vargstigen"],
+      "lager": ["vagvaktarlagret"]
+    },
+    {
+      "id": "milorna",
+      "namn": "Milorna",
+      "region": "kolarmon",
+      "ring": 1,
+      "chunk": [-2, 1],
+      "niva": [3, 5],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "vargbest",
+          "weight": 50,
+          "group": [1, 2]
+        },
+        {
+          "enemy": "taggsvin",
+          "weight": 30,
+          "group": [1, 1]
+        },
+        {
+          "enemy": "skuggvarg",
+          "weight": 20,
+          "group": [2, 3]
+        }
+      ],
+      "monster_per_game": 12,
+      "xp_per_game": 456,
+      "miljo": "Västra vägen. Slocknade kolmilor, sotiga stubbar, Kolmilan där en mila fortfarande pyr.",
+      "grannar": ["dimgranarna", "myrkanten"],
+      "platser": ["tjardalen"],
+      "handelser": ["milan_som_pyr"],
+      "grupper": ["kolarfamiljen"],
+      "lager": []
+    },
+    {
+      "id": "brunna_garden",
+      "namn": "Den brunna gården",
+      "region": "sodra_mon",
+      "ring": 1,
+      "chunk": [0, -3],
+      "niva": [3, 5],
+      "familj": "forvridna",
+      "enemy_table": [
+        {
+          "enemy": "forvriden_jagare",
+          "weight": 70,
+          "group": [1, 2]
+        },
+        {
+          "enemy": "smittad_bybo",
+          "weight": 30,
+          "group": [1, 2]
+        }
+      ],
+      "monster_per_game": 12,
+      "xp_per_game": 636,
+      "miljo": "Askvägen söderut. En nedbränd gård, svarta åkrar, de första askflagorna i luften.",
+      "grannar": ["backravinen", "brandkanten"],
+      "platser": ["brunnen"],
+      "handelser": ["askregnet"],
+      "grupper": ["avfallingarna"],
+      "lager": ["botgorarnas_lager"]
+    },
+    {
+      "id": "vargaby_utmark",
+      "namn": "Vargabys utmark",
+      "region": "vargstigen",
+      "ring": 1,
+      "chunk": [3, 0],
+      "niva": [4, 5],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "taggsvin",
+          "weight": 50,
+          "group": [1, 1]
+        },
+        {
+          "enemy": "skuggvarg",
+          "weight": 50,
+          "group": [2, 3]
+        }
+      ],
+      "monster_per_game": 12,
+      "xp_per_game": 648,
+      "miljo": "Hagar och fallna gärdsgårdar runt Vargaby. Skinn som torkar på ställningar ingen tar ner.",
+      "grannar": ["kolarkojorna", "vargaby_delomrade", "norra_hygget"],
+      "platser": ["skinnstallningarna"],
+      "handelser": [],
+      "grupper": ["heddas_jaktlag"],
+      "lager": ["jaktlagret"]
+    },
+    {
+      "id": "vargaby_delomrade",
+      "namn": "Vargaby",
+      "region": "vargaby",
+      "ring": 1,
+      "chunk": [3, 1],
+      "niva": [4, 6],
+      "familj": "bestar",
+      "enemy_table": "spawnzoner.json areas.vargaby (oförändrad)",
+      "monster_per_game": 20,
+      "xp_per_game": 2088,
+      "miljo": "Staden som den är (stader.json). Klösmärken på kyrkdörren från insidan.",
+      "grannar": ["vargaby_utmark", "idets_skog"],
+      "platser": [],
+      "handelser": ["klockan_i_natten"],
+      "grupper": [],
+      "lager": []
+    },
+    {
+      "id": "idets_skog",
+      "namn": "Idets skog",
+      "region": "vargaby",
+      "ring": 1,
+      "chunk": [3, 2],
+      "niva": [5, 6],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "skuggvarg",
+          "weight": 50,
+          "group": [2, 3]
+        },
+        {
+          "enemy": "gravargsledare",
+          "weight": 30,
+          "group": [1, 1]
+        },
+        {
+          "enemy": "ruttbjorn",
+          "weight": 20,
+          "group": [1, 1]
+        }
+      ],
+      "monster_per_game": 6,
+      "xp_per_game": 775,
+      "miljo": "Granrötter och ben runt teleporten till Ulvhilds ide. Kedjor i träden.",
+      "grannar": ["vargaby_delomrade", "norra_hygget"],
+      "platser": [],
+      "handelser": [],
+      "grupper": [],
+      "lager": [],
+      "teleport": "ulvhilds_ide_ingang"
+    },
+    {
+      "id": "norra_hygget",
+      "namn": "Norra hygget",
+      "region": "startskogen",
+      "ring": 1,
+      "chunk": [2, 2],
+      "niva": [4, 5],
+      "familj": "bestar",
+      "enemy_table": [
+        {
+          "enemy": "skuggvarg",
+          "weight": 70,
+          "group": [2, 3]
+        },
+        {
+          "enemy": "taggsvin",
+          "weight": 30,
+          "group": [1, 1]
+        }
+      ],
+      "monster_per_game": 8,
+      "xp_per_game": 440,
+      "miljo": "Norra vägen. Ett kalhygge där stubbarna ser ut som gravstenar. Här börjar Gravåsen.",
+      "grannar": ["dimgranarna", "idets_skog", "gravasen", "vargaby_utmark"],
+      "platser": ["likbararnas_bar"],
+      "handelser": ["den_stilla_processionen"],
+      "grupper": ["likbararna"],
+      "lager": ["likbararnas_lager"]
+    }
+  ],
+  "nivakurva": {
+    "mal": "Hjälten når nivå 7 innan ring 2 (Gravåsen och Den gamla byn) och nivå 11 innan akt 2 (Dimmerstrand 11 till 13).",
+    "xp_kurva": "monster_niva.json hero_xp_curve: nivå 3 383, nivå 5 1703, nivå 7 4291, nivå 8 6143, nivå 10 11106, nivå 11 14268, nivå 12 17916, nivå 13 22073",
+    "metod": "Simulerat i ordning med fasta XP per undertyp, monster_per_game (Vargaby 20 enligt spawnzoner.json medel), andel enligt vikt i enemy_table och xp_penalty mot hjältens nivå vid varje delområde (inklusive bonus när hjälten är lägre, bossgolv 0,25). Ring 2 räknas med tabellerna i ring_2_kontroll. Elitmonster ej medräknade, de ger cirka 5 procent extra.",
+    "maltavla": [
+      {
+        "efter": "ring 0 (Rungläntan, Dimgranarna, Bäckravinen)",
+        "xp": 428,
+        "niva": 3
+      },
+      {
+        "efter": "ring 1 utan Vargaby och Ulvhild",
+        "xp": 2663,
+        "niva": 5
+      },
+      {
+        "efter": "Vargaby",
+        "xp": 4751,
+        "niva": 7
+      },
+      {
+        "efter": "Ulvhild och Norra hygget, allt i ring 0 och 1",
+        "xp": 8391,
+        "niva": 8
+      },
+      {
+        "efter": "Gravåsen och Den gamla byn",
+        "xp": 12833,
+        "niva": 10
+      },
+      {
+        "efter": "Myrkanten, Brandkanten och Kapellets krypta med Benkungen, hela akt 1",
+        "xp": 23664,
+        "niva": 13
+      }
+    ],
+    "kortaste_vag": {
+      "vag": [
+        "runglantan",
+        "backravinen",
+        "kolarkojorna",
+        "vargaby_delomrade",
+        "idets_skog",
+        "norra_hygget",
+        "gravasen",
+        "gamla_byn",
+        "kapellets_krypta"
+      ],
+      "resultat": "Nivå 6 efter Vargaby, nivå 8 efter Ulvhild, nivå 8 vid Gravåsen, nivå 11 efter Benkungen (17742 XP).",
+      "utan_ulvhild": "Den som hoppar över Ulvhild tar i stället Dimgranarna, Milorna, Brunna gården och Utmarken och når nivå 7 efter Vargaby.",
+      "genomgang": "Vägen räknar bara delområden som rensas. Backravinen till Kolarkojorna går tillbaka genom Rungläntan, Kolarkojorna till Vargaby går längs vägen genom Vargabys utmark utan att rensa den. Övriga steg är direkta grannar."
+    },
+    "ring_2_kontroll": [
+      {
+        "region": "gravasen",
+        "monster_per_game": 12,
+        "tabell": "skelett_hund 50, skelett_krigare 50"
+      },
+      {
+        "region": "gamla_byn",
+        "monster_per_game": 22,
+        "tabell": "spawnzoner.json areas.gamla_byn"
+      },
+      {
+        "region": "kapellets_krypta",
+        "monster_per_game": 8,
+        "tabell": "skelett_vakt 50, skelett_kapten 50",
+        "boss": "benkungen_valdemar"
+      },
+      {
+        "region": "myrkanten",
+        "monster_per_game": 12,
+        "tabell": "myrhund 40, myrlik 60"
+      },
+      {
+        "region": "brandkanten",
+        "monster_per_game": 12,
+        "tabell": "skelett_bagskytt 40, skelett_runprast 30, skelett_vakt 30"
+      }
+    ],
+    "resultat": "Nivå 7 nås före ring 2 både på kortaste vägen (med Ulvhild) och utan Ulvhild om man utforskar mer. Allt rensat i ring 0 och 1 ger nivå 8, vilket ligger inom Den gamla byns 7 till 9. Hela akt 1 ger nivå 11 (kortaste vägen) till 13 (allt rensat) före Dimmerstrand 11 till 13. Ändras monstertätheten ska tabellen räknas om."
+  }
+}

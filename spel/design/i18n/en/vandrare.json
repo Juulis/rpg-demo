@@ -1,0 +1,64 @@
+{
+  "bertil_karran": {
+    "namn": "Bertil with the Cart",
+    "personlighet": "Talkative, afraid of the dark, counts out loud.",
+    "utseende": "A short man in a felt hat with a cart of bells he has wrapped in cloth.",
+    "lore": "Bertil carries the belongings of the missing back to the camp so the families have something to bury. Trade is his excuse to go out.",
+    "repliker": {
+      "halsning": "Not so close, the bells. I wrapped them, but they still carry.",
+      "rader": [
+        "I bring home what the missing leave behind. A shoe, a comb. That's enough for a grave.",
+        "The colliers pay in charcoal. You can't eat charcoal.",
+        "Three days to Wolfstead, if the wolves allow it."
+      ]
+    }
+  },
+  "ragna_spjutbararen": {
+    "namn": "Ragna the Spearbearer",
+    "personlighet": "Terse, proud, never smiles.",
+    "utseende": "A tall woman with a scar across her throat, three spears on her back and a cloak of raven feathers.",
+    "lore": "The last of the Amazon hunting party. She wanders between camps searching for her sisters' spears, which she knows by their notches. She sells what she does not need.",
+    "repliker": {
+      "halsning": "Show me your spear. No. Not hers.",
+      "rader": [
+        "We hunted these woods before anyone carved the stones.",
+        "My sisters fell at Ashenhold. Their spears did not break.",
+        "Buy or go. The wolves can hear us."
+      ]
+    }
+  },
+  "saga_askflykting": {
+    "namn": "Saga the Ash Refugee",
+    "personlighet": "Nervous, quick-tongued, always glancing south.",
+    "utseende": "A young woman with a burnt robe turned inside out and sooty hands.",
+    "lore": "She bought her freedom from the Children of Ash with the cult's relics. Now she sells the last of what she took and gathers rumours of the Fourth Stone.",
+    "repliker": {
+      "halsning": "Quiet. They listen even here.",
+      "rader": [
+        "Fire cleanses nothing. It only eats.",
+        "They speak of four stones. Not three. Four.",
+        "A priest wore this around his neck. He no longer needs it."
+      ]
+    }
+  },
+  "vagvaktarlagret": {
+    "namn": "The Wagon Fort",
+    "syfte": "Three burnt wagons in a ring that refugees have used as a resting place since the Night of Ash. Bertil sleeps here."
+  },
+  "jaktlagret": {
+    "namn": "The Hunting Camp",
+    "syfte": "Hedda's hunters dry meat here so Wolfstead can survive the winter. The camp shows that someone still thinks about the future."
+  },
+  "botgorarnas_lager": {
+    "namn": "The Penitents' Camp",
+    "syfte": "Deserters from the Children of Ash burn their cult marks here. The camp shows that the cult can be left."
+  },
+  "likbararnas_lager": {
+    "namn": "The Corpse Bearers' Camp",
+    "syfte": "Bror's men gather the dead here before carrying them to the camp. A quiet, dark place, but it means no one is left behind."
+  },
+  "gravvaktarnas_vakteld": {
+    "namn": "The Gravewardens' Watchfire",
+    "syfte": "The Gravewardens kept a fire by the barrows for hundreds of years. It went out on the Night of Ash and can be lit again."
+  }
+}

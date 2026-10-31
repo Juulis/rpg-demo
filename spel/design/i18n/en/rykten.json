@@ -121,5 +121,59 @@
   },
   "rykte_ebbe_dod": {
     "text": "Ebbe the Gravewarden was found dead by the portal, his lantern dark. Ingrid guards the gate now."
+  },
+  "rykte_flyktingarna_framme": {
+    "text": "The family from the east made it in the end. {hjalte} stepped in when the wolves came."
+  },
+  "rykte_flyktingarna_foll": {
+    "text": "There is a new birch cross by the huts on the Wolf Trail. The cart is still there."
+  },
+  "rykte_jaktlaget_hemma": {
+    "text": "Hedda's hunters came home with meat. That hasn't happened in a long time."
+  },
+  "rykte_jaktlaget_saknas": {
+    "text": "Hedda waits for her hunters at the gate. No one says anything."
+  },
+  "rykte_kolarna_lever": {
+    "text": "My cousins at the kiln are alive. Someone kept the beasts away from them."
+  },
+  "rykte_milan_slocknad": {
+    "text": "The kiln on the Kiln Heath has gone out. The child sleeps with Sigrun now."
+  },
+  "rykte_avfallingarna_fyra_stenar": {
+    "text": "The two from the Ash Road say the cult speaks of four stones, not three."
+  },
+  "rykte_avfallingarna_tagna": {
+    "text": "Two young ones fled Ashenhold. The Twisted took them at the burnt farm."
+  },
+  "rykte_de_doda_hemma": {
+    "text": "The bearers brought another one home. He has a cross now, with his name on it."
+  },
+  "rykte_baren_kvar": {
+    "text": "A bier stands in the North Clearing. The lantern burns, but no one carries it."
+  },
+  "rykte_gravvaktarna_lever": {
+    "text": "A watchfire on Barrow Ridge. Two of my brothers live."
+  },
+  "rykte_gravvaktarna_tystnat": {
+    "text": "No fire on Barrow Ridge. Ebbe stopped asking."
+  },
+  "rykte_vargringen": {
+    "text": "The wolves howl around the stones but never go in. The stones remember something."
+  },
+  "rykte_ugglan": {
+    "text": "The owl in the Mistpines hoots once for every living soul in the camp. Count, if you dare."
+  },
+  "rykte_rok_fran_kolarmon": {
+    "text": "We saw smoke from the Kiln Heath last night. Someone has lit the kiln."
+  },
+  "rykte_askan_kommer_norrut": {
+    "text": "Ash has started falling over the South Heath. It comes closer every year."
+  },
+  "rykte_klockan_utan_rep": {
+    "text": "The bell in Wolfstead strikes at midnight. Its rope was cut twenty-five years ago."
+  },
+  "rykte_lyktorna_pa_hygget": {
+    "text": "Lanterns walk towards Barrow Ridge at night. The bearers say they aren't theirs."
   }
 }
