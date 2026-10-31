@@ -108,12 +108,12 @@
     "startskogen_fotavtryck": {
       "beslut": "Världens origo (0, 0) är mitten av regionen startskogen, chunk [1, 1], där Rungläntan ligger. Gamla Startskogen (koden före storvärlden) är Rungläntan.",
       "koordinater": "1 chunk = 64 rutor = 128 världsenheter. Chunk (cx, cy) täcker x från (cx − 1) × 128 − 64 till (cx − 1) × 128 + 64 och z (cy) på samma sätt, alltså chunk = floor((x + 192) / 128). Mitten av chunk [1, 1] = (0, 0), mitten av chunk [0, 0] = (−128, −128).",
-      "gamla_startskogen": "spawnzoner.json areas.startskogen (8 punkter på radie 30 till 35, grupper 18 till 40 från origo, runstenarna och röda portalen) ryms helt i chunk [1, 1] (radie högst 40 av 64). Chunken är delområdet runglantan och spawnar bara från det gamla systemet med Rungläntans monster_per_game 14 (spawnzoner.json session_roll medel 14, ersätter det gamla snittet 17); chunk-spawnen hoppar över chunk [1, 1].",
+      "gamla_startskogen": "spawnzoner.json areas.startskogen (8 punkter på radie 30 till 35, grupper 18 till 40 från origo, runstenarna och röda portalen) ryms helt i chunk [1, 1] (radie högst 40 av 64). Chunken är delområdet runglantan och spawnar bara från det gamla systemet med Rungläntans monster_per_game 14 (spawnzoner.json session_roll: 3 till 7 aktiva punkter, simulerat medel 14,2, p5 7, p95 23; ersätter det gamla snittet 17, som egentligen gav 18,5); chunk-spawnen hoppar över chunk [1, 1].",
       "startlagret": "Regionen startlagret är bara chunk [0, 0] (radie 0). Startpunkten och lägerelden ligger i chunkens mitt (−128, −128). Säkert inom 12 enheter (6 rutor) runt elden. Regionens täthet är 0, chunken är en glänta utan monster.",
       "npc": "pos i npc.json för area startskogen räknas i världsenheter från origo. Alla NPC:er med omrade startlagret (Ylva, Tor, Sigrun, Bror, Mira, flyktingen) står runt lägerelden (−128, −128) inom säkra radien 12, med samma offset mot elden som i koden mot den gamla elden (5, 11). Viskaren står runt Rungläntan.",
       "ett_system": "Varje osäker chunk i ring 0 och 1 får monster från exakt ett system: chunk [1, 1] från spawnzoner.json startskogen, alla andra från chunk-spawnen (delområde i bana1_stor.json, annars regionens tathet, annars mellanmark). Samma sak gäller städer med spawnzoner-område i alla ringar (meta.tathet_regel).",
       "lager_ankare": {
-        "regel": "Rutinankare i lägret = kodens routineAnchors (areaId startskogen) + (−133, −139). Alla ligger inom 12 enheter från elden.",
+        "regel": "Rutinankare i lägret = kodens routineAnchors (areaId startskogen) + (−133, −139). Ankarna ligger 0 till 6,7 enheter från elden och lägrets NPC:er 1 till 4,1 enheter (Tor längst bort), alla inom säkra radien 12.",
         "lagerelden": [-128, -128],
         "ylvas_talt": [-130, -126],
         "lagrets_karra": [-124, -127],

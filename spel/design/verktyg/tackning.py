@@ -2,6 +2,7 @@
 Användning: python3 spel/design/verktyg/tackning.py [designmapp]
 Regel (varldsgenerator.json monsterpooler.tackning): en chunk spawnar en familj. Varje familj som har någon
 undertyp i en cell (biom x ring) ska ha minst 2 undertyper på minst 2 nivåer i ringens band. Inga tomma celler."""
+import sys; sys.dont_write_bytecode = True
 import json,os,sys
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from spelregler import L,ringar,biompool,vikter,cell,zoner,grannfel
@@ -66,6 +67,7 @@ for namn,Rx in (('designband',R),('ring 7 med band 24 till 30 (kod före F4)',R6
                 if a.get(u,0)>g: fel.add(f'{u} andel {100*a[u]:.1f}% över max {100*g:.0f}%')
 fel|=set(grannfel(d))
 import math
+# lägrets NPC:er står 1 till 4,1 enheter från elden (Tor 4,1); regeln är högst 12
 npc=L(d,'npc.json'); eld=w['meta']['startskogen_fotavtryck']['lager_ankare']['lagerelden']
 for x in npc['npcs']:
     if x.get('omrade')=='startlagret' and (x.get('area')!='startskogen' or not x.get('pos') or math.dist(x['pos'],eld)>12): fel.add(f'lägernpc {x["id"]} står inte inom 12 från lägerelden {eld}')

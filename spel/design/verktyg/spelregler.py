@@ -1,4 +1,5 @@
 """Delade regler för designskripten (tackning.py, zoner). Läser bara designfilerna."""
+import sys; sys.dont_write_bytecode = True
 import json,os
 def L(d,f): return json.load(open(os.path.join(d,f)))
 def ringar(w): return {r['ring']:tuple(r['nivaband']) for r in w['meta']['zonmodell']['ringar'] if r['ring']>=1}

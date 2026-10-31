@@ -2,7 +2,8 @@
 Användning: python3 spel/design/verktyg/akt1.py [designmapp]
 Läser delomraden (enemy_table och monster_per_game; enemy_table som sträng pekar på spawnzoner.json areas.<id>),
 ring_2_kontroll för ring 2, bossar ur fältet boss i delomraden och ring_2_kontroll och xp_penalty som i monster_niva.json.
-Skriver ut tre vägar: allt i ring 0 till 2 utan sidoregioner, kortaste_vag och hela akt 1 (med Myrkanten och Brandkanten)."""
+Skriver ut två vägar: hela akt 1 (ring 0 till 2 inklusive Myrkanten och Brandkanten) och kortaste_vag."""
+import sys; sys.dont_write_bytecode = True
 import json,os,sys
 d=sys.argv[1] if len(sys.argv)>1 else os.path.join(os.path.dirname(os.path.abspath(__file__)),'..')
 L=lambda f:json.load(open(os.path.join(d,f),encoding='utf-8'))

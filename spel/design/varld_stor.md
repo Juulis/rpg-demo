@@ -47,6 +47,8 @@ Norr uppåt. En ruta är ungefär en chunk (64 rutor). Siffran är ringzon. `=` 
 
 Ide, krypta, sjunkna kyrkan, klostret, gruvdjupen, katakomberna, katedralen, Smittans katedral och Sprickans botten är instanser som nås med teleport (se Åtkomst). Norra vägen går från startskogen till Gravåsen. Kolarstigen binder ihop Kolarmon och Gravåsen.
 
+Rungläntan (gamla Startskogen, chunk [1, 1] runt origo) spawnar bara från spawnzoner.json areas.startskogen: 14 monster per game med 3 till 7 aktiva punkter (simulerat med kodens algoritm: medel 14,2, p5 7, p95 23). Det ersätter det gamla snittet 17, som egentligen gav 18,5.
+
 ## Svårighet och zonmodell
 
 Avstånd mäts i chunkar (euklidiskt) från Lägret vid skogsbrynet. Ringen ger nivåbandet. Undertyper vars fasta nivå ligger i bandet får spawna.

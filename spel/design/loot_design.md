@@ -5,7 +5,7 @@ Lootsystemet är inspirerat av Diablo 2 och ersätter de gamla sällsynthetsniv�
 ## Filer
 
 - [loot_kvaliteter.json](loot_kvaliteter.json): kvaliteter, färger, affixantal, grundchanser.
-- [foremal_bas.json](foremal_bas.json): alla bastyper (vapen, sköldar, rustning, smycken, drycker, material, guld) och legendariska föremål.
+- [foremal_bas.json](foremal_bas.json): alla bastyper (vapen, sköldar, rustning, smycken, mat, material, guld) och legendariska föremål.
 - [affix.json](affix.json): prefix och suffix med tre tiers.
 - [set.json](set.json): fem set med fem delar var.
 - [drop_tabeller.json](drop_tabeller.json): per familj, monster och boss.
@@ -28,7 +28,7 @@ Rullordning: Legendarisk, Set, Sällsynt, Magisk, annars Normal.
 
 - ilvl = undertypens fasta nivå. Champions +1, unika +3 och +1 till, bossar +2 (Benkungen nivå 10 ger ilvl 12, Askfursten 25 ger 27). Tak 30.
 - En bastyp kan droppa när dess item_level ≤ ilvl. Tier 1 bas: ilvl 1 till 6 (slutar droppa vid 20), tier 2: 7 till 14, tier 3: 15 och uppåt.
-- Affixtiers kräver ilvl 1, 9 och 18. Stor hälsodryck ilvl 7, föryngringsdryck 15.
+- Affixtiers kräver ilvl 1, 9 och 18. Rökt hogrev ilvl 7, välbrygd 15 (torkat kött och skogsörtste 1, vargblod 4).
 - Set droppar från setets level: Gravvaktarens arv 9, Bergsklanens raseri och Jaktgudinnans döttrar 15, Tempelriddarens ed 17, Askvandrarens börda 21. Legendariska föremål nivå 6 till 10.
 - Resultat: startskogen ger bara tier 1, portalbyn tier 2, tier 3 och de bästa affixen finns först från Kopparberg.
 - Champions: 100 % drop, +1 rull, kvalitet × 1,5. Unika: +2 rull, kvalitet × 2, minst Magisk.
@@ -49,9 +49,9 @@ Tier 1 har item level 1, tier 2 item level 5 till 9, tier 3 item level 15 till 1
 
 ## 3. Kategorier
 
-Vapen, rustning, drycker, amuletter (charms), ringar, guld samt material (benflisa, timmer, sten, järn) för återbefolkning.
+Vapen, rustning, mat (torkat kött, rökt hogrev, skogsörtste, vargblod, välbrygd), amuletter (charms), ringar, guld samt material (benflisa, timmer, sten, järn) för återbefolkning.
 
-Ädelstenar och hylsor är borttagna tills vidare. Deras dropvikt är fördelad på drycker (40 %), amuletter (20 %), ringar (20 %) och guld (20 %). Alternativ finns i arkiv/itemization_ideer.md (arkiverad, inga system för att ändra föremål).
+Ädelstenar och hylsor är borttagna tills vidare. Deras dropvikt är fördelad på mat (40 %), amuletter (20 %), ringar (20 %) och guld (20 %). Alternativ finns i arkiv/itemization_ideer.md (arkiverad, inga system för att ändra föremål).
 
 ## 4. Rustning
 
@@ -63,7 +63,7 @@ Vapen, rustning, drycker, amuletter (charms), ringar, guld samt material (benfli
 | Bälte    | Repbälte (Sash)      | Läderbälte (Belt)                                    | Platebälte (Plated Belt)                                  |
 | Stövlar  | Sandaler (Sandals)   | Läderstövlar (Leather Boots)                         | Järnstövlar (Greaves)                                     |
 
-Plate ger mest försvar men fartstraff (upp till 8 % per del, tak 20 % totalt) och 15 % sämre uthållighetsregen. Riddaren halverar fartstraffet. Bälten ger dryckesplatser.
+Plate ger mest försvar men fartstraff (upp till 8 % per del, tak 20 % totalt) och 15 % sämre uthållighetsregen. Riddaren halverar fartstraffet. Bälten ger platser i proviantbältet.
 
 ## Material och benföremål
 
@@ -76,7 +76,7 @@ Alla vapen, rustningar och smycken har fältet material (järn, trä, läder, ty
 
 ## 5. Logiska droppar
 
-Alla monster har dropchans. Djur, demoner, gastar och kryp har inga vapen och släpper drycker, amuletter, ringar och guld. Beväpnade fiender rullar först sin vapentyp (25 %, boss 60 %), därefter familjetabellen.
+Alla monster har dropchans. Djur, demoner, gastar och kryp har inga vapen och släpper mat, amuletter, ringar och guld. Beväpnade fiender rullar först sin vapentyp (25 %, boss 60 %), därefter familjetabellen.
 
 | Monster            | Vapentyp         |
 | ------------------ | ---------------- |
@@ -90,16 +90,16 @@ Alla monster har dropchans. Djur, demoner, gastar och kryp har inga vapen och sl
 | Hornslaktare       | yxa              |
 | Galen munk         | klubba           |
 
-| Familj    | Dropchans | Kategorier                                  |
-| --------- | --------- | ------------------------------------------- |
-| Odöda     | 45 %      | vapen, rustning, drycker, smycken, benflisa |
-| Bestar    | 45 %      | drycker, smycken, guld, benföremål          |
-| Gastar    | 45 %      | drycker, smycken, guld                      |
-| Kryp      | 45 %      | drycker, smycken, guld, benföremål, järn    |
-| Förvridna | 50 %      | allt, mest drycker                          |
-| Demoner   | 60 %      | drycker, smycken, mycket guld, benföremål   |
+| Familj    | Dropchans | Kategorier                              |
+| --------- | --------- | --------------------------------------- |
+| Odöda     | 45 %      | vapen, rustning, mat, smycken, benflisa |
+| Bestar    | 45 %      | mat, smycken, guld, benföremål          |
+| Gastar    | 45 %      | mat, smycken, guld                      |
+| Kryp      | 45 %      | mat, smycken, guld, benföremål, järn    |
+| Förvridna | 50 %      | allt, mest mat                          |
+| Demoner   | 60 %      | mat, smycken, mycket guld, benföremål   |
 
-Bossar ger 5 till 7 föremål, alltid 2 stora hälsodrycker, kvalitetsbonus ×2 till ×3, minst ett sällsynt föremål vid första dödandet och namngivna droppar.
+Bossar ger 5 till 7 föremål, alltid 2 rökt hogrev (underbossar 1), kvalitetsbonus ×2 till ×3, minst ett sällsynt föremål vid första dödandet och namngivna droppar.
 
 ## 6. Set
 
@@ -129,7 +129,7 @@ Bonusar vid 2, 3 och 4 delar finns i set.json.
 ## 8. Etiketter med Alt
 
 - Håll Alt för att visa etiketter; ett val i inställningarna låter Alt växla av och på.
-- Etiketten visar namnet i kvalitetsfärg på mörk halvgenomskinlig platta (#000000 med 70 % opacitet). Guld visas som "123 guld" i guldfärg, drycker i sina egna färger.
+- Etiketten visar namnet i kvalitetsfärg på mörk halvgenomskinlig platta (#000000 med 70 % opacitet). Guld visas som "123 guld" i guldfärg, mat i sina egna färger.
 - Klick på etiketten går till föremålet och plockar upp det. Guld plockas automatiskt när man går över det.
 - Etiketter som skulle överlappa staplas uppåt i en kolumn ovanför föremålet, med en tunn linje ner till marken. Max 12 synliga, sorterade efter kvalitet (Legendarisk och Set överst).
 - Legendarisk och Set får en ljuspelare i sin färg och ett ljud när de faller, även utan Alt.
@@ -152,15 +152,15 @@ Algoritm när ett monster dör:
 4. Bastyp: räkna ilvl (monster_level, plus 1 för unik, plus 2 för boss) och filtrera baser i kategorin där item_level ≤ ilvl; den högsta tillåtna tiern väger 3, lägre 1.
 5. Kvalitet (bara vapen, rustning, smycken): gå igenom roll_order, slå p(q) med MF enligt attribut.json; första träff vinner. Set och Legendarisk faller tillbaka om inget passar basen.
 6. Affix: för Magisk och Sällsynt, välj antal enligt kvaliteten, välj slumpvis affix som tillåter platsen och vars tier har min_ilvl ≤ ilvl (1, 9, 18), slumpa värde inom intervallet.
-7. Drycker väljs med tier vikterna.
+7. Mat väljs med tiervikterna (drop_tabeller.json potion_weights_by_tier).
 8. Lägg föremålet på marken med en liten slumpad förskjutning och skapa etikett.
    Använd ett seedat slumptal per drop för att kunna återskapa buggar. Spara föremål som objekt {base, quality, affixes, ilvl}.
 
 ## Notis till UI
 
-- Ikoner för 21 vapenbaser, 3 sköldar, kastspjut och pilar, 17 rustningsbaser, 4 smycken, 4 drycker, 4 material och guldhögar i tre storlekar.
+- Ikoner för 21 vapenbaser, 3 sköldar, kastspjut och pilar, 17 rustningsbaser, 4 smycken, 5 matvaror, 4 material och guldhögar i tre storlekar.
 - Unika ikoner för 22 legendariska föremål (visuella beskrivningar i foremal_bas.json, fältet visual) och 30 setdelar.
 - Kvalitetsfärger: vit #e8e8e8, blå #6a6aff, gul #ffff64, grön #00c400, guld #c7a35a. Ljuspelare i grönt och guld.
-- Inventarie och utrustning med platser för vapen, sköld, hjälm, bröst, handskar, bälte, stövlar, amulett, 2 ringar och dryckesbälte.
+- Inventarie och utrustning med platser för vapen, sköld, hjälm, bröst, handskar, bälte, stövlar, amulett, 2 ringar och proviantbälte.
 - Tooltip: namn i kvalitetsfärg, bas i grått, skada eller försvar, krav i rött om de inte uppfylls, affix i blått, setbonusar i grönt (aktiva ljusa, inaktiva mörka), vilande mana i grått.
 - Ikoner för skadetyperna hugg, stick och kross samt för block, krosslag och Magic Find.
