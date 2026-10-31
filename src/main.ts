@@ -36,10 +36,8 @@ const host = document.getElementById('app');
 if (!host) throw new Error('#app saknas');
 const game = new Game(modules);
 i18n.attachText(game.text);
-await game.start(host);
-document.getElementById('newGame')?.addEventListener('click', () => game.newGame());
-
-// Debug-hook i dev / fångstskript (inga globaler i vanlig produktion).
 if (import.meta.env.DEV || import.meta.env.VITE_CAPTURE_HOOK === 'true') {
   (window as unknown as { __game?: Game }).__game = game;
 }
+await game.start(host);
+document.getElementById('newGame')?.addEventListener('click', () => game.newGame());

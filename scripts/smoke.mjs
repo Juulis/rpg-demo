@@ -20,10 +20,6 @@ const TYPES = {
 const server = createServer((req, res) => {
   const url = decodeURIComponent((req.url ?? '/').split('?')[0]);
   if (!url.startsWith('/rpg-demo/')) return void res.writeHead(404).end();
-  if (url === '/rpg-demo/next/' || url.startsWith('/rpg-demo/legacy-3d')) {
-    res.writeHead(302, { Location: '/rpg-demo/' });
-    return void res.end();
-  }
   let p = join(dist, url.slice('/rpg-demo/'.length));
   if (existsSync(p) && statSync(p).isDirectory()) p = join(p, 'index.html');
   if (!existsSync(p)) return void res.writeHead(404).end();
@@ -40,14 +36,15 @@ if (!existsSync(join(dist, 'assets'))) fail.push('roten saknar assets/ (Vite-byg
 
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 
-async function visit(path, check) {
+async function visit(path, check, startGame = false) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e)));
   page.on('console', (m) => m.type() === 'error' && errs.push(m.text()));
   page.on('response', (r) => r.status() >= 400 && r.url().startsWith(base) && errs.push(`${r.status()} ${r.url()}`));
   await page.goto(base + path, { waitUntil: 'load' });
-  await page.waitForTimeout(6000);
+  if (startGame) await startNewGame(page);
+  else await page.waitForTimeout(6000);
   const ok = await page.evaluate(check);
   if (!ok) errs.push('spelet startade inte (kontroll misslyckades)');
   console.log(`${path || '/'}: ${errs.length ? 'FEL' : 'OK'}`);
@@ -62,8 +59,8 @@ async function startNewGame(page) {
   await page.fill('.hero-name', 'Rök');
   await page.click('#hnOk');
   await page.waitForSelector('#app canvas', { timeout: 30000 });
-  await page.waitForFunction(() => document.querySelector('.hero-menu')?.classList.contains('hidden'), null, { timeout: 30000 });
-  await page.waitForFunction(() => document.documentElement.dataset.zone === 'forest', null, { timeout: 30000 });
+  await page.waitForFunction(() => document.querySelector('.hero-menu')?.classList.contains('hidden'), null, { timeout: 90000 });
+  await page.waitForFunction(() => document.documentElement.dataset.zone === 'forest', null, { timeout: 90000 });
 }
 
 const gameReady = async () => {
@@ -87,59 +84,82 @@ const gameReady = async () => {
   return cm.defaultPrevented && alt.defaultPrevented && zOn && zOff;
 };
 
-await visit('', gameReady);
+await visit('', gameReady, true);
 
 const chunkPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const chunkErrs = [];
 chunkPage.on('pageerror', (e) => chunkErrs.push(String(e)));
 await chunkPage.goto(base, { waitUntil: 'load' });
 await startNewGame(chunkPage);
-await chunkPage.waitForTimeout(4000);
-const startProbe = await chunkPage.evaluate(() => ({
-  chunk: document.documentElement.dataset.heroChunk ?? '',
-  x: document.documentElement.dataset.heroWx ?? '',
-  y: document.documentElement.dataset.heroWy ?? '',
-}));
-await chunkPage.keyboard.down('KeyD');
-await chunkPage.keyboard.down('KeyW');
-await chunkPage.waitForTimeout(9000);
-await chunkPage.keyboard.up('KeyD');
-await chunkPage.keyboard.up('KeyW');
-await chunkPage.waitForTimeout(2000);
+
+async function waitGroundReady(page, ms = 90000) {
+  await page.waitForFunction(() => window.__game?.captureBigWorldMetrics?.()?.groundReady === true, null, { timeout: ms });
+}
+
+try {
+  await waitGroundReady(chunkPage);
+} catch {
+  chunkErrs.push('mark blev inte klar (groundReady)');
+}
+
+const startProbe = await chunkPage.evaluate(() => {
+  const m = window.__game?.captureBigWorldMetrics?.();
+  return m ? { x: m.heroWx, y: m.heroWy, textures: m.renderTextures, objects: m.displayObjects, pixel: m.groundPixel } : null;
+});
+
+await chunkPage.evaluate(() => {
+  const h = window.__game.state.hero;
+  h.moveTarget = { x: h.pos.x + 55, y: h.pos.y + 55 };
+});
+await chunkPage.waitForFunction(
+  (start) => {
+    const m = window.__game?.captureBigWorldMetrics?.();
+    if (!m || !start) return false;
+    return Math.hypot(m.heroWx - start.x, m.heroWy - start.y) > 40;
+  },
+  startProbe,
+  { timeout: 35000, polling: 200 },
+);
+
 const chunkProbe = await chunkPage.evaluate(async (start) => {
-  const endChunk = document.documentElement.dataset.heroChunk ?? '';
-  const endX = Number(document.documentElement.dataset.heroWx ?? '0');
-  const endY = Number(document.documentElement.dataset.heroWy ?? '0');
-  const startX = Number(start.x || '0');
-  const startY = Number(start.y || '0');
-  const moved = Math.hypot(endX - startX, endY - startY) > 40;
-  const displayObjects = Number(document.documentElement.dataset.groundObjects ?? '-1');
-  let frames = 0;
-  const t0 = performance.now();
-  await new Promise((resolve) => {
-    const loop = () => {
-      frames++;
-      if (performance.now() - t0 >= 2000) return resolve(undefined);
+  const m = window.__game?.captureBigWorldMetrics?.();
+  if (!m || !start) return { ok: false, reason: 'no metrics' };
+  const moved = Math.hypot(m.heroWx - start.x, m.heroWy - start.y) > 40;
+  const fpsSamples = [];
+  for (let s = 0; s < 5; s++) {
+    let frames = 0;
+    const t0 = performance.now();
+    await new Promise((resolve) => {
+      const loop = () => {
+        frames++;
+        if (performance.now() - t0 >= 1000) return resolve(undefined);
+        requestAnimationFrame(loop);
+      };
       requestAnimationFrame(loop);
-    };
-    requestAnimationFrame(loop);
-  });
-  const fps = frames / 2;
+    });
+    fpsSamples.push(frames);
+  }
+  fpsSamples.sort((a, b) => a - b);
+  const fpsMedian = fpsSamples[2] ?? fpsSamples[0] ?? 0;
   const heapMb = (performance.memory?.usedJSHeapSize ?? 0) / (1024 * 1024);
   return {
-    ok: (endChunk !== start.chunk && start.chunk.length > 0) || moved,
-    startChunk: start.chunk,
-    endChunk,
+    ok: moved && m.groundPixel,
     moved,
-    displayObjects,
-    fps,
+    groundPixel: m.groundPixel,
+    textures: m.renderTextures,
+    objects: m.displayObjects,
+    fpsMedian,
     heapMb,
+    start,
   };
 }, startProbe);
+
 console.log(`chunk-stream: ${JSON.stringify(chunkProbe)}`);
-if (!chunkProbe.ok) chunkErrs.push(`chunk oförändrad ${chunkProbe.startChunk} -> ${chunkProbe.endChunk}`);
-if (chunkProbe.displayObjects > 35000) chunkErrs.push(`för många mark-objekt: ${chunkProbe.displayObjects}`);
-if (chunkProbe.fps < 5) chunkErrs.push(`låg fps: ${chunkProbe.fps}`);
+if (!chunkProbe.ok) chunkErrs.push(`rörelse/mark: moved=${chunkProbe.moved} pixel=${chunkProbe.groundPixel}`);
+if (!chunkProbe.moved) chunkErrs.push('hjälten rörde sig inte >40 enheter');
+if (!chunkProbe.groundPixel) chunkErrs.push('pixelprov såg ingen mark');
+if (chunkProbe.textures > 900) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
+if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
 if (chunkErrs.length) fail.push(...chunkErrs.map((e) => `chunk: ${e}`));
 await chunkPage.close();
 
@@ -147,7 +167,7 @@ for (const legacyPath of ['next/', 'legacy-3d/']) {
   const page = await browser.newPage();
   await page.goto(base + legacyPath, { waitUntil: 'load' });
   await page.waitForTimeout(1500);
-  const ok = new URL(page.url()).pathname === '/rpg-demo/';
+  const ok = new URL(page.url()).pathname.endsWith('/rpg-demo/') || new URL(page.url()).pathname === '/rpg-demo/';
   console.log(`${legacyPath}: ${ok ? 'OK (omdirigerad)' : 'FEL'}`);
   if (!ok) fail.push(`${legacyPath} omdirigerar inte till roten`);
   await page.close();

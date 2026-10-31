@@ -24,7 +24,10 @@ export class HeroLoader {
   async start(save: SaveFile, resume: boolean): Promise<void> {
     this.autosave.end(this.autosave.isPlaying);
     const g = resume && save.game ? save.game : newGameRecord(this.newSeed());
-    if (!resume || !save.game) save.game = g;
+    if (!resume || !save.game) {
+      if (g.worldSeed == null) g.worldSeed = this.ctx.session.worldSeed;
+      save.game = g;
+    }
     const h = save.hero;
     const fresh = !!h.fresh;
     this.game.loadHero({
@@ -41,6 +44,7 @@ export class HeroLoader {
       },
       game: {
         seed: g.seed,
+        worldSeed: g.worldSeed ?? this.ctx.session.worldSeed,
         killed: g.killed,
         zone: resume ? g.zone : 'forest',
         pos: resume && g.pos ? { x: g.pos[0], y: g.pos[1] } : null,

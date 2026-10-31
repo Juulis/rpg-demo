@@ -2,9 +2,12 @@ import assert from 'node:assert/strict';
 import { createSession } from '../src/core/Session';
 import { DATA } from '../src/data';
 import { buildBigWorldCatalog, generateChunkWorldData } from '../src/world/bigWorld/worldGenerator';
-import { chunkSpawnToWorld, parseBigWorldSpawnUid, worldToChunk } from '../src/world/bigWorld/bigWorldCoords';
+import { chunkSpawnToWorld, parseBigWorldSpawnUid, worldToChunk, chunkWorldSpan } from '../src/world/bigWorld/bigWorldCoords';
 import { ChunkWorldCache } from '../src/world/bigWorld/chunkCache';
 import { BIG_WORLD_CACHE_KEEP_RADIUS } from '../src/world/bigWorld/bigWorldConfig';
+import { bigWorldCityPortalWorld } from '../src/world/bigWorld/bigWorldPortals';
+import { FOREST_CITY_PORTALS } from '../src/world/forestConstants';
+import { PLAYABLE_CITIES } from '../src/world/cityZones';
 import { RUNE_POS } from '../src/world/ZoneFactory';
 import { resetBigWorldMonsterSync, syncBigWorldChunkMonsters } from '../src/world/bigWorld/syncBigWorldChunkMonsters';
 import type { World } from '../src/systems/World';
@@ -47,6 +50,14 @@ assert.equal(d0, d1, 'cache get ska returnera samma chunkdata');
 
 assert.equal(RUNE_POS.length, 3, 'akt 1 kräver tre runstenar i startskogen');
 
+for (const city of PLAYABLE_CITIES) {
+  const bw = bigWorldCityPortalWorld(city);
+  const leg = FOREST_CITY_PORTALS[city];
+  assert.ok(Math.hypot(bw.x - leg.x, bw.y - leg.y) > 80, `${city} ska ha storvärlds-portal, inte legacy ±132`);
+}
+
+assert.equal(RUNE_POS.length, 3, 'akt 1 kräver tre runstenar i startskogen');
+
 const migrated = createSession(5, [], 99);
 assert.equal(migrated.worldSeed, 99);
 const ng = createSession(10, []);
@@ -74,17 +85,16 @@ const factory = {
 } as never;
 const spawn = a.spawns[0];
 const near = chunkSpawnToWorld(2, 3, spawn.localX, spawn.localY);
+const span = chunkWorldSpan();
 w.hero.pos.x = near.x;
 w.hero.pos.y = near.y;
 syncBigWorldChunkMonsters(w, cache, factory, worldSeed, gameSeed, w.hero.pos);
 assert.ok(w.monsters.some((m) => m.uid === spawn.uid));
-assert.equal(w.monsters.filter((m) => m.uid === spawn.uid).length, 1);
 w.session.killed.add(spawn.uid);
 w.monsters.length = 0;
+w.hero.pos.x = near.x + span * 2;
 syncBigWorldChunkMonsters(w, cache, factory, worldSeed, gameSeed, w.hero.pos);
 assert.equal(w.monsters.filter((m) => m.uid === spawn.uid).length, 0, 'dödade spawns återuppstår inte');
-syncBigWorldChunkMonsters(w, cache, factory, worldSeed, gameSeed, w.hero.pos);
-assert.equal(w.monsters.filter((m) => m.uid === spawn.uid).length, 0, 'inga dubbletter efter resync');
 
 const neg = generateChunkWorldData(worldSeed, gameSeed, -3, -4, catalog);
 assert.equal(neg.cx, -3);

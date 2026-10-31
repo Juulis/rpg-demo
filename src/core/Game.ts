@@ -75,6 +75,7 @@ import { clockPeriodLabel, setClockLocale } from '../world/clockText';
 import { WorldStateService } from '../world/WorldStateService';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
 import { locomotionPlaybackRate } from '../render/locomotionPlayback';
+import { bigWorldCityPortalWorld } from '../world/bigWorld/bigWorldPortals';
 import { FOREST_CITY_PORTALS } from '../world/forestConstants';
 import { cityPortEntry, cityAreaId, isPlayableCityZone, parseSavedZone, PLAYABLE_CITIES } from '../world/cityZones';
 import { ZoneFactory } from '../world/ZoneFactory';
@@ -165,6 +166,8 @@ export class Game {
   private dead = false;
   private decorAnims: StripAnimSprite[] = [];
   private forestGround: ForestGroundChunks | BigWorldStreamGround | null = null;
+  private streamMetricsCx = NaN;
+  private streamMetricsCy = NaN;
 
   constructor(private readonly modules: GameModule[] = []) {
     this.ctx = {
@@ -176,6 +179,29 @@ export class Game {
       rng: this.rng,
       worldState: this.worldState,
       clock: this.gameClock.view,
+    };
+  }
+
+  /** Capture/smoke: mark- och GPU-statistik i stor skog. */
+  captureBigWorldMetrics(): {
+    groundReady: boolean;
+    displayObjects: number;
+    renderTextures: number;
+    groundPixel: boolean;
+    heroWx: number;
+    heroWy: number;
+  } | null {
+    const w = this.world;
+    const fg = this.forestGround;
+    if (!w || !(fg instanceof BigWorldStreamGround) || !w.zone.bigWorldStreaming) return null;
+    const foot = this.camera.toScreen(w.hero.pos.x, w.hero.pos.y);
+    return {
+      groundReady: fg.isGroundReady(),
+      displayObjects: fg.countGroundDisplayObjects(),
+      renderTextures: fg.countRenderTextures(),
+      groundPixel: fg.probeGroundPixel(this.renderer.app.renderer, foot.x, foot.y + 28),
+      heroWx: w.hero.pos.x,
+      heroWy: w.hero.pos.y,
     };
   }
 
@@ -409,10 +435,11 @@ export class Game {
   }
 
   private portalSpawn(target: ZoneName, from: ZoneName): Vec2 | undefined {
+    const bigWorld = this.world?.zone.bigWorldStreaming === true;
     if (target === 'forest') {
       if (from === 'village') return { x: 0, y: 4 };
       if (isPlayableCityZone(from)) {
-        const p = FOREST_CITY_PORTALS[from];
+        const p = bigWorld ? bigWorldCityPortalWorld(from) : FOREST_CITY_PORTALS[from];
         return {
           x: p.x + (p.x === 0 ? 0 : p.x > 0 ? -4 : 4),
           y: p.y + (p.y === 0 ? 0 : p.y > 0 ? -4 : 4),
@@ -902,11 +929,19 @@ export class Game {
     if (this.forestGround instanceof BigWorldStreamGround) {
       this.forestGround.sync(h.pos, w.session.worldSeed, w.session.seed, { objects: w.objects, zone: w.zone }, this.renderer.app.renderer);
       syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.worldSeed, w.session.seed, h.pos);
-      const hc = worldToChunk(h.pos.x, h.pos.y);
-      document.documentElement.dataset.heroChunk = `${hc.cx},${hc.cy}`;
-      document.documentElement.dataset.groundObjects = String(this.forestGround.countGroundDisplayObjects());
-      document.documentElement.dataset.heroWx = h.pos.x.toFixed(1);
-      document.documentElement.dataset.heroWy = h.pos.y.toFixed(1);
+      const captureMetrics = import.meta.env.DEV || import.meta.env.VITE_CAPTURE_HOOK === 'true';
+      if (captureMetrics) {
+        const hc = worldToChunk(h.pos.x, h.pos.y);
+        if (hc.cx !== this.streamMetricsCx || hc.cy !== this.streamMetricsCy) {
+          this.streamMetricsCx = hc.cx;
+          this.streamMetricsCy = hc.cy;
+          document.documentElement.dataset.heroChunk = `${hc.cx},${hc.cy}`;
+          document.documentElement.dataset.groundObjects = String(this.forestGround.countGroundDisplayObjects());
+          document.documentElement.dataset.heroWx = h.pos.x.toFixed(1);
+          document.documentElement.dataset.heroWy = h.pos.y.toFixed(1);
+          document.documentElement.dataset.groundReady = this.forestGround.isGroundReady() ? '1' : '0';
+        }
+      }
     } else {
       this.forestGround?.sync(h.pos);
       syncProximitySpawns(w, this.factory, h.pos);
