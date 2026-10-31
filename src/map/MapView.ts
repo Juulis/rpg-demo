@@ -59,10 +59,10 @@ export class MapView {
     c.font = '700 30px Cinzel, Georgia, serif';
     c.shadowColor = '#c0182a88';
     c.shadowBlur = 14;
-    c.fillText(this.model.zoneName(z), W / 2, 46);
+    c.fillText(this.model.zoneName(z), W / 2, 36);
     c.shadowBlur = 0;
     c.fillStyle = '#9fc4d4';
     c.font = '13px Cinzel, Georgia, serif';
-    c.fillText(this.model.t('map.legend'), W / 2, H - 22);
+    c.fillText(this.model.t('map.legend'), W / 2, H - 28);
   }
 }

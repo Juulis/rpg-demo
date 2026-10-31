@@ -5,6 +5,7 @@ import { scaleKForWorldHeightM, shadowRadiusForWorldHeightM, worldHeightMForMons
 import type { SpawnSpec, SpawnSystem } from '../systems/SpawnSystem';
 import type { World } from '../systems/World';
 import { heroInsideStartskogenRegion } from '../world/bigWorld/heroRegion';
+import { ensureStartskogenSpawnQueue } from '../world/bigWorld/startskogenSpawn';
 import { Monster } from './Monster';
 import { fullDef, monsterLook } from './MonsterDefs';
 
@@ -33,17 +34,20 @@ export class MonsterFactory {
     return m;
   }
 
+  /** Fyller legacy-startskogens spawnkön (ankrad på regionchunk) om tom. */
+  refillStartskogenQueue(w: World, cityState: string): void {
+    if (!w.zone.bigWorldStreaming) return;
+    ensureStartskogenSpawnQueue(w, () => {
+      const area = this.spawn.area('startskogen');
+      return this.spawn.roll(area, w.session, { cityState });
+    });
+  }
+
   /** Spawnlista per game; Startskogen instansierar nära hjälten (se syncProximitySpawns). */
   populate(w: World, cityState: string): void {
     if (w.zone.bigWorldStreaming) {
       if (heroInsideStartskogenRegion(w.hero.pos)) {
-        const area = this.spawn.area('startskogen');
-        const specs = this.spawn.roll(area, w.session, { cityState });
-        w.spawnQueue = specs.map((s) => {
-          const p = w.zone.toWorld(s.pos);
-          w.zone.collide(p, 0.5);
-          return { spec: s, pos: p, done: false };
-        });
+        this.refillStartskogenQueue(w, cityState);
       } else {
         w.spawnQueue = [];
       }

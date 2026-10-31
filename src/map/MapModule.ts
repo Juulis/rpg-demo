@@ -90,6 +90,7 @@ export class MapModule implements GameModule {
   private resetFog(heroId: string | null): void {
     this.heroId = heroId;
     this.fog = new FogOfWar((zone) => (heroId ? this.fogRepo.load(heroId, zone) : null));
+    if (this.ctx?.zone.bigWorldStreaming) this.fog.setWorldAnchored(true);
   }
 
   private playing(): boolean {
@@ -109,7 +110,7 @@ export class MapModule implements GameModule {
     if (!ctx || !ctx.hero.playing) return;
     const z = ctx.zone;
     const changed = z.bigWorldStreaming
-      ? this.fog.revealSliding(z.name, ctx.hero.pos.x, ctx.hero.pos.y)
+      ? this.fog.revealWorld(z.name, ctx.hero.pos.x, ctx.hero.pos.y)
       : this.fog.reveal(z.name, ctx.hero.pos.x, ctx.hero.pos.y);
     if (changed && !this.saveTimer) {
       this.saveTimer = setTimeout(() => this.flush(), MapModule.SAVE_MS);

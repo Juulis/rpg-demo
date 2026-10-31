@@ -230,9 +230,44 @@ async function runChunkStreamTest(page, modeLabel) {
     if (chunkProbe.objects > 30_000) chunkErrs.push(`för många byggda mark-objekt: ${chunkProbe.objects}`);
     if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
   } else {
+    chunkProbe = await page.evaluate(async () => {
+      const read = () => {
+        const cap = window.__game?.captureBigWorldMetrics?.();
+        if (cap) return cap;
+        const d = document.documentElement.dataset;
+        return {
+          groundReady: d.groundReady === '1',
+          displayObjects: Number(d.groundObjects ?? 0),
+          renderTextures: Number(d.renderTextures ?? 0),
+          groundPixel: d.groundPixel === '1',
+        };
+      };
+      const m = read();
+      const fpsSamples = [];
+      for (let s = 0; s < 5; s++) {
+        let frames = 0;
+        const t0 = performance.now();
+        await new Promise((resolve) => {
+          const loop = () => {
+            frames++;
+            if (performance.now() - t0 >= 1000) return resolve(undefined);
+            requestAnimationFrame(loop);
+          };
+          requestAnimationFrame(loop);
+        });
+        fpsSamples.push(frames);
+      }
+      fpsSamples.sort((a, b) => a - b);
+      return {
+        ...m,
+        fpsMedian: fpsSamples[2] ?? fpsSamples[0] ?? 0,
+      };
+    });
     if (!chunkProbe.groundReady) chunkErrs.push('plain: groundReady saknas efter chunkbyte');
     if (!chunkProbe.groundPixel) chunkErrs.push('plain: groundPixel saknas efter chunkbyte');
-    if (chunkProbe.displayObjects <= 0) chunkErrs.push('plain: inga mark-objekt mätta');
+    const objects = chunkProbe.displayObjects ?? chunkProbe.objects ?? 0;
+    if (objects <= 0) chunkErrs.push('plain: inga mark-objekt mätta');
+    if ((chunkProbe.fpsMedian ?? 0) < 2) chunkErrs.push(`plain: låg median-fps: ${chunkProbe.fpsMedian}`);
   }
 
   console.log(`chunk-stream (${modeLabel}): ${JSON.stringify({ ...chunkProbe, startChunk })}`);

@@ -5,9 +5,10 @@ import type { World } from './World';
 import { heroInsideStartskogenRegion } from '../world/bigWorld/heroRegion';
 
 /** Instansierar köade monster när hjälten är nära (Startskogen). */
-export function syncProximitySpawns(w: World, factory: MonsterFactory, hero: Vec2): void {
+export function syncProximitySpawns(w: World, factory: MonsterFactory, hero: Vec2, cityState = 'besatt'): void {
   if (w.zone.bigWorldStreaming) {
     if (!heroInsideStartskogenRegion(hero)) return;
+    factory.refillStartskogenQueue(w, cityState);
   } else if (w.zone.areaId !== 'startskogen') return;
   const r = FOREST_SPAWN_ACTIVE_RADIUS;
   for (const q of w.spawnQueue) {

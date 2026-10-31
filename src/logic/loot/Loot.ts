@@ -1,4 +1,4 @@
-import { DATA, monsterDef } from '../../data';
+import { DATA } from '../../data';
 import type { Rng } from '../../core/Rng';
 import type { HeroClass } from '../../data/types';
 import type { Text } from '../../text/Text';
@@ -462,7 +462,10 @@ export class Loot {
     return { seed, drops: out };
   }
   monsterFamily(id: string): string | undefined {
-    return (this.drops.bosses[id] ?? this.drops.monsters[id])?.family ?? monsterDef(id).family;
+    const fromDrop = (this.drops.bosses[id] ?? this.drops.monsters[id])?.family;
+    if (fromDrop) return fromDrop;
+    const m = DATA.families.monsters.find((row) => row.id === id);
+    return m?.family;
   }
 
   // ----- samlade attribut (attribut.json) -----

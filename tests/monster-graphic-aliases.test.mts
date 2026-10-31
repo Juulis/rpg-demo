@@ -10,4 +10,8 @@ assert.equal(monsterLook('lyktgast', 'gastar', has).sheet, 'gravgast');
 assert.equal(monsterLook('klockdrunknad', 'ododa', has).sheet, 'ruttnande_lik');
 assert.equal(monsterLook('havsgast', 'gastar', has).sheet, 'gravgast');
 
+assert.equal(monsterLook('sprickvasen', 'forvridna', has).tint, 0xc8a882);
+assert.equal(monsterLook('lyktgast', 'gastar', has).tint, 0xaaccff);
+assert.equal(monsterLook('havsgast', 'gastar', has).tint, 0x6688aa);
+
 console.log('monster-graphic-aliases.test.mts: ok');

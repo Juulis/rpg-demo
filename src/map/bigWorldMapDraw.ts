@@ -16,7 +16,7 @@ export function drawBigWorldMapLayer(
   heroWx: number,
   heroWy: number,
   p: Projection,
-  opts: { chunkRadius: number; showLabels: boolean },
+  opts: { chunkRadius: number; showLabels: boolean; isRevealed?: (wx: number, wy: number) => boolean },
 ): void {
   const catalog = getBigWorldCatalog();
   const span = chunkWorldSpan();
@@ -33,9 +33,12 @@ export function drawBigWorldMapLayer(
       const cy = heroChunk.cy + dy;
       const dist = chunkDistanceFromStart(cx, cy, start);
       const { ring } = ringAtChunkDistance(dist, ringar);
-      c.fillStyle = ringColor(ring);
       const x0 = cx * span;
       const y0 = cy * span;
+      const cxw = x0 + span * 0.5;
+      const cyw = y0 + span * 0.5;
+      if (opts.isRevealed && !opts.isRevealed(cxw, cyw)) continue;
+      c.fillStyle = ringColor(ring);
       c.fillRect(X(x0), Y(y0), span * p.s, span * p.s);
       c.strokeStyle = '#1a1e18';
       c.lineWidth = 0.5;
@@ -56,7 +59,7 @@ export function drawBigWorldMapLayer(
       c.fillStyle = '#c8d8e0';
       c.font = '11px Cinzel, Georgia, serif';
       c.textAlign = 'center';
-      c.fillText(region.namn ?? region.id, X(wx), Y(wy) - 8);
+      c.fillText(region.namn ?? region.id, X(wx), Y(wy) - 10);
     }
   }
 

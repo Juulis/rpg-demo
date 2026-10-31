@@ -13,4 +13,9 @@ assert.ok(far.spawns.length >= mellanmarkSpawnCountRange(far.ring)[0], 'mellanma
 const start = generateChunkWorldData(worldSeed, gameSeed, 1, 1, catalog);
 assert.equal(start.spawns.length, 0, 'startskogen-chunk ska inte få genererade chunk-spawns (legacy spawnzoner)');
 
+const gamla = DATA.varldStor.regioner.find((r) => r.id === 'gamla_byn');
+assert.ok(gamla);
+const byChunk = generateChunkWorldData(worldSeed, gameSeed, gamla.chunk[0], gamla.chunk[1], catalog);
+assert.ok(byChunk.spawns.length <= mellanmarkSpawnCountRange(byChunk.ring)[1], 'namngiven region ska inte använda full mellanmark-täthet');
+
 console.log('big-world-spawn-density.test.mts: ok');

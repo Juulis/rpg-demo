@@ -3,11 +3,11 @@ import type { BigWorldDataFile, BigWorldRegion } from '../../data/bigWorldTypes'
 import type { EliteKind } from '../../data/types';
 import { Rng } from '../../core/Rng';
 import { blendBiomesAtChunk, biomeRenderPlaceholders, isTownBiomeChunk } from './biomeBlend';
-import { buildRoadIndex, roadsAtChunk, type RoadIndex } from './roads';
+import { buildRoadIndex, roadTileInChunk, roadsAtChunk, type RoadIndex } from './roads';
 import { resolveRegionAtChunk } from './regionIndex';
 import { chunkDistanceFromStart, ringAtChunkDistance } from './ringZone';
 import { planMellanmarkSpawn, filterSubtypesByBand, regionSpawnLevelBand, mellanmarkLevelBand } from './spawnRules';
-import { applyRoadSpawnFactor, mellanmarkSpawnCountRange } from './spawnDensity';
+import { mellanmarkSpawnCountRange, namedRegionSpawnCountRange, skipSpawnNearRoad, spawnTileNearRoad } from './spawnDensity';
 import { isInsideStartskogenChunk } from './heroRegion';
 
 export interface BigWorldSpawnRoll {
@@ -110,6 +110,7 @@ function neighborBiomeFactory(catalog: BigWorldCatalog): (ncx: number, ncy: numb
 }
 
 function rollChunkSpawns(
+  catalog: BigWorldCatalog,
   gameSeed: number,
   cx: number,
   cy: number,
@@ -117,23 +118,30 @@ function rollChunkSpawns(
   genereradSpawn: boolean,
   band: readonly [number, number],
   ring: number,
-  onRoad: boolean,
+  mellanmark: boolean,
+  region: BigWorldRegion,
+  roadIds: readonly string[],
 ): BigWorldSpawnRoll[] {
   if (!genereradSpawn || subtypes.length === 0) return [];
   const allowed = filterSubtypesByBand(subtypes, band);
   if (allowed.length === 0) return [];
   const rng = new Rng(chunkSpawnRollSeed(gameSeed, cx, cy));
-  let count = rng.int(mellanmarkSpawnCountRange(ring));
-  count = applyRoadSpawnFactor(count, onRoad);
+  const range = mellanmark ? mellanmarkSpawnCountRange(ring) : namedRegionSpawnCountRange(region);
+  const target = rng.int(range);
+  const tileSize = catalog.data.meta.chunk?.storlek_rutor ?? 64;
+  const hasRoadAtTile = (ccx: number, ccy: number, ti: number, tj: number) => roadTileInChunk(catalog.roads, ccx, ccy, ti, tj, tileSize);
   const out: BigWorldSpawnRoll[] = [];
-  const tileSize = catalogSingleton?.data.meta.chunk?.storlek_rutor ?? 64;
   const fixed = DATA.monsterLevels.fixed_levels ?? {};
-  for (let i = 0; i < count; i++) {
+  let guard = 0;
+  while (out.length < target && guard < target * 8) {
+    guard++;
     const enemy = rng.pick(allowed);
-    const level = fixed[enemy] ?? band[0];
     const localX = rng.float(8, tileSize - 8);
     const localY = rng.float(8, tileSize - 8);
-    const uid = `bw:${cx},${cy}:${i}:${enemy}`;
+    const nearRoad = spawnTileNearRoad(localX, localY, cx, cy, roadIds, hasRoadAtTile);
+    if (skipSpawnNearRoad(nearRoad, rng.next())) continue;
+    const level = fixed[enemy] ?? band[0];
+    const uid = `bw:${cx},${cy}:${out.length}:${enemy}`;
     out.push({ uid, enemy, level, localX, localY });
   }
   return out;
@@ -216,6 +224,7 @@ export function generateChunkWorldData(
     decorPool: placeholders.decorPool,
     music: town ? 'town' : placeholders.music,
     spawns: rollChunkSpawns(
+      catalog,
       gameSeed,
       cx,
       cy,
@@ -223,12 +232,9 @@ export function generateChunkWorldData(
       generatedSpawn && !isInsideStartskogenChunk(cx, cy),
       spawnBand,
       chunkRing.ring,
-      roads.length > 0,
+      mellanmark,
+      region,
+      roads,
     ),
   };
-}
-
-/** XP-mult baserat på avstånd från start (design: längre bort = mer XP via högre nivåmonster). */
-export function xpDistanceMultiplier(distanceChunks: number): number {
-  return 1 + Math.min(distanceChunks, 20) * 0.02;
 }

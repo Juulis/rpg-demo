@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { DATA, validateData } from '../src/data';
-import { generateChunkWorldData, getBigWorldCatalog, xpDistanceMultiplier } from '../src/world/bigWorld/worldGenerator';
+import { generateChunkWorldData, getBigWorldCatalog } from '../src/world/bigWorld/worldGenerator';
 import { chunkDistanceFromStart } from '../src/world/bigWorld/ringZone';
 import { roadsAtChunk } from '../src/world/bigWorld/roads';
 
@@ -37,7 +37,6 @@ const start = DATA.varldStor.meta.startpunkt.chunk;
 const near = chunkDistanceFromStart(1, 1, start);
 const far = chunkDistanceFromStart(10, 10, start);
 assert.ok(far > near);
-assert.ok(xpDistanceMultiplier(far) > xpDistanceMultiplier(near));
 
 const vargstigen = generateChunkWorldData(seed, seed, 2, 0);
 assert.equal(vargstigen.regionId, 'vargstigen');
