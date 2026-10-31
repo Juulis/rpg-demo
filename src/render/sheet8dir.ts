@@ -16,7 +16,7 @@ export interface Sheet8Json {
   hitFrame?: number;
   alignX?: number[][];
   alignY?: number[][];
-  rects: { dir: string; frame?: number; x: number; y: number; w: number; h: number }[];
+  rects?: { dir: string; frame?: number; x: number; y: number; w: number; h: number }[];
 }
 
 export interface StripAnimJson {
@@ -39,25 +39,52 @@ async function json<T>(p: string): Promise<T> {
   return (await r.json()) as T;
 }
 
-/** Antal bildrutor per riktning — från JSON, annars högsta frame-index i rects + 1. */
+/** Antal bildrutor per riktning — från JSON, annars högsta frame-index i rects + 1, annars 1. */
 export function sheet8FrameCount(meta: Pick<Sheet8Json, 'frames' | 'rects'>): number {
   if (meta.frames != null && meta.frames > 0) return meta.frames;
-  let max = 0;
-  for (const r of meta.rects) max = Math.max(max, (r.frame ?? 0) + 1);
-  return max || 1;
+  const rects = meta.rects;
+  if (rects?.length) {
+    let max = 0;
+    for (const r of rects) max = Math.max(max, (r.frame ?? 0) + 1);
+    return max || 1;
+  }
+  return 1;
+}
+
+type Sheet8Rect = NonNullable<Sheet8Json['rects']>[number];
+
+/**
+ * Härleder rutor när JSON saknar rects (t.ex. amazon/barbar idle: en rad, en ruta per riktning).
+ * Flera frames: en rad per riktning, kolumner per frame (samma som riddare_* med rects).
+ */
+export function resolveSheet8Rects(meta: Pick<Sheet8Json, 'dirs' | 'frames' | 'frameW' | 'frameH' | 'rects'>): Sheet8Rect[] {
+  if (meta.rects?.length) return meta.rects;
+  const nFrame = sheet8FrameCount(meta);
+  const out: Sheet8Rect[] = [];
+  for (let d = 0; d < meta.dirs.length; d++) {
+    const dir = meta.dirs[d];
+    if (!dir) continue;
+    for (let f = 0; f < nFrame; f++) {
+      const x = nFrame === 1 ? d * meta.frameW : f * meta.frameW;
+      const y = nFrame === 1 ? 0 : d * meta.frameH;
+      out.push({ dir, frame: f, x, y, w: meta.frameW, h: meta.frameH });
+    }
+  }
+  return out;
 }
 
 /** 8-riktningsark (riddare_*, monster_*_8dir, npc_*_idle_8dir). */
 export async function loadSheet8dir(tex: TexLoader, dir: string, name: string, scale?: number): Promise<Anim> {
   const meta = await json<Sheet8Json>(`${dir}/${name}.json`);
   const src = await tex(`${dir}/${meta.image}`);
+  const rects = resolveSheet8Rects(meta);
   const nDir = meta.dirs.length;
   const nFrame = sheet8FrameCount(meta);
   const frames: Texture[][] = [];
   for (let d = 0; d < nDir; d++) {
     const row: Texture[] = [];
     for (let f = 0; f < nFrame; f++) {
-      const rect = meta.rects.find((r) => meta.dirs.indexOf(r.dir) === d && (r.frame ?? 0) === f);
+      const rect = rects.find((r) => meta.dirs.indexOf(r.dir) === d && (r.frame ?? 0) === f);
       if (!rect) throw new Error(`${name}: saknar ruta ${meta.dirs[d]} f${f}`);
       row.push(cut(src, rect.x, rect.y, rect.w, rect.h));
     }

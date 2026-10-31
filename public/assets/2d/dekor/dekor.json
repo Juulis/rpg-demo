@@ -466,5 +466,139 @@
    136,
    248
   ]
+ },
+ "dod_tall": {
+  "w": 219,
+  "h": 337,
+  "anchor": [
+   111,
+   333
+  ]
+ },
+ "dod_tall_knackt": {
+  "w": 247,
+  "h": 265,
+  "anchor": [
+   127,
+   261
+  ]
+ },
+ "spanglykta": {
+  "w": 234,
+  "h": 330,
+  "anchor": [
+   119,
+   326
+  ],
+  "ljus": [
+   90,
+   126
+  ],
+  "ljusfarg": "#4a6a7a"
+ },
+ "sjunken_bat": {
+  "w": 289,
+  "h": 220,
+  "anchor": [
+   175,
+   216
+  ]
+ },
+ "vasstuva": {
+  "w": 264,
+  "h": 231,
+  "anchor": [
+   134,
+   227
+  ]
+ },
+ "kaveldun": {
+  "w": 272,
+  "h": 282,
+  "anchor": [
+   137,
+   278
+  ]
+ },
+ "torvstack": {
+  "w": 280,
+  "h": 216,
+  "anchor": [
+   153,
+   212
+  ]
+ },
+ "myrkors": {
+  "w": 242,
+  "h": 273,
+  "anchor": [
+   120,
+   269
+  ]
+ },
+ "sjunken_klocka": {
+  "w": 272,
+  "h": 264,
+  "anchor": [
+   134,
+   260
+  ]
+ },
+ "rotvalta": {
+  "w": 308,
+  "h": 264,
+  "anchor": [
+   159,
+   260
+  ]
+ },
+ "blackgol": {
+  "w": 296,
+  "h": 198,
+  "anchor": [
+   148,
+   194
+  ],
+  "platt": true
+ },
+ "kapellruin_horn": {
+  "w": 288,
+  "h": 279,
+  "anchor": [
+   143,
+   275
+  ]
+ },
+ "stolprad_rutten": {
+  "w": 296,
+  "h": 264,
+  "anchor": [
+   146,
+   260
+  ]
+ },
+ "stubbe_vatten": {
+  "w": 312,
+  "h": 248,
+  "anchor": [
+   154,
+   244
+  ]
+ },
+ "myrull": {
+  "w": 302,
+  "h": 238,
+  "anchor": [
+   152,
+   234
+  ]
+ },
+ "natstang": {
+  "w": 224,
+  "h": 343,
+  "anchor": [
+   114,
+   339
+  ]
  }
 }
