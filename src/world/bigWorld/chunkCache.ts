@@ -1,4 +1,4 @@
-import { generateChunkWorldData, chunkWorldSeed, type ChunkWorldData } from './worldGenerator';
+import { chunkWorldSeed, generateChunkWorldData, type ChunkWorldData } from './worldGenerator';
 
 export interface ChunkCacheOptions {
   /** Max antal chunkar i minnet (streaming). */
@@ -7,7 +7,19 @@ export interface ChunkCacheOptions {
   keepRadius: number;
 }
 
-const DEFAULT_OPTS: ChunkCacheOptions = { maxEntries: 48, keepRadius: 3 };
+export function minChunkCacheEntries(keepRadius: number): number {
+  const side = 2 * keepRadius + 1;
+  return side * side;
+}
+
+function assertCacheOptions(opts: ChunkCacheOptions): void {
+  const min = minChunkCacheEntries(opts.keepRadius);
+  if (opts.maxEntries < min) {
+    throw new Error(`ChunkWorldCache: maxEntries ${opts.maxEntries} < (${2 * opts.keepRadius + 1})^2 = ${min}`);
+  }
+}
+
+const DEFAULT_OPTS: ChunkCacheOptions = { maxEntries: 49, keepRadius: 3 };
 
 function cacheKey(gameSeed: number, cx: number, cy: number): string {
   return `${gameSeed}|${cx}|${cy}`;
@@ -23,8 +35,11 @@ export class ChunkWorldCache {
   private heroCx = 0;
   private heroCy = 0;
   private activeSeed: number | null = null;
+  private keepSet = new Set<string>();
 
-  constructor(private readonly opts: ChunkCacheOptions = DEFAULT_OPTS) {}
+  constructor(private readonly opts: ChunkCacheOptions = DEFAULT_OPTS) {
+    assertCacheOptions(opts);
+  }
 
   size(): number {
     return this.map.size;
@@ -34,6 +49,7 @@ export class ChunkWorldCache {
     this.map.clear();
     this.order.length = 0;
     this.activeSeed = null;
+    this.keepSet.clear();
   }
 
   private ensureSeed(gameSeed: number): void {
@@ -77,6 +93,7 @@ export class ChunkWorldCache {
         }
       }
     }
+    this.keepSet = keep;
     for (const key of [...this.map.keys()]) {
       if (!keep.has(key)) {
         this.map.delete(key);
@@ -100,7 +117,7 @@ export class ChunkWorldCache {
 
   private evictIfNeeded(): void {
     while (this.map.size > this.opts.maxEntries) {
-      const drop = this.farthestKey() ?? this.order[0];
+      const drop = this.farthestEvictableKey();
       if (!drop) break;
       this.map.delete(drop);
       const i = this.order.indexOf(drop);
@@ -108,14 +125,15 @@ export class ChunkWorldCache {
     }
   }
 
-  private farthestKey(): string | undefined {
+  private farthestEvictableKey(): string | undefined {
     let best: string | undefined;
     let bestD = -1;
     for (const key of this.map.keys()) {
+      if (this.keepSet.has(key)) continue;
       const parts = key.split('|');
       const cx = Number(parts[1]);
       const cy = Number(parts[2]);
-      if (cx === undefined || cy === undefined) continue;
+      if (Number.isNaN(cx) || Number.isNaN(cy)) continue;
       const d = Math.max(Math.abs(cx - this.heroCx), Math.abs(cy - this.heroCy));
       if (d > bestD) {
         bestD = d;

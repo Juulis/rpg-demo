@@ -45,10 +45,10 @@
       "hp_mult": 2.5,
       "damage_mult": 1.4,
       "defense_add": 3,
-      "xp_mult": 3.0,
+      "xp_mult": 3,
       "loot": {
         "extra_rolls": 1,
-        "drop_chance": 1.0,
+        "drop_chance": 1,
         "quality_mult": 1.5
       },
       "visual": "Blå glöd och namn i blått #6a6aff",
@@ -61,10 +61,10 @@
       "name": "Unikt monster",
       "max_per_area": "unique_max_per_game i spawnzoner.json (1, Askeborg 2)",
       "level_bonus": 3,
-      "hp_mult": 4.0,
+      "hp_mult": 4,
       "damage_mult": 1.6,
       "defense_add": 5,
-      "xp_mult": 5.0,
+      "xp_mult": 5,
       "modifiers_count": 1,
       "minions": {
         "count": [
@@ -78,8 +78,8 @@
       },
       "loot": {
         "extra_rolls": 2,
-        "drop_chance": 1.0,
-        "quality_mult": 2.0,
+        "drop_chance": 1,
+        "quality_mult": 2,
         "min_quality": "magic",
         "ilvl_bonus": 1
       },
@@ -500,11 +500,11 @@
     "galen_munk": 25,
     "kottklump": 27,
     "fadern_av_smittan": 28,
-    "forvriden_jagare": 4,
+    "forvriden_jagare": 3,
     "smittad_bybo": 5,
     "forvriden_gruvarbetare": 16,
-    "drunknad": 14,
-    "askkultist": 23
+    "drunknad": 12,
+    "askkultist": 20
   },
   "examples_fixed": [
     {

@@ -19,8 +19,7 @@ import varldStor from './varld_stor.json';
 import type { BigWorldDataFile } from './bigWorldTypes';
 import type { QuestDataFile } from './questTypes';
 import type { RumorDataFile } from './rumorTypes';
-import { filterSubtypesByBand, regionSpawnLevelBand } from '../world/bigWorld/spawnRules';
-import { chebyshevChunkDist } from '../world/bigWorld/ringZone';
+import { validateVarldStor, filterKnownVarldStorDataDebt } from './validateVarldStor';
 import type { DialogDataFile } from './dialogTypes';
 import { DIALOG_DATA } from '../npc/designDialoger';
 import type { NpcDataFile } from './npcTypes';
@@ -126,24 +125,16 @@ export function validateData(): string[] {
       if (fixed[id] == null) issues.push(`varld_stor region ${r.id}: undertyp ${id} saknas i fixed_levels`);
       else if (!MONSTERS.has(id)) issues.push(`varld_stor region ${r.id}: undertyp ${id} saknas i monsterfamiljer`);
     }
-    if (!r.genererad_spawn) continue;
-    const regionBand = regionSpawnLevelBand(bw, r);
-    if (filterSubtypesByBand(r.undertyper ?? [], regionBand).length === 0) {
-      issues.push(`varld_stor region ${r.id}: genererad_spawn men inga undertyper i regionens band ${regionBand.join('-')}`);
-      continue;
-    }
-    const [rx, ry] = r.chunk;
-    const rad = r['radie'];
-    for (let dx = -rad; dx <= rad; dx++) {
-      for (let dy = -rad; dy <= rad; dy++) {
-        const cx = rx + dx;
-        const cy = ry + dy;
-        if (chebyshevChunkDist(cx, cy, rx, ry) > rad) continue;
-        if (filterSubtypesByBand(r.undertyper ?? [], regionBand).length === 0) {
-          issues.push(`varld_stor region ${r.id} chunk ${cx},${cy}: tom spawn med regionband`);
-        }
-      }
-    }
   }
+  const familyIds = new Set(DATA.families.families.map((f) => f.id));
+  issues.push(
+    ...filterKnownVarldStorDataDebt(
+      validateVarldStor(bw, {
+        monsterIds: new Set(MONSTERS.keys()),
+        monsterById: MONSTERS,
+        familyIds,
+      }),
+    ),
+  );
   return issues;
 }

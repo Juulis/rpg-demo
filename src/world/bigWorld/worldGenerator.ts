@@ -5,7 +5,7 @@ import { blendBiomesAtChunk, biomeRenderPlaceholders, isTownBiomeChunk } from '.
 import { buildRoadIndex, roadsAtChunk, type RoadIndex } from './roads';
 import { resolveRegionAtChunk } from './regionIndex';
 import { chunkDistanceFromStart, ringAtChunkDistance } from './ringZone';
-import { biomeSpawnSubtypes, filterSubtypesByBand, regionSpawnLevelBand } from './spawnRules';
+import { planMellanmarkSpawn, filterSubtypesByBand, regionSpawnLevelBand } from './spawnRules';
 
 export interface BigWorldSpawnRoll {
   uid: string;
@@ -128,7 +128,6 @@ export function generateChunkWorldData(gameSeed: number, cx: number, cy: number)
   const distance = chunkDistanceFromStart(cx, cy, catalog.startChunk);
   const ringar = catalog.data.meta.zonmodell?.ringar ?? [];
   const chunkRing = ringAtChunkDistance(distance, ringar);
-  const spawnBand = mellanmark ? chunkRing.levelBand : regionSpawnLevelBand(catalog.data, region);
   const biome = catalog.data.biomer[region.biom];
   const blend = blendBiomesAtChunk(cx, cy, region.biom, neighborBiomeFactory(catalog));
   const { ids: roads, types: roadTypes } = roadsAtChunk(catalog.roads, cx, cy);
@@ -138,7 +137,6 @@ export function generateChunkWorldData(gameSeed: number, cx: number, cy: number)
 
   const placeholders = biomeRenderPlaceholders(biome);
   const town = !mellanmark && isTownBiomeChunk(region.typ);
-  const monsterFamily = region.monsterfamilj ?? null;
 
   let spawnSubtypes: string[];
   let generatedSpawn: boolean;
@@ -146,9 +144,14 @@ export function generateChunkWorldData(gameSeed: number, cx: number, cy: number)
   let regionTyp: string;
   let safe: boolean;
   let act: string | null;
+  let monsterFamily: string | null = region.monsterfamilj ?? null;
+  let spawnBand = mellanmark ? chunkRing.levelBand : regionSpawnLevelBand(catalog.data, region);
 
   if (mellanmark) {
-    spawnSubtypes = biomeSpawnSubtypes(biome, monsterFamily, spawnBand);
+    const plan = planMellanmarkSpawn(catalog.data, biome, region, chunkRing.ring, chunkRing.levelBand);
+    spawnBand = plan.spawnBand;
+    monsterFamily = plan.monsterFamily;
+    spawnSubtypes = plan.spawnSubtypes;
     generatedSpawn = spawnSubtypes.length > 0;
     access = 'oppen';
     regionTyp = 'mellanmark';

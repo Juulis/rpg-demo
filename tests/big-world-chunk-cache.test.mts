@@ -14,15 +14,15 @@ for (let dx = -2; dx <= 2; dx++) {
   }
 }
 
-const bounded = new ChunkWorldCache({ maxEntries: 12, keepRadius: 2 });
+const bounded = new ChunkWorldCache({ maxEntries: 12, keepRadius: 1 });
 for (let step = 0; step < 40; step++) {
   bounded.syncNear(seed, step, 0);
   assert.ok(bounded.size() <= 12);
 }
 
-const evict = new ChunkWorldCache({ maxEntries: 4, keepRadius: 99 });
+const evict = new ChunkWorldCache({ maxEntries: 9, keepRadius: 1 });
 for (let i = 0; i < 20; i++) evict.get(seed, i, 0);
-assert.ok(evict.size() <= 4);
+assert.ok(evict.size() <= 9);
 
 const seedA = 111;
 const seedB = 222;
