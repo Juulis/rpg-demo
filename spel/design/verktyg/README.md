@@ -1,6 +1,6 @@
 # Designverktyg
 
-Python 3, inga beroenden. Kör från repots rot (eller ange designmappen som första argument). Alla läser bara data i `spel/design/` och skriver inget.
+Python 3, inga beroenden. Kör från repots rot (eller ange designmappen som första argument). Alla läser bara data i `spel/design/` och skriver inget (inte heller **pycache**, sys.dont_write_bytecode; `.gitignore` här ignorerar **pycache**/ för säkerhets skull).
 
 | Skript          | Vad                                                                                                                                                                                                                                   | Körs                                                |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |

@@ -53,7 +53,8 @@
       "platser": ["saknades_roset"],
       "handelser": ["vargringen"],
       "grupper": [],
-      "lager": []
+      "lager": [],
+      "monster_kalla": "spawnzoner.json areas.startskogen session_roll: 3 till 7 aktiva punkter, simulerat medel 14,2 (p5 7, p95 23) med kodens algoritm. Ersätter det gamla snittet 17 (egentligen 18,5)."
     },
     {
       "id": "dimgranarna",

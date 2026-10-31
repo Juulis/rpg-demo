@@ -5,6 +5,7 @@ Läser tätheten ur data: varldsgenerator.json monsterpooler.tathet (mellanmark 
 xp_penalty som i monster_niva.json. Hjälten rensar alla namngivna platser i ringen och andelen utforskad_andel av mellanmarken.
 --forslag räknar ut bossarnas XP-faktor per akt (monster_niva.json boss_xp_faktor) med tätheten i data. Faktorn i data behålls om ringen redan landar på målnivån; annars väljs största faktorn (högst 1) som stannar inom 80 procent av målnivån.
 --forslag-tathet räknar ut den mellanmarkstäthet per ring som ger målnivån vid ringens yttre kant."""
+import sys; sys.dont_write_bytecode = True
 import json,os,sys,math
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from spelregler import L,ringar,cell,vikter
