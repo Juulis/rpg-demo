@@ -929,7 +929,7 @@
         },
         {
           "id": "ge_ingrid",
-          "text": "Ge krönikan till Vaktkapten Ingrid, vars farfar står i den (om hon finns i byn, annars läggs den i hennes vakthus).",
+          "text": "Ge krönikan till Ingrid, vars farfar står i den (om hon finns i byn, annars läggs den i hennes vakthus).",
           "konsekvens": {
             "belöning_item": "vaktarens_brynja (set: gravvaktarens_arv)",
             "rykte": "rykte_kronikan_ingrid",
@@ -1124,7 +1124,7 @@
         },
         {
           "id": "ge_sara",
-          "text": "Ge benen och signeten till Sara Benläsare.",
+          "text": "Ge benen och signeten till Sara.",
           "konsekvens": {
             "belöning_item": "benviskarens set del (slumpad, viskarens_revben eller viskarens_kotor)",
             "rykte": "rykte_valdemar_sara",
@@ -1696,12 +1696,12 @@
     },
     {
       "id": "martas_dotter",
-      "namn": "Martas dotter",
+      "namn": "Märtas dotter",
       "givare": "marta_torghandlare",
       "akt": "akt_3",
       "plats": ["gamla_byn", "kopparberg", "gruvdjupen"],
       "rekommenderad_niva": [15, 17],
-      "beskrivning": "Martas dotter Hanna flydde till Kopparberg och gifte sig med gruvans klockare. Inga brev har kommit på tjugo år. Marta frågar varje resenär.",
+      "beskrivning": "Märtas dotter Hanna flydde till Kopparberg och gifte sig med gruvans klockare. Inga brev har kommit på tjugo år. Märta frågar varje resenär.",
       "start": {
         "typ": "prata_med",
         "npc": "marta_torghandlare"
@@ -1726,7 +1726,7 @@
         },
         {
           "id": "bilden",
-          "text": "Bland nät och kristaller hänger gruvlagets målade gruppbild. Hanna står längst ut med Martas röda huvudduk. En unik gruvspindel vaktar nätet.",
+          "text": "Bland nät och kristaller hänger gruvlagets målade gruppbild. Hanna står längst ut med Märtas röda huvudduk. En unik gruvspindel vaktar nätet.",
           "trigger": {
             "typ": "plocka_upp",
             "item": "quest_gruppbilden"
@@ -1744,7 +1744,7 @@
         },
         {
           "id": "tillbaka",
-          "text": "Gå tillbaka till Marta och bestäm vad hon ska få veta.",
+          "text": "Gå tillbaka till Märta och bestäm vad hon ska få veta.",
           "trigger": {
             "typ": "prata_med",
             "npc": "marta_torghandlare"
@@ -1754,7 +1754,7 @@
       "val": [
         {
           "id": "beratta_sanningen",
-          "text": "Ge Marta bilden och berätta sanningen.",
+          "text": "Ge Märta bilden och berätta sanningen.",
           "konsekvens": {
             "rykte": "rykte_hanna_vilar",
             "npc": {
@@ -1786,7 +1786,7 @@
               "region": "gamla_byn",
               "andring": "miljo",
               "ankare": "torget",
-              "value": "gruppbilden hänger i Martas stånd"
+              "value": "gruppbilden hänger i Märtas stånd"
             }
           ]
         },
@@ -1829,7 +1829,7 @@
           ]
         }
       ],
-      "redan_gjort": "Om gruppbilden eller hammaren redan plockats upp hoppar questen till steget tillbaka när hjälten pratar med Marta.",
+      "redan_gjort": "Om gruppbilden eller hammaren redan plockats upp hoppar questen till steget tillbaka när hjälten pratar med Märta.",
       "belöning": {
         "xp": 2560,
         "xp_andel": "40 % av nivå 16",

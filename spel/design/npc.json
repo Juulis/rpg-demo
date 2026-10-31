@@ -8,7 +8,8 @@
     "akt_regel": "akt anger vilken akt NPC:n hör till. grafik_prioritet true = akt 1, behöver grafik först.",
     "tillstand_regel": "tillstand_varianter väljs via world_state.npc_states. Fält i varianten skriver över standardfälten. dod tar bort NPC:n; ersatts_av anger vem som tar över platsen.",
     "visas_flagga": "visas kan också vara flag:<flagga>, då syns NPC:n från nästa speldygn efter att flaggan satts.",
-    "runtime_falt": "Fälten sprite, area, zone, act, name, default_line och pos eller tile krävs av koden (src/data/npcTypes.ts, validateData). area = område i spawnzoner.json, zone = forest, village, wolfstead, dimmerstrand, kopparberg eller askeborg. pos = världsenheter, tile = byrutnät. name = namn och default_line = repliker.halsning. act = akt som tal; koden visar i dag bara act 1. Placering för de 13 NPC:erna med sprite är kopierad från koden, utom lägrets NPC:er i startskogen som flyttats 128 enheter i x och z till lägerelden i startlagret (varld_stor.json meta.startskogen_fotavtryck). kraver_grafik: true = sprite saknas i assets/2d/sprites/npc/npc.json. Platser som inte finns i koden än (askfalten, sista_ljuset) har en tillfällig area i närmaste stad tills området finns; omrade och plats är den riktiga designplatsen. routineTemplate = rutinmall för bakgrundsbybor (npcRoutines.json templates)."
+    "runtime_falt": "Fälten sprite, area, zone, act, name, default_line och pos eller tile krävs av koden (src/data/npcTypes.ts, validateData). area = område i spawnzoner.json, zone = forest, village, wolfstead, dimmerstrand, kopparberg eller askeborg. pos = världsenheter, tile = byrutnät. name = namn och default_line = repliker.halsning. act = akt som tal; koden visar i dag bara act 1. Placering för de 13 NPC:erna med sprite är kopierad från koden, utom lägrets NPC:er (omrade startlagret, även Sigrun och Bror som i koden stod i gamla_byn) som står runt lägerelden (−128, −128) med samma offset mot elden som i koden mot den gamla elden (5, 11), alltså kodens pos + (−133, −139); se varld_stor.json meta.startskogen_fotavtryck.lager_ankare. kraver_grafik: true = sprite saknas i assets/2d/sprites/npc/npc.json. Platser som inte finns i koden än (askfalten, sista_ljuset) har en tillfällig area i närmaste stad tills området finns; omrade och plats är den riktiga designplatsen. routineTemplate = rutinmall för bakgrundsbybor (npcRoutines.json templates).",
+    "titel_regel": "namn och name följer koden (src/data/npc.json). Titel eller binamn står i fältet titel och får användas i text där det passar."
   },
   "npcs": [
     {
@@ -81,7 +82,7 @@
       "sprite": "gamla_ylva",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [-124, -117]
+      "pos": [-129, -128]
     },
     {
       "id": "tor_kolare",
@@ -118,7 +119,7 @@
         "rader": [
           "Allt har ett pris. Även det du hittar på de döda.",
           "Jag köper ben. Fråga inte varför.",
-          "Pilar? Klart. Hälsodrycker? Om du har råd."
+          "Pilar? Klart. Rökt hogrev? Om du har råd."
         ],
         "rykten": ["rykte_vargarna_okar", "rykte_ulvhild_dod", "rykte_hedda_palsen"]
       },
@@ -128,7 +129,7 @@
       },
       "quest_krokar": ["Tor letar efter sin gamla kärrhäst som flydde mot Vargaby."],
       "handel": {
-        "saljer": ["liten_halsodryck", "uthallighetsdryck", "pilar", "kastspjut", "tier 1 vapen och rustning (Normal)"],
+        "saljer": ["torkat_kott", "skogsörtste", "pilar", "kastspjut", "tier 1 vapen och rustning (Normal)"],
         "koper": ["vapen", "rustning", "amulett", "ring", "ben", "material"],
         "prisfaktor_salj": 1.2,
         "prisfaktor_kop": 0.25,
@@ -142,7 +143,7 @@
       "sprite": "tor_kolare",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [-119, -116],
+      "pos": [-124, -127],
       "tillstand_varianter": {
         "dod": {
           "hidden": true
@@ -196,7 +197,7 @@
       "handel": {
         "tjanst": "helning",
         "pris": "gratis, full HP",
-        "saljer": ["liten_halsodryck", "stor_halsodryck"],
+        "saljer": ["torkat_kott", "rokerat_hogrev"],
         "koper": [],
         "prisfaktor_salj": 1.0
       },
@@ -206,14 +207,14 @@
       "default_line": "Sitt ner. Låt mig se på dig.",
       "act": 1,
       "sprite": "sigrun_helare",
-      "area": "gamla_byn",
-      "zone": "village",
-      "tile": [9, 9],
+      "area": "startskogen",
+      "zone": "forest",
       "tillstand_varianter": {
         "dod": {
           "hidden": true
         }
-      }
+      },
+      "pos": [-126, -126]
     },
     {
       "id": "bror_vakt",
@@ -282,9 +283,9 @@
       "default_line": "Håll dig på stigen. Skogen är hungrig.",
       "act": 1,
       "sprite": "bror_vakt",
-      "area": "gamla_byn",
-      "zone": "village",
-      "tile": [2, 17]
+      "area": "startskogen",
+      "zone": "forest",
+      "pos": [-131, -129]
     },
     {
       "id": "lilla_mira",
@@ -352,7 +353,7 @@
       "sprite": "lilla_mira",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [-122, -114]
+      "pos": [-127, -125]
     },
     {
       "id": "bybo_flykting",
@@ -394,7 +395,7 @@
       "sprite": "bybo_flykting",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [-123, -116],
+      "pos": [-128, -127],
       "kraver_grafik": true,
       "routineTemplate": "bybo_bonde",
       "tillstand_varianter": {
@@ -508,7 +509,7 @@
       },
       "quest_krokar": ["Hedda vill ha Ulvhilds päls."],
       "handel": {
-        "saljer": ["pilar", "kastspjut", "liten_halsodryck", "bage och spjut (Normal och Magisk)", "ben baser (Normal)"],
+        "saljer": ["pilar", "kastspjut", "torkat_kott", "bage och spjut (Normal och Magisk)", "ben baser (Normal)"],
         "koper": ["vapen", "rustning", "ben", "material"],
         "prisfaktor_salj": 1.1,
         "prisfaktor_kop": 0.3
@@ -540,7 +541,7 @@
     },
     {
       "id": "gravvaktaren_ebbe",
-      "namn": "Gravvaktaren Ebbe",
+      "namn": "Ebbe",
       "roll": "berattare",
       "faktion": "gravvaktarna",
       "omrade": "gamla_byn",
@@ -594,17 +595,18 @@
           "hidden": true
         }
       },
-      "name": "Gravvaktaren Ebbe",
+      "name": "Ebbe",
       "default_line": "Ingen borde komma hit. Ändå kom du.",
       "act": 1,
       "sprite": "gravvaktaren_ebbe",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [22, 20]
+      "tile": [22, 20],
+      "titel": "Gravvaktare"
     },
     {
       "id": "marta_torghandlare",
-      "namn": "Marta",
+      "namn": "Märta",
       "roll": "handlare",
       "faktion": "de_kvarvarande",
       "omrade": "gamla_byn",
@@ -645,9 +647,9 @@
         "tor_kolare": "gammal vän",
         "olle_vardshus": "skvallerpartner"
       },
-      "quest_krokar": ["Marta saknar sin dotter som flydde till Kopparberg."],
+      "quest_krokar": ["Märta saknar sin dotter som flydde till Kopparberg."],
       "handel": {
-        "saljer": ["liten_halsodryck", "stor_halsodryck", "uthallighetsdryck", "amuletter och ringar (Normal och Magisk)"],
+        "saljer": ["torkat_kott", "rokerat_hogrev", "skogsörtste", "amuletter och ringar (Normal och Magisk)"],
         "koper": ["vapen", "rustning", "amulett", "ring", "ben", "material"],
         "prisfaktor_salj": 1.15,
         "prisfaktor_kop": 0.3
@@ -671,17 +673,18 @@
           "hidden": true
         }
       },
-      "name": "Marta",
+      "name": "Märta",
       "default_line": "Nya ansikten! Äntligen nya ansikten!",
       "act": 1,
       "sprite": "marta_torghandlare",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [12, 13]
+      "tile": [12, 13],
+      "titel": "Torghandlare"
     },
     {
       "id": "gunnar_jarnhand",
-      "namn": "Gunnar Järnhand",
+      "namn": "Gunnar",
       "roll": "handlare",
       "faktion": "de_kvarvarande",
       "omrade": "gamla_byn",
@@ -732,7 +735,7 @@
       },
       "akt": "akt_1",
       "grafik_prioritet": true,
-      "name": "Gunnar Järnhand",
+      "name": "Gunnar",
       "default_line": "Jag smider inte längre. Men jag säljer.",
       "act": 1,
       "sprite": "gunnar_jarnhand",
@@ -743,11 +746,12 @@
         "dod": {
           "hidden": true
         }
-      }
+      },
+      "titel": "Järnhand"
     },
     {
       "id": "vaktkapten_ingrid",
-      "namn": "Vaktkapten Ingrid",
+      "namn": "Ingrid",
       "roll": "vakt",
       "faktion": "gravvaktarna",
       "omrade": "gamla_byn",
@@ -808,13 +812,14 @@
           "hidden": true
         }
       },
-      "name": "Vaktkapten Ingrid",
+      "name": "Ingrid",
       "default_line": "Byn är under mitt skydd. Bete dig därefter.",
       "act": 1,
       "sprite": "vaktkapten_ingrid",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [4, 19]
+      "tile": [4, 19],
+      "titel": "Vaktkapten"
     },
     {
       "id": "olle_vardshus",
@@ -867,7 +872,7 @@
       },
       "quest_krokar": ["Värdshusets tavla: krokar till alla städer."],
       "handel": {
-        "saljer": ["mat (läker 15 HP över tid)", "uthallighetsdryck"],
+        "saljer": ["torkat_kott", "skogsörtste"],
         "koper": [],
         "prisfaktor_salj": 1.0
       },
@@ -888,7 +893,7 @@
     },
     {
       "id": "sara_benlasare",
-      "namn": "Sara Benläsare",
+      "namn": "Sara",
       "roll": "handlare",
       "faktion": "ingen",
       "omrade": "gamla_byn",
@@ -945,13 +950,14 @@
           "hidden": true
         }
       },
-      "name": "Sara Benläsare",
+      "name": "Sara",
       "default_line": "Ben berättar. Smycken lyssnar.",
       "act": 1,
       "sprite": "sara_benlasare",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [7, 16]
+      "tile": [7, 16],
+      "titel": "Benläsare"
     },
     {
       "id": "lova_fiskarankan",
@@ -1059,7 +1065,7 @@
       "handel": {
         "tjanst": "helning",
         "pris": "gratis, full HP och tar bort gift",
-        "saljer": ["stor_halsodryck"],
+        "saljer": ["rokerat_hogrev"],
         "koper": [],
         "prisfaktor_salj": 1.1
       },
@@ -1191,7 +1197,7 @@
       "handel": {
         "tjanst": "helning",
         "pris": "gratis, full HP och tar bort gift",
-        "saljer": ["stor_halsodryck", "foryngringsdryck"],
+        "saljer": ["rokerat_hogrev", "vargblod"],
         "koper": [],
         "prisfaktor_salj": 1.2
       },
@@ -1250,7 +1256,13 @@
       "akt": "akt_5",
       "grafik_prioritet": false,
       "handel": {
-        "saljer": ["drycker", "vapen och rustning tier 3 (Normal till Sällsynt)", "amuletter och ringar (Magisk och Sällsynt)"],
+        "saljer": [
+          "rokerat_hogrev",
+          "vargblod",
+          "varlbrygd",
+          "vapen och rustning tier 3 (Normal till Sällsynt)",
+          "amuletter och ringar (Magisk och Sällsynt)"
+        ],
         "koper": ["vapen", "rustning", "amulett", "ring", "ben", "material"],
         "prisfaktor_salj": 1.5,
         "prisfaktor_kop": 0.35

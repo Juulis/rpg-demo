@@ -27,7 +27,7 @@
       "rader": [
         "Everything has a price. Even what you find on the dead.",
         "I buy bones. Don't ask why.",
-        "Arrows? Sure. Potions? If you can afford them."
+        "Arrows? Sure. Smoked haunch? If you can afford it."
       ]
     },
     "quest_krokar": ["Tor is looking for his old cart horse, which bolted toward Wolfstead."],
@@ -170,7 +170,8 @@
       }
     },
     "name": "Ebbe the Gravewarden",
-    "default_line": "No one should come here. Yet here you are."
+    "default_line": "No one should come here. Yet here you are.",
+    "titel": "Gravewarden"
   },
   "marta_torghandlare": {
     "namn": "Marta",
@@ -184,7 +185,8 @@
     },
     "quest_krokar": ["Marta misses her daughter, who fled to Copperfell."],
     "name": "Marta",
-    "default_line": "New faces! New faces at last!"
+    "default_line": "New faces! New faces at last!",
+    "titel": "Market trader"
   },
   "gunnar_jarnhand": {
     "namn": "Gunnar Ironhand",
@@ -198,10 +200,11 @@
     },
     "quest_krokar": ["Gunnar's master's sword, the Runeforged Blade, should come home."],
     "name": "Gunnar Ironhand",
-    "default_line": "I don't forge anymore. But I sell."
+    "default_line": "I don't forge anymore. But I sell.",
+    "titel": "Ironhand"
   },
   "vaktkapten_ingrid": {
-    "namn": "Captain Ingrid",
+    "namn": "Ingrid",
     "repliker": {
       "halsning": "This village is under my protection. Act accordingly.",
       "rader": [
@@ -221,8 +224,9 @@
         "bark": "The lantern will burn again. One day."
       }
     },
-    "name": "Captain Ingrid",
-    "default_line": "This village is under my protection. Act accordingly."
+    "name": "Ingrid",
+    "default_line": "This village is under my protection. Act accordingly.",
+    "titel": "Captain"
   },
   "olle_vardshus": {
     "namn": "Olle",
@@ -239,7 +243,7 @@
     "default_line": "Sit! First tankard's on me, the next one's on you."
   },
   "sara_benlasare": {
-    "namn": "Sara Bonereader",
+    "namn": "Sara",
     "repliker": {
       "halsning": "Bones tell. Trinkets listen.",
       "rader": [
@@ -254,8 +258,9 @@
         "halsning": "Valdemar speaks to me now. He is very angry. Care to buy something?"
       }
     },
-    "name": "Sara Bonereader",
-    "default_line": "Bones tell. Trinkets listen."
+    "name": "Sara",
+    "default_line": "Bones tell. Trinkets listen.",
+    "titel": "Bonereader"
   },
   "lova_fiskarankan": {
     "namn": "Lova the Fisher's Widow",

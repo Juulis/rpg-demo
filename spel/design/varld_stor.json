@@ -104,14 +104,35 @@
       "Varje biom får egna monster, befintliga undertyper är platshållare tills UI gör nya.",
       "Instanser nås med teleport som alltid är öppen. Bosslåset i portal_by.json (arenan låses under striden) är godkänt av Juulis."
     ],
-    "tathet_regel": "regioner[].tathet.monster_per_game = monster per game i regionens öppna chunkar (instansen för banor), fördelat jämnt över regionens chunkar utom delområden (bana1_stor.json, egna tal) och säkra platser. Undertyper ur regionens undertyper. Bossen räknas en gång utöver talet. Gäller i stället för mellanmarkens täthet (varldsgenerator.json monsterpooler.tathet_per_chunk). Kontroll: spel/design/verktyg/tathet.py.",
+    "tathet_regel": "regioner[].tathet.monster_per_game = monster per game i regionens öppna chunkar (instansen för banor), fördelat jämnt över regionens chunkar utom delområden (bana1_stor.json, egna tal) och säkra platser. Undertyper ur regionens undertyper. Bossen räknas en gång utöver talet. Gäller i stället för mellanmarkens täthet (varldsgenerator.json monsterpooler.tathet_per_chunk). Kontroll: spel/design/verktyg/tathet.py. Städer med eget område i spawnzoner.json (vargaby, gamla_byn, dimmerstrand, kopparberg, askeborg): områdets spawn ersätter regionens tathet i stadens chunkar och läggs inte ovanpå; regionens monster_per_game är då områdets medel. Vargaby är delområdet vargaby_delomrade (20) och regionens 2 gäller bara de övriga chunkarna.",
     "startskogen_fotavtryck": {
       "beslut": "Världens origo (0, 0) är mitten av regionen startskogen, chunk [1, 1], där Rungläntan ligger. Gamla Startskogen (koden före storvärlden) är Rungläntan.",
       "koordinater": "1 chunk = 64 rutor = 128 världsenheter. Chunk (cx, cy) täcker x från (cx − 1) × 128 − 64 till (cx − 1) × 128 + 64 och z (cy) på samma sätt, alltså chunk = floor((x + 192) / 128). Mitten av chunk [1, 1] = (0, 0), mitten av chunk [0, 0] = (−128, −128).",
-      "gamla_startskogen": "spawnzoner.json areas.startskogen (8 punkter på radie 30 till 35, grupper 18 till 40 från origo, runstenarna och röda portalen) ryms helt i chunk [1, 1] (radie högst 40 av 64). Chunken är delområdet runglantan och spawnar bara från det gamla systemet med Rungläntans monster_per_game 14; chunk-spawnen hoppar över chunk [1, 1].",
+      "gamla_startskogen": "spawnzoner.json areas.startskogen (8 punkter på radie 30 till 35, grupper 18 till 40 från origo, runstenarna och röda portalen) ryms helt i chunk [1, 1] (radie högst 40 av 64). Chunken är delområdet runglantan och spawnar bara från det gamla systemet med Rungläntans monster_per_game 14 (spawnzoner.json session_roll medel 14, ersätter det gamla snittet 17); chunk-spawnen hoppar över chunk [1, 1].",
       "startlagret": "Regionen startlagret är bara chunk [0, 0] (radie 0). Startpunkten och lägerelden ligger i chunkens mitt (−128, −128). Säkert inom 12 enheter (6 rutor) runt elden. Regionens täthet är 0, chunken är en glänta utan monster.",
-      "npc": "pos i npc.json för area startskogen räknas i världsenheter från origo. NPC med omrade startlagret står runt lägerelden (−128, −128); övriga (Viskaren) runt Rungläntan.",
-      "ett_system": "Varje osäker chunk i ring 0 och 1 får monster från exakt ett system: chunk [1, 1] från spawnzoner.json startskogen, alla andra från chunk-spawnen (delområde i bana1_stor.json, annars regionens tathet, annars mellanmark)."
+      "npc": "pos i npc.json för area startskogen räknas i världsenheter från origo. Alla NPC:er med omrade startlagret (Ylva, Tor, Sigrun, Bror, Mira, flyktingen) står runt lägerelden (−128, −128) inom säkra radien 12, med samma offset mot elden som i koden mot den gamla elden (5, 11). Viskaren står runt Rungläntan.",
+      "ett_system": "Varje osäker chunk i ring 0 och 1 får monster från exakt ett system: chunk [1, 1] från spawnzoner.json startskogen, alla andra från chunk-spawnen (delområde i bana1_stor.json, annars regionens tathet, annars mellanmark). Samma sak gäller städer med spawnzoner-område i alla ringar (meta.tathet_regel).",
+      "lager_ankare": {
+        "regel": "Rutinankare i lägret = kodens routineAnchors (areaId startskogen) + (−133, −139). Alla ligger inom 12 enheter från elden.",
+        "lagerelden": [-128, -128],
+        "ylvas_talt": [-130, -126],
+        "lagrets_karra": [-124, -127],
+        "tors_talt": [-122, -125],
+        "lagrets_palissad": [-131, -129],
+        "brors_talt": [-133, -127],
+        "lagrets_utkant": [-127, -123],
+        "helartaltet": [-126, -126]
+      }
+    },
+    "grannar_regel": {
+      "regel": "grannar är dubbelriktade. Två regioner är grannar när de delar en chunkkant (delområdenas chunkar i bana1_stor.json räknas till sin region även utanför radien, t.ex. Bäckravinen [1, −1] till startskogen) eller ligger i följd på samma väg i vagar; banor (typ bana) och instanser är bara grannar via sin stig eller ingång. Kontroll: spel/design/verktyg/tackning.py.",
+      "via_vag_genom_mellanmark": {
+        "startlagret och sodra_mon": "askvagen genom chunk [0, −1]",
+        "dimmerstrand och sjunkna_kyrkan": "klockstigen",
+        "askfalten och brandkusten": "kustvagen",
+        "brandkusten och sista_ljuset": "kustvagen"
+      },
+      "mellanmark_ring_0": "Chunkarna [−1, −1] och [0, −1] tillhör ingen region sedan startlagret fick radie 0 och är mellanmark i ring 0 (0,5 monster per chunk)."
     }
   },
   "biomer": {
@@ -920,8 +941,8 @@
       "atkomst": "oppen",
       "boss_poi": "gamla_byn_kyrkogard",
       "tathet": {
-        "monster_per_game": 22,
-        "kalla": "bana1_stor.json nivakurva.ring_2_kontroll (spawnzoner.json areas.gamla_byn)"
+        "monster_per_game": 23,
+        "kalla": "spawnzoner.json areas.gamla_byn medel (samma tal i bana1_stor.json nivakurva.ring_2_kontroll)"
       }
     },
     {
@@ -1015,7 +1036,7 @@
       "radie": 1,
       "ringzon": 3,
       "nivaband": [10, 11],
-      "grannar": ["dimmerstrand", "myrkanten"],
+      "grannar": ["dimmerstrand", "korpholmarna", "myrkanten"],
       "vagar": ["vag_vastra"],
       "byar": [],
       "poi": ["hedkapellet"],
@@ -1069,7 +1090,7 @@
       "radie": 1,
       "ringzon": 3,
       "nivaband": [12, 13],
-      "grannar": ["dimmerstrand"],
+      "grannar": ["dimmerstrand", "dimvagen"],
       "vagar": ["ebbstigen"],
       "byar": [],
       "poi": ["korpvarden", "fagelberget"],
@@ -1288,7 +1309,7 @@
       "radie": 1,
       "ringzon": 4,
       "nivaband": [15, 18],
-      "grannar": ["askfalten", "rokkarret"],
+      "grannar": ["askeborg", "askfalten", "rokkarret"],
       "vagar": ["askvagen"],
       "byar": [],
       "poi": ["glodvraket"],
@@ -1342,7 +1363,7 @@
       "radie": 1,
       "ringzon": 5,
       "nivaband": [19, 23],
-      "grannar": ["askfalten", "katedralen", "kultens_katakomber"],
+      "grannar": ["askfalten", "glodstranden", "katedralen", "kultens_katakomber"],
       "vagar": ["askvagen", "katakomb_trappan", "katedralgatan"],
       "byar": ["askeborg_by"],
       "poi": ["askeborg_by", "askeborgs_stadsport"],
@@ -1854,7 +1875,7 @@
       "namn": "Lägret vid skogsbrynet",
       "typ": "lager",
       "region": "startlagret",
-      "npc": ["gamla_ylva", "tor_kolare", "sigrun_helare", "bror_vakt", "lilla_mira"],
+      "npc": ["gamla_ylva", "tor_kolare", "sigrun_helare", "bror_vakt", "lilla_mira", "bybo_flykting"],
       "quests": ["miras_bror", "runornas_ristare", "tand_stenen"],
       "quest_mallar": [],
       "sakert": true,

@@ -123,8 +123,8 @@
       "utforskning_not": "Modell: i akt 1 rensas alla namngivna platser (som bana1_stor.json maltavla), längre ut hälften. Mellanmark: hjälten korsar ringen längs vägarna och ser ungefär så många mellanmarkschunkar som anges (högst hälften av ringen).",
       "malniva_yttre_kant": {
         "ring_0": 3,
-        "ring_1": 7,
-        "ring_2": 12,
+        "ring_1": 9,
+        "ring_2": 13,
         "ring_3": 15,
         "ring_4": 19,
         "ring_5": 24,
@@ -132,7 +132,13 @@
       },
       "modell_radie": 15,
       "bossar_xp": "Bossarnas och underbossarnas XP sänks per akt med monster_niva.json boss_xp_faktor (akt 2 0,1, akt 3 0,36, akt 4 0,27, akt 1 och 5 1,0), framräknat med tathet.py --forslag.",
-      "resultat": "tathet.py 2026-10-31, mellanmark 0,5 per chunk: ring 0 nivå 3, ring 1 9, ring 2 13, ring 3 15 (36554 XP), ring 4 19 (65459), ring 5 24 (115803), ring 6 29 (182651). Mål 3, 7, 12, 15, 19, 24, 30."
+      "resultat": "tathet.py 2026-10-31, mellanmark 0,5 per chunk, allt i ring 0 till 2 rensat: ring 0 nivå 3 (559 XP), ring 1 9 (9790), ring 2 13 (25919), ring 3 15 (36674), ring 4 19 (65571), ring 5 24 (115915), ring 6 29 (182760). Mål 3, 9, 13, 15, 19, 24, 30. Kortaste vägen (akt1.py): nivå 8 vid ring 2, 11 efter akt 1.",
+      "malniva_not": "malniva_yttre_kant gäller när allt namngivet i ring 0 till 2 rensas (tathet.py). Designmålet 7 före ring 2 och 12 efter ring 2 går inte att nå där utan att ändra akt 1 (delområdena ensamma ger 8391 XP, nivå 8, och även med täthet 0 i regioner och mellanmark blir ring 1 nivå 9). Målen gäller därför kortaste vägen: malniva_kortaste_vag (spel/design/verktyg/akt1.py).",
+      "malniva_kortaste_vag": {
+        "fore_ring_2": 8,
+        "efter_akt_1": 11,
+        "not": "Nivå 6 efter Vargaby, 7 nås i Idets skog, 8 efter Ulvhild. Utan Ulvhild men med mer utforskning nås 7 efter Vargaby."
+      }
     }
   },
   "platser": {

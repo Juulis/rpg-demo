@@ -622,6 +622,6 @@
   "qualities_ref": "loot_kvaliteter.json",
   "items_ref": {
     "file": "foremal_bas.json",
-    "note": "Alla föremål definieras nu i foremal_bas.json. Gamla id:n finns kvar där: liten_halsodryck, stor_halsodryck, uthallighetsdryck, benflisa, rostig_kortsvard, jarnyxa, ringbrynja, laderharnesk, benhjalm (baser) samt runsmidd_klinga, gravvaktarens_hillebard, gravvaktarens_pansar, runskold, benkungens_lie, benkungens_krona (legendariska)."
+    "note": "Alla föremål definieras nu i foremal_bas.json. Gamla id:n finns kvar där: torkat_kott, rokerat_hogrev, skogsörtste, benflisa, rostig_kortsvard, jarnyxa, ringbrynja, laderharnesk, benhjalm (baser) samt runsmidd_klinga, gravvaktarens_hillebard, gravvaktarens_pansar, runskold, benkungens_lie, benkungens_krona (legendariska)."
   }
 }

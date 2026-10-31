@@ -3,7 +3,9 @@
     "hero_px_h": 155,
     "source": "monsterfamiljer.json",
     "images_dir": "/workspace/spel/grafik/2d/sprites/monster/",
-    "kraver_grafik": "NYA monster utan grafik: sprickvasen 230, lyktgast 170, klockdrunknad 190, havsgast 210 (ringtäckning 2026-10-31); irrbloss 110, fjallbjorn 270, jarnbroder 190, drunknad_vakt 190, sprickpilgrim 190, vriden_jatte 340, dodsljus 220 (PR #123, tunna celler och ring 7); underbossarna korpmodern 270, jarnmunken 290, askans_profet 290. Målhöjd enligt grafik/monster_anim/README.md. Fält kraver_grafik: true och malhojd på posterna."
+    "kraver_grafik": "Genererad från monsterfamiljer.json och sprites i repot (public/assets/2d/sprites/monster/ på main, 2026-10-31). Saknar grafik (31): ruttbjorn, grabjornen_ulvhild, dimgast, klagokvinna, trasknacken, trasdrottningen, gruvspindel, syrabagge, kitinvakt, spinnmodern, askimp, eldpiska_demon, hornslaktare, askfursten_morvath, smittbarare, galen_munk, kottklump, fadern_av_smittan, drunknad, trask_igel, forvriden_gruvarbetare, gruvdemon, askkultist, brandskelett, irrbloss 110, fjallbjorn 270, jarnbroder 190, drunknad_vakt 190, sprickpilgrim 190, vriden_jatte 340, dodsljus 220. Målhöjd enligt grafik/monster_anim/README.md. Fält kraver_grafik: true och malhojd på posterna.",
+    "has_image_kalla": "has_image = mapp eller png med monstrets id finns i public/assets/2d/sprites/monster/ på main.",
+    "ulvhild": "grabjornen_ulvhild saknar egen sprite; tillfälligt varld/bjorn, Grafiker avgör (se posten)."
   },
   "monsters": [
     {
@@ -15,7 +17,7 @@
       "size_rel_hero": 0.6,
       "approx_px_h": 93,
       "look": "Mager gråbrun varg med smutsig päls och gula ögon.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "vargbest",
@@ -37,7 +39,7 @@
       "size_rel_hero": 0.7,
       "approx_px_h": 108,
       "look": "Förvridet vildsvin med benpiggar längs ryggen och långa betar.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "skuggvarg",
@@ -48,7 +50,7 @@
       "size_rel_hero": 0.7,
       "approx_px_h": 108,
       "look": "Gråvarg med mörk rygg, smal och snabb, ögon som glöder svagt.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "gravargsledare",
@@ -70,7 +72,8 @@
       "size_rel_hero": 1.6,
       "approx_px_h": 248,
       "look": "Ruttnande björn med blottade revben och svampväxt i pälsen.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "grabjornen_ulvhild",
@@ -81,7 +84,9 @@
       "size_rel_hero": 2.4,
       "approx_px_h": 372,
       "look": "Enorm gråbjörn med vit nos, spjut i ryggen och en ring på en tass, boss.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true,
+      "sprite_not": "Saknar egen sprite i public/assets/2d/sprites/monster/. Kan tillfälligt använda public/assets/2d/sprites/varld/bjorn (8 riktningar: idle, walk, attack, death); Grafiker avgör om den räcker eller om Ulvhild får eget ark."
     },
     {
       "id": "skelett_hund",
@@ -92,7 +97,7 @@
       "size_rel_hero": 0.55,
       "approx_px_h": 85,
       "look": "Hundskelett med lösa revben och röda ögonpunkter.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "skelett_krigare",
@@ -103,7 +108,7 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Skelett i rostig hjälm och sköldrester, svärd.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "skelett_bagskytt",
@@ -114,7 +119,7 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Smalt skelett med båge och koger, trasig huva.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "skelett_runprast",
@@ -125,7 +130,7 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Skelett i mörk prästkåpa med röda runor som glöder på benen, ritualdolk.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "skelett_vakt",
@@ -136,7 +141,7 @@
       "size_rel_hero": 1.15,
       "approx_px_h": 178,
       "look": "Bredare skelett i bucklig plåt med stor sköld och klubba.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "skelett_kapten",
@@ -158,7 +163,7 @@
       "size_rel_hero": 1.8,
       "approx_px_h": 279,
       "look": "Jättelikt skelett med benkrona, trasig kungamantel och stor lie, boss.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "dimgast",
@@ -169,7 +174,8 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Blågrå dimgestalt utan ben, långa fingrar, ihåligt ansikte.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "klagokvinna",
@@ -180,7 +186,8 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Kvinnogestalt i sönderriven vit klänning, munnen vidöppen i ett skrik.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "trasknacken",
@@ -191,7 +198,8 @@
       "size_rel_hero": 1.4,
       "approx_px_h": 217,
       "look": "Lång tångklädd varelse med alldeles för långa armar, halvt i vattnet.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "trasdrottningen",
@@ -202,7 +210,8 @@
       "size_rel_hero": 2.2,
       "approx_px_h": 341,
       "look": "Drunknad drottning i en krona av korallben, svävar i dimma, boss.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "gruvspindel",
@@ -213,7 +222,8 @@
       "size_rel_hero": 0.5,
       "approx_px_h": 78,
       "look": "Blek gruvspindel med långa ben och kristaller på ryggen.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "syrabagge",
@@ -224,7 +234,8 @@
       "size_rel_hero": 0.6,
       "approx_px_h": 93,
       "look": "Grön skalbagge med syrasäck på bakkroppen som droppar.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "kitinvakt",
@@ -235,7 +246,8 @@
       "size_rel_hero": 1.2,
       "approx_px_h": 186,
       "look": "Upprest insekt med tjockt svart kitinpansar och klor som sköldar.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "spinnmodern",
@@ -246,7 +258,8 @@
       "size_rel_hero": 3.0,
       "approx_px_h": 465,
       "look": "Gigantisk spindel med kropp av ägg och nät, mänskligt ansikte på huvudet, boss.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "askimp",
@@ -257,7 +270,8 @@
       "size_rel_hero": 0.55,
       "approx_px_h": 85,
       "look": "Liten röd imp med vingar av aska och glöd i händerna.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "eldpiska_demon",
@@ -268,7 +282,8 @@
       "size_rel_hero": 1.4,
       "approx_px_h": 217,
       "look": "Mager rödsvart demon med glödande piska och brinnande ögon.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "hornslaktare",
@@ -279,7 +294,8 @@
       "size_rel_hero": 1.6,
       "approx_px_h": 248,
       "look": "Muskulös demon med stora horn, slaktarförkläde och enorm bila.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "askriddare",
@@ -301,7 +317,8 @@
       "size_rel_hero": 2.8,
       "approx_px_h": 434,
       "look": "Jättelik demonfurste av aska och glöd, avbrutna horn, krona av eld, boss.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "smittbarare",
@@ -312,7 +329,8 @@
       "size_rel_hero": 1.1,
       "approx_px_h": 170,
       "look": "Uppsvälld förvriden människa full av gröna blåsor som pulserar.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "galen_munk",
@@ -323,7 +341,8 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Mager munk med sönderriven kåpa, vilda ögon och klubba.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "kottklump",
@@ -334,7 +353,8 @@
       "size_rel_hero": 1.8,
       "approx_px_h": 279,
       "look": "Klump av sammanväxta kroppar med armar åt alla håll.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "fadern_av_smittan",
@@ -345,7 +365,8 @@
       "size_rel_hero": 2.2,
       "approx_px_h": 341,
       "look": "Väldig förvriden präst i ruttnande kåpa, gröna svulster och korsstav, boss.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "vandrande_skelett",
@@ -356,7 +377,7 @@
       "size_rel_hero": 0.95,
       "approx_px_h": 147,
       "look": "Gulnat skelett i trasor med rostigt kortsvärd, mossa på skallen.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "skogsspindel",
@@ -367,7 +388,7 @@
       "size_rel_hero": 0.4,
       "approx_px_h": 62,
       "look": "Mörkbrun spindel stor som en hund, hårig, åtta glänsande ögon.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "forvriden_jagare",
@@ -378,7 +399,7 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Smittad jägare med svulster i ansiktet, sliten pälsrock och båge.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "ruttnande_lik",
@@ -389,7 +410,7 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Halvruttet lik i bybokläder, grå hud, hängande käke, bara händer.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "smittad_bybo",
@@ -400,7 +421,7 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Bybo med gröna blåsor och ryckiga rörelser, trasiga kläder.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "likatare_varg",
@@ -411,7 +432,7 @@
       "size_rel_hero": 0.7,
       "approx_px_h": 108,
       "look": "Utmärglad varg med smutsig jordfläckad päls och benbitar fast i käken.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "gravgast",
@@ -422,7 +443,7 @@
       "size_rel_hero": 0.9,
       "approx_px_h": 140,
       "look": "Blek halvgenomskinlig ande i liksvepning som stiger ur jorden.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "drunknad",
@@ -433,7 +454,8 @@
       "size_rel_hero": 1.05,
       "approx_px_h": 163,
       "look": "Uppsvälld blågrå sjöman med tång i håret, rostigt svärd, droppar vatten.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "trask_igel",
@@ -444,7 +466,8 @@
       "size_rel_hero": 0.6,
       "approx_px_h": 93,
       "look": "Svart, slemmig jätteigel med cirkelmun full av tänder.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "forvriden_gruvarbetare",
@@ -455,7 +478,8 @@
       "size_rel_hero": 1.05,
       "approx_px_h": 163,
       "look": "Gruvarbetare med svulster, hjälmlykta och hacka.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "gruvdemon",
@@ -466,7 +490,8 @@
       "size_rel_hero": 0.6,
       "approx_px_h": 93,
       "look": "Liten askgrå demon med kolsvarta horn och glödande sprickor i huden.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "askkultist",
@@ -477,7 +502,8 @@
       "size_rel_hero": 1.0,
       "approx_px_h": 155,
       "look": "Kultist i askgrå kåpa med brännmärken och ritualdolk.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "brandskelett",
@@ -488,7 +514,8 @@
       "size_rel_hero": 1.05,
       "approx_px_h": 163,
       "look": "Svärtat skelett i stadsvaktsrustning, glöd i revbenen, yxa.",
-      "has_image": false
+      "has_image": false,
+      "kraver_grafik": true
     },
     {
       "id": "myrlik",
@@ -499,7 +526,7 @@
       "size_rel_hero": 1.23,
       "approx_px_h": 190,
       "look": "Dränkt lik i ruttna trasor med vitmossa på axlarna och rostig skära.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "myrhund",
@@ -510,7 +537,7 @@
       "size_rel_hero": 0.84,
       "approx_px_h": 130,
       "look": "Mager dränkt hund med tång i pälsen och blanka ögon.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "fjallvatte",
@@ -521,7 +548,7 @@
       "size_rel_hero": 0.84,
       "approx_px_h": 130,
       "look": "Liten grå vätte med lav i håret och långa fingrar, halvt genomskinlig.",
-      "has_image": false
+      "has_image": true
     },
     {
       "id": "bergsulv",
@@ -532,7 +559,46 @@
       "size_rel_hero": 1.06,
       "approx_px_h": 165,
       "look": "Stor ljusgrå ulv med tjock päls och frost i nosen.",
-      "has_image": false
+      "has_image": true
+    },
+    {
+      "id": "korpmodern",
+      "name": "Korpmodern",
+      "family": "gastar",
+      "level": 13,
+      "boss": false,
+      "size_rel_hero": 1.5,
+      "approx_px_h": 232,
+      "look": "Lång kvinna i kappa av korpfjädrar med båge, korpar kring axlarna, underboss.",
+      "has_image": true,
+      "malhojd": 270,
+      "underboss": true
+    },
+    {
+      "id": "jarnmunken",
+      "name": "Järnmunken",
+      "family": "forvridna",
+      "level": 17,
+      "boss": false,
+      "size_rel_hero": 1.6,
+      "approx_px_h": 248,
+      "look": "Väldig munk i järnpansar över kåpan, kedjor och klostrets nycklar i bältet, underboss.",
+      "has_image": true,
+      "malhojd": 290,
+      "underboss": true
+    },
+    {
+      "id": "askans_profet",
+      "name": "Askans profet",
+      "family": "forvridna",
+      "level": 23,
+      "boss": false,
+      "size_rel_hero": 1.6,
+      "approx_px_h": 248,
+      "look": "Mager profet i askgrå kåpa med brinnande ögon och en stav av svärtat ben, underboss.",
+      "has_image": true,
+      "malhojd": 290,
+      "underboss": true
     },
     {
       "id": "sprickvasen",
@@ -543,8 +609,7 @@
       "size_rel_hero": 1.28,
       "approx_px_h": 198,
       "look": "Hopkrupen massa av grått kött och spräckt sten, röd glöd i sprickorna, långa armar.",
-      "has_image": false,
-      "kraver_grafik": true,
+      "has_image": true,
       "malhojd": 230
     },
     {
@@ -556,8 +621,7 @@
       "size_rel_hero": 0.94,
       "approx_px_h": 146,
       "look": "Blek gestalt som bär en svagt blå lykta, nedre delen löses upp i dimma över vattnet.",
-      "has_image": false,
-      "kraver_grafik": true,
+      "has_image": true,
       "malhojd": 170
     },
     {
@@ -569,8 +633,7 @@
       "size_rel_hero": 1.06,
       "approx_px_h": 164,
       "look": "Uppsvälld drunknad klockare i trasig prästkappa, tång i skägget, rostig klockkläpp.",
-      "has_image": false,
-      "kraver_grafik": true,
+      "has_image": true,
       "malhojd": 190
     },
     {
@@ -582,8 +645,7 @@
       "size_rel_hero": 1.17,
       "approx_px_h": 181,
       "look": "Stor gestalt av havsskum och dimma, tångslingor som hår, ihåligt ansikte.",
-      "has_image": false,
-      "kraver_grafik": true,
+      "has_image": true,
       "malhojd": 210
     },
     {
@@ -676,48 +738,6 @@
       "has_image": false,
       "kraver_grafik": true,
       "malhojd": 220
-    },
-    {
-      "id": "korpmodern",
-      "name": "Korpmodern",
-      "family": "gastar",
-      "level": 13,
-      "boss": false,
-      "size_rel_hero": 1.5,
-      "approx_px_h": 232,
-      "look": "Lång kvinna i kappa av korpfjädrar med båge, korpar kring axlarna, underboss.",
-      "has_image": false,
-      "kraver_grafik": true,
-      "malhojd": 270,
-      "underboss": true
-    },
-    {
-      "id": "jarnmunken",
-      "name": "Järnmunken",
-      "family": "forvridna",
-      "level": 17,
-      "boss": false,
-      "size_rel_hero": 1.6,
-      "approx_px_h": 248,
-      "look": "Väldig munk i järnpansar över kåpan, kedjor och klostrets nycklar i bältet, underboss.",
-      "has_image": false,
-      "kraver_grafik": true,
-      "malhojd": 290,
-      "underboss": true
-    },
-    {
-      "id": "askans_profet",
-      "name": "Askans profet",
-      "family": "forvridna",
-      "level": 23,
-      "boss": false,
-      "size_rel_hero": 1.6,
-      "approx_px_h": 248,
-      "look": "Mager profet i askgrå kåpa med brinnande ögon och en stav av svärtat ben, underboss.",
-      "has_image": false,
-      "kraver_grafik": true,
-      "malhojd": 290,
-      "underboss": true
     }
   ]
 }

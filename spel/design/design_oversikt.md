@@ -35,7 +35,7 @@ Världen är övergiven. Demoner och monster har tagit städerna, och de få öv
 - [arkiv/itemization_ideer.md](arkiv/itemization_ideer.md): arkiverad, inga system för att ändra föremål.
 - [lorebok.json](lorebok.json): lore för alla set, setdelar och legendariska föremål (tangent H).
 - [portal_by.json](portal_by.json) och [portal_by.md](portal_by.md): Den gamla byn, första staden.
-- [bana1_stor.json](bana1_stor.json): stor bana 1 (#33), 10 delområden i ring 0 och 1 med monstertabeller och nivåkurvan till nivå 7.
+- [bana1_stor.json](bana1_stor.json): stor bana 1 (#33), 10 delområden i ring 0 och 1 med monstertabeller och nivåkurvan (nivå 8 vid ring 2 på kortaste vägen).
 - [npc_grupper.json](npc_grupper.json): NPC-grupper ute i världen med fraktion, HP, skada och flaggor och rykten om man hjälper dem.
 - [varldshandelser.json](varldshandelser.json): små världshändelser och platser i akt 1, inga döda X.
 - [vandrare.json](vandrare.json): vandrande handlare och läger med syfte i lore.
@@ -51,11 +51,11 @@ Resurs: Uthållighet (regen 8/s), ersätter mana. Kritisk träff ger 175 % skada
 | Barbar        | 120 | 100         | 9     | 1       | 5,4  | 8 %  | +18 HP, +4 uth, +4 skada, +0,5 förs |
 | Riddare       | 110 | 100         | 8     | 5       | 5,2  | 5 %  | +15 HP, +5 uth, +3 skada, +1 förs   |
 
-Amazonkrigare (stick, start: jaktspjut, läderharnesk, 5 kastspjut, 3 små hälsodrycker): Spjutstöt (nv 1), Kastspjut (2), Vig undanmanöver (3), Jägarblick passiv (5), Virvelspjut (7), Sårande kast (9).
+Amazonkrigare (stick, start: jaktspjut, läderharnesk, 5 kastspjut, 3 torkat kött): Spjutstöt (nv 1), Kastspjut (2), Vig undanmanöver (3), Jägarblick passiv (5), Virvelspjut (7), Sårande kast (9).
 
-Barbar (kross, start: knölpåk, pälsväst, repbälte, 3 små hälsodrycker): Tungt slag (1), Stridsvrål (2), Markskakning (4), Blodtörst passiv (5), Berserkerrus (7), Yxkast (9).
+Barbar (kross, start: knölpåk, pälsväst, repbälte, 3 torkat kött): Tungt slag (1), Stridsvrål (2), Markskakning (4), Blodtörst passiv (5), Berserkerrus (7), Yxkast (9).
 
-Riddare (hugg, start: rostigt kortsvärd, eksköld, läderharnesk, 2 små hälsodrycker): Sköldblock (1), Sköldslag (2), Framstöt (3), Järnvilja passiv (5), Motattack (7), Fanbärarens rop (9).
+Riddare (hugg, start: rostigt kortsvärd, eksköld, läderharnesk, 2 torkat kött): Sköldblock (1), Sköldslag (2), Framstöt (3), Järnvilja passiv (5), Motattack (7), Fanbärarens rop (9).
 
 Kostnad, cooldown och effekt finns i klasser.json. Startutrustningen är Normal kvalitet, tier 1, nivåkrav 1, utan affix. Kolumnen Skada är klassens skadebonus; slagskada = bonus + vapnets skada, vilket ger 3 till 4 slag mot en varg nivå 1.
 
@@ -109,11 +109,11 @@ Kartor och byar är statiska; bara fienderna slumpas, en gång per game som i Di
 
 ## Loot
 
-Kvaliteter Normal (vit), Magisk (blå), Sällsynt (gul), Set (grön), Legendarisk (guld). Beväpnade fiender släpper sin vapentyp, djur och demoner släpper drycker, smycken och guld. Ädelstenar och hylsor är borttagna tills vidare (se arkiv/itemization_ideer.md (arkiverad, inga system för att ändra föremål)). Benföremål (vapen och rustning av ben, setet Benviskarens dräkt och två legendariska) släpps av djur och obeväpnade monster i alla kvaliteter. Detaljer och algoritm i loot_design.md.
+Kvaliteter Normal (vit), Magisk (blå), Sällsynt (gul), Set (grön), Legendarisk (guld). Beväpnade fiender släpper sin vapentyp, djur och demoner släpper mat, smycken och guld. Ädelstenar och hylsor är borttagna tills vidare (se arkiv/itemization_ideer.md (arkiverad, inga system för att ändra föremål)). Benföremål (vapen och rustning av ben, setet Benviskarens dräkt och två legendariska) släpps av djur och obeväpnade monster i alla kvaliteter. Detaljer och algoritm i loot_design.md.
 
 ## Progression
 
-Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 2025 (20 monster) plus Gråbjörnen 2425, vilket ger nivå 7 före portalbyn för den som följer den rekommenderade vägen. Med stor bana 1 (bana1_stor.json) når hjälten nivå 7 före ring 2 och nivå 11 till 13 före akt 2.
+Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 2025 (20 monster) plus Gråbjörnen 2425, vilket ger nivå 7 före portalbyn för den som följer den rekommenderade vägen. Med stor bana 1 (bana1_stor.json, spel/design/verktyg/akt1.py) når hjälten på kortaste vägen nivå 7 i Idets skog, går in i ring 2 på nivå 8 och är nivå 11 efter Benkungen; allt rensat ger nivå 8 efter ring 1 och 13 efter akt 1. Med regionernas täthet och mellanmarken (tathet.py, allt rensat) blir det nivå 9 efter ring 1 och 13 efter ring 2 (varldsgenerator.json malniva_yttre_kant 3, 9, 13, 15, 19, 24, 30).
 
 BESLUT: ingen avstånds-XP. Hjältens XP kommer bara från monstrens XP per monster (monsterfamiljer.json, champions och unika med sina multiplikatorer) med XP avdraget i monster_niva.json. Svårigheten styrs enbart av monsternivån efter ring (varldsgenerator.json svarighet_avstand.malniva och ringens band). Tätheten är data (varldsgenerator.json monsterpooler.tathet_per_chunk, varld_stor.json regioner[].tathet, bana1_stor.json) och XP takten per ring kontrolleras med spel/design/verktyg/tathet.py.
 

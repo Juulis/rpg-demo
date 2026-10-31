@@ -845,6 +845,9 @@
       "askans_profet": "akt_4",
       "fadern_av_smittan": "akt_5"
     },
-    "resultat": "tathet.py --forslag 2026-10-31 med mellanmark 0,5 monster per chunk: ring 3 nivå 15, ring 4 nivå 19, ring 5 nivå 24, ring 6 nivå 29 (akt 5 behåller faktor 1; mål 30, inom 1 nivå). Akt 1 oförändrad."
+    "resultat": "tathet.py --forslag 2026-10-31 med mellanmark 0,5 monster per chunk: ring 3 nivå 15, ring 4 nivå 19, ring 5 nivå 24, ring 6 nivå 29 (akt 5 behåller faktor 1; mål 30, inom 1 nivå). Akt 1 oförändrad. Faktorn i data behålls när ringen redan landar på målnivån.",
+    "ej_designade": {
+      "den_slocknade": "Boss i sprickans_botten (akt 5). Saknar post i monsterfamiljer.json tills akt 5 designas; läggs då in här med akt_5 och xp_bas. tackning.py visar den som INFO."
+    }
   }
 }

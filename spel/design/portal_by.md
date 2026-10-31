@@ -34,7 +34,7 @@ En gång byns hövding, återuppväckt av demonernas runor.
 
 ## 3. Loot
 
-Byn följer lootsystemet i loot_design.md (kvaliteter Normal, Magisk, Sällsynt, Set, Legendarisk). Odöda droppar vapen, rustning, drycker, smycken och guld. Beväpnade skelett släpper sin vapentyp: Skelettkrigare svärd, Skelettbågskytt båge, Gravvakt klubba och sköld, Runpräst dolk. Benhunden är vapenlös och släpper drycker, smycken och guld. Benkungen ger 5 till 7 föremål, 2 stora hälsodrycker, 20 % chans var på Benkungens lie och Benkungens krona samt 15 % på en del av setet Gravvaktarens arv. Allt finns i drop_tabeller.json.
+Byn följer lootsystemet i loot_design.md (kvaliteter Normal, Magisk, Sällsynt, Set, Legendarisk). Odöda droppar vapen, rustning, mat, smycken och guld. Beväpnade skelett släpper sin vapentyp: Skelettkrigare svärd, Skelettbågskytt båge, Gravvakt klubba och sköld, Runpräst dolk. Benhunden är vapenlös och släpper mat, smycken och guld. Benkungen ger 5 till 7 föremål, 2 rökt hogrev, 20 % chans var på Benkungens lie och Benkungens krona samt 15 % på en del av setet Gravvaktarens arv. Allt finns i drop_tabeller.json.
 
 ## 4. XP och nivåer
 
@@ -104,6 +104,6 @@ Färger: portal #c0182a med glöd #ff3344, kvaliteter enligt loot_kvaliteter.jso
 
 - Modeller eller sprites: 5 skelettyper, Benkungen (3 fasvarianter eller färgskift), röd portal och returportal, byhus, gravstenar, kapell, byport.
 - Effekter: pil, röd eldboll, benspjut, röd markering för gravslag, röda runcirklar, återupplivningsglöd, nivåupp.
-- Ikoner: hälsodrycker och uthållighetsdryck (grön), benflisa, guld, 5 vapen, 6 rustningar, ramar i 5 kvalitetsfärger.
+- Ikoner: torkat kött och rökt hogrev, skogsörtste (grön), benflisa, guld, 5 vapen, 6 rustningar, ramar i 5 kvalitetsfärger.
 - Byns tillstånd: dimma och röd portal (besatt), lättad dimma och orange portal (rensad), eldar, lagade hus, marknadsstånd, vapenbod med släckt härd, vakter, tavernskylt (nivå 1 till 3).
 - HUD: XP mätare och nivåsiffra, guldräknare, bossens HP bar med namn och fasmarkeringar vid 60 % och 30 %, enkel inventarieruta, lootetikett på marken i kvalitetsfärg.

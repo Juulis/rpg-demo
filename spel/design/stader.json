@@ -66,7 +66,7 @@
   "services": [
     {
       "id": "handlare",
-      "desc": "Köper och säljer drycker och vanliga föremål."
+      "desc": "Köper och säljer mat och vanliga föremål."
     },
     {
       "id": "vapenhandlare",
@@ -185,7 +185,7 @@
         "rokerat_hogrev": 35,
         "varlbrygd": 120
       },
-      "mat_not": "Enligt #35. Om koden fortfarande har drycker gäller samma pris: liten_halsodryck 12, uthallighetsdryck 12, stor_halsodryck 35, foryngringsdryck 120.",
+      "mat_not": "Enligt #35 (PR #93): drycker är ersatta av mat. Priserna ovan är fasta och gäller i alla butiker; sparfiler med gamla dryck-id mappas av SaveMigrator.",
       "ammo": {
         "pilar_20": 20,
         "kastspjut_5": 20

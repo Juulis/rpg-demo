@@ -395,7 +395,7 @@
         "text": "Valdemar rests in the chieftain's grave with his signet. The graveyard is still."
       },
       "ebbe_rykte_06": {
-        "text": "Sara Bonereader has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
+        "text": "Sara has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
       },
       "ebbe_quest_01": {
         "text": "My brothers fell down there. I heard them singing. Then nothing. Find out how they died."
@@ -472,7 +472,7 @@
         "text": "Valdemar rests in the chieftain's grave with his signet. The graveyard is still."
       },
       "marta_bark_01": {
-        "text": "Pots! Cloth! Potions!"
+        "text": "Pots! Cloth! Jerky!"
       },
       "marta_bark_02": {
         "text": "Heard the latest?"
@@ -527,7 +527,7 @@
     }
   },
   "vaktkapten_ingrid": {
-    "namn": "Captain Ingrid",
+    "namn": "Ingrid",
     "repliker": {
       "ingrid_halsning_01": {
         "text": "This village is under my protection."
@@ -545,7 +545,7 @@
         "text": "The village has guards now. Farmers with spears, but they hold."
       },
       "ingrid_rykte_03": {
-        "text": "Captain Ingrid wears her grandfather's Gravewarden crest. The guards drill every dawn now."
+        "text": "Ingrid wears her grandfather's Gravewarden crest. The guards drill every dawn now."
       },
       "ingrid_rykte_04": {
         "text": "{hjalte} wears the chieftain's signet. Some say the village has a new chieftain."
@@ -604,7 +604,7 @@
         "text": "Ylva says the Runecarver snuffed out the Fourth Stone himself. She talks of lighting it again."
       },
       "olle_rykte_07": {
-        "text": "Captain Ingrid wears her grandfather's Gravewarden crest. The guards drill every dawn now."
+        "text": "Ingrid wears her grandfather's Gravewarden crest. The guards drill every dawn now."
       },
       "olle_rykte_08": {
         "text": "The Bone King has fallen. The dead of the Old Village lie still."
@@ -616,7 +616,7 @@
         "text": "{hjalte} wears the chieftain's signet. Some say the village has a new chieftain."
       },
       "olle_rykte_11": {
-        "text": "Sara Bonereader has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
+        "text": "Sara has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
       },
       "olle_bark_01": {
         "text": "Ale! Warm ale!"
@@ -639,7 +639,7 @@
     }
   },
   "sara_benlasare": {
-    "namn": "Sara Bonereader",
+    "namn": "Sara",
     "repliker": {
       "sara_halsning_01": {
         "text": "Bones tell. Trinkets listen."
@@ -657,7 +657,7 @@
         "text": "The Whisperer laughs at night. He says the skull has chosen."
       },
       "sara_rykte_04": {
-        "text": "Sara Bonereader has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
+        "text": "Sara has built an altar from Valdemar's bones. Ebbe refuses to enter the chapel."
       },
       "sara_bark_01": {
         "text": "The bones speak clearer at night."
