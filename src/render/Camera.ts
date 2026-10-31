@@ -41,6 +41,22 @@ export class Camera {
     return { x: this.world.position.x + s.x * this.zoom, y: this.world.position.y + (s.y - lift) * this.zoom };
   }
 
+  /** Axis-aligned världsyta som täcker viewport (+ marginal i världsenheter). */
+  viewWorldAabb(marginWorld: number): { minX: number; minY: number; maxX: number; maxY: number } {
+    const corners = [this.toWorld(0, 0), this.toWorld(this.w, 0), this.toWorld(0, this.h), this.toWorld(this.w, this.h)];
+    let minX = corners[0]?.x ?? 0;
+    let maxX = minX;
+    let minY = corners[0]?.y ?? 0;
+    let maxY = minY;
+    for (const c of corners) {
+      minX = Math.min(minX, c.x);
+      maxX = Math.max(maxX, c.x);
+      minY = Math.min(minY, c.y);
+      maxY = Math.max(maxY, c.y);
+    }
+    return { minX: minX - marginWorld, minY: minY - marginWorld, maxX: maxX + marginWorld, maxY: maxY + marginWorld };
+  }
+
   private apply(): void {
     const s = Iso.worldToScreen(this.pos.x, this.pos.y);
     this.world.scale.set(this.zoom);

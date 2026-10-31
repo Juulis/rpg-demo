@@ -5,6 +5,7 @@ import type { GameModule } from './core/GameContext';
 import { AudioModule, LoreBookModule, MapModule, MenuModule, SaveModule, WorldStateModule } from './index';
 import { cryptoSeed } from './core/entropy';
 import { LocaleManager } from './i18n';
+import { smokeOrCaptureEnabled } from './dev/smokeGate';
 
 /**
  * Moduler registreras här. Varje modul får GameContext (bus, hero, zone, session, data) via init().
@@ -42,11 +43,20 @@ if (import.meta.env.DEV || import.meta.env.VITE_CAPTURE_HOOK === 'true') {
 await game.start(host);
 document.getElementById('newGame')?.addEventListener('click', () => game.newGame());
 
-/** Minimal rörelse-hook för röktest (ingen full __game i produktion). */
-(window as unknown as { __smoke?: { moveHeroBy(dx: number, dy: number): void } }).__smoke = {
-  moveHeroBy(dx, dy) {
-    const w = game.state;
-    if (!w?.hero.s.playing) return;
-    w.hero.moveTarget = { x: w.hero.pos.x + dx, y: w.hero.pos.y + dy };
-  },
-};
+if (smokeOrCaptureEnabled()) {
+  (window as unknown as { __smoke?: { moveHeroBy(dx: number, dy: number): void; teleportWorld(x: number, y: number): void } }).__smoke = {
+    moveHeroBy(dx, dy) {
+      const w = game.state;
+      if (!w?.hero.s.playing) return;
+      w.hero.moveTarget = { x: w.hero.pos.x + dx, y: w.hero.pos.y + dy };
+    },
+    teleportWorld(x, y) {
+      const w = game.state;
+      if (!w?.hero.s.playing) return;
+      w.hero.pos.x = x;
+      w.hero.pos.y = y;
+      w.hero.moveTarget = null;
+      w.zone.collide(w.hero.pos, 0.5);
+    },
+  };
+}

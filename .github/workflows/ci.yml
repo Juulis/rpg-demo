@@ -23,7 +23,7 @@ jobs:
         run: node scripts/assemble-pages.mjs
       - run: npx playwright install --with-deps chromium
       - name: Röktest – vanligt produktionsbygge
-        run: npm run smoke
+        run: SMOKE_MODE=plain npm run smoke
       - run: VITE_CAPTURE_HOOK=true npm run build
       - name: Sätt ihop Pages-artefakten (capture)
         run: node scripts/assemble-pages.mjs

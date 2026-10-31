@@ -23,11 +23,14 @@ export class HeroLoader {
 
   async start(save: SaveFile, resume: boolean): Promise<void> {
     this.autosave.end(this.autosave.isPlaying);
-    const g = resume && save.game ? save.game : newGameRecord(this.newSeed());
-    if (!resume || !save.game) {
-      g.worldSeed = this.newSeed();
-      save.game = g;
+    if (!save.game) {
+      save.game = newGameRecord(this.newSeed());
+      save.game.worldSeed = this.newSeed();
+    } else if (!resume) {
+      const worldSeed = save.game.worldSeed ?? save.game.seed;
+      save.game = { ...newGameRecord(this.newSeed()), worldSeed };
     }
+    const g = save.game;
     const h = save.hero;
     const fresh = !!h.fresh;
     this.game.loadHero({

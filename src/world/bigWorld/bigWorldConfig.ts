@@ -4,19 +4,17 @@ export const BIG_WORLD_STREAMING_ENABLED = true;
 /** Chunkdata hålls laddad (Chebyshev) — större än render så avlastning inte fladdrar. */
 export const BIG_WORLD_CACHE_KEEP_RADIUS = 3;
 
-/** Synlig mark bakas inom denna radie (Chebyshev). ~5×5 chunkar ≈ main skala. */
-export const BIG_WORLD_RENDER_RADIUS = 2;
+/** Synlig mark laddas inom denna radie (Chebyshev). 3×3 chunkar + vy-culling. */
+export const BIG_WORLD_RENDER_RADIUS = 1;
+
+/** Extra marginal (världsenheter) runt kamerans vy vid patch-culling. */
+export const BIG_WORLD_GROUND_VIEW_MARGIN = 8;
 
 /** Max ms tile-bygge per bildruta innan vi fortsätter nästa frame. */
 export const BIG_WORLD_GROUND_BUILD_BUDGET_MS = 4;
 
 /** Rutor per byggbatch (64×64 chunk → 4×4 delar à 16×16 för budget). */
 export const BIG_WORLD_GROUND_PATCH_TILES = 16;
-
-/** Mark bakas inte till RT — tile-sprites delar atlas (minnesvänligt). */
-export const BIG_WORLD_GROUND_BAKE_SCALE = 1;
-
-export const BIG_WORLD_GROUND_MAX_BAKES_PER_FRAME = 0;
 
 /**
  * Generatorregler: spel/design/varldsgenerator.json (+ varld_stor.json, bana1_stor.json).

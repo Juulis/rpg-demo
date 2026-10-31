@@ -30,6 +30,13 @@ export interface BigWorldStreamScene {
   zone: Zone;
 }
 
+export interface BigWorldViewBounds {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}
+
 interface PatchVisual {
   layer: PixiContainer;
   tilesBuilt: number;
@@ -48,6 +55,8 @@ interface ChunkVisual {
 interface DecorEntry {
   sprite: Sprite;
   collider: Collider | null;
+  wx: number;
+  wy: number;
 }
 
 function visualKey(worldSeed: number, gameSeed: number, cx: number, cy: number): string {
@@ -78,12 +87,35 @@ function countPixiDisplayObjects(root: PixiContainer): number {
   let n = 0;
   const walk = (c: PixiContainer) => {
     for (const ch of c.children) {
+      if ('renderable' in ch && (ch as { renderable?: boolean }).renderable === false) continue;
       n++;
       if (ch instanceof PixiContainer) walk(ch);
     }
   };
   walk(root);
   return n;
+}
+
+function aabbOverlap(a: BigWorldViewBounds, minX: number, minY: number, maxX: number, maxY: number): boolean {
+  return minX <= a.maxX && maxX >= a.minX && minY <= a.maxY && maxY >= a.minY;
+}
+
+function patchWorldBounds(
+  cx: number,
+  cy: number,
+  pi: number,
+  pj: number,
+  patchTiles: number,
+  tiles: number,
+): { minX: number; minY: number; maxX: number; maxY: number } {
+  const span = chunkWorldSpan();
+  const ti0 = pi * patchTiles;
+  const tj0 = pj * patchTiles;
+  const tw = Math.min(patchTiles, tiles - ti0);
+  const th = Math.min(patchTiles, tiles - tj0);
+  const minX = cx * span + ti0 * TILE_WORLD;
+  const minY = cy * span + tj0 * TILE_WORLD;
+  return { minX, minY, maxX: minX + tw * TILE_WORLD, maxY: minY + th * TILE_WORLD };
 }
 
 /** Räknar RenderTexture-baserade mark-patchar (GPU-minne). */
@@ -103,6 +135,7 @@ export class BigWorldStreamGround extends PixiContainer {
   private activeGameSeed = 0;
   private scene: BigWorldStreamScene | null = null;
   private allowBuild = true;
+  private viewBounds: BigWorldViewBounds | null = null;
 
   constructor(
     private readonly assets: AssetStore,
@@ -127,19 +160,41 @@ export class BigWorldStreamGround extends PixiContainer {
   }
 
   isGroundReady(): boolean {
+    const view = this.viewBounds;
+    const patchTiles = BIG_WORLD_GROUND_PATCH_TILES;
+    const tiles = chunkTileCount();
+    let need = 0;
     for (const vis of this.visuals.values()) {
-      for (const row of vis.patches) {
-        for (const p of row) {
+      const { cx, cy } = vis.data;
+      for (let pi = 0; pi < vis.patches.length; pi++) {
+        const row = vis.patches[pi];
+        if (!row) continue;
+        for (let pj = 0; pj < row.length; pj++) {
+          const p = row[pj];
+          if (!p) continue;
+          if (view) {
+            const b = patchWorldBounds(cx, cy, pi, pj, patchTiles, tiles);
+            if (!aabbOverlap(view, b.minX, b.minY, b.maxX, b.maxY)) continue;
+          }
+          need++;
           if (p.tilesBuilt < p.totalTiles) return false;
         }
       }
     }
-    return this.visuals.size > 0;
+    return need > 0;
   }
 
-  sync(hero: Vec2, worldSeed: number, gameSeed: number, scene: BigWorldStreamScene | null, renderer: Renderer | null): void {
+  sync(
+    hero: Vec2,
+    worldSeed: number,
+    gameSeed: number,
+    scene: BigWorldStreamScene | null,
+    renderer: Renderer | null,
+    viewBounds: BigWorldViewBounds | null = null,
+  ): void {
     this.scene = scene;
     this.allowBuild = renderer != null;
+    this.viewBounds = viewBounds;
     const { cx, cy } = worldToChunk(hero.x, hero.y);
     const movedChunk = cx !== this.lastCx || cy !== this.lastCy;
     const seedChanged = worldSeed !== this.activeWorldSeed || gameSeed !== this.activeGameSeed;
@@ -173,7 +228,35 @@ export class BigWorldStreamGround extends PixiContainer {
     for (const vis of this.visuals.values()) {
       if (!vis.root.parent) this.addChild(vis.root);
     }
+    this.applyViewCulling();
     this.tickBuildBudget();
+  }
+
+  private applyViewCulling(): void {
+    const view = this.viewBounds;
+    const patchTiles = BIG_WORLD_GROUND_PATCH_TILES;
+    const tiles = chunkTileCount();
+    for (const vis of this.visuals.values()) {
+      const { cx, cy } = vis.data;
+      for (let pi = 0; pi < vis.patches.length; pi++) {
+        const row = vis.patches[pi];
+        if (!row) continue;
+        for (let pj = 0; pj < row.length; pj++) {
+          const patch = row[pj];
+          if (!patch || !patchLayerUsable(patch.layer)) continue;
+          const b = patchWorldBounds(cx, cy, pi, pj, patchTiles, tiles);
+          const on = !view || aabbOverlap(view, b.minX, b.minY, b.maxX, b.maxY);
+          patch.layer.renderable = on;
+          patch.layer.visible = on;
+        }
+      }
+      for (const d of vis.decor) {
+        if (d.sprite.destroyed) continue;
+        const on = !view || aabbOverlap(view, d.wx, d.wy, d.wx, d.wy);
+        d.sprite.renderable = on;
+        d.sprite.visible = on;
+      }
+    }
   }
 
   private pendingBuild(): boolean {
@@ -273,7 +356,7 @@ export class BigWorldStreamGround extends PixiContainer {
         const collider: Collider | null =
           decorId === 'gran' ? { x: wx, y: wy, r: 0.9 } : decorId === 'stenhog' || decorId === 'stubbe' ? { x: wx, y: wy, r: 0.8 } : null;
         if (collider) this.scene.zone.colliders.push(collider);
-        vis.decor.push({ sprite: s, collider });
+        vis.decor.push({ sprite: s, collider, wx, wy });
       }
     }
     vis.decorDone = true;
@@ -300,44 +383,53 @@ export class BigWorldStreamGround extends PixiContainer {
   }
 
   private buildTilesStep(): boolean {
-    for (const vis of this.visuals.values()) {
+    const view = this.viewBounds;
+    const patchTiles = BIG_WORLD_GROUND_PATCH_TILES;
+    const tiles = chunkTileCount();
+    const tryBuild = (vis: ChunkVisual, pi: number, pj: number): boolean => {
+      const prow = vis.patches[pi];
+      if (!prow) return false;
+      const patch = prow[pj];
+      if (!patch || !patchLayerUsable(patch.layer)) return false;
+      if (patch.tilesBuilt >= patch.totalTiles) return false;
+      if (view) {
+        const b = patchWorldBounds(vis.data.cx, vis.data.cy, pi, pj, patchTiles, tiles);
+        if (!aabbOverlap(view, b.minX, b.minY, b.maxX, b.maxY)) return false;
+      }
       const data = vis.data;
       const span = chunkWorldSpan();
-      const tiles = chunkTileCount();
-      const patchTiles = BIG_WORLD_GROUND_PATCH_TILES;
       const pool = data.tilePool.length ? data.tilePool : ['gras_1'];
+      const ti0 = pi * patchTiles;
+      const tj0 = pj * patchTiles;
+      const tw = Math.min(patchTiles, tiles - ti0);
+      let built = 0;
+      while (patch.tilesBuilt < patch.totalTiles && built < 128) {
+        const local = patch.tilesBuilt;
+        const di = Math.floor(local / tw);
+        const dj = local % tw;
+        const ti = ti0 + di;
+        const tj = tj0 + dj;
+        const tileId = vis.tileRng.pick(pool);
+        const tex = this.assets.tiles.get(tileId);
+        if (tex) {
+          const wx = data.cx * span + ti * TILE_WORLD;
+          const wy = data.cy * span + tj * TILE_WORLD;
+          const s = new Sprite(tex);
+          s.anchor.set(0.5, 0.85);
+          const pos = Iso.worldToScreen(wx, wy);
+          s.position.set(pos.x, pos.y);
+          patch.layer.addChild(s);
+        }
+        patch.tilesBuilt++;
+        built++;
+      }
+      return built > 0;
+    };
+
+    for (const vis of this.visuals.values()) {
       for (let pi = 0; pi < vis.patches.length; pi++) {
-        const prow = vis.patches[pi];
-        if (!prow) continue;
-        for (let pj = 0; pj < prow.length; pj++) {
-          const patch = prow[pj];
-          if (!patch || !patchLayerUsable(patch.layer)) continue;
-          if (patch.tilesBuilt >= patch.totalTiles) continue;
-          const ti0 = pi * patchTiles;
-          const tj0 = pj * patchTiles;
-          const tw = Math.min(patchTiles, tiles - ti0);
-          let built = 0;
-          while (patch.tilesBuilt < patch.totalTiles && built < 128) {
-            const local = patch.tilesBuilt;
-            const di = Math.floor(local / tw);
-            const dj = local % tw;
-            const ti = ti0 + di;
-            const tj = tj0 + dj;
-            const tileId = vis.tileRng.pick(pool);
-            const tex = this.assets.tiles.get(tileId);
-            if (tex) {
-              const wx = data.cx * span + ti * TILE_WORLD;
-              const wy = data.cy * span + tj * TILE_WORLD;
-              const s = new Sprite(tex);
-              s.anchor.set(0.5, 0.85);
-              const pos = Iso.worldToScreen(wx, wy);
-              s.position.set(pos.x, pos.y);
-              patch.layer.addChild(s);
-            }
-            patch.tilesBuilt++;
-            built++;
-          }
-          if (built > 0) return true;
+        for (let pj = 0; pj < (vis.patches[pi]?.length ?? 0); pj++) {
+          if (tryBuild(vis, pi, pj)) return true;
         }
       }
     }

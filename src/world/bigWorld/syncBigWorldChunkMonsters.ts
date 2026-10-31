@@ -20,6 +20,8 @@ function bwSpec(uid: string, enemy: string, level: number, elite: SpawnSpec['eli
 
 let lastHeroChunkCx = NaN;
 let lastHeroChunkCy = NaN;
+let lastSpawnAt = -999;
+const SPAWN_INTERVAL_SEC = 0.35;
 const liveUids = new Set<string>();
 const nearChunksBuf: { cx: number; cy: number }[] = [];
 
@@ -106,11 +108,15 @@ export function syncBigWorldChunkMonsters(
   despawnFarBw(w, hero, despawnR);
 
   const live = refreshLiveUids(w);
-  spawnNearHero(w, cache, factory, worldSeed, gameSeed, hero, live);
+  if (chunkChanged || w.time - lastSpawnAt >= SPAWN_INTERVAL_SEC) {
+    lastSpawnAt = w.time;
+    spawnNearHero(w, cache, factory, worldSeed, gameSeed, hero, live);
+  }
 }
 
 export function resetBigWorldMonsterSync(): void {
   lastHeroChunkCx = NaN;
   lastHeroChunkCy = NaN;
+  lastSpawnAt = -999;
   liveUids.clear();
 }
