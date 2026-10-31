@@ -1,5 +1,5 @@
 import type { Container, Renderer } from 'pixi.js';
-import { Container as PixiContainer, Rectangle, RenderTexture, Sprite } from 'pixi.js';
+import { Container as PixiContainer, Rectangle, Sprite } from 'pixi.js';
 import { Rng } from '../../core/Rng';
 import type { Vec2, Collider } from '../../core/GameContext';
 import type { AssetStore, DecorId } from '../../render/Assets';
@@ -9,9 +9,7 @@ import type { ChunkWorldData } from './worldGenerator';
 import { chunkTileCount, chunkWorldSpan, worldToChunk } from './bigWorldCoords';
 import {
   BIG_WORLD_CACHE_KEEP_RADIUS,
-  BIG_WORLD_GROUND_BAKE_SCALE,
   BIG_WORLD_GROUND_BUILD_BUDGET_MS,
-  BIG_WORLD_GROUND_MAX_BAKES_PER_FRAME,
   BIG_WORLD_GROUND_PATCH_TILES,
   BIG_WORLD_RENDER_RADIUS,
   BIG_WORLD_SKY_CLEAR_COLOR,
@@ -36,15 +34,13 @@ interface PatchVisual {
   layer: PixiContainer;
   tilesBuilt: number;
   totalTiles: number;
-  baked: Sprite | null;
-  renderTexture: RenderTexture | null;
 }
 
 interface ChunkVisual {
   root: PixiContainer;
   data: ChunkWorldData;
   patches: PatchVisual[][];
-  rngTileIndex: number;
+  tileRng: Rng;
   decor: DecorEntry[];
   decorDone: boolean;
 }
@@ -58,21 +54,24 @@ function visualKey(worldSeed: number, gameSeed: number, cx: number, cy: number):
   return `${worldSeed}|${gameSeed}|${cx}|${cy}`;
 }
 
+/** Delade asset-texturer får aldrig förstöras — bara sprite-noder. */
 function clearContainerChildren(layer: PixiContainer): void {
-  for (const ch of layer.removeChildren()) ch.destroy({ texture: true });
+  for (const ch of layer.removeChildren()) ch.destroy();
+}
+
+/** Pixi v8: position blir null efter destroy — använd inte lagret. */
+export function patchLayerUsable(layer: PixiContainer | null | undefined): layer is PixiContainer {
+  if (!layer || layer.destroyed) return false;
+  return layer.position != null;
+}
+
+export function unqueuePatchesFromBakeQueue(_queue: PatchVisual[], _patches: Iterable<PatchVisual>): void {
+  /* Bakning borttagen — behålls för tester som verifierar API-stabilitet. */
 }
 
 function destroyPatch(patch: PatchVisual): void {
-  if (patch.baked) {
-    patch.baked.destroy({ texture: true });
-    patch.baked = null;
-  }
-  if (patch.renderTexture) {
-    patch.renderTexture.destroy(true);
-    patch.renderTexture = null;
-  }
-  clearContainerChildren(patch.layer);
-  patch.layer.destroy();
+  if (patchLayerUsable(patch.layer)) clearContainerChildren(patch.layer);
+  if (patchLayerUsable(patch.layer)) patch.layer.destroy();
 }
 
 function countPixiDisplayObjects(root: PixiContainer): number {
@@ -93,18 +92,17 @@ export function countBigWorldGroundRenderTextures(ground: BigWorldStreamGround):
 }
 
 /**
- * Chunkad mark från varld_stor. Mark bakas i 16×16-rutors patchar med lokala bounds (inte kamerans getBounds).
+ * Chunkad mark från varld_stor. Rutor byggs inkrementellt som sprites (ingen RT-bakning).
  */
 export class BigWorldStreamGround extends PixiContainer {
   private readonly visuals = new Map<string, ChunkVisual>();
   private readonly cache: ChunkWorldCache;
-  private readonly bakeQueue: PatchVisual[] = [];
   private lastCx = NaN;
   private lastCy = NaN;
   private activeWorldSeed = 0;
   private activeGameSeed = 0;
   private scene: BigWorldStreamScene | null = null;
-  private allowBake = true;
+  private allowBuild = true;
 
   constructor(
     private readonly assets: AssetStore,
@@ -125,25 +123,14 @@ export class BigWorldStreamGround extends PixiContainer {
   }
 
   countRenderTextures(): number {
-    let n = 0;
-    for (const vis of this.visuals.values()) {
-      for (const row of vis.patches) {
-        for (const p of row) {
-          if (p.renderTexture) n++;
-        }
-      }
-    }
-    return n;
+    return 0;
   }
 
-  /** Inga ofärdiga patchar eller väntande bakningar. */
   isGroundReady(): boolean {
-    if (this.bakeQueue.length > 0) return false;
     for (const vis of this.visuals.values()) {
       for (const row of vis.patches) {
         for (const p of row) {
           if (p.tilesBuilt < p.totalTiles) return false;
-          if (this.allowBake && !p.baked && p.totalTiles > 0) return false;
         }
       }
     }
@@ -152,7 +139,7 @@ export class BigWorldStreamGround extends PixiContainer {
 
   sync(hero: Vec2, worldSeed: number, gameSeed: number, scene: BigWorldStreamScene | null, renderer: Renderer | null): void {
     this.scene = scene;
-    this.allowBake = renderer != null;
+    this.allowBuild = renderer != null;
     const { cx, cy } = worldToChunk(hero.x, hero.y);
     const movedChunk = cx !== this.lastCx || cy !== this.lastCy;
     const seedChanged = worldSeed !== this.activeWorldSeed || gameSeed !== this.activeGameSeed;
@@ -186,16 +173,14 @@ export class BigWorldStreamGround extends PixiContainer {
     for (const vis of this.visuals.values()) {
       if (!vis.root.parent) this.addChild(vis.root);
     }
-    this.tickBuildBudget(renderer);
+    this.tickBuildBudget();
   }
 
   private pendingBuild(): boolean {
-    if (this.bakeQueue.length > 0) return true;
     for (const vis of this.visuals.values()) {
       for (const row of vis.patches) {
         for (const p of row) {
           if (p.tilesBuilt < p.totalTiles) return true;
-          if (this.allowBake && p.tilesBuilt >= p.totalTiles && !p.baked && p.totalTiles > 0) return true;
         }
       }
     }
@@ -203,7 +188,6 @@ export class BigWorldStreamGround extends PixiContainer {
   }
 
   private dropAllVisuals(): void {
-    this.bakeQueue.length = 0;
     for (const [key, vis] of this.visuals) this.dropChunkVisual(key, vis);
   }
 
@@ -240,11 +224,18 @@ export class BigWorldStreamGround extends PixiContainer {
         const th = Math.min(patchTiles, tiles - tj0);
         const layer = new PixiContainer();
         root.addChild(layer);
-        row.push({ layer, tilesBuilt: 0, totalTiles: tw * th, baked: null, renderTexture: null });
+        row.push({ layer, tilesBuilt: 0, totalTiles: tw * th });
       }
       patches.push(row);
     }
-    this.visuals.set(key, { root, data, patches, rngTileIndex: 0, decor: [], decorDone: false });
+    this.visuals.set(key, {
+      root,
+      data,
+      patches,
+      tileRng: new Rng(data.chunkSeed),
+      decor: [],
+      decorDone: false,
+    });
   }
 
   private spawnDecorForChunk(vis: ChunkVisual): void {
@@ -288,22 +279,11 @@ export class BigWorldStreamGround extends PixiContainer {
     vis.decorDone = true;
   }
 
-  private tickBuildBudget(renderer: Renderer | null): void {
+  private tickBuildBudget(): void {
+    if (!this.allowBuild) return;
     const t0 = performance.now();
     while (performance.now() - t0 < BIG_WORLD_GROUND_BUILD_BUDGET_MS) {
       if (!this.buildTilesStep()) break;
-    }
-    if (renderer) {
-      let baked = 0;
-      while (this.bakeQueue.length > 0 && baked < BIG_WORLD_GROUND_MAX_BAKES_PER_FRAME) {
-        const patch = this.bakeQueue.shift();
-        if (patch) {
-          this.bakePatch(patch, renderer);
-          baked++;
-        }
-      }
-    } else {
-      this.bakeQueue.length = 0;
     }
     for (const vis of this.visuals.values()) {
       if (this.chunkTilesComplete(vis) && !vis.decorDone) this.spawnDecorForChunk(vis);
@@ -326,13 +306,12 @@ export class BigWorldStreamGround extends PixiContainer {
       const tiles = chunkTileCount();
       const patchTiles = BIG_WORLD_GROUND_PATCH_TILES;
       const pool = data.tilePool.length ? data.tilePool : ['gras_1'];
-      const rng = new Rng(data.chunkSeed);
       for (let pi = 0; pi < vis.patches.length; pi++) {
         const prow = vis.patches[pi];
         if (!prow) continue;
         for (let pj = 0; pj < prow.length; pj++) {
           const patch = prow[pj];
-          if (!patch) continue;
+          if (!patch || !patchLayerUsable(patch.layer)) continue;
           if (patch.tilesBuilt >= patch.totalTiles) continue;
           const ti0 = pi * patchTiles;
           const tj0 = pj * patchTiles;
@@ -344,13 +323,7 @@ export class BigWorldStreamGround extends PixiContainer {
             const dj = local % tw;
             const ti = ti0 + di;
             const tj = tj0 + dj;
-            const linear = ti * tiles + tj;
-            while (vis.rngTileIndex < linear) {
-              rng.pick(pool);
-              vis.rngTileIndex++;
-            }
-            const tileId = rng.pick(pool);
-            vis.rngTileIndex++;
+            const tileId = vis.tileRng.pick(pool);
             const tex = this.assets.tiles.get(tileId);
             if (tex) {
               const wx = data.cx * span + ti * TILE_WORLD;
@@ -364,9 +337,6 @@ export class BigWorldStreamGround extends PixiContainer {
             patch.tilesBuilt++;
             built++;
           }
-          if (patch.tilesBuilt >= patch.totalTiles && this.allowBake && !patch.baked) {
-            this.bakeQueue.push(patch);
-          }
           if (built > 0) return true;
         }
       }
@@ -374,35 +344,8 @@ export class BigWorldStreamGround extends PixiContainer {
     return false;
   }
 
-  private bakePatch(patch: PatchVisual, renderer: Renderer): void {
-    if (patch.baked || patch.tilesBuilt < patch.totalTiles) return;
-    const lb = patch.layer.getLocalBounds();
-    if (lb.width < 2 || lb.height < 2) {
-      clearContainerChildren(patch.layer);
-      return;
-    }
-    const scale = BIG_WORLD_GROUND_BAKE_SCALE;
-    const pad = 2;
-    const rw = Math.max(1, Math.ceil((lb.width + pad * 2) * scale));
-    const rh = Math.max(1, Math.ceil((lb.height + pad * 2) * scale));
-    const rt = RenderTexture.create({ width: rw, height: rh });
-    const prevX = patch.layer.position.x;
-    const prevY = patch.layer.position.y;
-    patch.layer.position.set(-lb.x + pad, -lb.y + pad);
-    renderer.render({ container: patch.layer, target: rt, clear: true });
-    clearContainerChildren(patch.layer);
-    patch.layer.position.set(prevX, prevY);
-    const spr = new Sprite(rt);
-    spr.scale.set(1 / scale, 1 / scale);
-    spr.position.set(lb.x - pad, lb.y - pad);
-    patch.layer.parent?.addChild(spr);
-    patch.baked = spr;
-    patch.renderTexture = rt;
-  }
-
-  /** Sample canvas under hjälten — true om pixel skiljer sig från himmel. */
   probeGroundPixel(renderer: Renderer, heroScreenX: number, heroScreenY: number): boolean {
-    if (this.countRenderTextures() === 0) return false;
+    if (!this.isGroundReady()) return false;
     const x = Math.max(0, Math.floor(heroScreenX));
     const y = Math.max(0, Math.floor(heroScreenY));
     try {

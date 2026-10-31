@@ -44,10 +44,12 @@ function refreshLiveUids(w: World): Set<string> {
   return liveUids;
 }
 
-function despawnFar(w: World, hero: Vec2, r: number): void {
+/** Avlägsnar bara bw:-chunkmonster utanför aktiv radie — quest/övriga lämnas. */
+function despawnFarBw(w: World, hero: Vec2, r: number): void {
   for (let i = w.monsters.length - 1; i >= 0; i--) {
     const mon = w.monsters[i];
-    if (!mon) continue;
+    if (!mon?.uid) continue;
+    if (!parseBigWorldSpawnUid(mon.uid)) continue;
     if (Math.hypot(mon.pos.x - hero.x, mon.pos.y - hero.y) <= r) continue;
     mon.view.destroy({ children: true });
     w.objects.removeChild(mon.view);
@@ -55,41 +57,16 @@ function despawnFar(w: World, hero: Vec2, r: number): void {
   }
 }
 
-/** Instansierar/avlässnar chunk-monster; tung sync bara vid chunkbyte. */
-export function syncBigWorldChunkMonsters(
+function spawnNearHero(
   w: World,
   cache: ChunkWorldCache,
   factory: MonsterFactory,
   worldSeed: number,
   gameSeed: number,
   hero: Vec2,
+  live: Set<string>,
 ): void {
-  if (!w.zone.bigWorldStreaming) return;
-
-  const { cx, cy } = worldToChunk(hero.x, hero.y);
-  const chunkChanged = cx !== lastHeroChunkCx || cy !== lastHeroChunkCy;
-  if (!chunkChanged) return;
-
-  lastHeroChunkCx = cx;
-  lastHeroChunkCy = cy;
-  cache.syncNear(worldSeed, gameSeed, cx, cy);
-
-  for (let i = w.monsters.length - 1; i >= 0; i--) {
-    const mon = w.monsters[i];
-    if (!mon?.uid) continue;
-    if (!parseBigWorldSpawnUid(mon.uid)) {
-      mon.view.destroy({ children: true });
-      w.objects.removeChild(mon.view);
-      w.monsters.splice(i, 1);
-    }
-  }
-
-  const despawnR = FOREST_SPAWN_ACTIVE_RADIUS + 8;
-  despawnFar(w, hero, despawnR);
-
-  const live = refreshLiveUids(w);
   const spawnR = FOREST_SPAWN_ACTIVE_RADIUS;
-
   for (const { cx: ccx, cy: ccy } of fillNearChunks(hero.x, hero.y, spawnR)) {
     const data = cache.get(worldSeed, gameSeed, ccx, ccy);
     if (data.safe) continue;
@@ -104,6 +81,32 @@ export function syncBigWorldChunkMonsters(
       live.add(s.uid);
     }
   }
+}
+
+/** Instansierar/avlässnar chunk-monster; spawn fylls på varje frame, cache-sync vid chunkbyte. */
+export function syncBigWorldChunkMonsters(
+  w: World,
+  cache: ChunkWorldCache,
+  factory: MonsterFactory,
+  worldSeed: number,
+  gameSeed: number,
+  hero: Vec2,
+): void {
+  if (!w.zone.bigWorldStreaming) return;
+
+  const { cx, cy } = worldToChunk(hero.x, hero.y);
+  const chunkChanged = cx !== lastHeroChunkCx || cy !== lastHeroChunkCy;
+  if (chunkChanged) {
+    lastHeroChunkCx = cx;
+    lastHeroChunkCy = cy;
+    cache.syncNear(worldSeed, gameSeed, cx, cy);
+  }
+
+  const despawnR = FOREST_SPAWN_ACTIVE_RADIUS + 8;
+  despawnFarBw(w, hero, despawnR);
+
+  const live = refreshLiveUids(w);
+  spawnNearHero(w, cache, factory, worldSeed, gameSeed, hero, live);
 }
 
 export function resetBigWorldMonsterSync(): void {

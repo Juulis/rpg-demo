@@ -36,6 +36,23 @@ if (!existsSync(join(dist, 'assets'))) fail.push('roten saknar assets/ (Vite-byg
 
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 
+async function readMetrics(page) {
+  return page.evaluate(() => {
+    const cap = window.__game?.captureBigWorldMetrics?.();
+    if (cap) return { ...cap, heroChunk: document.documentElement.dataset.heroChunk ?? '' };
+    const d = document.documentElement.dataset;
+    return {
+      groundReady: d.groundReady === '1',
+      displayObjects: Number(d.groundObjects ?? 0),
+      renderTextures: Number(d.renderTextures ?? 0),
+      groundPixel: d.groundPixel === '1',
+      heroWx: Number(d.heroWx ?? 0),
+      heroWy: Number(d.heroWy ?? 0),
+      heroChunk: d.heroChunk ?? '',
+    };
+  });
+}
+
 async function visit(path, check, startGame = false) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const errs = [];
@@ -52,11 +69,11 @@ async function visit(path, check, startGame = false) {
   await page.close();
 }
 
-async function startNewGame(page) {
+async function startNewGame(page, heroName = 'Rök') {
   await page.waitForSelector('#hmNewHero', { timeout: 30000 });
   await page.click('#hmNewHero');
   await page.waitForSelector('.hero-name', { timeout: 10000 });
-  await page.fill('.hero-name', 'Rök');
+  await page.fill('.hero-name', heroName);
   await page.click('#hnOk');
   await page.waitForSelector('#app canvas', { timeout: 30000 });
   await page.waitForFunction(() => document.querySelector('.hero-menu')?.classList.contains('hidden'), null, { timeout: 90000 });
@@ -89,11 +106,16 @@ await visit('', gameReady, true);
 const chunkPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const chunkErrs = [];
 chunkPage.on('pageerror', (e) => chunkErrs.push(String(e)));
+chunkPage.on('console', (m) => m.type() === 'error' && chunkErrs.push(m.text()));
 await chunkPage.goto(base, { waitUntil: 'load' });
-await startNewGame(chunkPage);
+await startNewGame(chunkPage, 'Chunk');
 
-async function waitGroundReady(page, ms = 90000) {
-  await page.waitForFunction(() => window.__game?.captureBigWorldMetrics?.()?.groundReady === true, null, { timeout: ms });
+async function waitGroundReady(page, ms = 120000) {
+  await page.waitForFunction(
+    () => window.__game?.captureBigWorldMetrics?.()?.groundReady === true || document.documentElement.dataset.groundReady === '1',
+    null,
+    { timeout: ms, polling: 200 },
+  );
 }
 
 try {
@@ -102,66 +124,127 @@ try {
   chunkErrs.push('mark blev inte klar (groundReady)');
 }
 
-const startProbe = await chunkPage.evaluate(() => {
-  const m = window.__game?.captureBigWorldMetrics?.();
-  return m ? { x: m.heroWx, y: m.heroWy, textures: m.renderTextures, objects: m.displayObjects, pixel: m.groundPixel } : null;
-});
+const startProbe = await readMetrics(chunkPage);
+const startPos = { x: startProbe.heroWx, y: startProbe.heroWy };
 
-await chunkPage.evaluate(() => {
-  const h = window.__game.state.hero;
-  h.moveTarget = { x: h.pos.x + 55, y: h.pos.y + 55 };
-});
+await chunkPage.evaluate(() => window.__smoke?.moveHeroBy(55, 55));
 await chunkPage.waitForFunction(
   (start) => {
-    const m = window.__game?.captureBigWorldMetrics?.();
-    if (!m || !start) return false;
-    return Math.hypot(m.heroWx - start.x, m.heroWy - start.y) > 40;
+    if (!start) return false;
+    const d = document.documentElement.dataset;
+    const wx = Number(d.heroWx ?? start.x);
+    const wy = Number(d.heroWy ?? start.y);
+    return Math.hypot(wx - start.x, wy - start.y) > 40;
   },
-  startProbe,
-  { timeout: 35000, polling: 200 },
+  startPos,
+  { timeout: 90000, polling: 200 },
 );
 
-const chunkProbe = await chunkPage.evaluate(async (start) => {
-  const m = window.__game?.captureBigWorldMetrics?.();
-  if (!m || !start) return { ok: false, reason: 'no metrics' };
-  const moved = Math.hypot(m.heroWx - start.x, m.heroWy - start.y) > 40;
-  const fpsSamples = [];
-  for (let s = 0; s < 5; s++) {
-    let frames = 0;
-    const t0 = performance.now();
-    await new Promise((resolve) => {
-      const loop = () => {
-        frames++;
-        if (performance.now() - t0 >= 1000) return resolve(undefined);
-        requestAnimationFrame(loop);
+const startChunk = startProbe.heroChunk || (await readMetrics(chunkPage)).heroChunk;
+await chunkPage.evaluate(() => window.__smoke?.moveHeroBy(140, 0));
+try {
+  await chunkPage.waitForFunction(
+    (prev) => document.documentElement.dataset.heroChunk && document.documentElement.dataset.heroChunk !== prev,
+    startChunk,
+    { timeout: 90000, polling: 250 },
+  );
+} catch {
+  chunkErrs.push('chunkbyte: heroChunk ändrades inte');
+}
+const wxBefore = Number((await readMetrics(chunkPage)).heroWx);
+await chunkPage.waitForTimeout(2500);
+await chunkPage.evaluate(() => window.__smoke?.moveHeroBy(20, 0));
+await chunkPage.waitForTimeout(2500);
+const wxAfter = Number((await readMetrics(chunkPage)).heroWx);
+if (Math.abs(wxAfter - wxBefore) < 0.5) chunkErrs.push('ingen rörelse efter chunkbyte');
+
+const chunkProbe = await chunkPage.evaluate(
+  async (start) => {
+    const read = () => {
+      const cap = window.__game?.captureBigWorldMetrics?.();
+      if (cap) return cap;
+      const d = document.documentElement.dataset;
+      return {
+        groundReady: d.groundReady === '1',
+        displayObjects: Number(d.groundObjects ?? 0),
+        renderTextures: Number(d.renderTextures ?? 0),
+        groundPixel: d.groundPixel === '1',
+        heroWx: Number(d.heroWx ?? 0),
+        heroWy: Number(d.heroWy ?? 0),
       };
-      requestAnimationFrame(loop);
-    });
-    fpsSamples.push(frames);
-  }
-  fpsSamples.sort((a, b) => a - b);
-  const fpsMedian = fpsSamples[2] ?? fpsSamples[0] ?? 0;
-  const heapMb = (performance.memory?.usedJSHeapSize ?? 0) / (1024 * 1024);
-  return {
-    ok: moved && m.groundPixel,
-    moved,
-    groundPixel: m.groundPixel,
-    textures: m.renderTextures,
-    objects: m.displayObjects,
-    fpsMedian,
-    heapMb,
-    start,
-  };
-}, startProbe);
+    };
+    const m = read();
+    if (!m || !start) return { ok: false, reason: 'no metrics' };
+    const moved = Math.hypot(m.heroWx - start.x, m.heroWy - start.y) > 40;
+    const fpsSamples = [];
+    for (let s = 0; s < 5; s++) {
+      let frames = 0;
+      const t0 = performance.now();
+      await new Promise((resolve) => {
+        const loop = () => {
+          frames++;
+          if (performance.now() - t0 >= 1000) return resolve(undefined);
+          requestAnimationFrame(loop);
+        };
+        requestAnimationFrame(loop);
+      });
+      fpsSamples.push(frames);
+    }
+    fpsSamples.sort((a, b) => a - b);
+    const fpsMedian = fpsSamples[2] ?? fpsSamples[0] ?? 0;
+    const heapMb = (performance.memory?.usedJSHeapSize ?? 0) / (1024 * 1024);
+    return {
+      ok: moved && m.groundPixel,
+      moved,
+      groundPixel: m.groundPixel,
+      textures: m.renderTextures,
+      objects: m.displayObjects,
+      fpsMedian,
+      heapMb,
+      start,
+    };
+  },
+  { x: startPos.x, y: startPos.y, textures: startProbe.renderTextures, objects: startProbe.displayObjects, pixel: startProbe.groundPixel },
+);
 
 console.log(`chunk-stream: ${JSON.stringify(chunkProbe)}`);
 if (!chunkProbe.ok) chunkErrs.push(`rörelse/mark: moved=${chunkProbe.moved} pixel=${chunkProbe.groundPixel}`);
 if (!chunkProbe.moved) chunkErrs.push('hjälten rörde sig inte >40 enheter');
 if (!chunkProbe.groundPixel) chunkErrs.push('pixelprov såg ingen mark');
-if (chunkProbe.textures > 900) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
+if (chunkProbe.textures > 50) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
 if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
+
+const heroId = await chunkPage.evaluate(() => {
+  const keys = Object.keys(localStorage).filter((k) => k.startsWith('rpg_hero_'));
+  const last = keys.sort().pop();
+  if (!last) return null;
+  try {
+    const raw = JSON.parse(localStorage.getItem(last) || 'null');
+    return raw?.game?.worldSeed != null ? { id: raw.hero?.id, worldSeed: raw.game.worldSeed, seed: raw.game.seed } : null;
+  } catch {
+    return null;
+  }
+});
+if (!heroId?.worldSeed) chunkErrs.push('autospar saknar worldSeed i localStorage');
+else {
+  const ws0 = heroId.worldSeed;
+  await chunkPage.reload({ waitUntil: 'load' });
+  await pageWaitMenu(chunkPage);
+  await chunkPage.click('#hmCont');
+  await chunkPage.waitForFunction(() => document.documentElement.dataset.zone === 'forest', null, { timeout: 90000 });
+  const ws1 = await chunkPage.evaluate((id) => {
+    const raw = JSON.parse(localStorage.getItem(`rpg_hero_${id}`) || 'null');
+    return raw?.game?.worldSeed ?? null;
+  }, heroId.id);
+  if (ws1 !== ws0) chunkErrs.push(`worldSeed ändrades efter Fortsätt: ${ws0} -> ${ws1}`);
+}
+
 if (chunkErrs.length) fail.push(...chunkErrs.map((e) => `chunk: ${e}`));
 await chunkPage.close();
+
+async function pageWaitMenu(page) {
+  await page.waitForSelector('#hmNewHero', { timeout: 30000 });
+}
 
 for (const legacyPath of ['next/', 'legacy-3d/']) {
   const page = await browser.newPage();

@@ -25,7 +25,7 @@ export class HeroLoader {
     this.autosave.end(this.autosave.isPlaying);
     const g = resume && save.game ? save.game : newGameRecord(this.newSeed());
     if (!resume || !save.game) {
-      if (g.worldSeed == null) g.worldSeed = this.ctx.session.worldSeed;
+      g.worldSeed = this.newSeed();
       save.game = g;
     }
     const h = save.hero;

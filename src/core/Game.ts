@@ -929,18 +929,25 @@ export class Game {
     if (this.forestGround instanceof BigWorldStreamGround) {
       this.forestGround.sync(h.pos, w.session.worldSeed, w.session.seed, { objects: w.objects, zone: w.zone }, this.renderer.app.renderer);
       syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.worldSeed, w.session.seed, h.pos);
-      const captureMetrics = import.meta.env.DEV || import.meta.env.VITE_CAPTURE_HOOK === 'true';
-      if (captureMetrics) {
-        const hc = worldToChunk(h.pos.x, h.pos.y);
-        if (hc.cx !== this.streamMetricsCx || hc.cy !== this.streamMetricsCy) {
-          this.streamMetricsCx = hc.cx;
-          this.streamMetricsCy = hc.cy;
-          document.documentElement.dataset.heroChunk = `${hc.cx},${hc.cy}`;
-          document.documentElement.dataset.groundObjects = String(this.forestGround.countGroundDisplayObjects());
-          document.documentElement.dataset.heroWx = h.pos.x.toFixed(1);
-          document.documentElement.dataset.heroWy = h.pos.y.toFixed(1);
-          document.documentElement.dataset.groundReady = this.forestGround.isGroundReady() ? '1' : '0';
+      const hc = worldToChunk(h.pos.x, h.pos.y);
+      const fg = this.forestGround;
+      document.documentElement.dataset.heroWx = h.pos.x.toFixed(1);
+      document.documentElement.dataset.heroWy = h.pos.y.toFixed(1);
+      if (hc.cx !== this.streamMetricsCx || hc.cy !== this.streamMetricsCy) {
+        this.streamMetricsCx = hc.cx;
+        this.streamMetricsCy = hc.cy;
+        const foot = this.camera.toScreen(h.pos.x, h.pos.y);
+        document.documentElement.dataset.heroChunk = `${hc.cx},${hc.cy}`;
+        document.documentElement.dataset.groundObjects = String(fg.countGroundDisplayObjects());
+        document.documentElement.dataset.renderTextures = String(fg.countRenderTextures());
+        document.documentElement.dataset.groundReady = fg.isGroundReady() ? '1' : '0';
+        if (fg.isGroundReady()) {
+          document.documentElement.dataset.groundPixel = fg.probeGroundPixel(this.renderer.app.renderer, foot.x, foot.y + 28) ? '1' : '0';
         }
+      } else if (fg.isGroundReady() && document.documentElement.dataset.groundReady !== '1') {
+        document.documentElement.dataset.groundReady = '1';
+        const foot = this.camera.toScreen(h.pos.x, h.pos.y);
+        document.documentElement.dataset.groundPixel = fg.probeGroundPixel(this.renderer.app.renderer, foot.x, foot.y + 28) ? '1' : '0';
       }
     } else {
       this.forestGround?.sync(h.pos);

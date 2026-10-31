@@ -41,3 +41,12 @@ if (import.meta.env.DEV || import.meta.env.VITE_CAPTURE_HOOK === 'true') {
 }
 await game.start(host);
 document.getElementById('newGame')?.addEventListener('click', () => game.newGame());
+
+/** Minimal rörelse-hook för röktest (ingen full __game i produktion). */
+(window as unknown as { __smoke?: { moveHeroBy(dx: number, dy: number): void } }).__smoke = {
+  moveHeroBy(dx, dy) {
+    const w = game.state;
+    if (!w?.hero.s.playing) return;
+    w.hero.moveTarget = { x: w.hero.pos.x + dx, y: w.hero.pos.y + dy };
+  },
+};

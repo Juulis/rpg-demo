@@ -10,14 +10,13 @@ export const BIG_WORLD_RENDER_RADIUS = 2;
 /** Max ms tile-bygge per bildruta innan vi fortsätter nästa frame. */
 export const BIG_WORLD_GROUND_BUILD_BUDGET_MS = 4;
 
-/** Rutor per bakad delpatch (64×64 chunk → 4×4 patchar à 16×16). */
+/** Rutor per byggbatch (64×64 chunk → 4×4 delar à 16×16 för budget). */
 export const BIG_WORLD_GROUND_PATCH_TILES = 16;
 
-/** Upplösning på bakade marktexturer (0.5 ≈ halv pixeldensitet, håller RT under några MB). */
-export const BIG_WORLD_GROUND_BAKE_SCALE = 0.5;
+/** Mark bakas inte till RT — tile-sprites delar atlas (minnesvänligt). */
+export const BIG_WORLD_GROUND_BAKE_SCALE = 1;
 
-/** Max antal patch-bakningar per bildruta (undviker multi-sekunders spikes). */
-export const BIG_WORLD_GROUND_MAX_BAKES_PER_FRAME = 1;
+export const BIG_WORLD_GROUND_MAX_BAKES_PER_FRAME = 0;
 
 /**
  * Generatorregler: spel/design/varldsgenerator.json (+ varld_stor.json, bana1_stor.json).

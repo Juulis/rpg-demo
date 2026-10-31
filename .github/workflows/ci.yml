@@ -18,9 +18,14 @@ jobs:
       - run: npm run format:check
       - name: Headless-test (jsdom, stub-motor)
         run: npm test
-      - run: VITE_CAPTURE_HOOK=true npm run build
+      - run: npm run build
       - name: Sätt ihop Pages-artefakten (2D på roten, next/ omdirigerar)
         run: node scripts/assemble-pages.mjs
       - run: npx playwright install --with-deps chromium
-      - name: Röktest – 2D på roten
+      - name: Röktest – vanligt produktionsbygge
+        run: npm run smoke
+      - run: VITE_CAPTURE_HOOK=true npm run build
+      - name: Sätt ihop Pages-artefakten (capture)
+        run: node scripts/assemble-pages.mjs
+      - name: Röktest – capture-hook
         run: npm run smoke
