@@ -1,0 +1,13 @@
+{
+ "image": "hons_anim.png",
+ "frames": 8,
+ "frameW": 340,
+ "frameH": 268,
+ "anchor": [
+  170,
+  264
+ ],
+ "fps": 8,
+ "loop": true,
+ "not": "En rad med 8 frames, hönsen pickar i otakt. Samma ankare som hons.png."
+}

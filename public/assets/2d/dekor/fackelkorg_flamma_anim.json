@@ -1,0 +1,13 @@
+{
+ "image": "fackelkorg_flamma_anim.png",
+ "frames": 8,
+ "frameW": 96,
+ "frameH": 120,
+ "anchor": [
+  48,
+  114
+ ],
+ "fps": 12,
+ "loop": true,
+ "not": "Ljusbaserad alfa (opremultiplicerad). Ankare = flammans bas, sätt i korgen på fackelkorg_tom.png."
+}
