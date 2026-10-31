@@ -1,0 +1,50 @@
+import assert from 'node:assert/strict';
+import { DATA } from '../src/data';
+import { generateChunkWorldData, getBigWorldCatalog, xpDistanceMultiplier } from '../src/world/bigWorld/worldGenerator';
+import { chunkDistanceFromStart } from '../src/world/bigWorld/ringZone';
+import { roadsAtChunk } from '../src/world/bigWorld/roads';
+
+const seed = 424242;
+
+const a = generateChunkWorldData(seed, 1, 1);
+const b = generateChunkWorldData(seed, 1, 1);
+assert.deepEqual(a, b);
+assert.notEqual(generateChunkWorldData(seed + 1, 1, 1).chunkSeed, a.chunkSeed);
+
+const camp = generateChunkWorldData(seed, 0, 0);
+assert.equal(camp.regionId, 'startlagret');
+assert.equal(camp.mellanmark, false);
+assert.equal(camp.safe, true);
+assert.equal(camp.ring, 0);
+
+const skog = DATA.varldStor.regioner.find((r) => r.id === 'startskogen');
+assert.ok(skog);
+const startForest = generateChunkWorldData(seed, skog.chunk[0], skog.chunk[1]);
+assert.ok(startForest.pois.includes('rod_portal'));
+const rod = DATA.varldStor.pois.find((p) => p.id === 'rod_portal');
+assert.equal(rod?.krav, 'alla_tre_runor_aktiva');
+
+const catalog = getBigWorldCatalog();
+assert.ok(roadsAtChunk(catalog.roads, 0, 0).ids.includes('vag_ostra'));
+assert.ok(roadsAtChunk(catalog.roads, 1, 1).ids.includes('vag_ostra'));
+
+const d = generateChunkWorldData(seed, 1, 1);
+assert.equal(d.biomeId, 'skog');
+assert.equal(d.biomeBlend[0]?.biomeId, 'skog');
+assert.ok((d.biomeBlend[0]?.weight ?? 0) > 0.3);
+
+const start = DATA.varldStor.meta.startpunkt.chunk;
+const near = chunkDistanceFromStart(1, 1, start);
+const far = chunkDistanceFromStart(10, 10, start);
+assert.ok(far > near);
+assert.ok(xpDistanceMultiplier(far) > xpDistanceMultiplier(near));
+
+const vargstigen = generateChunkWorldData(seed, 2, 0);
+assert.equal(vargstigen.regionId, 'vargstigen');
+assert.equal(vargstigen.generatedSpawn, true);
+for (const s of vargstigen.spawns) {
+  assert.ok(s.level >= vargstigen.levelBand[0]);
+  assert.ok(s.level <= vargstigen.levelBand[1]);
+}
+
+console.log('big-world-generator.test.mts: ok');

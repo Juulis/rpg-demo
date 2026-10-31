@@ -15,6 +15,8 @@ import stader from './stader.json';
 import npc from './npc.json';
 import rykten from './rykten.json';
 import quests from './quests.json';
+import varldStor from './varld_stor.json';
+import type { BigWorldDataFile } from './bigWorldTypes';
 import type { QuestDataFile } from './questTypes';
 import type { RumorDataFile } from './rumorTypes';
 import type { DialogDataFile } from './dialogTypes';
@@ -40,6 +42,7 @@ export const DATA: GameData = {
   dialoger: DIALOG_DATA as DialogDataFile,
   rykten: rykten as unknown as RumorDataFile,
   quests: quests as unknown as QuestDataFile,
+  varldStor: varldStor as unknown as BigWorldDataFile,
 };
 
 const MONSTERS = new Map<string, MonsterDef>(DATA.families.monsters.map((m) => [m.id, m]));
@@ -99,5 +102,21 @@ export function validateData(): string[] {
       if (!s.id || !s.text) issues.push(`quest ${q.id}: steg saknar id/text`);
     }
   }
+  const bw = DATA.varldStor;
+  const regionIds = new Set(bw.regioner.map((r) => r.id));
+  const biomIds = new Set(Object.keys(bw.biomer));
+  for (const r of bw.regioner) {
+    if (!biomIds.has(r.biom)) issues.push(`varld_stor region ${r.id}: okänt biom ${r.biom}`);
+  }
+  for (const road of bw.vagar) {
+    for (const id of road.strackning) {
+      if (!regionIds.has(id)) issues.push(`varld_stor väg ${road.id}: okänd region ${id}`);
+    }
+  }
+  for (const poi of bw.pois) {
+    if (!regionIds.has(poi.region)) issues.push(`varld_stor poi ${poi.id}: okänd region ${poi.region}`);
+  }
+  const rod = bw.pois.find((p) => p.id === 'rod_portal');
+  if (!rod?.krav?.includes('runor')) issues.push('varld_stor: rod_portal saknar krav alla_tre_runor');
   return issues;
 }
