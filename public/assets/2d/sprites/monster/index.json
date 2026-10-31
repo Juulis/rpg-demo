@@ -1,12 +1,16 @@
 {
  "sheets": [
+  "askans_profet",
   "benkungen_valdemar",
   "bergsulv",
   "fjallvatte",
   "forvriden_jagare",
+  "gravargsledare",
   "gravgast",
   "havsgast",
+  "jarnmunken",
   "klockdrunknad",
+  "korpmodern",
   "likatare_varg",
   "lyktgast",
   "myrhund",
@@ -28,11 +32,15 @@
   "vargbest"
  ],
  "eightDir": [
+  "askans_profet",
   "benkungen_valdemar",
   "bergsulv",
   "fjallvatte",
+  "gravargsledare",
   "havsgast",
+  "jarnmunken",
   "klockdrunknad",
+  "korpmodern",
   "lyktgast",
   "myrhund",
   "myrlik",
