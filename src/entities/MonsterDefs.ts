@@ -97,7 +97,10 @@ export function monsterLook(id: string, family: string, has: (sheet: string) => 
     skelett_vakt: ['skelett_krigare', 0xb8bcc8],
     gruvspindel: ['skogsspindel'],
     vargbest: ['likatare_varg'],
-    gravargsledare: ['skuggvarg'],
+    sprickvasen: ['smittad_bybo', 0xc8a882],
+    lyktgast: ['gravgast', 0xaaccff],
+    klockdrunknad: ['ruttnande_lik', 0x8899aa],
+    havsgast: ['gravgast', 0x6688aa],
   };
   const a = alias[id];
   if (a && has(a[0])) return { sheet: a[0], scale: 1, tint: a[1] ?? 0xffffff };

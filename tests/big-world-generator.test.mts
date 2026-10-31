@@ -62,7 +62,7 @@ assert.ok(katData.spawns.length > 0);
 const sprickan = DATA.varldStor.regioner.find((r) => r.id === 'sprickans_botten');
 assert.ok(sprickan);
 const sprData = generateChunkWorldData(seed, seed, sprickan.chunk[0], sprickan.chunk[1]);
-assert.ok(sprData.spawnSubtypes.includes('kottklump'));
+assert.ok(sprData.spawnSubtypes.includes('sprickvasen') || sprData.spawnSubtypes.includes('kottklump'));
 assert.ok(sprData.spawns.length > 0);
 
 const jarn = DATA.varldStor.regioner.find((r) => r.id === 'jarnklostret');

@@ -16,8 +16,8 @@ function filterKnownVarldStorIssues(issues: string[]): string[] {
 }
 
 assert.ok(
-  validateVarldStor(DATA.varldStor, ctx).some((i) => i.includes('egna_monster fjall_bergsulvar')),
-  'validateVarldStor ska flagga fel familj på platshållaren fjall_bergsulvar',
+  !validateVarldStor(DATA.varldStor, ctx).some((i) => i.includes('egna_monster fjall_bergsulvar')),
+  'fjall_bergsulvar ska ha korrekt familj efter design-sync',
 );
 assert.equal(filterKnownVarldStorIssues(validateVarldStor(DATA.varldStor, ctx)).length, 0);
 

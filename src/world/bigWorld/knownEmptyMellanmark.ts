@@ -2,24 +2,7 @@
  * Mellanmark ring|biom där alla osäkra chunkar saknar spawn (inga undertyper i ringbandet).
  * Design fyller täckning i spel/design — ta bort rader när datan kommer (test failar om listan är inaktuell).
  */
-export const KNOWN_EMPTY_MELLANMARK = new Set<string>([
-  '2|kust',
-  '3|skog',
-  '4|kust',
-  '4|skog',
-  '4|trask',
-  '5|fjall',
-  '5|kust',
-  '5|skog',
-  '6|ask',
-  '6|fjall',
-  '6|kust',
-  '6|skog',
-  '7|ask',
-  '7|fjall',
-  '7|kust',
-  '7|skog',
-]);
+export const KNOWN_EMPTY_MELLANMARK = new Set<string>([]);
 
 export function mellanmarkEmptyIssues(
   coverage: ReadonlyMap<string, { empty: number; total: number }>,
