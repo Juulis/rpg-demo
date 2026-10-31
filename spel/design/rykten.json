@@ -544,7 +544,7 @@
           "hjalpt_flyktingarna_vargstigen": true
         }
       },
-      "talare": ["gamla_ylva", "tor_kolare", "bertil_karran"],
+      "talare": ["gamla_ylva", "tor_kolare", "bertil_karran", "bybo_flykting"],
       "prioritet": 3
     },
     {

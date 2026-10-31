@@ -228,7 +228,8 @@
         ]
       },
       "sparas": "per hjälte i sparfilen, inte per game"
-    }
+    },
+    "ankare_regel": "ankare är ett id i varld_stor.json pois, varldshandelser.json platser, vandrare.json lager, bana1_stor.json delomraden, npc.json platser eller portal_by.json och spawnzoner.json. Övriga är questegna ankare som placeras med varldsgenerator.json questplatser. Ett questeget ankare får inte dubblera en befintlig plats."
   },
   "akt_1": [
     {
@@ -258,7 +259,7 @@
           "trigger": {
             "typ": "gå_in_i",
             "region": "vargstigen",
-            "ankare": "kolarkojan"
+            "ankare": "kolarkojorna"
           }
         },
         {
@@ -1565,7 +1566,7 @@
           "trigger": {
             "typ": "gå_in_i",
             "region": "jarnklostret",
-            "ankare": "klosterporten"
+            "ankare": "jarnklostrets_port"
           }
         },
         {
@@ -2034,7 +2035,7 @@
           "trigger": {
             "typ": "gå_in_i",
             "region": "askeborg",
-            "ankare": "askeborgs_port"
+            "ankare": "askeborgs_stadsport"
           }
         },
         {
@@ -2091,7 +2092,7 @@
               "typ": "area_change",
               "region": "askeborg",
               "andring": "miljo",
-              "ankare": "askeborgs_port",
+              "ankare": "askeborgs_stadsport",
               "value": "en liten grav med staven, ett svagt ljus om natten"
             }
           ]

@@ -163,5 +163,11 @@
   },
   "brandskelett": {
     "name": "Burning Skeleton"
+  },
+  "myrlik": {
+    "name": "Bog Corpse"
+  },
+  "myrhund": {
+    "name": "Bog Hound"
   }
 }

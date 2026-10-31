@@ -36,7 +36,9 @@
         "vandrande_skelett",
         "ruttnande_lik",
         "drunknad",
-        "brandskelett"
+        "brandskelett",
+        "myrlik",
+        "myrhund"
       ],
       "boss": "benkungen_valdemar"
     },
@@ -1177,6 +1179,63 @@
           "xpm": 1
         }
       }
+    },
+    {
+      "id": "myrlik",
+      "name": "Myrlik",
+      "family": "ododa",
+      "level": 8,
+      "hp": 117,
+      "damage": 16,
+      "defense": 4,
+      "speed": 3.0,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 136,
+      "aggro_range": 10,
+      "behavior": "Dränkt lik ur myren med rostig skära. Står stilla i vattnet tills hjälten är nära, kliver sedan upp och hugger. Ersätter skelettkrigare och skelettbågskytt i träsket tills myrlik bågskytt finns.",
+      "weapon_type": "svard",
+      "zones": ["myrkanten"],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_krigare",
+        "from_level": 7,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
+    },
+    {
+      "id": "myrhund",
+      "name": "Myrhund",
+      "family": "ododa",
+      "level": 7,
+      "hp": 53,
+      "damage": 9,
+      "defense": 2,
+      "speed": 5.0,
+      "attack_cd": 0.6,
+      "attacks_per_s": 1.67,
+      "xp": 67,
+      "aggro_range": 12,
+      "behavior": "Dränkt hund med tång i pälsen. Flock, cirklar runt spelaren och biter i tur och ordning. Flyr kort under 30 % HP.",
+      "weapon_type": null,
+      "zones": ["myrkanten"],
+      "boss": false,
+      "design_source": {
+        "from": "skelett_hund",
+        "from_level": 7,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      },
+      "pack_size": [2, 4]
     },
     {
       "id": "korpmodern",

@@ -488,6 +488,28 @@
       "approx_px_h": 163,
       "look": "Svärtat skelett i stadsvaktsrustning, glöd i revbenen, yxa.",
       "has_image": false
+    },
+    {
+      "id": "myrlik",
+      "name": "Myrlik",
+      "family": "ododa",
+      "level": 8,
+      "boss": false,
+      "size_rel_hero": 1.23,
+      "approx_px_h": 190,
+      "look": "Dränkt lik i ruttna trasor med vitmossa på axlarna och rostig skära.",
+      "has_image": false
+    },
+    {
+      "id": "myrhund",
+      "name": "Myrhund",
+      "family": "ododa",
+      "level": 7,
+      "boss": false,
+      "size_rel_hero": 0.84,
+      "approx_px_h": 130,
+      "look": "Mager dränkt hund med tång i pälsen och blanka ögon.",
+      "has_image": false
     }
   ]
 }

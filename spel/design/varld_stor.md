@@ -76,7 +76,7 @@ Varje biom har egna monsterplatser i `biomer.<id>.egna_monster`: roll, familj, n
 
 **Träsk** (7 till 30). Myr, spångar, lyktor och klockor under ytan. Variant rutt i Ruttmarken.
 
-- Egna monster: myrlik (7 till 9, platshållare skelett), dimgastar (10 till 14), ruttfolk (24 till 28), sprickans väsen (29 till 30, platshållare kottklump).
+- Egna monster: myrlik och myrhund (7 till 9, grafik klar), dimgastar (10 till 14), ruttfolk (24 till 28), sprickans väsen (29 till 30, platshållare kottklump).
 - Resurser: sjunket timmer, guld i sjunkna gårdar.
 - Mål: den sjunkna gården (mysterium), Hedkapellet (spår), Rökkärrets tingshus (återlämning), den andande lunden (mysterium).
 

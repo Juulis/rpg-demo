@@ -20,7 +20,8 @@
       "vandrare.json"
     ],
     "utvecklare": "Varje delområde blir en area i spawnzoner.json när koden byggs: id, family, level_range, enemy_table och session_roll med expected_monsters_per_game = monster_per_game. Spawnpunkter 5 till 8 per delområde, center_safe_radius 12 runt säkra platser.",
-    "chunk_regel": "Delområdets chunk och region gäller före region_for_chunk i varld_stor.json (se varldsgenerator.json biomgranser)."
+    "chunk_regel": "Delområdets chunk och region gäller före region_for_chunk i varld_stor.json (se varldsgenerator.json biomgranser).",
+    "ring2_regel": "Ring 2 (gravasen, myrkanten, brandkanten, gamla_byn, kapellets_krypta) delas inte i delområden. Där grannar eller ett delomrade fält i andra filer pekar på ett av dessa id menas hela regionen i varld_stor.json."
   },
   "delomraden": [
     {
@@ -75,7 +76,7 @@
       "monster_per_game": 16,
       "xp_per_game": 128,
       "miljo": "Täta granar där dimman står kvar hela dagen. Gamla snaror, en jaktkoja med dörren uppbruten.",
-      "grannar": ["runglantan", "norra_hygget"],
+      "grannar": ["runglantan", "norra_hygget", "milorna"],
       "platser": ["jaktkojan"],
       "handelser": ["ugglan_som_raknar"],
       "grupper": [],
@@ -308,7 +309,7 @@
       "monster_per_game": 8,
       "xp_per_game": 440,
       "miljo": "Norra vägen. Ett kalhygge där stubbarna ser ut som gravstenar. Här börjar Gravåsen.",
-      "grannar": ["dimgranarna", "idets_skog", "gravasen"],
+      "grannar": ["dimgranarna", "idets_skog", "gravasen", "vargaby_utmark"],
       "platser": ["likbararnas_bar"],
       "handelser": ["den_stilla_processionen"],
       "grupper": ["likbararna"],
@@ -364,7 +365,8 @@
         "kapellets_krypta"
       ],
       "resultat": "Nivå 5 efter Vargaby, nivå 7 efter Ulvhild, nivå 8 vid Gravåsen, nivå 11 efter Benkungen.",
-      "utan_ulvhild": "Den som hoppar över Ulvhild tar i stället Dimgranarna, Milorna, Brunna gården och Utmarken och når nivå 7 efter Vargaby."
+      "utan_ulvhild": "Den som hoppar över Ulvhild tar i stället Dimgranarna, Milorna, Brunna gården och Utmarken och når nivå 7 efter Vargaby.",
+      "genomgang": "Vägen räknar bara delområden som rensas. Backravinen till Kolarkojorna går tillbaka genom Rungläntan, Kolarkojorna till Vargaby går längs vägen genom Vargabys utmark utan att rensa den. Övriga steg är direkta grannar."
     },
     "ring_2_kontroll": [
       {
@@ -386,7 +388,7 @@
       {
         "region": "myrkanten",
         "monster_per_game": 12,
-        "tabell": "skelett_hund 40, skelett_krigare 30, skelett_bagskytt 30"
+        "tabell": "myrhund 40, myrlik 60"
       },
       {
         "region": "brandkanten",

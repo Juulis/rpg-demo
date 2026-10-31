@@ -5,8 +5,10 @@
     "regel": "Vandrande handlare och läger ute i världen. Handlare följer stadstjanster.md (priser, ingen ändring av föremål, inga set eller legendariska i lager). Läger är säkra zoner där inga monster spawnar inom radie. Inget spärrar rörelse.",
     "npc_format": "Handlarna laddas som npc.json-poster (namn, faktion, personlighet, utseende, repliker, rykten) plus rutt. Lagret rullas när hjälten möter handlaren första gången per game.",
     "pris": "Vandrande handlare är dyrare än städer men finns där städerna är besatta. Fraktionsrabatt gäller som i stadstjanster.md.",
+    "sakert_format": "sakert är true eller false, eller samma form som tillstand: standard plus flagga som ändrar värdet.",
     "dod": "Vandrande handlare kan inte dö. De gömmer sig när monster kommer nära och kommer fram när striden är över.",
-    "refs": ["stadstjanster.md", "npc.json", "npc_grupper.json", "bana1_stor.json", "rykten.json"]
+    "refs": ["stadstjanster.md", "npc.json", "npc_grupper.json", "bana1_stor.json", "rykten.json"],
+    "delomrade_regel": "delomrade är ett id i bana1_stor.json delomraden, eller ett regions-id i ring 2 (se bana1_stor.json meta.ring2_regel)."
   },
   "handlare": [
     {
@@ -21,7 +23,7 @@
         {
           "speldygn": 1,
           "delomrade": "runglantan",
-          "ankare": "roset"
+          "ankare": "saknades_roset"
         },
         {
           "speldygn": 2,
@@ -224,7 +226,10 @@
       "namn": "Gravvaktarnas vakteld",
       "delomrade": "gravasen",
       "ankare": "gravhogarna",
-      "sakert": true,
+      "sakert": {
+        "standard": false,
+        "hjalpt_gravvaktarna_patrull": true
+      },
       "radie": 5,
       "syfte": "Gravvaktarna har hållit en eld vid högarna i hundratals år. Den slocknade på Askans natt och kan tändas igen.",
       "innehall": ["stenring", "släckt eller brinnande eld"],
@@ -233,7 +238,7 @@
         "standard": "släckt, inte säkert",
         "hjalpt_gravvaktarna_patrull": "brinner, säker zon"
       },
-      "not": "Bara säker när elden brinner. Ring 2."
+      "not": "Bara säker när elden brinner, alltså efter flaggan hjalpt_gravvaktarna_patrull. Ring 2."
     }
   ]
 }

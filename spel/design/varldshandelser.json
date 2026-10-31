@@ -123,7 +123,7 @@
       "vad": "En uggla hoar lika många gånger som det finns levande i lägret. Antalet ökar när lägrets hopp ökar.",
       "trigger": {
         "typ": "inspektera",
-        "ankare": "ugglans_gran",
+        "ankare": "jaktkojan",
         "region": "startskogen",
         "tid": "20:00 till 06:00"
       },
