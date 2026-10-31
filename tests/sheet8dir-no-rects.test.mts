@@ -2,44 +2,76 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolveSheet8Rects, sheet8FrameCount } from '../src/render/sheet8dir';
+import { resolveSheet8Rects, sheet8FrameCount, type Sheet8Json } from '../src/render/sheet8dir';
 
 const HERO = path.join(path.dirname(fileURLToPath(import.meta.url)), '../public/assets/2d/sprites/hero');
 
-function readJson(rel: string): unknown {
-  return JSON.parse(fs.readFileSync(path.join(HERO, rel), 'utf8'));
-}
+const DIRS = ['S', 'SV', 'V', 'NV', 'N', 'NO', 'O', 'SO'] as const;
 
-const amazonIdle = readJson('amazon/amazon_idle_8dir.json') as {
-  frameW: number;
-  frameH: number;
-  dirs: string[];
-  frames?: number;
-  rects?: unknown[];
+/** En rad, en ruta per riktning (äldre idle-format utan rects i JSON). */
+const singleFrameStrip: Pick<Sheet8Json, 'dirs' | 'frames' | 'frameW' | 'frameH' | 'rects'> = {
+  dirs: [...DIRS],
+  frameW: 64,
+  frameH: 96,
+  rects: undefined,
 };
-assert.equal(sheet8FrameCount(amazonIdle), 1);
-assert.equal(amazonIdle.rects, undefined);
-const amazonRects = resolveSheet8Rects(amazonIdle);
-assert.equal(amazonRects.length, 8);
-assert.deepEqual(amazonRects[0], { dir: 'S', frame: 0, x: 0, y: 0, w: 177, h: 310 });
-assert.deepEqual(amazonRects[3], { dir: 'NV', frame: 0, x: 531, y: 0, w: 177, h: 310 });
 
-const barbarIdle = readJson('barbar/barbar_idle_8dir.json') as {
-  frameW: number;
-  frameH: number;
-  dirs: string[];
-};
-const barbarRects = resolveSheet8Rects(barbarIdle);
-assert.equal(barbarRects.length, 8);
-assert.equal(barbarRects[7]?.x, 7 * 245);
+assert.equal(sheet8FrameCount(singleFrameStrip), 1);
+const stripRects = resolveSheet8Rects(singleFrameStrip);
+assert.equal(stripRects.length, 8);
+assert.deepEqual(stripRects[0], { dir: 'S', frame: 0, x: 0, y: 0, w: 64, h: 96 });
+assert.deepEqual(stripRects[3], { dir: 'NV', frame: 0, x: 192, y: 0, w: 64, h: 96 });
 
-const riddareIdle = readJson('riddare_idle_8dir.json') as {
-  frameW: number;
-  frameH: number;
-  dirs: string[];
-  frames?: number;
-  rects: { dir: string; frame?: number; x: number; y: number; w: number; h: number }[];
+/** Åtta frames per riktning, rad per riktning (samma layout som riddare med rects). */
+const eightFramesPerDir: Pick<Sheet8Json, 'dirs' | 'frames' | 'frameW' | 'frameH' | 'rects'> = {
+  dirs: [...DIRS],
+  frames: 8,
+  frameW: 40,
+  frameH: 80,
+  rects: undefined,
 };
+
+assert.equal(sheet8FrameCount(eightFramesPerDir), 8);
+const animRects = resolveSheet8Rects(eightFramesPerDir);
+assert.equal(animRects.length, 64);
+assert.deepEqual(
+  animRects.find((r) => r.dir === 'S' && r.frame === 0),
+  {
+    dir: 'S',
+    frame: 0,
+    x: 0,
+    y: 0,
+    w: 40,
+    h: 80,
+  },
+);
+assert.deepEqual(
+  animRects.find((r) => r.dir === 'S' && r.frame === 3),
+  {
+    dir: 'S',
+    frame: 3,
+    x: 120,
+    y: 0,
+    w: 40,
+    h: 80,
+  },
+);
+assert.deepEqual(
+  animRects.find((r) => r.dir === 'NV' && r.frame === 0),
+  {
+    dir: 'NV',
+    frame: 0,
+    x: 0,
+    y: 240,
+    w: 40,
+    h: 80,
+  },
+);
+
+const riddareIdle = JSON.parse(fs.readFileSync(path.join(HERO, 'riddare_idle_8dir.json'), 'utf8')) as Pick<
+  Sheet8Json,
+  'dirs' | 'frames' | 'frameW' | 'frameH' | 'rects'
+>;
 assert.equal(sheet8FrameCount(riddareIdle), 2);
 const inferred = resolveSheet8Rects({
   dirs: riddareIdle.dirs,
@@ -50,18 +82,19 @@ const inferred = resolveSheet8Rects({
 assert.equal(inferred.length, 16);
 assert.deepEqual(
   inferred.find((r) => r.dir === 'NV' && r.frame === 0),
-  {
-    dir: 'NV',
-    frame: 0,
-    x: 0,
-    y: 435,
-    w: 142,
-    h: 145,
-  },
+  riddareIdle.rects?.find((r) => r.dir === 'NV' && r.frame === 0),
 );
-assert.deepEqual(
-  riddareIdle.rects.find((r) => r.dir === 'NV' && r.frame === 0),
-  inferred.find((r) => r.dir === 'NV' && r.frame === 0),
-);
+
+function readHeroJson(rel: string): Sheet8Json {
+  return JSON.parse(fs.readFileSync(path.join(HERO, rel), 'utf8')) as Sheet8Json;
+}
+
+for (const rel of ['amazon/amazon_idle_8dir.json', 'barbar/barbar_idle_8dir.json'] as const) {
+  const meta = readHeroJson(rel);
+  assert.equal(meta.frames, 8, `${rel} frames`);
+  assert.equal(meta.fps, 5, `${rel} fps`);
+  assert.ok(Array.isArray(meta.rects) && meta.rects.length > 0, `${rel} har rects efter grafik-PR`);
+  assert.equal(sheet8FrameCount(meta), 8);
+}
 
 console.log('sheet8dir-no-rects.test.mts: ok');
