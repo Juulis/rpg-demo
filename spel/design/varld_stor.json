@@ -103,7 +103,16 @@
       "Röda portalen öppnas när alla tre runor är aktiva, utan andra villkor, och är därefter en waypoint. Det är ingen rörelsespärr, eftersom norra vägen till Den gamla byn alltid är öppen.",
       "Varje biom får egna monster, befintliga undertyper är platshållare tills UI gör nya.",
       "Instanser nås med teleport som alltid är öppen. Bosslåset i portal_by.json (arenan låses under striden) är godkänt av Juulis."
-    ]
+    ],
+    "tathet_regel": "regioner[].tathet.monster_per_game = monster per game i regionens öppna chunkar (instansen för banor), fördelat jämnt över regionens chunkar utom delområden (bana1_stor.json, egna tal) och säkra platser. Undertyper ur regionens undertyper. Bossen räknas en gång utöver talet. Gäller i stället för mellanmarkens täthet (varldsgenerator.json monsterpooler.tathet_per_chunk). Kontroll: spel/design/verktyg/tathet.py.",
+    "startskogen_fotavtryck": {
+      "beslut": "Världens origo (0, 0) är mitten av regionen startskogen, chunk [1, 1], där Rungläntan ligger. Gamla Startskogen (koden före storvärlden) är Rungläntan.",
+      "koordinater": "1 chunk = 64 rutor = 128 världsenheter. Chunk (cx, cy) täcker x från (cx − 1) × 128 − 64 till (cx − 1) × 128 + 64 och z (cy) på samma sätt, alltså chunk = floor((x + 192) / 128). Mitten av chunk [1, 1] = (0, 0), mitten av chunk [0, 0] = (−128, −128).",
+      "gamla_startskogen": "spawnzoner.json areas.startskogen (8 punkter på radie 30 till 35, grupper 18 till 40 från origo, runstenarna och röda portalen) ryms helt i chunk [1, 1] (radie högst 40 av 64). Chunken är delområdet runglantan och spawnar bara från det gamla systemet med Rungläntans monster_per_game 14; chunk-spawnen hoppar över chunk [1, 1].",
+      "startlagret": "Regionen startlagret är bara chunk [0, 0] (radie 0). Startpunkten och lägerelden ligger i chunkens mitt (−128, −128). Säkert inom 12 enheter (6 rutor) runt elden. Regionens täthet är 0, chunken är en glänta utan monster.",
+      "npc": "pos i npc.json för area startskogen räknas i världsenheter från origo. NPC med omrade startlagret står runt lägerelden (−128, −128); övriga (Viskaren) runt Rungläntan.",
+      "ett_system": "Varje osäker chunk i ring 0 och 1 får monster från exakt ett system: chunk [1, 1] från spawnzoner.json startskogen, alla andra från chunk-spawnen (delområde i bana1_stor.json, annars regionens tathet, annars mellanmark)."
+    }
   },
   "biomer": {
     "skog": {
@@ -115,11 +124,12 @@
       "variant": {},
       "id": "skog",
       "monsterfamiljer": {
-        "bestar": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn", "bergsulv"],
-        "forvridna": ["forvriden_jagare", "smittad_bybo", "smittbarare", "galen_munk", "sprickvasen"],
-        "ododa": ["skelett_hund", "skelett_krigare", "skelett_bagskytt", "skelett_runprast", "skelett_vakt", "skelett_kapten"]
+        "bestar": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn"],
+        "forvridna": ["forvriden_jagare", "smittad_bybo", "smittbarare", "galen_munk", "sprickpilgrim", "vriden_jatte"],
+        "ododa": ["skelett_hund", "skelett_krigare", "skelett_bagskytt", "skelett_runprast", "skelett_vakt", "skelett_kapten"],
+        "insekter": ["trask_igel", "gruvspindel", "syrabagge", "kitinvakt"]
       },
-      "nivaband": [1, 29],
+      "nivaband": [1, 30],
       "regioner": [
         "startlagret",
         "startskogen",
@@ -179,20 +189,20 @@
           "ersatts_av": null
         },
         {
-          "id": "skog_utmarksulvar",
-          "roll": "Ulvar i utmarken",
-          "familj": "bestar",
-          "nivaband": [15, 15],
-          "undertyper_nu": ["bergsulv"],
+          "id": "skog_kryp",
+          "roll": "Kryp i djupskogen",
+          "familj": "insekter",
+          "nivaband": [12, 18],
+          "undertyper_nu": ["trask_igel", "gruvspindel", "syrabagge", "kitinvakt"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "skog_ytterkant",
-          "roll": "Ruttfolk och sprickväsen i den sjuka skogen",
+          "roll": "Ruttfolk, sprickpilgrimer och vridna jättar i den sjuka skogen",
           "familj": "forvridna",
-          "nivaband": [24, 29],
-          "undertyper_nu": ["smittbarare", "galen_munk", "sprickvasen"],
+          "nivaband": [24, 30],
+          "undertyper_nu": ["smittbarare", "galen_munk", "sprickpilgrim", "vriden_jatte"],
           "platshallare": false,
           "ersatts_av": null
         }
@@ -223,11 +233,20 @@
       },
       "id": "trask",
       "monsterfamiljer": {
-        "ododa": ["myrhund", "myrlik", "ruttnande_lik"],
-        "gastar": ["dimgast", "klagokvinna", "trasknacken", "lyktgast"],
-        "forvridna": ["smittbarare", "galen_munk", "kottklump", "sprickvasen"]
+        "ododa": ["myrhund", "myrlik"],
+        "gastar": ["dimgast", "klagokvinna", "trasknacken", "lyktgast", "irrbloss"],
+        "forvridna": [
+          "smittbarare",
+          "galen_munk",
+          "kottklump",
+          "sprickpilgrim",
+          "sprickvasen",
+          "vriden_jatte",
+          "forvriden_jagare",
+          "smittad_bybo"
+        ]
       },
-      "nivaband": [4, 29],
+      "nivaband": [3, 30],
       "regioner": ["myrkanten", "dimvagen", "dimmerstrand", "rokkarret", "ruttmarken", "smittans_katedral", "sprickans_botten"],
       "mal": [
         {
@@ -277,28 +296,32 @@
         },
         {
           "id": "trask_sprickvasen",
-          "roll": "Sprickans väsen",
+          "roll": "Sprickans väsen och pilgrimer",
           "familj": "forvridna",
-          "nivaband": [29, 30],
-          "undertyper_nu": ["sprickvasen"],
+          "nivaband": [28, 30],
+          "undertyper_nu": ["sprickpilgrim", "sprickvasen", "vriden_jatte"],
           "platshallare": false,
-          "ersatts_av": null
+          "ersatts_av": null,
+          "vikter": {
+            "sprickvasen": 0.25
+          },
+          "vikt_not": "Övriga undertyper vikt 1. Se varldsgenerator.json monsterpooler.vikter."
         },
         {
-          "id": "trask_lik",
-          "roll": "Ruttnande lik i myrkanten",
-          "familj": "ododa",
-          "nivaband": [4, 4],
-          "undertyper_nu": ["ruttnande_lik"],
+          "id": "trask_smittade",
+          "roll": "Smittade myrbor",
+          "familj": "forvridna",
+          "nivaband": [3, 5],
+          "undertyper_nu": ["forvriden_jagare", "smittad_bybo"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "trask_lyktgastar",
-          "roll": "Lyktgastar",
+          "roll": "Lyktgastar och irrbloss",
           "familj": "gastar",
-          "nivaband": [16, 16],
-          "undertyper_nu": ["lyktgast"],
+          "nivaband": [16, 18],
+          "undertyper_nu": ["lyktgast", "irrbloss"],
           "platshallare": false,
           "ersatts_av": null
         }
@@ -327,12 +350,13 @@
       "variant": {},
       "id": "fjall",
       "monsterfamiljer": {
-        "gastar": ["fjallvatte"],
-        "bestar": ["bergsulv", "skuggvarg", "likatare_varg"],
-        "insekter": ["gruvspindel", "syrabagge", "kitinvakt"],
-        "forvridna": ["forvriden_gruvarbetare", "galen_munk", "sprickvasen"]
+        "gastar": ["dimgast", "fjallvatte"],
+        "bestar": ["fjallbjorn", "bergsulv", "taggsvin", "skuggvarg", "ruttbjorn"],
+        "insekter": ["trask_igel", "gruvspindel", "syrabagge", "kitinvakt"],
+        "forvridna": ["forvriden_gruvarbetare", "jarnbroder", "askkultist", "smittbarare", "galen_munk", "sprickpilgrim", "vriden_jatte"],
+        "ododa": ["skelett_krigare", "skelett_bagskytt", "skelett_vakt"]
       },
-      "nivaband": [5, 29],
+      "nivaband": [4, 30],
       "regioner": ["fjallfoten", "bergsvagen", "kopparberg", "jarnklostret", "gruvdjupen"],
       "mal": [
         {
@@ -353,26 +377,26 @@
           "id": "fjall_vattar",
           "roll": "Fjällvättar",
           "familj": "gastar",
-          "nivaband": [11, 13],
-          "undertyper_nu": ["fjallvatte"],
+          "nivaband": [11, 12],
+          "undertyper_nu": ["dimgast", "fjallvatte"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "fjall_bergsulvar",
-          "roll": "Bergsulvar",
+          "roll": "Bergsulvar och fjällbjörnar",
           "familj": "bestar",
           "nivaband": [14, 15],
-          "undertyper_nu": ["bergsulv"],
+          "undertyper_nu": ["fjallbjorn", "bergsulv"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "fjall_gruvkryp",
-          "roll": "Gruvkryp",
+          "roll": "Gruvkryp och grottiglar",
           "familj": "insekter",
-          "nivaband": [15, 19],
-          "undertyper_nu": ["gruvspindel", "syrabagge", "kitinvakt"],
+          "nivaband": [12, 18],
+          "undertyper_nu": ["trask_igel", "gruvspindel", "syrabagge", "kitinvakt"],
           "platshallare": false,
           "ersatts_av": null
         },
@@ -380,35 +404,44 @@
           "id": "fjall_jarnbroder",
           "roll": "Järnbröder",
           "familj": "forvridna",
-          "nivaband": [16, 17],
-          "undertyper_nu": ["forvriden_gruvarbetare"],
-          "platshallare": true,
-          "ersatts_av": "ny undertyp järnbroder"
+          "nivaband": [16, 18],
+          "undertyper_nu": ["forvriden_gruvarbetare", "jarnbroder"],
+          "platshallare": false,
+          "ersatts_av": null
         },
         {
           "id": "fjall_vargar",
-          "roll": "Vargar i fjällbjörkskogen",
+          "roll": "Vargar och björnar i fjällbjörkskogen",
           "familj": "bestar",
-          "nivaband": [5, 8],
-          "undertyper_nu": ["skuggvarg", "likatare_varg"],
+          "nivaband": [4, 6],
+          "undertyper_nu": ["taggsvin", "skuggvarg", "ruttbjorn"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "fjall_munkar",
-          "roll": "Galna munkar från Järnklostret",
+          "roll": "Galna munkar och askpredikanter",
           "familj": "forvridna",
-          "nivaband": [25, 25],
-          "undertyper_nu": ["galen_munk"],
+          "nivaband": [20, 25],
+          "undertyper_nu": ["askkultist", "smittbarare", "galen_munk"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
-          "id": "fjall_sprickvasen",
-          "roll": "Sprickväsen",
+          "id": "fjall_ytterkant",
+          "roll": "Sprickpilgrimer och vridna jättar",
           "familj": "forvridna",
-          "nivaband": [29, 29],
-          "undertyper_nu": ["sprickvasen"],
+          "nivaband": [28, 30],
+          "undertyper_nu": ["sprickpilgrim", "vriden_jatte"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "fjall_stupade",
+          "roll": "Frusna stupade på passen",
+          "familj": "ododa",
+          "nivaband": [7, 9],
+          "undertyper_nu": ["skelett_krigare", "skelett_bagskytt", "skelett_vakt"],
           "platshallare": false,
           "ersatts_av": null
         }
@@ -429,10 +462,11 @@
       "variant": {},
       "id": "kust",
       "monsterfamiljer": {
-        "gastar": ["klagokvinna", "trasknacken", "gravgast", "havsgast"],
-        "ododa": ["klockdrunknad", "ruttnande_lik", "brandskelett"]
+        "gastar": ["klagokvinna", "trasknacken", "havsgast", "dodsljus", "lyktgast", "irrbloss"],
+        "ododa": ["drunknad", "klockdrunknad", "skelett_krigare", "skelett_bagskytt", "skelett_kapten", "drunknad_vakt", "brandskelett"],
+        "forvridna": ["forvriden_jagare", "smittad_bybo"]
       },
-      "nivaband": [4, 28],
+      "nivaband": [3, 30],
       "regioner": ["korpholmarna", "sjunkna_kyrkan", "sista_ljuset"],
       "mal": [
         {
@@ -458,26 +492,26 @@
           "id": "kust_drunknade",
           "roll": "Klockans drunknade",
           "familj": "ododa",
-          "nivaband": [14, 15],
-          "undertyper_nu": ["klockdrunknad"],
+          "nivaband": [12, 15],
+          "undertyper_nu": ["drunknad", "klockdrunknad"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
-          "id": "kust_strandlik",
-          "roll": "Lik på stranden",
+          "id": "kust_smittade",
+          "roll": "Smittade strandbor",
+          "familj": "forvridna",
+          "nivaband": [3, 5],
+          "undertyper_nu": ["forvriden_jagare", "smittad_bybo"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "kust_skeppsbrutna",
+          "roll": "Skeppsbrutna skelett",
           "familj": "ododa",
-          "nivaband": [4, 4],
-          "undertyper_nu": ["ruttnande_lik"],
-          "platshallare": false,
-          "ersatts_av": null
-        },
-        {
-          "id": "kust_strandgastar",
-          "roll": "Strandgastar",
-          "familj": "gastar",
-          "nivaband": [8, 8],
-          "undertyper_nu": ["gravgast"],
+          "nivaband": [7, 9],
+          "undertyper_nu": ["skelett_krigare", "skelett_bagskytt", "skelett_kapten"],
           "platshallare": false,
           "ersatts_av": null
         },
@@ -485,17 +519,26 @@
           "id": "kust_askvakter",
           "roll": "Askeborgs drunknade vakter",
           "familj": "ododa",
-          "nivaband": [21, 21],
-          "undertyper_nu": ["brandskelett"],
+          "nivaband": [19, 21],
+          "undertyper_nu": ["drunknad_vakt", "brandskelett"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "kust_havsgastar",
-          "roll": "Havsgastar",
+          "roll": "Havsgastar och dödsljus",
           "familj": "gastar",
-          "nivaband": [28, 28],
-          "undertyper_nu": ["havsgast"],
+          "nivaband": [28, 30],
+          "undertyper_nu": ["havsgast", "dodsljus"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "kust_lyktor",
+          "roll": "Lyktgastar längs fyrkusten",
+          "familj": "gastar",
+          "nivaband": [16, 18],
+          "undertyper_nu": ["lyktgast", "irrbloss"],
           "platshallare": false,
           "ersatts_av": null
         }
@@ -520,12 +563,12 @@
       "variant": {},
       "id": "ask",
       "monsterfamiljer": {
-        "ododa": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt", "ruttnande_lik"],
-        "insekter": ["gruvspindel", "syrabagge", "kitinvakt"],
-        "demoner": ["askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
-        "forvridna": ["askkultist", "sprickvasen"]
+        "ododa": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt"],
+        "insekter": ["trask_igel", "gruvspindel", "syrabagge", "kitinvakt"],
+        "demoner": ["gruvdemon", "askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
+        "forvridna": ["askkultist", "forvriden_jagare", "smittad_bybo", "sprickpilgrim", "vriden_jatte", "smittbarare", "galen_munk"]
       },
-      "nivaband": [4, 29],
+      "nivaband": [3, 30],
       "regioner": ["brandkanten", "glodstranden", "askfalten", "askeborg", "kultens_katakomber", "katedralen", "brandkusten"],
       "mal": [
         {
@@ -559,8 +602,8 @@
           "id": "ask_glodbaggar",
           "roll": "Glödbaggar",
           "familj": "insekter",
-          "nivaband": [15, 18],
-          "undertyper_nu": ["gruvspindel", "syrabagge", "kitinvakt"],
+          "nivaband": [12, 18],
+          "undertyper_nu": ["trask_igel", "gruvspindel", "syrabagge", "kitinvakt"],
           "platshallare": true,
           "ersatts_av": "ny undertyp glödbagge"
         },
@@ -568,8 +611,8 @@
           "id": "ask_demoner",
           "roll": "Askdemoner",
           "familj": "demoner",
-          "nivaband": [19, 25],
-          "undertyper_nu": ["askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
+          "nivaband": [17, 23],
+          "undertyper_nu": ["gruvdemon", "askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
           "platshallare": false,
           "ersatts_av": null
         },
@@ -592,20 +635,29 @@
           "ersatts_av": "ny undertyp katedralväktare"
         },
         {
-          "id": "ask_brandlik",
-          "roll": "Brända lik",
-          "familj": "ododa",
-          "nivaband": [4, 4],
-          "undertyper_nu": ["ruttnande_lik"],
+          "id": "ask_smittade",
+          "roll": "Smittade askbor",
+          "familj": "forvridna",
+          "nivaband": [3, 5],
+          "undertyper_nu": ["forvriden_jagare", "smittad_bybo"],
           "platshallare": false,
           "ersatts_av": null
         },
         {
-          "id": "ask_sprickvasen",
-          "roll": "Sprickväsen",
+          "id": "ask_ytterkant",
+          "roll": "Sprickpilgrimer och vridna jättar",
           "familj": "forvridna",
-          "nivaband": [29, 29],
-          "undertyper_nu": ["sprickvasen"],
+          "nivaband": [28, 30],
+          "undertyper_nu": ["sprickpilgrim", "vriden_jatte"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "ask_ruttfolk",
+          "roll": "Ruttfolk vid askgränsen",
+          "familj": "forvridna",
+          "nivaband": [24, 25],
+          "undertyper_nu": ["smittbarare", "galen_munk"],
           "platshallare": false,
           "ersatts_av": null
         }
@@ -633,7 +685,7 @@
       "biom": "skog",
       "typ": "by",
       "chunk": [0, 0],
-      "radie": 1,
+      "radie": 0,
       "ringzon": 0,
       "nivaband": [1, 1],
       "grannar": ["kolarmon", "sodra_mon", "startskogen"],
@@ -648,7 +700,11 @@
       "akt": "akt_1",
       "sakert": true,
       "monsterplatser": [],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 0,
+        "kalla": "by med säker plats, inga monster"
+      }
     },
     {
       "id": "startskogen",
@@ -671,7 +727,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["skog_vargar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 2,
+        "kalla": "delområdena i bana1_stor.json har egna monster_per_game; talet gäller regionens övriga chunkar"
+      }
     },
     {
       "id": "vargstigen",
@@ -694,7 +754,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["skog_vargar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 2,
+        "kalla": "delområdena i bana1_stor.json har egna monster_per_game; talet gäller regionens övriga chunkar"
+      }
     },
     {
       "id": "vargaby",
@@ -717,7 +781,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["skog_vargar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 2,
+        "kalla": "delområdena i bana1_stor.json har egna monster_per_game; talet gäller regionens övriga chunkar"
+      }
     },
     {
       "id": "ulvhilds_ide",
@@ -741,7 +809,11 @@
       "sakert": false,
       "monsterplatser": ["skog_vargar"],
       "atkomst": "teleport",
-      "ingang_poi": "ulvhilds_ide_ingang"
+      "ingang_poi": "ulvhilds_ide_ingang",
+      "tathet": {
+        "monster_per_game": 0,
+        "kalla": "instans, monstren räknas i delområdet idets_skog (bana1_stor.json)"
+      }
     },
     {
       "id": "kolarmon",
@@ -764,7 +836,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["skog_vargar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 2,
+        "kalla": "delområdena i bana1_stor.json har egna monster_per_game; talet gäller regionens övriga chunkar"
+      }
     },
     {
       "id": "sodra_mon",
@@ -787,7 +863,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["skog_kolare"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 2,
+        "kalla": "delområdena i bana1_stor.json har egna monster_per_game; talet gäller regionens övriga chunkar"
+      }
     },
     {
       "id": "gravasen",
@@ -810,7 +890,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["skog_gravfolk"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 12,
+        "kalla": "bana1_stor.json nivakurva.ring_2_kontroll"
+      }
     },
     {
       "id": "gamla_byn",
@@ -834,7 +918,11 @@
       "sakert": false,
       "monsterplatser": ["skog_gravfolk"],
       "atkomst": "oppen",
-      "boss_poi": "gamla_byn_kyrkogard"
+      "boss_poi": "gamla_byn_kyrkogard",
+      "tathet": {
+        "monster_per_game": 22,
+        "kalla": "bana1_stor.json nivakurva.ring_2_kontroll (spawnzoner.json areas.gamla_byn)"
+      }
     },
     {
       "id": "kapellets_krypta",
@@ -858,7 +946,11 @@
       "sakert": false,
       "monsterplatser": ["skog_gravfolk"],
       "atkomst": "teleport",
-      "ingang_poi": "kryptans_port"
+      "ingang_poi": "kryptans_port",
+      "tathet": {
+        "monster_per_game": 8,
+        "kalla": "bana1_stor.json nivakurva.ring_2_kontroll"
+      }
     },
     {
       "id": "myrkanten",
@@ -881,7 +973,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["trask_myrlik"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 12,
+        "kalla": "bana1_stor.json nivakurva.ring_2_kontroll"
+      }
     },
     {
       "id": "brandkanten",
@@ -904,7 +1000,11 @@
       "akt": "akt_1",
       "sakert": false,
       "monsterplatser": ["ask_brandben"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 12,
+        "kalla": "bana1_stor.json nivakurva.ring_2_kontroll"
+      }
     },
     {
       "id": "dimvagen",
@@ -927,7 +1027,11 @@
       "akt": "akt_2",
       "sakert": false,
       "monsterplatser": ["trask_gastar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "dimmerstrand",
@@ -950,7 +1054,11 @@
       "akt": "akt_2",
       "sakert": false,
       "monsterplatser": ["trask_gastar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 15,
+        "kalla": "spawnzoner.json areas.dimmerstrand medel"
+      }
     },
     {
       "id": "korpholmarna",
@@ -973,7 +1081,11 @@
       "akt": "akt_2",
       "sakert": false,
       "monsterplatser": ["kust_korpfolk"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "sjunkna_kyrkan",
@@ -997,7 +1109,11 @@
       "sakert": false,
       "monsterplatser": ["kust_drunknade"],
       "atkomst": "teleport",
-      "ingang_poi": "sjunkna_kyrkans_port"
+      "ingang_poi": "sjunkna_kyrkans_port",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "instans bakom teleport"
+      }
     },
     {
       "id": "fjallfoten",
@@ -1020,7 +1136,11 @@
       "akt": "akt_2",
       "sakert": false,
       "monsterplatser": ["fjall_vattar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "rokkarret",
@@ -1043,7 +1163,11 @@
       "akt": "akt_2",
       "sakert": false,
       "monsterplatser": ["trask_gastar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "bergsvagen",
@@ -1066,7 +1190,11 @@
       "akt": "akt_3",
       "sakert": false,
       "monsterplatser": ["fjall_bergsulvar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "kopparberg",
@@ -1089,7 +1217,11 @@
       "akt": "akt_3",
       "sakert": false,
       "monsterplatser": ["fjall_gruvkryp"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 26,
+        "kalla": "spawnzoner.json areas.kopparberg medel"
+      }
     },
     {
       "id": "jarnklostret",
@@ -1113,7 +1245,11 @@
       "sakert": false,
       "monsterplatser": ["fjall_jarnbroder"],
       "atkomst": "teleport",
-      "ingang_poi": "jarnklostrets_port"
+      "ingang_poi": "jarnklostrets_port",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "instans bakom teleport"
+      }
     },
     {
       "id": "gruvdjupen",
@@ -1137,7 +1273,11 @@
       "sakert": false,
       "monsterplatser": ["fjall_gruvkryp"],
       "atkomst": "teleport",
-      "ingang_poi": "gruvlaven"
+      "ingang_poi": "gruvlaven",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "instans bakom teleport"
+      }
     },
     {
       "id": "glodstranden",
@@ -1160,7 +1300,11 @@
       "akt": "akt_3",
       "sakert": false,
       "monsterplatser": ["ask_glodbaggar"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "askfalten",
@@ -1183,7 +1327,11 @@
       "akt": "akt_4",
       "sakert": false,
       "monsterplatser": ["ask_demoner"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "askeborg",
@@ -1206,7 +1354,11 @@
       "akt": "akt_4",
       "sakert": false,
       "monsterplatser": ["ask_demoner"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 17,
+        "kalla": "spawnzoner.json areas.askeborg medel"
+      }
     },
     {
       "id": "kultens_katakomber",
@@ -1230,7 +1382,11 @@
       "sakert": false,
       "monsterplatser": ["ask_kultens_praster"],
       "atkomst": "teleport",
-      "ingang_poi": "katakombernas_ingang"
+      "ingang_poi": "katakombernas_ingang",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "instans bakom teleport"
+      }
     },
     {
       "id": "katedralen",
@@ -1254,7 +1410,11 @@
       "sakert": false,
       "monsterplatser": ["ask_katedralvaktare"],
       "atkomst": "teleport",
-      "ingang_poi": "katedralens_port"
+      "ingang_poi": "katedralens_port",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "instans bakom teleport"
+      }
     },
     {
       "id": "brandkusten",
@@ -1277,7 +1437,11 @@
       "akt": "akt_4",
       "sakert": false,
       "monsterplatser": ["ask_demoner"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "sista_ljuset",
@@ -1300,7 +1464,11 @@
       "akt": "akt_5",
       "sakert": true,
       "monsterplatser": [],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 0,
+        "kalla": "by med säker plats, inga monster"
+      }
     },
     {
       "id": "ruttmarken",
@@ -1324,7 +1492,11 @@
       "akt": "akt_5",
       "sakert": false,
       "monsterplatser": ["trask_rutt"],
-      "atkomst": "oppen"
+      "atkomst": "oppen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "vildmark ring 3 och ut"
+      }
     },
     {
       "id": "smittans_katedral",
@@ -1349,7 +1521,11 @@
       "sakert": false,
       "monsterplatser": ["trask_rutt"],
       "atkomst": "teleport",
-      "ingang_poi": "smittans_port"
+      "ingang_poi": "smittans_port",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "instans bakom teleport"
+      }
     },
     {
       "id": "sprickans_botten",
@@ -1374,7 +1550,11 @@
       "sakert": false,
       "monsterplatser": ["trask_sprickvasen"],
       "atkomst": "teleport",
-      "ingang_poi": "fjarde_stenen"
+      "ingang_poi": "fjarde_stenen",
+      "tathet": {
+        "monster_per_game": 6,
+        "kalla": "instans bakom teleport"
+      }
     }
   ],
   "vagar": [

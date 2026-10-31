@@ -16,7 +16,9 @@
         "halsning": "The Fourth Stone, child. Everything comes back to the Fourth Stone.",
         "bark": "He put it out himself. Himself."
       }
-    }
+    },
+    "name": "Old Ylva",
+    "default_line": "The runes sleep, child. But they dream."
   },
   "tor_kolare": {
     "namn": "Tor the Collier",
@@ -28,7 +30,9 @@
         "Arrows? Sure. Potions? If you can afford them."
       ]
     },
-    "quest_krokar": ["Tor is looking for his old cart horse, which bolted toward Wolfstead."]
+    "quest_krokar": ["Tor is looking for his old cart horse, which bolted toward Wolfstead."],
+    "name": "Tor the Collier",
+    "default_line": "Got gold? Then I've got goods. If not, have a pleasant day."
   },
   "sigrun_helare": {
     "namn": "Sigrun",
@@ -40,7 +44,9 @@
         "The ash settles in your lungs. Breathe through cloth in Ashenhold."
       ]
     },
-    "quest_krokar": ["Sigrun wants herbs from the bogs of Mistshore."]
+    "quest_krokar": ["Sigrun wants herbs from the bogs of Mistshore."],
+    "name": "Sigrun",
+    "default_line": "Sit down. Let me look at you."
   },
   "bror_vakt": {
     "namn": "Bror",
@@ -62,7 +68,9 @@
         "halsning": "He rests now. Thanks to you.",
         "bark": "A good night for the watch."
       }
-    }
+    },
+    "name": "Bror",
+    "default_line": "Keep to the path. The forest is hungry."
   },
   "lilla_mira": {
     "namn": "Little Mira",
@@ -84,7 +92,9 @@
         "halsning": "He isn't here. But you said he was here.",
         "bark": "Has anyone seen a boy in new sandals?"
       }
-    }
+    },
+    "name": "Little Mira",
+    "default_line": "Have you seen my brother? He had new sandals."
   },
   "bybo_flykting": {
     "namn": "Refugee by the Fire",
@@ -92,7 +102,9 @@
       "halsning": "Nine days we walked. Without you it would have been ten, and then no more.",
       "rader": ["The cart made it. It's all we have.", "The wolves followed us all the way to the huts.", "It's warm here. That's enough."]
     },
-    "quest_krokar": []
+    "quest_krokar": [],
+    "name": "Refugee by the Fire",
+    "default_line": "Nine days we walked. Without you it would have been ten, and then no more."
   },
   "viskaren": {
     "namn": "The Whisperer",
@@ -114,7 +126,9 @@
         "halsning": "The skull talks to you now, not to me. Do you hear?",
         "bark": "He chose you. He chose you."
       }
-    }
+    },
+    "name": "The Whisperer",
+    "default_line": "Do you hear them? No. You never hear."
   },
   "hedda_jagare": {
     "namn": "Hedda",
@@ -131,7 +145,9 @@
       "lamnar": {
         "halsning": "Wolfstead has nothing left for me. At least there's fish here."
       }
-    }
+    },
+    "name": "Hedda",
+    "default_line": "Fur, bone, arrows. That's all Wolfstead has now."
   },
   "gravvaktaren_ebbe": {
     "namn": "Ebbe the Gravewarden",
@@ -152,7 +168,9 @@
       "dod": {
         "miljo": "Ebbe's lantern stands dark by the portal."
       }
-    }
+    },
+    "name": "Ebbe the Gravewarden",
+    "default_line": "No one should come here. Yet here you are."
   },
   "marta_torghandlare": {
     "namn": "Marta",
@@ -164,7 +182,9 @@
         "Heard what Olle says about Mistshore?"
       ]
     },
-    "quest_krokar": ["Marta misses her daughter, who fled to Copperfell."]
+    "quest_krokar": ["Marta misses her daughter, who fled to Copperfell."],
+    "name": "Marta",
+    "default_line": "New faces! New faces at last!"
   },
   "gunnar_jarnhand": {
     "namn": "Gunnar Ironhand",
@@ -176,7 +196,9 @@
         "I buy weapons. Anything you pry off the dead."
       ]
     },
-    "quest_krokar": ["Gunnar's master's sword, the Runeforged Blade, should come home."]
+    "quest_krokar": ["Gunnar's master's sword, the Runeforged Blade, should come home."],
+    "name": "Gunnar Ironhand",
+    "default_line": "I don't forge anymore. But I sell."
   },
   "vaktkapten_ingrid": {
     "namn": "Captain Ingrid",
@@ -198,7 +220,9 @@
         "halsning": "Ebbe is dead. Someone must guard the gate.",
         "bark": "The lantern will burn again. One day."
       }
-    }
+    },
+    "name": "Captain Ingrid",
+    "default_line": "This village is under my protection. Act accordingly."
   },
   "olle_vardshus": {
     "namn": "Olle",
@@ -210,7 +234,9 @@
         "A hunter told me the bells of Mistshore toll beneath the water."
       ]
     },
-    "quest_krokar": ["The tavern board: hooks to every town."]
+    "quest_krokar": ["The tavern board: hooks to every town."],
+    "name": "Olle",
+    "default_line": "Sit! First tankard's on me, the next one's on you."
   },
   "sara_benlasare": {
     "namn": "Sara Bonereader",
@@ -227,7 +253,9 @@
       "altare": {
         "halsning": "Valdemar speaks to me now. He is very angry. Care to buy something?"
       }
-    }
+    },
+    "name": "Sara Bonereader",
+    "default_line": "Bones tell. Trinkets listen."
   },
   "lova_fiskarankan": {
     "namn": "Lova the Fisher's Widow",
@@ -239,7 +267,9 @@
         "The Bog Queen sings. Have you heard her?"
       ]
     },
-    "quest_krokar": ["Lova's husband among the drowned.", "The Raven Mother's Bow."]
+    "quest_krokar": ["Lova's husband among the drowned.", "The Raven Mother's Bow."],
+    "name": "Lova the Fisher's Widow",
+    "default_line": "Don't go too near the water. It pulls."
   },
   "broder_elias": {
     "namn": "Brother Elias",
@@ -251,7 +281,9 @@
         "The brother with the iron girdle was the strongest of us."
       ]
     },
-    "quest_krokar": ["The Iron Monk's Girdle, and what happened in the cloister."]
+    "quest_krokar": ["The Iron Monk's Girdle, and what happened in the cloister."],
+    "name": "Brother Elias",
+    "default_line": "The Lord has forgotten this mountain. I have not."
   },
   "rask_avfallen": {
     "namn": "Rask the Apostate",
@@ -263,7 +295,9 @@
         "The pilgrim walked past me. He greeted me. No one greets anyone in Ashenhold."
       ]
     },
-    "quest_krokar": ["Rask knows where the Ashwalker's Burden was scattered.", "The cult's rites around the Fourth Stone."]
+    "quest_krokar": ["Rask knows where the Ashwalker's Burden was scattered.", "The cult's rites around the Fourth Stone."],
+    "name": "Rask the Apostate",
+    "default_line": "Don't tell them I'm here. Please."
   },
   "fyrvaktaren_hulda": {
     "namn": "Hulda the Lightkeeper",
@@ -275,7 +309,9 @@
         "The light keeps the Blight away. Don't ask me how."
       ]
     },
-    "quest_krokar": ["Why does the lighthouse keep the Blight away?"]
+    "quest_krokar": ["Why does the lighthouse keep the Blight away?"],
+    "name": "Hulda the Lightkeeper",
+    "default_line": "The light burns as long as I breathe."
   },
   "kram_handlaren": {
     "namn": "Kram",
@@ -287,6 +323,8 @@
         "I saw Tor the Collier's cart once. Good cart."
       ]
     },
-    "quest_krokar": ["Kram's unknown supplier in the Rotmarch."]
+    "quest_krokar": ["Kram's unknown supplier in the Rotmarch."],
+    "name": "Kram",
+    "default_line": "Everything has a price. So do you."
   }
 }

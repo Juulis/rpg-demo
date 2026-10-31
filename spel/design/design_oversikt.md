@@ -115,6 +115,12 @@ Kvaliteter Normal (vit), Magisk (blå), Sällsynt (gul), Set (grön), Legendaris
 
 Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 2025 (20 monster) plus Gråbjörnen 2425, vilket ger nivå 7 före portalbyn för den som följer den rekommenderade vägen. Med stor bana 1 (bana1_stor.json) når hjälten nivå 7 före ring 2 och nivå 11 till 13 före akt 2.
 
+BESLUT: ingen avstånds-XP. Hjältens XP kommer bara från monstrens XP per monster (monsterfamiljer.json, champions och unika med sina multiplikatorer) med XP avdraget i monster_niva.json. Svårigheten styrs enbart av monsternivån efter ring (varldsgenerator.json svarighet_avstand.malniva och ringens band). Tätheten är data (varldsgenerator.json monsterpooler.tathet_per_chunk, varld_stor.json regioner[].tathet, bana1_stor.json) och XP takten per ring kontrolleras med spel/design/verktyg/tathet.py.
+
+Boss-XP: bossar och underbossar får XP = xp_bas × aktens boss_xp_faktor (monster_niva.json boss_xp_faktor): akt 1 1,0, akt 2 0,1, akt 3 0,36, akt 4 0,27, akt 5 1,0. Faktorerna räknas med spel/design/verktyg/tathet.py --forslag så att hjälten är nivå 15 efter ring 3, 19 efter ring 4, 24 efter ring 5 och 29 till 30 efter ring 6 med 0,5 monster per chunk i mellanmarken.
+
+Kartan: dimma som avslöjas i radie 14 rutor runt hjälten, sparas per chunk i sparfilen, ingen spärr (varldsgenerator.json karta_och_dimma).
+
 Utvecklare: i activate() när S.count når 3, öppna portalen efter 2 s. Inga nivå eller rensningsvillkor.
 
 ## Träffchans
@@ -151,21 +157,21 @@ Odöda
 
 Gastar
 
-| Namn                   | Nivå | HP   | Skada | Försvar | XP    | Zon          |
-| ---------------------- | ---- | ---- | ----- | ------- | ----- | ------------ |
-| Dimgast                | 11   | 106  | 18    | 2       | 241   | dimmerstrand |
-| Klagokvinna            | 12   | 136  | 12    | 3       | 436   | dimmerstrand |
-| Träsknäcken            | 13   | 236  | 29    | 5       | 562   | dimmerstrand |
-| Träsdrottningen (boss) | 14   | 3773 | 55    | 8       | 11000 | dimmerstrand |
+| Namn                   | Nivå | HP   | Skada | Försvar | XP   | Zon          |
+| ---------------------- | ---- | ---- | ----- | ------- | ---- | ------------ |
+| Dimgast                | 11   | 106  | 18    | 2       | 241  | dimmerstrand |
+| Klagokvinna            | 12   | 136  | 12    | 3       | 436  | dimmerstrand |
+| Träsknäcken            | 13   | 236  | 29    | 5       | 562  | dimmerstrand |
+| Träsdrottningen (boss) | 14   | 3773 | 55    | 8       | 1100 | dimmerstrand |
 
 Kryp
 
-| Namn               | Nivå | HP   | Skada | Försvar | XP    | Zon        |
-| ------------------ | ---- | ---- | ----- | ------- | ----- | ---------- |
-| Gruvspindel        | 15   | 106  | 17    | 6       | 279   | kopparberg |
-| Syrabagge          | 16   | 233  | 25    | 10      | 576   | kopparberg |
-| Kitinvakt          | 18   | 565  | 47    | 15      | 1260  | kopparberg |
-| Spinnmodern (boss) | 18   | 5649 | 72    | 13      | 18328 | kopparberg |
+| Namn               | Nivå | HP   | Skada | Försvar | XP   | Zon        |
+| ------------------ | ---- | ---- | ----- | ------- | ---- | ---------- |
+| Gruvspindel        | 15   | 106  | 17    | 6       | 279  | kopparberg |
+| Syrabagge          | 16   | 233  | 25    | 10      | 576  | kopparberg |
+| Kitinvakt          | 18   | 565  | 47    | 15      | 1260 | kopparberg |
+| Spinnmodern (boss) | 18   | 5649 | 72    | 13      | 6598 | kopparberg |
 
 Demoner
 
@@ -175,7 +181,7 @@ Demoner
 | Eldpiskedemon             | 21   | 552   | 53    | 9       | 1877  | askeborg |
 | Hornslaktare              | 22   | 759   | 72    | 12      | 2167  | askeborg |
 | Askriddare                | 23   | 919   | 70    | 16      | 2647  | askeborg |
-| Askfursten Morvath (boss) | 25   | 12636 | 123   | 17      | 45000 | askeborg |
+| Askfursten Morvath (boss) | 25   | 12636 | 123   | 17      | 12150 | askeborg |
 
 Förvridna
 

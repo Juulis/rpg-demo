@@ -154,5 +154,35 @@
   },
   "havsgast": {
     "name": "Sea Wraith"
+  },
+  "irrbloss": {
+    "name": "Will-o'-the-Wisp"
+  },
+  "fjallbjorn": {
+    "name": "Fell Bear"
+  },
+  "jarnbroder": {
+    "name": "Iron Brother"
+  },
+  "drunknad_vakt": {
+    "name": "Drowned Guard"
+  },
+  "sprickpilgrim": {
+    "name": "Rift Pilgrim"
+  },
+  "vriden_jatte": {
+    "name": "Twisted Giant"
+  },
+  "dodsljus": {
+    "name": "Death Light"
+  },
+  "korpmodern": {
+    "name": "The Raven Mother"
+  },
+  "jarnmunken": {
+    "name": "The Iron Monk"
+  },
+  "askans_profet": {
+    "name": "The Prophet of Ash"
   }
 }
