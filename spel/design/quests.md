@@ -87,7 +87,7 @@ Redan gjort: Om kryptan redan besökts och mejseln hittats räcker det att under
 
 ### Gravvaktarnas sista strid (gravvaktarnas_sista_strid)
 
-Givare: Gravvaktaren Ebbe. Rekommenderad nivå 7 till 9. Belöning 905 XP (40 % av nivå 8).
+Givare: Ebbe. Rekommenderad nivå 7 till 9. Belöning 905 XP (40 % av nivå 8).
 
 Ebbe är den siste gravvaktaren. Hans bröder föll i kryptan natten de döda reste sig, och deras krönika försvann med dem. Han vill veta hur de dog.
 
@@ -101,13 +101,13 @@ Steg:
 Val:
 
 - **Ge krönikan till Ebbe.** Konsekvens: gravvaktaren_ebbe: läser krönikan för de nya bybornas barn vid portalgläntan. Effekter: item_grant, faction_rep, npc_state, town_growth, rumor_add.
-- **Ge krönikan till Vaktkapten Ingrid, vars farfar står i den (om hon finns i byn, annars läggs den i hennes vakthus).** Konsekvens: vaktkapten_ingrid: börjar utbilda vakterna i gravvaktarnas sätt, bär farfaderns emblem; gravvaktaren_ebbe: respekterar valet, säger att orden lever i henne. Effekter: item_grant, npc_faction, npc_state, area_change, town_growth, faction_rep, rumor_add.
+- **Ge krönikan till Ingrid, vars farfar står i den (om hon finns i byn, annars läggs den i hennes vakthus).** Konsekvens: vaktkapten_ingrid: börjar utbilda vakterna i gravvaktarnas sätt, bär farfaderns emblem; gravvaktaren_ebbe: respekterar valet, säger att orden lever i henne. Effekter: item_grant, npc_faction, npc_state, area_change, town_growth, faction_rep, rumor_add.
 
 Redan gjort: Om kammaren redan rensats ligger krönikan kvar där.
 
 ### Begrav Benkungen (begrav_benkungen)
 
-Givare: Gravvaktaren Ebbe, eller Sara Benläsare. Rekommenderad nivå 9 till 11. Belöning 1423 XP (45 % av nivå 10).
+Givare: Ebbe, eller Sara. Rekommenderad nivå 9 till 11. Belöning 1423 XP (45 % av nivå 10).
 
 Valdemar var en god hövding innan kronan tog honom. Ebbe vill att han begravs som en man. Sara vill ha hans signet för sina egna skäl.
 
@@ -121,7 +121,7 @@ Val:
 
 - **Begrav Valdemar med signeten.** Konsekvens: gravvaktaren_ebbe: håller en ceremoni; kyrkogården blir en lugn plats med ljus; olle_vardshus: döper ett öl efter Valdemar. Effekter: xp_grant, area_change, faction_rep, town_growth, merchant_stock, rumor_add.
 - **Begrav honom men behåll signeten.** Konsekvens: gravvaktaren_ebbe: godtar det, säger att byn nu bärs av hjälten. Effekter: item_grant, faction_rep, faction_rep, value_add, rumor_add.
-- **Ge benen och signeten till Sara Benläsare.** Konsekvens: sara_benlasare: bygger ett benaltare i kapellet, säljer till hjälten med 15 % rabatt; gravvaktaren_ebbe: vänder hjälten ryggen i tre speldygn, sedan förlåter han. Effekter: item_grant, faction_rep, merchant_stock, area_change, npc_state, quest_exclude, npc_location, town_growth, npc_state, rumor_add, rumor_add.
+- **Ge benen och signeten till Sara.** Konsekvens: sara_benlasare: bygger ett benaltare i kapellet, säljer till hjälten med 15 % rabatt; gravvaktaren_ebbe: vänder hjälten ryggen i tre speldygn, sedan förlåter han. Effekter: item_grant, faction_rep, merchant_stock, area_change, npc_state, quest_exclude, npc_location, town_growth, npc_state, rumor_add, rumor_add.
 
 Redan gjort: Om Benkungen dödats innan questen börjar startar den direkt på steget signeten och Ebbe kommer själv fram till hjälten.
 
@@ -205,26 +205,26 @@ Val:
 
 Redan gjort: Om Järnmunken redan är fälld ligger gördeln kvar på hans plats. Steget farvalet blir att bära gördeln till Elias. Valen blir behåll gördeln (samma som avsluta_sjalv) eller ge den till Elias (samma som lat_elias_tala, Elias går själv till klostret för att begrava brodern).
 
-### Martas dotter (martas_dotter)
+### Märtas dotter (martas_dotter)
 
 Givare: marta_torghandlare. Rekommenderad nivå 15 till 17. Belöning 2560 XP (40 % av nivå 16).
 
-Martas dotter Hanna flydde till Kopparberg och gifte sig med gruvans klockare. Inga brev har kommit på tjugo år. Marta frågar varje resenär.
+Märtas dotter Hanna flydde till Kopparberg och gifte sig med gruvans klockare. Inga brev har kommit på tjugo år. Märta frågar varje resenär.
 
 Steg:
 
 1. Leta i gästgiveriet i Kopparberg. Hannas namn är ristat i en bjälke, bredvid klockarens.
 2. Följ klockarens spår ner i Gruvdjupen.
-3. Bland nät och kristaller hänger gruvlagets målade gruppbild. Hanna står längst ut med Martas röda huvudduk. En unik gruvspindel vaktar nätet.
+3. Bland nät och kristaller hänger gruvlagets målade gruppbild. Hanna står längst ut med Märtas röda huvudduk. En unik gruvspindel vaktar nätet.
 4. Bredvid nätet ligger klockarens hammare. Han ringde larmklockan tills nätet tog dem båda.
-5. Gå tillbaka till Marta och bestäm vad hon ska få veta.
+5. Gå tillbaka till Märta och bestäm vad hon ska få veta.
 
 Val:
 
-- **Ge Marta bilden och berätta sanningen.** Konsekvens: marta_torghandlare: hänger bilden i ståndet, blir tystare en tid och sedan pratsam igen. Effekter: rumor_add, faction_rep, npc_state, town_growth, area_change.
+- **Ge Märta bilden och berätta sanningen.** Konsekvens: marta_torghandlare: hänger bilden i ståndet, blir tystare en tid och sedan pratsam igen. Effekter: rumor_add, faction_rep, npc_state, town_growth, area_change.
 - **Behåll bilden och säg att Hanna lever längre in i bergen.** Konsekvens: marta_torghandlare: glad, ger rabatt, frågar alla från Kopparberg efter Hanna. Extra XP: 640. Effekter: xp_grant, rumor_add, flag_set, npc_state, merchant_stock.
 
-Redan gjort: Om gruppbilden eller hammaren redan plockats upp hoppar questen till steget tillbaka när hjälten pratar med Marta.
+Redan gjort: Om gruppbilden eller hammaren redan plockats upp hoppar questen till steget tillbaka när hjälten pratar med Märta.
 
 ## Akt 4
 

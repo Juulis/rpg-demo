@@ -194,7 +194,7 @@
       },
       "runes_rule": "Skogen genereras en gång per game. Vid tredje runan läggs en engångsgrupp skuggvargar vid två slumpade inaktiva punkter (samma seed).",
       "session_roll": {
-        "active_spawn_points": [5, 8],
+        "active_spawn_points": [4, 7],
         "groups_per_point": "se spawn_points[].groups",
         "monsters_per_group": [1, 3],
         "champions": {
@@ -207,12 +207,12 @@
         },
         "rolled": "en gång per game med hash(game_seed, area_id)",
         "expected_monsters_per_game": {
-          "p5": 10,
-          "medel": 17,
-          "p95": 24,
-          "note": "exklusive boss och unika minions"
+          "p5": 8,
+          "medel": 14,
+          "p95": 20,
+          "note": "exklusive boss och unika minions. Rungläntan (chunk [1, 1]) har 14 monster per game, samma tal som bana1_stor.json delomraden.runglantan.monster_per_game. Ersätter det tidigare snittet 17 (5 till 8 aktiva punkter); nu 4 till 7 aktiva punkter."
         },
-        "groups_total": [5, 16]
+        "groups_total": [4, 14]
       },
       "recommended_hero_level": [1, 3],
       "family_mix": {
@@ -269,7 +269,7 @@
           }
         ]
       },
-      "fotavtryck": "Ligger runt världens origo = mitten av chunk [1, 1] (Rungläntan) i storvärlden, se varld_stor.json meta.startskogen_fotavtryck. Lägret med centrum-NPC:erna ligger i startlagret, chunk [0, 0]."
+      "fotavtryck": "Ligger runt världens origo = mitten av chunk [1, 1] (Rungläntan) i storvärlden, se varld_stor.json meta.startskogen_fotavtryck. Lägret med centrum-NPC:erna ligger i startlagret, chunk [0, 0]. Monster per game: 14 (medel), se session_roll."
     },
     {
       "id": "gamla_byn",

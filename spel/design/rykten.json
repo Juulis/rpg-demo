@@ -349,7 +349,7 @@
     },
     {
       "id": "rykte_kronikan_ingrid",
-      "text": "Vaktkapten Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
+      "text": "Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
       "villkor": {
         "quest_val": {
           "gravvaktarnas_sista_strid": "ge_ingrid"
@@ -385,7 +385,7 @@
     },
     {
       "id": "rykte_valdemar_sara",
-      "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+      "text": "Sara har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
       "villkor": {
         "quest_val": {
           "begrav_benkungen": "ge_sara"
@@ -397,7 +397,7 @@
     },
     {
       "id": "rykte_ebbe_dod",
-      "text": "Gravvaktaren Ebbe hittades död vid portalen, med lyktan släckt. Ingrid vaktar porten nu.",
+      "text": "Ebbe hittades död vid portalen, med lyktan släckt. Ingrid vaktar porten nu.",
       "villkor": {
         "npc_state": {
           "gravvaktaren_ebbe": "dod"
@@ -474,7 +474,7 @@
     },
     {
       "id": "rykte_hanna_vilar",
-      "text": "Marta har en målad bild i ståndet. Fråga inte om den.",
+      "text": "Märta har en målad bild i ståndet. Fråga inte om den.",
       "villkor": {
         "quest_val": {
           "martas_dotter": "beratta_sanningen"
@@ -485,7 +485,7 @@
     },
     {
       "id": "rykte_marta_hoppas",
-      "text": "Marta säger att hennes Hanna lever längre in i bergen. Hon frågar alla från Kopparberg.",
+      "text": "Märta säger att hennes Hanna lever längre in i bergen. Hon frågar alla från Kopparberg.",
       "villkor": {
         "quest_val": {
           "martas_dotter": "ge_hopp"

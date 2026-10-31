@@ -13,7 +13,7 @@
     },
     "ilvl_rule": "ilvl = undertypens fasta nivå. Champion: nivå + 1. Unik: nivå + 3, ilvl + 1 extra. Boss: nivå + 2.",
     "guld_category_note": "Kategorin guld i category_weights ger en extra guldhög (×2 mot vanligt guldbelopp) utöver gold_chance.",
-    "removed": "Ädelstenar och hylsor borttagna tills vidare; deras vikt fördelad 40 % dryck, 20 % amulett, 20 % ring, 20 % guld."
+    "removed": "Ädelstenar och hylsor borttagna tills vidare; deras vikt fördelad 40 % mat, 20 % amulett, 20 % ring, 20 % guld."
   },
   "family_tables": {
     "ododa": {
@@ -22,10 +22,10 @@
       "category_weights": {
         "vapen": 30,
         "rustning": 25,
-        "dryck": 25,
         "amulett": 5,
         "ring": 5,
-        "guld": 2
+        "guld": 2,
+        "mat": 25
       },
       "gold_chance": 0.6,
       "extra": [
@@ -51,10 +51,10 @@
       "drop_chance": 0.45,
       "gold_mult": 1.2,
       "category_weights": {
-        "dryck": 54,
         "amulett": 20,
         "ring": 19,
-        "guld": 7
+        "guld": 7,
+        "mat": 54
       },
       "gold_chance": 0.6,
       "extra": []
@@ -63,11 +63,11 @@
       "drop_chance": 0.45,
       "gold_mult": 0.8,
       "category_weights": {
-        "dryck": 45,
         "amulett": 13,
         "ring": 12,
         "guld": 8,
-        "ben": 22
+        "ben": 22,
+        "mat": 45
       },
       "gold_chance": 0.4,
       "extra": [
@@ -83,10 +83,10 @@
       "category_weights": {
         "vapen": 10,
         "rustning": 15,
-        "dryck": 45,
         "amulett": 13,
         "ring": 12,
-        "guld": 5
+        "guld": 5,
+        "mat": 45
       },
       "gold_chance": 0.7,
       "extra": []
@@ -95,11 +95,11 @@
       "drop_chance": 0.6,
       "gold_mult": 1.5,
       "category_weights": {
-        "dryck": 35,
         "amulett": 20,
         "ring": 20,
         "guld": 8,
-        "ben": 17
+        "ben": 17,
+        "mat": 35
       },
       "gold_chance": 0.7,
       "extra": []
@@ -151,11 +151,11 @@
       "weapon_type": null,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       },
@@ -277,11 +277,11 @@
       "ilvl": 24,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       }
@@ -294,11 +294,11 @@
       "ilvl": 27,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       }
@@ -356,10 +356,10 @@
         "category_weights": {
           "vapen": 25,
           "rustning": 25,
-          "dryck": 25,
           "amulett": 10,
           "ring": 10,
-          "guld": 5
+          "guld": 5,
+          "mat": 25
         },
         "note": "Beväpnad och bepansrad, släpper även rustning."
       }
@@ -401,11 +401,11 @@
       "weapon_type": null,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       }
@@ -418,11 +418,11 @@
       "weapon_type": null,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       }
@@ -518,11 +518,11 @@
       "weapon_type": null,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       }
@@ -549,11 +549,11 @@
       "weapon_type": null,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       }
@@ -638,11 +638,11 @@
       "weapon_type": null,
       "table_override": {
         "category_weights": {
-          "dryck": 50,
           "amulett": 10,
           "ring": 10,
           "guld": 5,
-          "ben": 25
+          "ben": 25,
+          "mat": 50
         },
         "note": "Obeväpnad: benföremål i stället för vapen och rustning."
       }

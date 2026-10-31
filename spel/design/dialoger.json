@@ -1147,7 +1147,7 @@
     },
     {
       "npc": "gravvaktaren_ebbe",
-      "namn": "Gravvaktaren Ebbe",
+      "namn": "Ebbe",
       "rostprofil": {
         "kon": "man",
         "alder": 80,
@@ -1239,7 +1239,7 @@
         {
           "id": "ebbe_rykte_06",
           "typ": "rykte",
-          "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+          "text": "Sara har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
           "villkor": {
             "rykte_aktivt": "rykte_valdemar_sara"
           },
@@ -1425,7 +1425,7 @@
     },
     {
       "npc": "marta_torghandlare",
-      "namn": "Marta",
+      "namn": "Märta",
       "rostprofil": {
         "kon": "kvinna",
         "alder": 45,
@@ -1504,7 +1504,7 @@
         {
           "id": "marta_bark_01",
           "typ": "bark",
-          "text": "Krukor! Tyg! Hälsodrycker!",
+          "text": "Krukor! Tyg! Torkat kött!",
           "villkor": {},
           "audio": "audio/npc/marta_torghandlare/marta_bark_01.ogg"
         },
@@ -1547,7 +1547,7 @@
     },
     {
       "npc": "gunnar_jarnhand",
-      "namn": "Gunnar Järnhand",
+      "namn": "Gunnar",
       "rostprofil": {
         "kon": "man",
         "alder": 55,
@@ -1641,7 +1641,7 @@
     },
     {
       "npc": "vaktkapten_ingrid",
-      "namn": "Vaktkapten Ingrid",
+      "namn": "Ingrid",
       "rostprofil": {
         "kon": "kvinna",
         "alder": 38,
@@ -1703,7 +1703,7 @@
         {
           "id": "ingrid_rykte_03",
           "typ": "rykte",
-          "text": "Vaktkapten Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
+          "text": "Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
           "villkor": {
             "rykte_aktivt": "rykte_kronikan_ingrid"
           },
@@ -1877,7 +1877,7 @@
         {
           "id": "olle_rykte_07",
           "typ": "rykte",
-          "text": "Vaktkapten Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
+          "text": "Ingrid bär sin farfars gravvaktaremblem. Vakterna övar nu varje gryning.",
           "villkor": {
             "rykte_aktivt": "rykte_kronikan_ingrid"
           },
@@ -1917,7 +1917,7 @@
         {
           "id": "olle_rykte_11",
           "typ": "rykte",
-          "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+          "text": "Sara har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
           "villkor": {
             "rykte_aktivt": "rykte_valdemar_sara"
           },
@@ -1970,7 +1970,7 @@
     },
     {
       "npc": "sara_benlasare",
-      "namn": "Sara Benläsare",
+      "namn": "Sara",
       "rostprofil": {
         "kon": "kvinna",
         "alder": 33,
@@ -2031,7 +2031,7 @@
         {
           "id": "sara_rykte_04",
           "typ": "rykte",
-          "text": "Sara Benläsare har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
+          "text": "Sara har byggt ett altare av Valdemars ben. Ebbe vägrar gå in i kapellet.",
           "villkor": {
             "rykte_aktivt": "rykte_valdemar_sara"
           },

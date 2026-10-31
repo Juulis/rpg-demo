@@ -7,7 +7,7 @@
   "aterbefolkad_1": { "name": "Resettled I" },
   "aterbefolkad_2": { "name": "Resettled II" },
   "aterbefolkad_3": { "name": "Resettled III" },
-  "handlare": { "desc": "Buys and sells potions and common goods." },
+  "handlare": { "desc": "Buys and sells food and common goods." },
   "vapenhandlare": { "desc": "Buys and sells weapons, armor and shields. Never alters an item." },
   "vakter": { "desc": "Town guards hold off raids. No monsters spawn near town." },
   "kuriosahandlare": { "desc": "Buys and sells finer amulets, rings and bone goods. Never alters an item." },

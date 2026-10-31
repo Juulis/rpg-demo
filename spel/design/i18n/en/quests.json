@@ -95,7 +95,7 @@
     "val": {
       "ge_ebbe": { "text": "Give the Chronicle to Ebbe." },
       "ge_ingrid": {
-        "text": "Give the Chronicle to Captain Ingrid, whose grandfather is named in it (if she is in the village; otherwise it is left in her guardhouse)."
+        "text": "Give the Chronicle to Ingrid, whose grandfather is named in it (if she is in the village; otherwise it is left in her guardhouse)."
       }
     }
   },
@@ -116,7 +116,7 @@
     "val": {
       "begrav_med_signet": { "text": "Bury Valdemar with the signet." },
       "behall_signeten": { "text": "Bury him, but keep the signet." },
-      "ge_sara": { "text": "Give the bones and the signet to Sara Bonereader." }
+      "ge_sara": { "text": "Give the bones and the signet to Sara." }
     }
   },
   "klockorna_under_vattnet": {
