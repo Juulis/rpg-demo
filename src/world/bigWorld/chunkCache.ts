@@ -21,20 +21,21 @@ function assertCacheOptions(opts: ChunkCacheOptions): void {
 
 const DEFAULT_OPTS: ChunkCacheOptions = { maxEntries: 49, keepRadius: 3 };
 
-function cacheKey(gameSeed: number, cx: number, cy: number): string {
-  return `${gameSeed}|${cx}|${cy}`;
+function cacheKey(worldSeed: number, gameSeed: number, cx: number, cy: number): string {
+  return `${worldSeed}|${gameSeed}|${cx}|${cy}`;
 }
 
 /**
  * LRU-liknande cache: syncNear släpper chunkar utanför keepRadius och cap:ar storlek.
- * Nyckeln inkluderar gameSeed så olika sparfiler aldrig delar D2-rullningar.
+ * Nyckeln inkluderar world_seed + game_seed så layout och spawns hålls isär.
  */
 export class ChunkWorldCache {
   private readonly map = new Map<string, ChunkWorldData>();
   private readonly order: string[] = [];
   private heroCx = 0;
   private heroCy = 0;
-  private activeSeed: number | null = null;
+  private activeWorldSeed: number | null = null;
+  private activeGameSeed: number | null = null;
   private keepSet = new Set<string>();
 
   constructor(private readonly opts: ChunkCacheOptions = DEFAULT_OPTS) {
@@ -48,20 +49,27 @@ export class ChunkWorldCache {
   clear(): void {
     this.map.clear();
     this.order.length = 0;
-    this.activeSeed = null;
+    this.activeWorldSeed = null;
+    this.activeGameSeed = null;
     this.keepSet.clear();
   }
 
-  private ensureSeed(gameSeed: number): void {
-    if (this.activeSeed !== null && this.activeSeed !== gameSeed) this.clear();
-    this.activeSeed = gameSeed;
+  private ensureSeeds(worldSeed: number, gameSeed: number): void {
+    if (
+      (this.activeWorldSeed !== null && this.activeWorldSeed !== worldSeed) ||
+      (this.activeGameSeed !== null && this.activeGameSeed !== gameSeed)
+    ) {
+      this.clear();
+    }
+    this.activeWorldSeed = worldSeed;
+    this.activeGameSeed = gameSeed;
   }
 
-  get(gameSeed: number, cx: number, cy: number): ChunkWorldData {
-    this.ensureSeed(gameSeed);
-    const key = cacheKey(gameSeed, cx, cy);
+  get(worldSeed: number, gameSeed: number, cx: number, cy: number): ChunkWorldData {
+    this.ensureSeeds(worldSeed, gameSeed);
+    const key = cacheKey(worldSeed, gameSeed, cx, cy);
     const hit = this.map.get(key);
-    const expectedSeed = chunkWorldSeed(gameSeed, cx, cy);
+    const expectedSeed = chunkWorldSeed(worldSeed, cx, cy);
     if (hit && hit.chunkSeed === expectedSeed) {
       this.touch(key);
       return hit;
@@ -69,7 +77,7 @@ export class ChunkWorldCache {
     while (this.map.size >= this.opts.maxEntries) {
       if (!this.evictOne(key)) break;
     }
-    const data = generateChunkWorldData(gameSeed, cx, cy);
+    const data = generateChunkWorldData(worldSeed, gameSeed, cx, cy);
     this.store(key, data);
     while (this.map.size > this.opts.maxEntries) {
       if (!this.evictOne(key)) break;
@@ -77,8 +85,8 @@ export class ChunkWorldCache {
     return data;
   }
 
-  syncNear(gameSeed: number, heroCx: number, heroCy: number): void {
-    this.ensureSeed(gameSeed);
+  syncNear(worldSeed: number, gameSeed: number, heroCx: number, heroCy: number): void {
+    this.ensureSeeds(worldSeed, gameSeed);
     this.heroCx = heroCx;
     this.heroCy = heroCy;
     const r = this.opts.keepRadius;
@@ -87,17 +95,17 @@ export class ChunkWorldCache {
       for (let dy = -r; dy <= r; dy++) {
         const cx = heroCx + dx;
         const cy = heroCy + dy;
-        const key = cacheKey(gameSeed, cx, cy);
+        const key = cacheKey(worldSeed, gameSeed, cx, cy);
         keep.add(key);
         const existing = this.map.get(key);
-        const expectedSeed = chunkWorldSeed(gameSeed, cx, cy);
+        const expectedSeed = chunkWorldSeed(worldSeed, cx, cy);
         if (existing && existing.chunkSeed === expectedSeed) {
           this.touch(key);
         } else {
           while (this.map.size >= this.opts.maxEntries) {
             if (!this.evictOne(key)) break;
           }
-          this.store(key, generateChunkWorldData(gameSeed, cx, cy));
+          this.store(key, generateChunkWorldData(worldSeed, gameSeed, cx, cy));
         }
       }
     }
@@ -147,8 +155,8 @@ export class ChunkWorldCache {
       if (key === excludeKey) continue;
       if (!allowKeep && this.keepSet.has(key)) continue;
       const parts = key.split('|');
-      const cx = Number(parts[1]);
-      const cy = Number(parts[2]);
+      const cx = Number(parts[2]);
+      const cy = Number(parts[3]);
       if (Number.isNaN(cx) || Number.isNaN(cy)) continue;
       const d = Math.max(Math.abs(cx - this.heroCx), Math.abs(cy - this.heroCy));
       if (d > bestD) {

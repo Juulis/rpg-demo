@@ -15,6 +15,11 @@ import type { Monster } from '../entities/Monster';
 import { MonsterFactory } from '../entities/MonsterFactory';
 import { syncProximitySpawns } from '../systems/SpawnProximity';
 import { ForestGroundChunks } from '../world/ForestGroundChunks';
+import { BigWorldStreamGround } from '../world/bigWorld/BigWorldStreamGround';
+import { BIG_WORLD_GROUND_VIEW_MARGIN } from '../world/bigWorld/bigWorldConfig';
+import { syncBigWorldChunkMonsters, resetBigWorldMonsterSync } from '../world/bigWorld/syncBigWorldChunkMonsters';
+import { smokeMetricsEnabled } from '../dev/smokeGate';
+import { worldToChunk } from '../world/bigWorld/bigWorldCoords';
 import { Input } from '../input/Input';
 import { Loot } from '../logic/loot/Loot';
 import type { Item } from '../logic/loot/types';
@@ -72,6 +77,7 @@ import { clockPeriodLabel, setClockLocale } from '../world/clockText';
 import { WorldStateService } from '../world/WorldStateService';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
 import { locomotionPlaybackRate } from '../render/locomotionPlayback';
+import { bigWorldCityPortalWorld } from '../world/bigWorld/bigWorldPortals';
 import { FOREST_CITY_PORTALS } from '../world/forestConstants';
 import { cityPortEntry, cityAreaId, isPlayableCityZone, parseSavedZone, PLAYABLE_CITIES } from '../world/cityZones';
 import { ZoneFactory } from '../world/ZoneFactory';
@@ -161,7 +167,9 @@ export class Game {
   private targetDrop: GroundDrop | null = null;
   private dead = false;
   private decorAnims: StripAnimSprite[] = [];
-  private forestGround: ForestGroundChunks | null = null;
+  private forestGround: ForestGroundChunks | BigWorldStreamGround | null = null;
+  private streamMetricsCx = NaN;
+  private streamMetricsCy = NaN;
 
   constructor(private readonly modules: GameModule[] = []) {
     this.ctx = {
@@ -173,6 +181,29 @@ export class Game {
       rng: this.rng,
       worldState: this.worldState,
       clock: this.gameClock.view,
+    };
+  }
+
+  /** Capture/smoke: mark- och GPU-statistik i stor skog. */
+  captureBigWorldMetrics(): {
+    groundReady: boolean;
+    displayObjects: number;
+    renderTextures: number;
+    groundPixel: boolean;
+    heroWx: number;
+    heroWy: number;
+  } | null {
+    const w = this.world;
+    const fg = this.forestGround;
+    if (!w || !(fg instanceof BigWorldStreamGround) || !w.zone.bigWorldStreaming) return null;
+    const foot = this.camera.toScreen(w.hero.pos.x, w.hero.pos.y);
+    return {
+      groundReady: fg.isGroundReady(),
+      displayObjects: fg.countGroundDisplayObjects(),
+      renderTextures: fg.countRenderTextures(),
+      groundPixel: fg.probeGroundPixel(this.renderer.app.renderer, foot.x, foot.y + 28),
+      heroWx: w.hero.pos.x,
+      heroWy: w.hero.pos.y,
     };
   }
 
@@ -303,8 +334,9 @@ export class Game {
     h.zone = g?.zone ?? 'forest';
     h.resumePos = g?.pos ? { ...g.pos } : null;
     h.playing = false;
-    const s = g ? createSession(g.seed, g.killed) : createSession();
+    const s = g ? createSession(g.seed, g.killed, g.worldSeed ?? g.seed) : createSession();
     this.ctx.session.seed = s.seed;
+    this.ctx.session.worldSeed = s.worldSeed;
     this.ctx.session.killed.clear();
     for (const id of s.killed) this.ctx.session.killed.add(id);
     if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
@@ -336,6 +368,7 @@ export class Game {
       },
       game: {
         seed: this.ctx.session.seed,
+        worldSeed: this.ctx.session.worldSeed,
         killed: [...this.ctx.session.killed],
         zone: h.zone,
         pos: { ...h.pos },
@@ -350,8 +383,9 @@ export class Game {
 
   /** Nytt game (D2): ny seed, tomma killed, runor nollställs, start i skogen. Hjälte och utrustning behålls. */
   newGame(): void {
-    const s = createSession();
-    this.ctx.session.seed = s.seed;
+    const worldSeed = this.ctx.session.worldSeed;
+    this.ctx.session.seed = Rng.newSeed();
+    this.ctx.session.worldSeed = worldSeed;
     this.ctx.session.killed.clear();
     const h = this.heroState;
     h.runes = 0;
@@ -362,7 +396,7 @@ export class Game {
     this.worldState.setRunesActive(0);
     for (const z of PLAYABLE_CITIES) this.worldState.setCityState(cityAreaId(z), 'besatt');
     this.gameClock.resetForNewHero();
-    this.bus.emit('new_game', { seed: s.seed });
+    this.bus.emit('new_game', { seed: this.ctx.session.seed });
     this.enterZone('forest');
   }
 
@@ -403,10 +437,11 @@ export class Game {
   }
 
   private portalSpawn(target: ZoneName, from: ZoneName): Vec2 | undefined {
+    const bigWorld = this.world?.zone.bigWorldStreaming === true;
     if (target === 'forest') {
       if (from === 'village') return { x: 0, y: 4 };
       if (isPlayableCityZone(from)) {
-        const p = FOREST_CITY_PORTALS[from];
+        const p = bigWorld ? bigWorldCityPortalWorld(from) : FOREST_CITY_PORTALS[from];
         return {
           x: p.x + (p.x === 0 ? 0 : p.x > 0 ? -4 : 4),
           y: p.y + (p.y === 0 ? 0 : p.y > 0 ? -4 : 4),
@@ -431,7 +466,7 @@ export class Game {
     this.dayNight?.attachWorldEffects(r.effects);
     const built = this.zones.build(name);
     r.ground.addChild(built.ground);
-    this.forestGround = built.ground instanceof ForestGroundChunks ? built.ground : null;
+    this.forestGround = built.ground instanceof ForestGroundChunks || built.ground instanceof BigWorldStreamGround ? built.ground : null;
     for (const d of built.decor) r.objects.addChild(d);
     this.decorAnims = built.decorAnims;
     const hs = this.heroState;
@@ -484,7 +519,22 @@ export class Game {
     const areaId = zone.areaId;
     const citySpawn = this.worldState.get().city_states[areaId] ?? (areaId === 'gamla_byn' ? hs.city : 'besatt');
     this.factory.populate(this.world, citySpawn);
-    syncProximitySpawns(this.world, this.factory, hs.pos);
+    if (zone.bigWorldStreaming && this.forestGround instanceof BigWorldStreamGround) {
+      resetBigWorldMonsterSync();
+      const view = this.camera.viewWorldAabb(BIG_WORLD_GROUND_VIEW_MARGIN);
+      this.forestGround.sync(
+        hs.pos,
+        this.session.worldSeed,
+        this.session.seed,
+        { objects: r.objects, zone },
+        this.renderer.app.renderer,
+        view,
+      );
+      syncBigWorldChunkMonsters(this.world, this.forestGround.chunkCache, this.factory, this.session.worldSeed, this.session.seed, hs.pos);
+      syncProximitySpawns(this.world, this.factory, hs.pos);
+    } else {
+      syncProximitySpawns(this.world, this.factory, hs.pos);
+    }
     this.portals.attach(built.runeSprites);
     this.parallax.set(
       this.assets.backgrounds.get('himmel'),
@@ -517,6 +567,9 @@ export class Game {
     this.hud.flash(this.text.t(zoneMsgKey));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
+    if (zone.bigWorldStreaming) document.documentElement.dataset.bigWorld = '1';
+    else delete document.documentElement.dataset.bigWorld;
+    document.documentElement.dataset.runes = String(zone.runes.length);
     this.bus.emit('zone_enter', { name, areaId: zone.areaId });
   }
 
@@ -884,13 +937,50 @@ export class Game {
     if (qh) this.questEncounters.update(w, qh);
     const h = w.hero;
     if (h.s.playing) this.heroUpdate(dt);
-    this.forestGround?.sync(h.pos);
-    syncProximitySpawns(w, this.factory, h.pos);
+    if (h.s.playing) this.camera.follow(h.pos, dt);
+    if (this.forestGround instanceof BigWorldStreamGround) {
+      const view = this.camera.viewWorldAabb(BIG_WORLD_GROUND_VIEW_MARGIN);
+      this.forestGround.sync(
+        h.pos,
+        w.session.worldSeed,
+        w.session.seed,
+        { objects: w.objects, zone: w.zone },
+        this.renderer.app.renderer,
+        view,
+      );
+      syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.worldSeed, w.session.seed, h.pos);
+      if (w.zone.areaId === 'startskogen') syncProximitySpawns(w, this.factory, h.pos);
+      const hc = worldToChunk(h.pos.x, h.pos.y);
+      const fg = this.forestGround;
+      if (smokeMetricsEnabled()) {
+        document.documentElement.dataset.heroWx = h.pos.x.toFixed(1);
+        document.documentElement.dataset.heroWy = h.pos.y.toFixed(1);
+        if (hc.cx !== this.streamMetricsCx || hc.cy !== this.streamMetricsCy) {
+          this.streamMetricsCx = hc.cx;
+          this.streamMetricsCy = hc.cy;
+          const foot = this.camera.toScreen(h.pos.x, h.pos.y);
+          document.documentElement.dataset.heroChunk = `${hc.cx},${hc.cy}`;
+          document.documentElement.dataset.groundObjects = String(fg.countGroundDisplayObjects());
+          document.documentElement.dataset.renderTextures = String(fg.countRenderTextures());
+          document.documentElement.dataset.groundReady = fg.isGroundReady() ? '1' : '0';
+          if (fg.isGroundReady()) {
+            document.documentElement.dataset.groundPixel = fg.probeGroundPixel(this.renderer.app.renderer, foot.x, foot.y + 28) ? '1' : '0';
+          }
+        } else if (fg.isGroundReady() && document.documentElement.dataset.groundReady !== '1') {
+          document.documentElement.dataset.groundReady = '1';
+          const foot = this.camera.toScreen(h.pos.x, h.pos.y);
+          document.documentElement.dataset.groundPixel = fg.probeGroundPixel(this.renderer.app.renderer, foot.x, foot.y + 28) ? '1' : '0';
+        }
+      }
+    } else {
+      this.forestGround?.sync(h.pos);
+      syncProximitySpawns(w, this.factory, h.pos);
+    }
     this.ai.update(dt);
     this.combat.update(dt);
     this.lootSys.update(dt);
     this.portals.update(dt);
-    this.camera.follow(h.pos, dt);
+    if (!(this.forestGround instanceof BigWorldStreamGround)) this.camera.follow(h.pos, dt);
     this.parallax.update(this.camera.pos);
     this.hud.update(dt, h, this.camera, {
       period: clockPeriodLabel(this.gameClock.view.isNight),

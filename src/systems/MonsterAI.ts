@@ -34,7 +34,7 @@ export class MonsterAI {
         m.view.update(dt);
         m.view.alpha = Math.max(0, 1 - Math.max(0, m.dead - 0.8) * 1.5);
         if (m.dead > 1.6) {
-          m.view.destroy();
+          m.view.destroy({ children: true });
           w.monsters.splice(w.monsters.indexOf(m), 1);
         }
         continue;

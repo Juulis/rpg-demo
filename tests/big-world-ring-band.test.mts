@@ -40,7 +40,7 @@ const start = DATA.varldStor.meta.startpunkt.chunk;
 for (const seed of scanOpts.seeds) {
   for (let cx = -scanOpts.radius; cx <= scanOpts.radius; cx++) {
     for (let cy = -scanOpts.radius; cy <= scanOpts.radius; cy++) {
-      const d = generateChunkWorldData(seed, cx, cy, catalog);
+      const d = generateChunkWorldData(seed, seed, cx, cy, catalog);
       if (d.ring > scanOpts.maxRing) continue;
       const dist = chunkDistanceFromStart(cx, cy, start);
       const chunkRing = ringAtChunkDistance(dist, ringar);

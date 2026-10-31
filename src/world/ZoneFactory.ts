@@ -7,6 +7,9 @@ import { Iso, TILE_WORLD } from '../render/Iso';
 import { StripAnimSprite } from '../render/StripAnimSprite';
 import { FOREST_CITY_PORTALS, FOREST_DECOR_MID, FOREST_DECOR_OUTER, FOREST_PLAY_RADIUS, FOREST_SAFE_RADIUS } from './forestConstants';
 import { ForestGroundChunks } from './ForestGroundChunks';
+import { BigWorldStreamGround } from './bigWorld/BigWorldStreamGround';
+import { BIG_WORLD_STREAMING_ENABLED } from './bigWorld/bigWorldConfig';
+import { bigWorldCityPortalWorld } from './bigWorld/bigWorldPortals';
 import {
   CITY_RNG_SEED,
   cityAreaId,
@@ -78,6 +81,7 @@ export class ZoneFactory {
   }
 
   private forest(): BuiltZone {
+    if (BIG_WORLD_STREAMING_ENABLED) return this.bigWorldForest();
     const R = new Rng(7);
     const span = Math.ceil(FOREST_PLAY_RADIUS * 2.2);
     const zone = new Zone('forest', 'startskogen', span, span);
@@ -129,6 +133,36 @@ export class ZoneFactory {
     if (fire) {
       decor.push(fire);
       decorAnims.push(fire);
+    }
+    return { zone, ground, decor, decorAnims, runeSprites };
+  }
+
+  /** Stor värld: chunk-streaming (world_seed + game_seed). Obegränsad värld — se BIG_WORLD_UNBOUNDED. */
+  private bigWorldForest(): BuiltZone {
+    const zone = new Zone('forest', 'startskogen', 4096, 4096);
+    zone.bigWorldStreaming = true;
+    zone.safeRadius = FOREST_SAFE_RADIUS;
+    zone.entry = { x: 4, y: 4 };
+    const ground = new BigWorldStreamGround(this.assets);
+    const decor: Container[] = [];
+    const decorAnims: StripAnimSprite[] = [];
+    const runeSprites: Sprite[] = [];
+    for (const [x, y] of RUNE_POS) {
+      zone.runes.push({ x, y, active: false });
+      zone.colliders.push({ x, y, r: 0.8 });
+      const s = this.decorSprite('runsten', x, y, 0.42);
+      runeSprites.push(s);
+      decor.push(s);
+    }
+    decor.push(this.decorSprite('eldstad_kall', -1.2, 2.6, 0.34));
+    const fire = this.decorAnimSprite('lagereld_anim', -1.2, 2.6, 0.34);
+    if (fire) {
+      decor.push(fire);
+      decorAnims.push(fire);
+    }
+    for (const city of PLAYABLE_CITIES) {
+      const p = bigWorldCityPortalWorld(city);
+      zone.portals.push({ x: p.x, y: p.y, target: city });
     }
     return { zone, ground, decor, decorAnims, runeSprites };
   }

@@ -108,6 +108,7 @@ export class AutoSaveService {
       hero: { id: cur.hero.id, name: cur.hero.name, cls: h.cls, level: h.level, xp: h.xp, gold: h.gold, inv: h.inv, equip: h.equip },
       game: {
         seed: g?.seed || cur.game?.seed || this.ctx.session.seed,
+        worldSeed: g?.worldSeed ?? cur.game?.worldSeed ?? this.ctx.session.worldSeed,
         killed: g?.killed ?? [],
         zone: g?.zone || this.ctx.zone.name || 'forest',
         pos: g?.pos ? [r2(g.pos.x, 2), r2(g.pos.y, 2)] : null,

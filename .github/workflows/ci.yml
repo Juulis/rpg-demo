@@ -22,5 +22,10 @@ jobs:
       - name: Sätt ihop Pages-artefakten (2D på roten, next/ omdirigerar)
         run: node scripts/assemble-pages.mjs
       - run: npx playwright install --with-deps chromium
-      - name: Röktest – 2D på roten
+      - name: Röktest – vanligt produktionsbygge
+        run: SMOKE_MODE=plain npm run smoke
+      - run: VITE_CAPTURE_HOOK=true npm run build
+      - name: Sätt ihop Pages-artefakten (capture)
+        run: node scripts/assemble-pages.mjs
+      - name: Röktest – capture-hook
         run: npm run smoke

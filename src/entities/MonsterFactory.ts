@@ -34,6 +34,20 @@ export class MonsterFactory {
 
   /** Spawnlista per game; Startskogen instansierar nära hjälten (se syncProximitySpawns). */
   populate(w: World, cityState: string): void {
+    if (w.zone.bigWorldStreaming) {
+      if (w.zone.areaId === 'startskogen') {
+        const area = this.spawn.area(w.zone.areaId);
+        const specs = this.spawn.roll(area, w.session, { cityState });
+        w.spawnQueue = specs.map((s) => {
+          const p = w.zone.toWorld(s.pos);
+          w.zone.collide(p, 0.5);
+          return { spec: s, pos: p, done: false };
+        });
+      } else {
+        w.spawnQueue = [];
+      }
+      return;
+    }
     const area = this.spawn.area(w.zone.areaId);
     const specs = this.spawn.roll(area, w.session, { cityState });
     if (w.zone.areaId === 'startskogen') {

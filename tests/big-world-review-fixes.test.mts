@@ -27,19 +27,19 @@ assert.throws(() => new ChunkWorldCache({ maxEntries: 48, keepRadius: 3 }));
 const cache = new ChunkWorldCache({ maxEntries: 49, keepRadius: 3 });
 const objs = new Set<object>();
 for (let i = 0; i < 5; i++) {
-  cache.syncNear(1, i * 10, 0);
+  cache.syncNear(1, 1, i * 10, 0);
   for (let dx = -3; dx <= 3; dx++) {
     for (let dy = -3; dy <= 3; dy++) {
-      objs.add(cache.get(1, i * 10 + dx, dy));
+      objs.add(cache.get(1, 1, i * 10 + dx, dy));
     }
   }
 }
 assert.equal(objs.size, 5 * 49, 'syncNear ska inte återanvända chunkobjekt inom keep');
 
 const tight = new ChunkWorldCache({ maxEntries: 9, keepRadius: 1 });
-for (let i = 0; i < 8; i++) tight.get(1, i, 0);
+for (let i = 0; i < 8; i++) tight.get(1, 1, i, 0);
 assert.ok(tight.size() <= 9);
-const pinned = tight.get(1, 99, 0);
+const pinned = tight.get(1, 1, 99, 0);
 assert.equal(pinned.cx, 99);
 assert.ok(tight.size() <= 9);
 
@@ -63,7 +63,7 @@ const stripped = structuredClone(DATA.varldStor);
 stripped.biomer.kust.monsterfamiljer = { gastar: [], ododa: [] };
 stripped.biomer.kust.egna_monster = [];
 const strippedCat = buildBigWorldCatalog(stripped);
-const kustChunk = generateChunkWorldData(5, -10, -7, strippedCat);
+const kustChunk = generateChunkWorldData(5, 5, -10, -7, strippedCat);
 assert.equal(kustChunk.spawnSubtypes.length, 0);
 const stripScan = validateVarldStorSpawnScan(stripped, ctx, {
   seeds: [5],

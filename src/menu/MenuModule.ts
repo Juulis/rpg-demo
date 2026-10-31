@@ -39,7 +39,11 @@ export class MenuModule implements GameModule {
     });
     this.host().appendChild(this.menu.root);
     const menu = this.menu;
-    if (this.showOnInit) void this.save.ready.then(() => menu.show());
+    if (this.showOnInit)
+      void this.save.ready.then(() => {
+        if (this.save.autosave.isPlaying) return;
+        menu.show();
+      });
   }
 
   /** Visa hjältevalet (t.ex. från motorns "Spela igen"/Esc-meny). */

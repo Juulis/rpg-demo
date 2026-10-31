@@ -5,6 +5,9 @@ import { extname, join, resolve } from 'node:path';
 import { chromium } from 'playwright';
 
 const dist = resolve(process.argv[2] ?? 'dist');
+/** plain = produktionsbygge. full = capture-hook + prestandabudget. */
+const smokeMode = process.env.SMOKE_MODE === 'plain' ? 'plain' : 'full';
+const captureBuild = smokeMode === 'full';
 const TYPES = {
   '.html': 'text/html',
   '.js': 'text/javascript',
@@ -36,14 +39,32 @@ if (!existsSync(join(dist, 'assets'))) fail.push('roten saknar assets/ (Vite-byg
 
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 
-async function visit(path, check) {
+async function readMetrics(page) {
+  return page.evaluate(() => {
+    const cap = window.__game?.captureBigWorldMetrics?.();
+    if (cap) return { ...cap, heroChunk: document.documentElement.dataset.heroChunk ?? '' };
+    const d = document.documentElement.dataset;
+    return {
+      groundReady: d.groundReady === '1',
+      displayObjects: Number(d.groundObjects ?? 0),
+      renderTextures: Number(d.renderTextures ?? 0),
+      groundPixel: d.groundPixel === '1',
+      heroWx: Number(d.heroWx ?? 0),
+      heroWy: Number(d.heroWy ?? 0),
+      heroChunk: d.heroChunk ?? '',
+    };
+  });
+}
+
+async function visit(path, check, startGame = false) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const errs = [];
   page.on('pageerror', (e) => errs.push(String(e)));
   page.on('console', (m) => m.type() === 'error' && errs.push(m.text()));
   page.on('response', (r) => r.status() >= 400 && r.url().startsWith(base) && errs.push(`${r.status()} ${r.url()}`));
   await page.goto(base + path, { waitUntil: 'load' });
-  await page.waitForTimeout(6000);
+  if (startGame) await startNewGame(page);
+  else await page.waitForTimeout(6000);
   const ok = await page.evaluate(check);
   if (!ok) errs.push('spelet startade inte (kontroll misslyckades)');
   console.log(`${path || '/'}: ${errs.length ? 'FEL' : 'OK'}`);
@@ -51,9 +72,22 @@ async function visit(path, check) {
   await page.close();
 }
 
+async function startNewGame(page, heroName = 'Rök') {
+  await page.waitForSelector('#hmNewHero', { timeout: 30000 });
+  await page.click('#hmNewHero');
+  await page.waitForSelector('.hero-name', { timeout: 10000 });
+  await page.fill('.hero-name', heroName);
+  await page.click('#hnOk');
+  await page.waitForSelector('#app canvas', { timeout: 30000 });
+  await page.waitForFunction(() => document.querySelector('.hero-menu')?.classList.contains('hidden'), null, { timeout: 90000 });
+  await page.waitForFunction(() => document.documentElement.dataset.zone === 'forest', null, { timeout: 90000 });
+}
+
 const gameReady = async () => {
   const d = document.documentElement.dataset;
   if (!document.querySelector('#app canvas') || d.zone !== 'forest' || !document.querySelector('#hud')) return false;
+  if (d.bigWorld !== '1') return false;
+  if (d.runes !== '3') return false;
   const cm = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
   document.querySelector('#app canvas').dispatchEvent(cm);
   const alt = new KeyboardEvent('keydown', { key: 'Alt', code: 'AltLeft', bubbles: true, cancelable: true });
@@ -70,13 +104,169 @@ const gameReady = async () => {
   return cm.defaultPrevented && alt.defaultPrevented && zOn && zOff;
 };
 
-await visit('', gameReady);
+await visit('', gameReady, true);
+
+async function runChunkStreamTest(page, modeLabel) {
+  const chunkErrs = [];
+  page.on('pageerror', (e) => chunkErrs.push(String(e)));
+  page.on('console', (m) => m.type() === 'error' && chunkErrs.push(m.text()));
+  const chunkUrl = captureBuild ? base : `${base}?smoke=1`;
+  await page.goto(chunkUrl, { waitUntil: 'load' });
+  await startNewGame(page, 'Chunk');
+
+  async function waitGroundReady(ms = 120000) {
+    await page.waitForFunction(
+      () => window.__game?.captureBigWorldMetrics?.()?.groundReady === true || document.documentElement.dataset.groundReady === '1',
+      null,
+      { timeout: ms, polling: 200 },
+    );
+  }
+
+  try {
+    await waitGroundReady();
+  } catch {
+    chunkErrs.push('mark blev inte klar (groundReady)');
+  }
+
+  const startProbe = await readMetrics(page);
+  const startChunk = startProbe.heroChunk || '0,0';
+  const wxBefore = startProbe.heroWx;
+
+  if (captureBuild) {
+    const chunkSpan = 128;
+    const teleported = await page.evaluate(
+      ({ x, y, span }) => {
+        if (!window.__smoke?.teleportWorld) return false;
+        window.__smoke.teleportWorld(x + span * 1.5, y);
+        return true;
+      },
+      { x: startProbe.heroWx, y: startProbe.heroWy, span: chunkSpan },
+    );
+    if (!teleported) chunkErrs.push('teleportWorld saknas (capture-bygge)');
+    try {
+      await page.waitForFunction(
+        (prev) => {
+          const c = document.documentElement.dataset.heroChunk;
+          return !!c && c !== prev;
+        },
+        startChunk,
+        { timeout: 30000, polling: 200 },
+      );
+    } catch {
+      chunkErrs.push('chunkbyte: heroChunk ändrades inte efter teleport');
+    }
+  } else {
+    let crossed = false;
+    for (let attempt = 0; attempt < 48 && !crossed; attempt++) {
+      await page.evaluate(() => window.__smoke?.moveHeroBy(48, 0));
+      try {
+        await page.waitForFunction(
+          (prev) => {
+            const c = document.documentElement.dataset.heroChunk;
+            return !!c && c !== prev;
+          },
+          startChunk,
+          { timeout: 8000, polling: 250 },
+        );
+        crossed = true;
+      } catch {
+        /* långsam gång på CI — fortsätt nudge */
+      }
+    }
+    if (!crossed) chunkErrs.push('chunkbyte: heroChunk ändrades inte (plain moveHeroBy)');
+  }
+
+  await page.waitForTimeout(2000);
+  await page.evaluate(() => window.__smoke?.moveHeroBy(24, 0));
+  await page.waitForTimeout(1500);
+  const wxAfter = Number((await readMetrics(page)).heroWx);
+  if (Math.abs(wxAfter - wxBefore) < 0.5) chunkErrs.push('ingen rörelse efter chunkbyte');
+
+  let chunkProbe = { groundPixel: true, textures: 0, objects: 0, fpsMedian: 99 };
+  if (captureBuild) {
+    chunkProbe = await page.evaluate(async () => {
+      const read = () => {
+        const cap = window.__game?.captureBigWorldMetrics?.();
+        if (cap) return cap;
+        const d = document.documentElement.dataset;
+        return {
+          groundReady: d.groundReady === '1',
+          displayObjects: Number(d.groundObjects ?? 0),
+          renderTextures: Number(d.renderTextures ?? 0),
+          groundPixel: d.groundPixel === '1',
+        };
+      };
+      const m = read();
+      const fpsSamples = [];
+      for (let s = 0; s < 5; s++) {
+        let frames = 0;
+        const t0 = performance.now();
+        await new Promise((resolve) => {
+          const loop = () => {
+            frames++;
+            if (performance.now() - t0 >= 1000) return resolve(undefined);
+            requestAnimationFrame(loop);
+          };
+          requestAnimationFrame(loop);
+        });
+        fpsSamples.push(frames);
+      }
+      fpsSamples.sort((a, b) => a - b);
+      return {
+        groundPixel: m?.groundPixel,
+        textures: m?.renderTextures ?? 0,
+        objects: m?.displayObjects ?? 0,
+        fpsMedian: fpsSamples[2] ?? fpsSamples[0] ?? 0,
+      };
+    });
+    if (!chunkProbe.groundPixel) chunkErrs.push('pixelprov såg ingen mark');
+    if (chunkProbe.textures > 50) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
+    if (chunkProbe.objects > 30_000) chunkErrs.push(`för många byggda mark-objekt: ${chunkProbe.objects}`);
+    if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
+  }
+
+  console.log(`chunk-stream (${modeLabel}): ${JSON.stringify({ ...chunkProbe, startChunk })}`);
+  return chunkErrs;
+}
+
+{
+  const chunkPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  const errs = await runChunkStreamTest(chunkPage, smokeMode);
+  if (captureBuild) {
+    const heroId = await chunkPage.evaluate(() => {
+      const keys = Object.keys(localStorage).filter((k) => k.startsWith('rpg_hero_'));
+      const last = keys.sort().pop();
+      if (!last) return null;
+      try {
+        const raw = JSON.parse(localStorage.getItem(last) || 'null');
+        return raw?.game?.worldSeed != null ? { id: raw.hero?.id, worldSeed: raw.game.worldSeed } : null;
+      } catch {
+        return null;
+      }
+    });
+    if (!heroId?.worldSeed) errs.push('autospar saknar worldSeed i localStorage');
+    else {
+      const ws0 = heroId.worldSeed;
+      await chunkPage.reload({ waitUntil: 'load' });
+      await chunkPage.waitForSelector('#hmNewHero', { timeout: 30000 });
+      await chunkPage.click('#hmCont');
+      await chunkPage.waitForFunction(() => document.documentElement.dataset.zone === 'forest', null, { timeout: 90000 });
+      const ws1 = await chunkPage.evaluate((id) => {
+        const raw = JSON.parse(localStorage.getItem(`rpg_hero_${id}`) || 'null');
+        return raw?.game?.worldSeed ?? null;
+      }, heroId.id);
+      if (ws1 !== ws0) errs.push(`worldSeed ändrades efter Fortsätt: ${ws0} -> ${ws1}`);
+    }
+  }
+  if (errs.length) fail.push(...errs.map((e) => `chunk: ${e}`));
+  await chunkPage.close();
+}
 
 for (const legacyPath of ['next/', 'legacy-3d/']) {
   const page = await browser.newPage();
   await page.goto(base + legacyPath, { waitUntil: 'load' });
   await page.waitForTimeout(1500);
-  const ok = new URL(page.url()).pathname === '/rpg-demo/';
+  const ok = new URL(page.url()).pathname.endsWith('/rpg-demo/') || new URL(page.url()).pathname === '/rpg-demo/';
   console.log(`${legacyPath}: ${ok ? 'OK (omdirigerad)' : 'FEL'}`);
   if (!ok) fail.push(`${legacyPath} omdirigerar inte till roten`);
   await page.close();
