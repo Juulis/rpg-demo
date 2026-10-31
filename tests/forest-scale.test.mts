@@ -16,6 +16,7 @@ assert.ok(Math.abs(areaRatio - FOREST_AREA_SCALE) < 0.05, `yta ~10×: ${areaRati
 
 const spawn = new SpawnSystem();
 const session = createSession();
+session.worldSeed = 424242;
 session.seed = 424242;
 const specs = spawn.roll(spawn.area('startskogen'), session, {});
 let xp = 0;

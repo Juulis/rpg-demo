@@ -95,6 +95,8 @@ export interface HeroSave {
   hero: Pick<HeroState, 'id' | 'name' | 'cls' | 'level' | 'xp' | 'gold' | 'inv' | 'equip' | 'fresh'>;
   game: {
     seed: number;
+    /** Geografiseed (chunk-layout); saknas i äldre sparfiler → migreras från seed. */
+    worldSeed?: number;
     killed: string[];
     zone: string;
     pos: Vec2 | null;

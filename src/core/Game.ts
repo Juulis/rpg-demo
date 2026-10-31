@@ -16,7 +16,8 @@ import { MonsterFactory } from '../entities/MonsterFactory';
 import { syncProximitySpawns } from '../systems/SpawnProximity';
 import { ForestGroundChunks } from '../world/ForestGroundChunks';
 import { BigWorldStreamGround } from '../world/bigWorld/BigWorldStreamGround';
-import { syncBigWorldChunkMonsters } from '../world/bigWorld/syncBigWorldChunkMonsters';
+import { syncBigWorldChunkMonsters, resetBigWorldMonsterSync } from '../world/bigWorld/syncBigWorldChunkMonsters';
+import { worldToChunk } from '../world/bigWorld/bigWorldCoords';
 import { Input } from '../input/Input';
 import { Loot } from '../logic/loot/Loot';
 import type { Item } from '../logic/loot/types';
@@ -305,8 +306,9 @@ export class Game {
     h.zone = g?.zone ?? 'forest';
     h.resumePos = g?.pos ? { ...g.pos } : null;
     h.playing = false;
-    const s = g ? createSession(g.seed, g.killed) : createSession();
+    const s = g ? createSession(g.seed, g.killed, g.worldSeed ?? g.seed) : createSession();
     this.ctx.session.seed = s.seed;
+    this.ctx.session.worldSeed = s.worldSeed;
     this.ctx.session.killed.clear();
     for (const id of s.killed) this.ctx.session.killed.add(id);
     if (h.id) this.bus.emit('hero_loaded', { heroId: h.id });
@@ -338,6 +340,7 @@ export class Game {
       },
       game: {
         seed: this.ctx.session.seed,
+        worldSeed: this.ctx.session.worldSeed,
         killed: [...this.ctx.session.killed],
         zone: h.zone,
         pos: { ...h.pos },
@@ -352,8 +355,9 @@ export class Game {
 
   /** Nytt game (D2): ny seed, tomma killed, runor nollställs, start i skogen. Hjälte och utrustning behålls. */
   newGame(): void {
-    const s = createSession();
-    this.ctx.session.seed = s.seed;
+    const worldSeed = this.ctx.session.worldSeed;
+    this.ctx.session.seed = Rng.newSeed();
+    this.ctx.session.worldSeed = worldSeed;
     this.ctx.session.killed.clear();
     const h = this.heroState;
     h.runes = 0;
@@ -364,7 +368,7 @@ export class Game {
     this.worldState.setRunesActive(0);
     for (const z of PLAYABLE_CITIES) this.worldState.setCityState(cityAreaId(z), 'besatt');
     this.gameClock.resetForNewHero();
-    this.bus.emit('new_game', { seed: s.seed });
+    this.bus.emit('new_game', { seed: this.ctx.session.seed });
     this.enterZone('forest');
   }
 
@@ -487,8 +491,9 @@ export class Game {
     const citySpawn = this.worldState.get().city_states[areaId] ?? (areaId === 'gamla_byn' ? hs.city : 'besatt');
     this.factory.populate(this.world, citySpawn);
     if (zone.bigWorldStreaming && this.forestGround instanceof BigWorldStreamGround) {
-      this.forestGround.sync(hs.pos, this.session.seed);
-      syncBigWorldChunkMonsters(this.world, this.forestGround.chunkCache, this.factory, this.session.seed, hs.pos);
+      resetBigWorldMonsterSync();
+      this.forestGround.sync(hs.pos, this.session.worldSeed, this.session.seed, { objects: r.objects, zone }, this.renderer.app.renderer);
+      syncBigWorldChunkMonsters(this.world, this.forestGround.chunkCache, this.factory, this.session.worldSeed, this.session.seed, hs.pos);
     } else {
       syncProximitySpawns(this.world, this.factory, hs.pos);
     }
@@ -526,6 +531,7 @@ export class Game {
     document.documentElement.dataset.zone = name;
     if (zone.bigWorldStreaming) document.documentElement.dataset.bigWorld = '1';
     else delete document.documentElement.dataset.bigWorld;
+    document.documentElement.dataset.runes = String(zone.runes.length);
     this.bus.emit('zone_enter', { name, areaId: zone.areaId });
   }
 
@@ -894,8 +900,13 @@ export class Game {
     const h = w.hero;
     if (h.s.playing) this.heroUpdate(dt);
     if (this.forestGround instanceof BigWorldStreamGround) {
-      this.forestGround.sync(h.pos, w.session.seed);
-      syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.seed, h.pos);
+      this.forestGround.sync(h.pos, w.session.worldSeed, w.session.seed, { objects: w.objects, zone: w.zone }, this.renderer.app.renderer);
+      syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.worldSeed, w.session.seed, h.pos);
+      const hc = worldToChunk(h.pos.x, h.pos.y);
+      document.documentElement.dataset.heroChunk = `${hc.cx},${hc.cy}`;
+      document.documentElement.dataset.groundObjects = String(this.forestGround.countGroundDisplayObjects());
+      document.documentElement.dataset.heroWx = h.pos.x.toFixed(1);
+      document.documentElement.dataset.heroWy = h.pos.y.toFixed(1);
     } else {
       this.forestGround?.sync(h.pos);
       syncProximitySpawns(w, this.factory, h.pos);

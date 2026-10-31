@@ -32,7 +32,7 @@ export function validateVarldStorSpawnScan(bw: BigWorldDataFile, _ctx: VarldStor
   for (const seed of seeds) {
     for (let cx = -scanR; cx <= scanR; cx++) {
       for (let cy = -scanR; cy <= scanR; cy++) {
-        const d = generateChunkWorldData(seed, cx, cy, catalog);
+        const d = generateChunkWorldData(seed, seed, cx, cy, catalog);
         if (d.ring > maxRing) continue;
 
         const dist = chunkDistanceFromStart(cx, cy, start);
@@ -84,7 +84,7 @@ export function mellanmarkEmptyCoverage(bw: BigWorldDataFile, opts: SpawnScanOpt
   for (const seed of seeds) {
     for (let cx = -scanR; cx <= scanR; cx++) {
       for (let cy = -scanR; cy <= scanR; cy++) {
-        const d = generateChunkWorldData(seed, cx, cy, catalog);
+        const d = generateChunkWorldData(seed, seed, cx, cy, catalog);
         if (d.ring > maxRing) continue;
         if (!d.mellanmark || d.safe) continue;
         const key = `${d.ring}|${d.biomeId}`;

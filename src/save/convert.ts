@@ -14,6 +14,7 @@ export function toHeroSave(d: SaveFile): HeroSave {
     game: g
       ? {
           seed: g.seed,
+          worldSeed: g.worldSeed ?? g.seed,
           killed: [...g.killed],
           zone: g.zone,
           pos: g.pos ? { x: g.pos[0], y: g.pos[1] } : null,
@@ -49,6 +50,7 @@ export function fromHeroSave(s: HeroSave, foundItems?: Record<string, FoundEntry
     game: g
       ? {
           seed: g.seed,
+          worldSeed: g.worldSeed ?? g.seed,
           killed: [...g.killed],
           zone: g.zone,
           pos: g.pos ? [r2(g.pos.x), r2(g.pos.y)] : null,

@@ -20,6 +20,8 @@ export interface HeroRecord {
 
 export interface GameRecord {
   seed: number;
+  /** Chunk-geografi; om saknas används seed (migration). */
+  worldSeed?: number;
   killed: string[];
   zone: string;
   /** [x, y] i 2D (legacy-3D sparade [x, z], samma axlar på kartan). */

@@ -88,7 +88,7 @@ const ctx: GameContext = {
     fresh: false,
   },
   zone: { name: 'forest', areaId: 'startskogen', width: 44, height: 44, ...zoneExtras } as GameContext['zone'],
-  session: { seed: 1, killed: new Set() },
+  session: { seed: 1, worldSeed: 1, killed: new Set() },
   data: DATA,
   rng: new Rng(1),
   worldState: new WorldStateService(),

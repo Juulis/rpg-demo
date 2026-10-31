@@ -83,13 +83,17 @@ export function getBigWorldCatalog(): BigWorldCatalog {
   return catalogSingleton;
 }
 
-function chunkSeed(gameSeed: number, cx: number, cy: number): number {
-  return Rng.hash('chunk', gameSeed, cx, cy);
+function chunkLayoutSeed(worldSeed: number, cx: number, cy: number): number {
+  return Rng.hash('chunk', worldSeed, cx, cy);
 }
 
-/** Publik för cache-validering (D2-seed per chunk). */
-export function chunkWorldSeed(gameSeed: number, cx: number, cy: number): number {
-  return chunkSeed(gameSeed, cx, cy);
+function chunkSpawnRollSeed(gameSeed: number, cx: number, cy: number): number {
+  return Rng.hash('spawn', gameSeed, cx, cy);
+}
+
+/** Publik för cache-validering (world_seed per chunk). */
+export function chunkWorldSeed(worldSeed: number, cx: number, cy: number): number {
+  return chunkLayoutSeed(worldSeed, cx, cy);
 }
 
 function primaryBiomeAt(catalog: BigWorldCatalog, cx: number, cy: number): { region: BigWorldRegion; mellanmark: boolean } {
@@ -112,7 +116,7 @@ function rollChunkSpawns(
   if (!genereradSpawn || subtypes.length === 0) return [];
   const allowed = filterSubtypesByBand(subtypes, band);
   if (allowed.length === 0) return [];
-  const rng = new Rng(chunkSeed(gameSeed, cx, cy));
+  const rng = new Rng(chunkSpawnRollSeed(gameSeed, cx, cy));
   const count = rng.int([2, 5]);
   const out: BigWorldSpawnRoll[] = [];
   const tileSize = catalogSingleton?.data.meta.chunk?.storlek_rutor ?? 64;
@@ -128,8 +132,9 @@ function rollChunkSpawns(
   return out;
 }
 
-/** Genererar all data för en chunk (D2 — en gång per game seed). */
+/** Genererar all data för en chunk (layout = world_seed, spawns = game_seed). */
 export function generateChunkWorldData(
+  worldSeed: number,
   gameSeed: number,
   cx: number,
   cy: number,
@@ -182,7 +187,7 @@ export function generateChunkWorldData(
   return {
     cx,
     cy,
-    chunkSeed: chunkSeed(gameSeed, cx, cy),
+    chunkSeed: chunkLayoutSeed(worldSeed, cx, cy),
     distanceChunks: distance,
     ring: chunkRing.ring,
     levelBand: spawnBand,
