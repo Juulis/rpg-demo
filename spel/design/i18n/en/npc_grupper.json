@@ -1,0 +1,64 @@
+{
+  "grupper": {
+    "flyktingarna_vargstigen": {
+      "namn": "The Refugees on the Wolf Trail",
+      "vilka": "A family from an emptied village in the east, pulling a cart towards the camp. They have walked for nine days.",
+      "medlemmar": {
+        "flykting": {
+          "namn": "Refugee"
+        },
+        "karrdragare": {
+          "namn": "Cart Hauler"
+        }
+      }
+    },
+    "heddas_jaktlag": {
+      "namn": "Hedda's Hunting Party",
+      "vilka": "Three hunters from Wolfstead sent out by Hedda for meat. They took a grey wolf and drew the pack.",
+      "medlemmar": {
+        "jagare": {
+          "namn": "Hunter"
+        }
+      }
+    },
+    "kolarfamiljen": {
+      "namn": "The Collier Family at the Kiln",
+      "vilka": "Tor the Collier's cousins, who refused to leave the kiln. They burn charcoal to trade for food at the camp.",
+      "medlemmar": {
+        "kolare": {
+          "namn": "Collier"
+        },
+        "kolarbarn": {
+          "namn": "Collier's Child"
+        }
+      }
+    },
+    "avfallingarna": {
+      "namn": "The Deserters from the Ash Road",
+      "vilka": "Two young people who fled the Children of Ash in Ashenhold. They burned their robes but still carry the cult marks on their hands.",
+      "medlemmar": {
+        "avfalling": {
+          "namn": "Deserter"
+        }
+      }
+    },
+    "likbararna": {
+      "namn": "The Corpse Bearers",
+      "vilka": "Two of Bror's men who carry the dead home from the forest to the camp's grave crosses. They have a bier and a lantern.",
+      "medlemmar": {
+        "likbarare": {
+          "namn": "Corpse Bearer"
+        }
+      }
+    },
+    "gravvaktarnas_patrull": {
+      "namn": "The Gravewardens' Patrol",
+      "vilka": "Two of the last Gravewardens, trying to keep the barrows shut. Ebbe believes they are dead.",
+      "medlemmar": {
+        "gravvaktare": {
+          "namn": "Gravewarden"
+        }
+      }
+    }
+  }
+}

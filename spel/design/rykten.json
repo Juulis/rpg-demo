@@ -4,7 +4,8 @@
     "modell": "Se varld.md. villkor tolkas mot world_state; tomt villkor = alltid sant. ersatter döljer ett annat rykte när detta är aktivt. Platshållare i {} fylls från world_state.",
     "inga_sparrar": "Rykten informerar bara, de låser aldrig upp eller spärrar något.",
     "villkor_tillagg": "quest_val: {quest_id: val_id} är sant när questen avslutats med det valet.",
-    "villkor_tillagg2": "npc_state: {npc: state}, faction_rep_gte: {faktion: värde}, flag: {flagga: värde}."
+    "villkor_tillagg2": "npc_state: {npc: state}, faction_rep_gte: {faktion: värde}, flag: {flagga: värde}.",
+    "vandrare_tillagg": "Talare bertil_karran, ragna_spjutbararen och saga_askflykting finns i vandrare.json (#33)."
   },
   "rykten": [
     {
@@ -534,6 +535,200 @@
       },
       "talare": ["rask_avfallen", "olle_vardshus"],
       "prioritet": 3
+    },
+    {
+      "id": "rykte_flyktingarna_framme",
+      "text": "Familjen från öster kom fram till slut. {hjalte} gick emellan när vargarna kom.",
+      "villkor": {
+        "flag": {
+          "hjalpt_flyktingarna_vargstigen": true
+        }
+      },
+      "talare": ["gamla_ylva", "tor_kolare", "bertil_karran"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_flyktingarna_foll",
+      "text": "Det står ett nytt björkkors vid kojorna på Vargstigen. Kärran står kvar.",
+      "villkor": {
+        "flag": {
+          "flyktingarna_vargstigen_foll": true
+        }
+      },
+      "talare": ["bror_vakt", "bertil_karran"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_jaktlaget_hemma",
+      "text": "Heddas jägare kom hem med kött. Det har inte hänt på länge.",
+      "villkor": {
+        "flag": {
+          "hjalpt_heddas_jaktlag": true
+        }
+      },
+      "talare": ["hedda_jagare", "ragna_spjutbararen"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_jaktlaget_saknas",
+      "text": "Hedda väntar på sina jägare vid porten. Ingen säger något.",
+      "villkor": {
+        "flag": {
+          "heddas_jaktlag_skingrat": true
+        }
+      },
+      "talare": ["hedda_jagare", "ragna_spjutbararen"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_kolarna_lever",
+      "text": "Mina kusiner vid milan lever. Någon höll djuren borta från dem.",
+      "villkor": {
+        "flag": {
+          "hjalpt_kolarfamiljen": true
+        }
+      },
+      "talare": ["tor_kolare", "bertil_karran"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_milan_slocknad",
+      "text": "Milan i Kolarmon har slocknat. Barnet sover hos Sigrun nu.",
+      "villkor": {
+        "flag": {
+          "kolarfamiljen_foll": true
+        }
+      },
+      "talare": ["tor_kolare", "sigrun_helare", "bertil_karran"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_avfallingarna_fyra_stenar",
+      "text": "De två från askvägen säger att kulten talar om fyra stenar, inte tre.",
+      "villkor": {
+        "flag": {
+          "hjalpt_avfallingarna": true
+        }
+      },
+      "talare": ["gamla_ylva", "saga_askflykting"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_avfallingarna_tagna",
+      "text": "Två unga flydde från Askeborg. Det förvridna tog dem vid den brunna gården.",
+      "villkor": {
+        "flag": {
+          "avfallingarna_foll": true
+        }
+      },
+      "talare": ["saga_askflykting"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_de_doda_hemma",
+      "text": "Bärarna kom hem med en till. Han har ett kors nu, med sitt namn på.",
+      "villkor": {
+        "flag": {
+          "hjalpt_likbararna": true
+        }
+      },
+      "talare": ["bror_vakt", "gamla_ylva"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_baren_kvar",
+      "text": "En bår står kvar på norra hygget. Lyktan brinner, men ingen bär den.",
+      "villkor": {
+        "flag": {
+          "likbararna_foll": true
+        }
+      },
+      "talare": ["bror_vakt"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_gravvaktarna_lever",
+      "text": "Vakteld på Gravåsen. Två av mina bröder lever.",
+      "villkor": {
+        "flag": {
+          "hjalpt_gravvaktarna_patrull": true
+        }
+      },
+      "talare": ["gravvaktaren_ebbe", "ragna_spjutbararen"],
+      "prioritet": 3
+    },
+    {
+      "id": "rykte_gravvaktarna_tystnat",
+      "text": "Ingen eld på Gravåsen. Ebbe slutade fråga.",
+      "villkor": {
+        "flag": {
+          "gravvaktarna_patrull_foll": true
+        }
+      },
+      "talare": ["gravvaktaren_ebbe", "ragna_spjutbararen"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_vargringen",
+      "text": "Vargarna ylar runt stenarna men går aldrig in. Stenarna minns något.",
+      "villkor": {
+        "runes_active_lt": 3
+      },
+      "talare": ["gamla_ylva", "bertil_karran"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_ugglan",
+      "text": "Ugglan i Dimgranarna hoar en gång för varje levande i lägret. Räkna, om du vågar.",
+      "villkor": {
+        "flag": {
+          "hort_ugglan": true
+        }
+      },
+      "talare": ["lilla_mira"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_rok_fran_kolarmon",
+      "text": "Vi såg rök från Kolarmon i natt. Någon har tänt milan.",
+      "villkor": {
+        "flag": {
+          "tande_milan": true
+        }
+      },
+      "talare": ["tor_kolare", "gamla_ylva"],
+      "prioritet": 2
+    },
+    {
+      "id": "rykte_askan_kommer_norrut",
+      "text": "Askan har börjat falla över Södra mon. Den kommer närmare för varje år.",
+      "villkor": {
+        "flag": {
+          "sett_askregnet": true
+        }
+      },
+      "talare": ["saga_askflykting", "sigrun_helare"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_klockan_utan_rep",
+      "text": "Klockan i Vargaby slår vid midnatt. Repet skars av för tjugofem år sedan.",
+      "villkor": {
+        "boss_not_killed": "grabjornen_ulvhild"
+      },
+      "talare": ["hedda_jagare", "bertil_karran"],
+      "prioritet": 1
+    },
+    {
+      "id": "rykte_lyktorna_pa_hygget",
+      "text": "Lyktor går mot Gravåsen om natten. Bärarna säger att det inte är deras.",
+      "villkor": {
+        "flag": {
+          "foljt_processionen": true
+        }
+      },
+      "talare": ["bror_vakt"],
+      "prioritet": 1
     }
   ]
 }

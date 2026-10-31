@@ -145,3 +145,8 @@ Questmallar i `quest_mallar`: spår, budbärare, mysterium, val mellan två NPC:
 
 Andra regioner påverkas inte: chunkar utanför alla radier är mellanmark, och en ny region tar bara sina egna chunkar.
 Exempel: Vrakkusten på chunk (-8,-5), ring 4, kust, som binder ihop Den sjunkna kyrkan med Brandkusten.
+
+## Generatorregler och stor bana 1
+
+Regler som generatorn behöver finns i [varldsgenerator.json](varldsgenerator.json): vilken region en chunk tillhör vid överlapp, övergångsband mellan biom, monsterpool med fallback, täthet, placering av läger, ruiner, grottor och andra platser (min avstånd, antal per biom, relativt start och vägar), malniva(d) som funktion av avstånd, ambient och musik per biom samt questankare.
+Ring 0 och 1 är delade i 10 delområden i [bana1_stor.json](bana1_stor.json). Liv i världen: [npc_grupper.json](npc_grupper.json), [varldshandelser.json](varldshandelser.json) och [vandrare.json](vandrare.json).

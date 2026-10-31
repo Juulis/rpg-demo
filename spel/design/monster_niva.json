@@ -448,7 +448,8 @@
     },
     "kalkyl": "2 till 3 skogsgames ger cirka 250 till 370 XP (nivå 2, nära 3 med bonus för lägre nivå). Ett Vargaby game med Gråbjörnen ger cirka 3900 XP till, totalt cirka 4200: nivå 6 (2821), nära 7 (4291). Ett andra Vargaby game ger cirka 5700: nivå 7.",
     "resultat": "Spelaren når nivå 6 till 7 innan portalbyn.",
-    "xp_curve": "100 × n^1,5, totalt nivå 6: 2821, nivå 7: 4291"
+    "xp_curve": "100 × n^1,5, totalt nivå 6: 2821, nivå 7: 4291",
+    "bana1_stor": "Stor bana 1 (#33): se bana1_stor.json nivakurva. Nivå 7 före ring 2, nivå 11 till 12 före akt 2."
   },
   "fixed_levels": {
     "skogsvarg": 1,

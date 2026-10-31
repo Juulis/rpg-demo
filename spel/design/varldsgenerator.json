@@ -1,0 +1,274 @@
+{
+  "meta": {
+    "version": "1.0",
+    "issue": "GitHub Juulis/rpg-demo #85 (världsgeneratorn), kompletterar varld_stor.json",
+    "regel": "Generatorregler som saknades i varld_stor.json. Namngivna regioner, vägar och POI:er i varld_stor.json är fasta; generatorn fyller mellanmarken och placerar mindre platser. Inga spärrar, svårighet styrs bara av monsternivå.",
+    "seed": "Allt geografiskt (biom, tiles, dekor, platser) använder world_seed som skapas en gång per sparfil och aldrig ändras, så kartan är densamma i varje game. Bara monster och butikslager använder game_seed (spawnzoner.json).",
+    "refs": ["varld_stor.json", "bana1_stor.json", "spawnzoner.json", "monster_niva.json", "musik.md", "quests.json"]
+  },
+  "biomgranser": {
+    "region_for_chunk": [
+      "1. Delområden i bana1_stor.json och namngivna regioners mittchunk vinner alltid sin egen chunk.",
+      "2. Säkra regioner (sakert: true) tar bara sin mittchunk, oavsett radie.",
+      "3. Annars: regioner med chebyshevavstånd till mittchunk ≤ radie. Flera träffar: minst euklidiskt avstånd vinner, vid lika vinner regionen med lägst ring, sedan lägst id i bokstavsordning.",
+      "4. Ingen träff: mellanmark. Biom och huvudfamilj från närmaste region (euklidiskt), samma likaregel."
+    ],
+    "ringgrans": "Ring väljs med avstånd d i chunkar från startpunkten mätt till chunkens mitt: ring = den första ring där fran ≤ d < till.",
+    "overgang": {
+      "bredd_rutor": 12,
+      "regel": "Där två biom möts blandas tiles i ett band 12 rutor in på var sida om chunkgränsen. Andel av grannbiomets tiles = 50 procent vid gränsen och faller linjärt till 0 vid bandets kant. Dekor i bandet tas ur biomens overgangar (varld_stor.json biomer.<id>.overgangar).",
+      "brus": "Gränslinjen förskjuts upp till 6 rutor med lågfrekvent brus (world_seed) så att den inte blir rak.",
+      "par_utan_overgang": "Fjäll och träsk, fjäll och kust, fjäll och ask samt skog och kust saknar egen övergång. Om de möts: fjäll går via skog (vindtall), skog och kust går via träsk (myr, sedan tång). Bandbredd 24 rutor.",
+      "monster": "Övergångsbandet spawnar huvudfamiljen för chunkens egen region, ingen mix.",
+      "vagar": "Vägar korsar gränser utan avbrott. Vägytan byter tile vid gränsen (stig, spång, bränd väg, stenväg)."
+    },
+    "vagbredd": {
+      "vag": 3,
+      "stig": 2,
+      "spang": 2,
+      "ebbstig": 2,
+      "bergspass": 3,
+      "gata": 4,
+      "trappa": 3,
+      "schakt": 2
+    },
+    "vagar_spawn": "Inom 4 rutor från väg spawnar högst hälften av normal täthet, så att vägar känns lite tryggare. Ingen säker zon."
+  },
+  "monsterpooler": {
+    "regel": "Pool = biomens egna_monster (varld_stor.json) där undertypens fasta nivå ligger i chunkens nivåfönster. Fönstret är malniva(d) ± 2, klippt till ringens nivaband.",
+    "fallback": [
+      "1. Finns ingen undertyp i fönstret: vidga fönstret till hela ringens band.",
+      "2. Fortfarande tomt: ta undertypen i biomens pool med nivå närmast malniva(d). Stats ändras aldrig.",
+      "3. Biomet saknar helt monster i bandet (till exempel kust i ring 1): använd närmaste regions huvudfamilj och dess undertyper enligt steg 1 till 2."
+    ],
+    "tathet_per_chunk": {
+      "ring_0": [8, 12],
+      "ring_1": [10, 14],
+      "ring_2": [12, 16],
+      "ring_3_och_ut": [12, 18],
+      "not": "Monster per chunk och game i mellanmark. Delområden och namngivna regioner använder sina egna tal (bana1_stor.json, spawnzoner.json)."
+    },
+    "grupper": "Grupper om 1 till 3, ledare (gravargsledare, skelett_kapten och liknande) alltid ensam med 2 till 3 av närmaste lägre undertyp som följe.",
+    "elit": "Champions och unika enligt monster_niva.json elites, samma chans som spawnzoner.json startskogen.",
+    "per_biom": [
+      {
+        "biom": "skog",
+        "nivaband": [1, 10],
+        "pool": "skog_vargar 1 till 6, skog_kolare 3 till 5, skog_gravfolk 7 till 10",
+        "ring": [0, 2]
+      },
+      {
+        "biom": "trask",
+        "nivaband": [7, 30],
+        "pool": "trask_myrlik 7 till 9, dimgastar 10 till 14, ruttfolk 24 till 28, sprickans väsen 29 till 30",
+        "ring": [2, 7],
+        "lucka": "Inga träskmonster för 15 till 23. Träsk i ring 4 och 5 (mellanmark kring Rökkärret och Glödstranden) använder fallback steg 2."
+      },
+      {
+        "biom": "fjall",
+        "nivaband": [11, 19],
+        "pool": "fjällvättar 11 till 13, bergsulvar 14 till 15, gruvkryp 15 till 19, järnbröder 16 till 17",
+        "ring": [3, 4]
+      },
+      {
+        "biom": "kust",
+        "nivaband": [12, 15],
+        "pool": "korpfolk 12 till 13, klockans drunknade 14 till 15",
+        "ring": [3, 4],
+        "lucka": "Sista ljuset (ring 6) är säker by. Kust i ring 6 och ut använder fallback steg 3."
+      },
+      {
+        "biom": "ask",
+        "nivaband": [8, 25],
+        "pool": "kolnade skelett 8 till 10, glödbaggar 15 till 18, askdemoner 19 till 25, askans präster 22 till 24, katedralväktare 24 till 25",
+        "ring": [2, 5],
+        "lucka": "Inga askmonster 11 till 14. Ask i ring 3 använder fallback steg 2."
+      }
+    ]
+  },
+  "platser": {
+    "typer": {
+      "by": {
+        "min_avstand_chunk": 3,
+        "per_biom": "bara namngivna (stader.json)",
+        "placering": "på huvudväg"
+      },
+      "lager": {
+        "min_avstand_rutor": 96,
+        "per_biom": [2, 4],
+        "placering": "inom 8 rutor från väg eller stig, minst 1,5 chunk från by och annat läger",
+        "sakert": "radie 5 till 6 rutor, inga monster"
+      },
+      "ruin": {
+        "min_avstand_rutor": 48,
+        "per_chunk": [0, 2],
+        "placering": "var som helst utom på väg, minst 16 rutor från läger"
+      },
+      "grotta": {
+        "min_avstand_rutor": 128,
+        "per_biom": [2, 3],
+        "placering": "minst 16 rutor från väg, nås via stig. Instans med teleport (atkomst: teleport)"
+      },
+      "kyrka": {
+        "min_avstand_rutor": 128,
+        "per_biom": [1, 2],
+        "placering": "vid by eller väg"
+      },
+      "fyr": {
+        "min_avstand_rutor": 192,
+        "per_biom": "bara kust",
+        "placering": "vid kustlinje"
+      },
+      "gruva": {
+        "min_avstand_rutor": 128,
+        "per_biom": "bara fjäll",
+        "placering": "i sluttning, inom 1 chunk från väg"
+      },
+      "runsten": {
+        "min_avstand_rutor": 64,
+        "per_biom": [1, 3],
+        "placering": "glänta eller vägkorsning. Aldrig mellan de tre runstenarna i startskogen"
+      },
+      "handelseplats": {
+        "min_avstand_rutor": 48,
+        "per_delomrade": [1, 1],
+        "placering": "ankare från varldshandelser.json"
+      },
+      "npc_grupp": {
+        "min_avstand_rutor": 32,
+        "per_delomrade": [0, 1],
+        "placering": "på eller vid väg, minst 24 rutor från läger, minst 18 från hjältens ingång"
+      }
+    },
+    "relativt_start": [
+      "Ingen grotta, kyrka eller bana inom 2 chunkar från startpunkten (startskogen är fri att utforska först).",
+      "Ring 0 får bara ruin, runsten, läger och händelseplatser.",
+      "Varje huvudväg ska ha ett läger eller en säker plats högst 2 chunkar från varje stad den når."
+    ],
+    "algoritm": [
+      "1. Placera fasta POI:er ur varld_stor.json pois på sina ankare.",
+      "2. Per biom: dra antal ur per_biom med world_seed, placera med Poisson disk (min_avstand), förkasta kandidater som bryter placering.",
+      "3. Kandidat som inte får plats efter 30 försök hoppas över; inget annat flyttas.",
+      "4. Ge varje plats ett ankare-id <typ>_<cx>_<cy>_<n> som quests och händelser kan peka på."
+    ],
+    "kollision": "Platser får inte ligga på väg, i vatten eller inom 8 rutor från en teleportingång."
+  },
+  "svarighet_avstand": {
+    "malniva": "malniva(d) = linjär interpolation mellan punkterna, avrundat till heltal.",
+    "punkter": [
+      [0, 1],
+      [2, 3],
+      [4, 6.5],
+      [6, 10],
+      [8, 14.5],
+      [10, 19],
+      [12, 24.5],
+      [15, 30]
+    ],
+    "efter_15": "30 (maxnivå). Ytterkant enligt varld_stor.json zonmodell.",
+    "exempel": [
+      {
+        "d": 1,
+        "malniva": 2
+      },
+      {
+        "d": 3,
+        "malniva": 5
+      },
+      {
+        "d": 5,
+        "malniva": 8
+      },
+      {
+        "d": 7,
+        "malniva": 12
+      },
+      {
+        "d": 9,
+        "malniva": 17
+      },
+      {
+        "d": 11,
+        "malniva": 22
+      },
+      {
+        "d": 13,
+        "malniva": 26
+      }
+    ],
+    "regel": "malniva väljer bara vilka undertyper som får spawna (fönster ± 2). Stats är fasta per undertyp, ingen skalning. Namngivna regioner med egen nivaband går före.",
+    "xp": "Hjältens kurva i monster_niva.json hero_xp_curve (100 × n^1,5). Kontroll för akt 1 i bana1_stor.json nivakurva: nivå 7 före ring 2, nivå 11 till 12 före akt 2.",
+    "kontroll_per_ring": "Hjälten ska vara cirka malniva vid ringens inre kant om han utforskar ungefär hälften av ringen. Räkna om med bana1_stor.json metod när tätheten ändras."
+  },
+  "ljud_och_musik": {
+    "musik_regel": "Enligt musik.md: två spår nu. Byte med korsfade 2 sekunder när hjälten går in i eller ut ur en by eller ett läger.",
+    "per_biom": {
+      "skog": {
+        "musik": "dark_forest_theme",
+        "ambient": ["vind i granar", "korpar långt bort", "kvistar som knäcker", "vargylande på natten"],
+        "natt": "tystare vind, uggla, ylande närmare"
+      },
+      "trask": {
+        "musik": "dark_forest_theme",
+        "ambient": ["bubblor i myren", "grodor", "klockor under vattnet (svagt)", "droppande"],
+        "natt": "grodorna tystnar, klockorna hörs tydligare",
+        "variant_rutt": "pulserande lågt brus, fåglar som sjunger fel"
+      },
+      "fjall": {
+        "musik": "dark_forest_theme (reserv: stone_road när den tas in)",
+        "ambient": ["stark vind", "rasande sten", "hackor långt nere i berget"],
+        "natt": "vinden ylar, hackorna fortsätter"
+      },
+      "kust": {
+        "musik": "dark_forest_theme",
+        "ambient": ["vågor mot klippor", "måsar och korpar", "knarrande vrak"],
+        "natt": "bara vågor och en avlägsen klocka"
+      },
+      "ask": {
+        "musik": "dark_forest_theme",
+        "ambient": ["sprakande glöd", "dov rök som susar", "avlägsna skrik", "aska som faller (mjukt brus)"],
+        "natt": "glöden lyser starkare, skriken närmare"
+      }
+    },
+    "platser": {
+      "by_och_lager": "enchanted_forest_of_min, ambient eld och röster",
+      "rensad_stad": "ingen musik, bara vind, sedan by-spåret från Återbefolkad 1",
+      "grotta_och_kyrka": "ingen musik, ambient droppande och eko",
+      "boss": "ingen egen musik än (musik.md)"
+    },
+    "volym": "Ambient 30 procent av musikvolymen som standard, eget reglage i inställningar, sparas.",
+    "overgang": "Ambient blandas linjärt över biomgränsens övergångsband."
+  },
+  "questplatser": {
+    "regel": "Questmallar i varld_stor.json quest_mallar placerar sina ankare med reglerna här. Inga döda X eller samla X, inga spärrar.",
+    "mallar": {
+      "spar": {
+        "ankare": [3, 5],
+        "avstand_mellan_rutor": [24, 64],
+        "regel": "Ankarna ligger i rad från givaren mot mal_poi, högst 1 chunk från väg. mal_poi i samma eller nästa region."
+      },
+      "budbarare": {
+        "ankare": 2,
+        "regel": "Från givare till mottagare längs väg, minst 2 chunkar mellan dem. Mottagaren är alltid en säker plats eller en NPC i ett läger."
+      },
+      "mysterium": {
+        "ankare": [2, 4],
+        "regel": "Ankarna inom en region eller instans. Minst ett ankare kräver tid (natt) för stämning, aldrig för att låsa något."
+      },
+      "val_tva_npc": {
+        "ankare": 2,
+        "regel": "De två NPC:erna i olika läger eller byar, högst 3 chunkar isär, båda nåbara på väg."
+      },
+      "eskort": {
+        "ankare": 2,
+        "regel": "Start och mål på samma väg, högst 2 chunkar. NPC:n kan inte förlora questen: faller den blir det ett nytt steg (varld_stor.md)."
+      },
+      "aterlamning": {
+        "ankare": 2,
+        "regel": "Föremålet ligger i ruin, grotta eller kyrka; ägaren i närmaste säkra plats eller by."
+      }
+    },
+    "per_region": "Högst 2 aktiva questankare per chunk så att kartan inte blir rörig. Ring 0 och 1 använder främst platserna i varldshandelser.json och bana1_stor.json.",
+    "markering": "Questankare syns inte på kartan förrän questen är aktiv. Världshändelser markeras aldrig."
+  }
+}

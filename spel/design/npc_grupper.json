@@ -1,0 +1,533 @@
+{
+  "meta": {
+    "version": "1.0",
+    "issue": "GitHub Juulis/rpg-demo #33",
+    "regel": "NPC-grupper är små möten ute i världen, inte quests. Ingen questlogg, inget mål att döda X. Gruppen slåss mot en vanlig spawngrupp; hjälper hjälten eller inte så ändras världen lite. Inget spärrar rörelse.",
+    "strid": "Gruppmedlemmar är vanliga människor utan magi. De har fast nivå, HP, skada per träff och försvar som monster, och träffchans enligt attribut.json. Monster väljer närmaste mål, hjälte eller medlem. Medlemmar läker inte mellan strider.",
+    "skala": "HP och skada ligger under monster av samma nivå så att gruppen inte klarar sig själv mer än en kort stund, men bidrar i striden.",
+    "spawn": "visas.chans_per_game rullas med hash(game_seed, grupp_id). När utfallet är satt (en flagga om_hjalpt eller om_ej_hjalpt) visas gruppen aldrig igen för den hjälten.",
+    "om_ej_hjalpt": "Körs om alla medlemmar dör, eller om hjälten lämnar delområdet medan striden pågår. Ingen straffeffekt utöver rykten och miljö.",
+    "xp": "Angriparna ger vanlig XP och loot. Gruppen ger ingen XP i sig, belöningen är världsstaten.",
+    "effekter": "Samma effekttyper som quests.json meta.konsekvenssystem. Flaggor sparas i world_state.flags.",
+    "nya_varden": {
+      "lagrets_hopp": "world_state.values, 0 till 10, styr dekor i lägret (fler eldar, sång vid elden). Ingen spärr."
+    },
+    "refs": ["quests.json", "rykten.json", "npc.json", "bana1_stor.json", "vandrare.json"]
+  },
+  "grupper": [
+    {
+      "id": "flyktingarna_vargstigen",
+      "namn": "Flyktingarna på Vargstigen",
+      "faktion": "de_kvarvarande",
+      "region": "vargstigen",
+      "delomrade": "kolarkojorna",
+      "ankare": "kojornas_korsning",
+      "vilka": "En familj från en tömd by i öster som drar en kärra mot lägret. De har gått i nio dygn.",
+      "medlemmar": [
+        {
+          "id": "flykting",
+          "namn": "Flykting",
+          "roll": "civil",
+          "niva": 2,
+          "hp": 40,
+          "skada": 3,
+          "forsvar": 0,
+          "antal": [2, 3],
+          "skadetyp": "kross",
+          "beteende": "slåss med käppar, flyr när HP under 30 procent"
+        },
+        {
+          "id": "karrdragare",
+          "namn": "Kärrdragaren",
+          "roll": "civil",
+          "niva": 2,
+          "hp": 55,
+          "skada": 4,
+          "forsvar": 1,
+          "antal": [1, 1],
+          "skadetyp": "kross",
+          "beteende": "stannar vid kärran"
+        }
+      ],
+      "angripare": {
+        "enemy_table": [
+          {
+            "enemy": "vargbest",
+            "weight": 100,
+            "group": [2, 3]
+          }
+        ],
+        "not": "Vanlig spawngrupp från delområdets tabell, ger vanlig XP och loot."
+      },
+      "visas": {
+        "chans_per_game": 0.6,
+        "tills": "flaggan hjalpt_flyktingarna_vargstigen eller flyktingarna_vargstigen_foll är satt"
+      },
+      "hjalpt_villkor": "Alla angripare döda medan minst en medlem lever.",
+      "om_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "hjalpt_flyktingarna_vargstigen",
+          "value": true
+        },
+        {
+          "typ": "faction_rep",
+          "faktion": "de_kvarvarande",
+          "delta": 10
+        },
+        {
+          "typ": "town_growth",
+          "town": "startlagret",
+          "delta": 3
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_flyktingarna_framme"
+        },
+        {
+          "typ": "item_grant",
+          "item": "torkat_kott",
+          "antal": 2
+        }
+      ],
+      "om_ej_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "flyktingarna_vargstigen_foll",
+          "value": true
+        },
+        {
+          "typ": "area_change",
+          "region": "vargstigen",
+          "andring": "miljo",
+          "value": "gravkors_av_bjork",
+          "ankare": "kojornas_korsning"
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_flyktingarna_foll"
+        }
+      ],
+      "efterat": "Hjälpta flyktingar syns vid lägerelden från nästa speldygn (bakgrunds NPC bybo_flykting). Ingen quest, ingen dialogkedja."
+    },
+    {
+      "id": "heddas_jaktlag",
+      "namn": "Heddas jaktlag",
+      "faktion": "de_kvarvarande",
+      "region": "vargstigen",
+      "delomrade": "vargaby_utmark",
+      "ankare": "skinnstallningarna",
+      "vilka": "Tre jägare från Vargaby som Hedda skickat ut efter kött. De har tagit en gråvarg och lockat till sig flocken.",
+      "medlemmar": [
+        {
+          "id": "jagare",
+          "namn": "Jägare",
+          "roll": "skytt",
+          "niva": 5,
+          "hp": 110,
+          "skada": 12,
+          "forsvar": 3,
+          "antal": [3, 3],
+          "skadetyp": "stick",
+          "beteende": "skjuter båge på avstånd, backar när monster kommer nära"
+        }
+      ],
+      "angripare": {
+        "enemy_table": [
+          {
+            "enemy": "gravargsledare",
+            "weight": 40,
+            "group": [1, 1]
+          },
+          {
+            "enemy": "skuggvarg",
+            "weight": 60,
+            "group": [2, 3]
+          }
+        ],
+        "not": "En ledare med 2 till 3 gråvargar."
+      },
+      "visas": {
+        "chans_per_game": 0.5,
+        "tills": "flaggan hjalpt_heddas_jaktlag är satt"
+      },
+      "hjalpt_villkor": "Alla angripare döda medan minst en jägare lever.",
+      "om_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "hjalpt_heddas_jaktlag",
+          "value": true
+        },
+        {
+          "typ": "faction_rep",
+          "faktion": "de_kvarvarande",
+          "delta": 5
+        },
+        {
+          "typ": "merchant_stock",
+          "npc": "hedda_jagare",
+          "add": ["vargblod", "torkat_kott"],
+          "remove": [],
+          "prisfaktor_mult": 0.9
+        },
+        {
+          "typ": "area_change",
+          "region": "vargstigen",
+          "andring": "npc_narvaro",
+          "value": "jaktlagret_bemannat"
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_jaktlaget_hemma"
+        }
+      ],
+      "om_ej_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "heddas_jaktlag_skingrat",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_jaktlaget_saknas"
+        }
+      ],
+      "efterat": "Jaktlägret blir bemannat (vandrare.json lager.jaktlagret). Döda jägare ersätts aldrig, men lägret finns ändå."
+    },
+    {
+      "id": "kolarfamiljen",
+      "namn": "Kolarfamiljen vid milan",
+      "faktion": "de_kvarvarande",
+      "region": "kolarmon",
+      "delomrade": "milorna",
+      "ankare": "kolmilan",
+      "vilka": "Tor Kolares kusiner som vägrat lämna milan. De bränner kol som de byter mot mat i lägret.",
+      "medlemmar": [
+        {
+          "id": "kolare",
+          "namn": "Kolare",
+          "roll": "arbetare",
+          "niva": 4,
+          "hp": 70,
+          "skada": 7,
+          "forsvar": 2,
+          "antal": [2, 2],
+          "skadetyp": "kross",
+          "beteende": "slåss med yxa vid milan"
+        },
+        {
+          "id": "kolarbarn",
+          "namn": "Kolarbarn",
+          "roll": "civil",
+          "niva": 1,
+          "hp": 20,
+          "skada": 0,
+          "forsvar": 0,
+          "antal": [1, 1],
+          "skadetyp": "",
+          "beteende": "gömmer sig i kojan, slåss aldrig"
+        }
+      ],
+      "angripare": {
+        "enemy_table": [
+          {
+            "enemy": "taggsvin",
+            "weight": 60,
+            "group": [1, 2]
+          },
+          {
+            "enemy": "vargbest",
+            "weight": 40,
+            "group": [1, 2]
+          }
+        ],
+        "not": "Djuren lockas av rökkött vid milan."
+      },
+      "visas": {
+        "chans_per_game": 0.5,
+        "tills": "flaggan hjalpt_kolarfamiljen är satt"
+      },
+      "hjalpt_villkor": "Alla angripare döda medan minst en kolare lever.",
+      "om_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "hjalpt_kolarfamiljen",
+          "value": true
+        },
+        {
+          "typ": "faction_rep",
+          "faktion": "de_kvarvarande",
+          "delta": 5
+        },
+        {
+          "typ": "merchant_stock",
+          "npc": "tor_kolare",
+          "add": ["timmer"],
+          "remove": [],
+          "prisfaktor_mult": 0.9
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_kolarna_lever"
+        }
+      ],
+      "om_ej_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "kolarfamiljen_foll",
+          "value": true
+        },
+        {
+          "typ": "area_change",
+          "region": "kolarmon",
+          "andring": "miljo",
+          "value": "milan_slocknad",
+          "ankare": "kolmilan"
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_milan_slocknad"
+        }
+      ],
+      "efterat": "Barnet överlever alltid och följer med till lägret om alla kolare dör (Sigrun tar hand om det)."
+    },
+    {
+      "id": "avfallingarna",
+      "namn": "Avfällingarna från askvägen",
+      "faktion": "askans_barn_avfallen",
+      "region": "sodra_mon",
+      "delomrade": "brunna_garden",
+      "ankare": "brunna_gardens_lada",
+      "vilka": "Två unga som flytt Askans barn i Askeborg. De har bränt sina kåpor men bär fortfarande kulttecknen på händerna.",
+      "medlemmar": [
+        {
+          "id": "avfalling",
+          "namn": "Avfälling",
+          "roll": "civil",
+          "niva": 4,
+          "hp": 60,
+          "skada": 5,
+          "forsvar": 1,
+          "antal": [2, 2],
+          "skadetyp": "stick",
+          "beteende": "slåss med kniv, ber högt till ingen"
+        }
+      ],
+      "angripare": {
+        "enemy_table": [
+          {
+            "enemy": "forvriden_jagare",
+            "weight": 60,
+            "group": [1, 2]
+          },
+          {
+            "enemy": "smittad_bybo",
+            "weight": 40,
+            "group": [1, 2]
+          }
+        ],
+        "not": "Förvridna som jagar dem söderifrån."
+      },
+      "visas": {
+        "chans_per_game": 0.4,
+        "tills": "flaggan hjalpt_avfallingarna eller avfallingarna_foll är satt"
+      },
+      "hjalpt_villkor": "Alla angripare döda medan minst en avfälling lever.",
+      "om_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "hjalpt_avfallingarna",
+          "value": true
+        },
+        {
+          "typ": "faction_rep",
+          "faktion": "de_kvarvarande",
+          "delta": 3
+        },
+        {
+          "typ": "faction_rep",
+          "faktion": "askans_barn",
+          "delta": -5
+        },
+        {
+          "typ": "area_change",
+          "region": "sodra_mon",
+          "andring": "npc_narvaro",
+          "value": "botgorarnas_lager_bemannat"
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_avfallingarna_fyra_stenar"
+        }
+      ],
+      "om_ej_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "avfallingarna_foll",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_avfallingarna_tagna"
+        }
+      ],
+      "efterat": "De hjälpta slår läger vid gården (vandrare.json lager.botgorarnas_lager) och berättar att Askans barn talar om fyra stenar, inte tre."
+    },
+    {
+      "id": "likbararna",
+      "namn": "Likbärarna",
+      "faktion": "de_kvarvarande",
+      "region": "startskogen",
+      "delomrade": "norra_hygget",
+      "ankare": "likbararnas_bar",
+      "vilka": "Två av Brors män som bär hem de döda från skogen till lägrets gravkors. De har en bår och en lykta.",
+      "medlemmar": [
+        {
+          "id": "likbarare",
+          "namn": "Likbärare",
+          "roll": "vakt",
+          "niva": 6,
+          "hp": 95,
+          "skada": 9,
+          "forsvar": 3,
+          "antal": [2, 2],
+          "skadetyp": "hugg",
+          "beteende": "ställer ner båren och slåss med korta svärd"
+        }
+      ],
+      "angripare": {
+        "enemy_table": [
+          {
+            "enemy": "skuggvarg",
+            "weight": 100,
+            "group": [2, 3]
+          }
+        ],
+        "not": "Gråvargar som följt doften av båren."
+      },
+      "visas": {
+        "chans_per_game": 0.5,
+        "tills": "flaggan hjalpt_likbararna är satt"
+      },
+      "hjalpt_villkor": "Alla angripare döda medan minst en bärare lever.",
+      "om_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "hjalpt_likbararna",
+          "value": true
+        },
+        {
+          "typ": "faction_rep",
+          "faktion": "de_kvarvarande",
+          "delta": 5
+        },
+        {
+          "typ": "value_add",
+          "key": "lagrets_hopp",
+          "delta": 1
+        },
+        {
+          "typ": "area_change",
+          "region": "startlagret",
+          "andring": "miljo",
+          "value": "nytt_gravkors",
+          "ankare": "gravkorsen"
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_de_doda_hemma"
+        }
+      ],
+      "om_ej_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "likbararna_foll",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_baren_kvar"
+        }
+      ],
+      "efterat": "Ett nytt björkkors står vid lägret. Bror nämner den döde vid namn."
+    },
+    {
+      "id": "gravvaktarnas_patrull",
+      "namn": "Gravvaktarnas patrull",
+      "faktion": "gravvaktarna",
+      "region": "gravasen",
+      "delomrade": "gravasen",
+      "ankare": "gravhogarna",
+      "vilka": "Två av de sista gravvaktarna som försöker hålla gravhögarna stängda. Ebbe tror att de är döda.",
+      "medlemmar": [
+        {
+          "id": "gravvaktare",
+          "namn": "Gravvaktare",
+          "roll": "krigare",
+          "niva": 8,
+          "hp": 240,
+          "skada": 20,
+          "forsvar": 8,
+          "antal": [2, 2],
+          "skadetyp": "kross",
+          "beteende": "håller linjen vid högarna, slåss med klubbor mot odöda"
+        }
+      ],
+      "angripare": {
+        "enemy_table": [
+          {
+            "enemy": "skelett_krigare",
+            "weight": 60,
+            "group": [2, 3]
+          },
+          {
+            "enemy": "skelett_hund",
+            "weight": 40,
+            "group": [2, 3]
+          }
+        ],
+        "not": "Odöda som kliver upp ur högarna. Ring 2, för den som går vidare norrut."
+      },
+      "visas": {
+        "chans_per_game": 0.6,
+        "tills": "flaggan hjalpt_gravvaktarna_patrull är satt"
+      },
+      "hjalpt_villkor": "Alla angripare döda medan minst en gravvaktare lever.",
+      "om_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "hjalpt_gravvaktarna_patrull",
+          "value": true
+        },
+        {
+          "typ": "faction_rep",
+          "faktion": "gravvaktarna",
+          "delta": 10
+        },
+        {
+          "typ": "area_change",
+          "region": "gravasen",
+          "andring": "ljus",
+          "value": "vakteld_tand",
+          "ankare": "gravhogarna"
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_gravvaktarna_lever"
+        }
+      ],
+      "om_ej_hjalpt": [
+        {
+          "typ": "flag_set",
+          "flag": "gravvaktarna_patrull_foll",
+          "value": true
+        },
+        {
+          "typ": "rumor_add",
+          "rykte": "rykte_gravvaktarna_tystnat"
+        }
+      ],
+      "efterat": "Vaktelden vid högarna brinner i alla framtida games (vandrare.json lager.gravvaktarnas_vakteld)."
+    }
+  ]
+}

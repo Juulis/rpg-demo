@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "version": "1.0",
+    "issue": "GitHub Juulis/rpg-demo #33",
+    "regel": "Vandrande handlare och läger ute i världen. Handlare följer stadstjanster.md (priser, ingen ändring av föremål, inga set eller legendariska i lager). Läger är säkra zoner där inga monster spawnar inom radie. Inget spärrar rörelse.",
+    "npc_format": "Handlarna laddas som npc.json-poster (namn, faktion, personlighet, utseende, repliker, rykten) plus rutt. Lagret rullas när hjälten möter handlaren första gången per game.",
+    "pris": "Vandrande handlare är dyrare än städer men finns där städerna är besatta. Fraktionsrabatt gäller som i stadstjanster.md.",
+    "dod": "Vandrande handlare kan inte dö. De gömmer sig när monster kommer nära och kommer fram när striden är över.",
+    "refs": ["stadstjanster.md", "npc.json", "npc_grupper.json", "bana1_stor.json", "rykten.json"]
+  },
+  "handlare": [
+    {
+      "id": "bertil_karran",
+      "namn": "Bertil med kärran",
+      "roll": "vandrande_handlare",
+      "faktion": "de_kvarvarande",
+      "personlighet": "Pratsam, rädd för mörkret, räknar högt.",
+      "utseende": "Kort man med filthatt och en kärra med klockor som han har lindat tyg om.",
+      "lore": "Bertil kör de saknades saker tillbaka till lägret så att familjerna får något att begrava. Handeln är hans ursäkt för att få gå ut.",
+      "rutt": [
+        {
+          "speldygn": 1,
+          "delomrade": "runglantan",
+          "ankare": "roset"
+        },
+        {
+          "speldygn": 2,
+          "delomrade": "kolarkojorna",
+          "ankare": "vagvaktarlagret"
+        },
+        {
+          "speldygn": 3,
+          "delomrade": "vargaby_utmark",
+          "ankare": "jaktlagret"
+        },
+        {
+          "speldygn": 4,
+          "delomrade": "milorna",
+          "ankare": "kolmilan"
+        }
+      ],
+      "rutt_regel": "Rutten går runt och börjar om. Dag 08:00 till 18:00 handlar han, natten sover han i närmaste läger. Rutten ändras aldrig av spelaren.",
+      "handel": {
+        "typ": "handlare",
+        "saljfaktor": 1.25,
+        "kopfaktor": 0.25,
+        "platser": 8,
+        "ilvl": "delområdets nivå max",
+        "utbud": ["torkat_kott", "skogsörtste", "pilar_20", "kastspjut_5", "timmer", "Normal utrustning"],
+        "koper": "allt utom questföremål"
+      },
+      "repliker": {
+        "halsning": "Inte så nära, klockorna. Jag lindade dem men de hörs ändå.",
+        "rader": [
+          "Jag kör hem det de saknade lämnar efter sig. En sko, en kam. Det räcker för en grav.",
+          "Kolarna betalar i kol. Kol äter man inte.",
+          "Tre dygn till Vargaby om vargarna vill."
+        ]
+      },
+      "rykten": ["rykte_flyktingarna_framme", "rykte_flyktingarna_foll", "rykte_kolarna_lever", "rykte_milan_slocknad", "rykte_vargringen"]
+    },
+    {
+      "id": "ragna_spjutbararen",
+      "namn": "Ragna Spjutbäraren",
+      "roll": "vandrande_handlare",
+      "faktion": "spillrorna",
+      "personlighet": "Fåordig, stolt, ler aldrig.",
+      "utseende": "Lång kvinna med ärr över halsen, tre spjut på ryggen och en mantel av korpfjädrar.",
+      "lore": "Sista av amazonernas jaktlag. Hon vandrar mellan lägren och letar efter systrarnas spjut, som hon känner igen på skårorna. Hon säljer det hon inte behöver.",
+      "rutt": [
+        {
+          "speldygn": 1,
+          "delomrade": "vargaby_utmark",
+          "ankare": "jaktlagret"
+        },
+        {
+          "speldygn": 2,
+          "delomrade": "norra_hygget",
+          "ankare": "likbararnas_lager"
+        },
+        {
+          "speldygn": 3,
+          "delomrade": "gravasen",
+          "ankare": "gravvaktarnas_vakteld"
+        }
+      ],
+      "rutt_regel": "Hon står kvar en hel dag och natt per stopp. Hon slåss aldrig och gömmer sig om monster kommer nära.",
+      "handel": {
+        "typ": "vapenhandlare",
+        "saljfaktor": 1.3,
+        "kopfaktor": 0.35,
+        "platser": 10,
+        "ilvl": "delområdets nivå max",
+        "kvalitet": {
+          "normal": 70,
+          "magisk": 30
+        },
+        "utbud": ["spjut", "bågar", "kastspjut_5", "pilar_20", "vargblod"],
+        "koper": ["vapen", "benföremål"]
+      },
+      "repliker": {
+        "halsning": "Visa mig ditt spjut. Nej. Inte hennes.",
+        "rader": [
+          "Vi jagade i de här skogarna innan någon ristade stenarna.",
+          "Mina systrar föll vid Askeborg. Deras spjut gick inte sönder.",
+          "Köp eller gå. Vargarna hör oss."
+        ]
+      },
+      "rykten": ["rykte_jaktlaget_hemma", "rykte_jaktlaget_saknas", "rykte_gravvaktarna_lever", "rykte_gravvaktarna_tystnat"]
+    },
+    {
+      "id": "saga_askflykting",
+      "namn": "Saga Askflykting",
+      "roll": "vandrande_handlare",
+      "faktion": "askans_barn_avfallen",
+      "personlighet": "Nervös, snabb i talet, tittar alltid söderut.",
+      "utseende": "Ung kvinna med bränd kåpa vänd ut och in och sotiga händer.",
+      "lore": "Hon köpte sig fri från Askans barn med kultens reliker. Nu säljer hon det sista hon tog med sig och samlar rykten om den fjärde stenen.",
+      "rutt": [
+        {
+          "speldygn": 1,
+          "delomrade": "brunna_garden",
+          "ankare": "botgorarnas_lager"
+        },
+        {
+          "speldygn": 2,
+          "delomrade": "backravinen",
+          "ankare": "stenbron"
+        },
+        {
+          "speldygn": 3,
+          "delomrade": "brunna_garden",
+          "ankare": "botgorarnas_lager"
+        }
+      ],
+      "rutt_regel": "Hon går aldrig längre söderut än Brandkantens läger. Handlar bara på natten.",
+      "handel": {
+        "typ": "kuriosahandlare",
+        "saljfaktor": 1.45,
+        "kopfaktor": 0.4,
+        "platser": 6,
+        "ilvl": "delområdets nivå max",
+        "kvalitet": {
+          "magisk": 80,
+          "sallsynt": 20
+        },
+        "utbud": ["amuletter", "ringar", "benföremål"],
+        "koper": ["amuletter", "ringar", "benföremål"]
+      },
+      "repliker": {
+        "halsning": "Tyst. De lyssnar även här.",
+        "rader": [
+          "Elden renar ingenting. Den bara äter.",
+          "De talar om fyra stenar. Inte tre. Fyra.",
+          "Det här bar en präst om halsen. Han behöver det inte längre."
+        ]
+      },
+      "rykten": ["rykte_avfallingarna_fyra_stenar", "rykte_avfallingarna_tagna", "rykte_askan_kommer_norrut", "rykte_fjarde_stenen"]
+    }
+  ],
+  "lager": [
+    {
+      "id": "vagvaktarlagret",
+      "namn": "Vagnborgen",
+      "delomrade": "kolarkojorna",
+      "ankare": "vagvaktarlagret",
+      "sakert": true,
+      "radie": 6,
+      "syfte": "Tre brända vagnar i ring som flyktingar använt som vilplats sedan Askans natt. Här övernattar Bertil.",
+      "innehall": ["lägereld", "namn ristade i vagnarna"],
+      "npc": ["bertil_karran (dag 2 på rutten)"],
+      "tillstand": {
+        "standard": "tom eld",
+        "hjalpt_flyktingarna_vargstigen": "en flykting håller elden vid liv"
+      }
+    },
+    {
+      "id": "jaktlagret",
+      "namn": "Jaktlägret",
+      "delomrade": "vargaby_utmark",
+      "ankare": "jaktlagret",
+      "sakert": true,
+      "radie": 6,
+      "syfte": "Heddas jägare torkar kött här för att Vargaby ska klara vintern. Lägret visar att någon fortfarande tänker på framtiden.",
+      "innehall": ["lägereld", "torkställningar"],
+      "npc": ["jägare (om hjalpt_heddas_jaktlag)", "bertil_karran (dag 3)", "ragna_spjutbararen (dag 1)"],
+      "tillstand": {
+        "standard": "övergiven eld",
+        "hjalpt_heddas_jaktlag": "jägare vid elden, kött på ställningarna"
+      }
+    },
+    {
+      "id": "botgorarnas_lager",
+      "namn": "Botgörarnas läger",
+      "delomrade": "brunna_garden",
+      "ankare": "botgorarnas_lager",
+      "sakert": true,
+      "radie": 5,
+      "syfte": "Avfällingar från Askans barn bränner sina kulttecken här. Lägret visar att kulten går att lämna.",
+      "innehall": ["lägereld med brända kåpor", "kulttecken som skrapats bort från en sten"],
+      "npc": ["avfällingar (om hjalpt_avfallingarna)", "saga_askflykting (dag 1 och 3)"],
+      "tillstand": {
+        "standard": "Saga ensam",
+        "hjalpt_avfallingarna": "tre vid elden, de sjunger lågt"
+      }
+    },
+    {
+      "id": "likbararnas_lager",
+      "namn": "Likbärarnas läger",
+      "delomrade": "norra_hygget",
+      "ankare": "likbararnas_lager",
+      "sakert": true,
+      "radie": 5,
+      "syfte": "Här samlar Brors män de döda innan de bärs till lägret. Ett tyst och mörkt läger, men det betyder att ingen lämnas kvar.",
+      "innehall": ["lykta på stång", "bårar", "lista med namn"],
+      "npc": ["likbärare (om hjalpt_likbararna)", "ragna_spjutbararen (dag 2)"],
+      "tillstand": {
+        "standard": "tomma bårar",
+        "hjalpt_likbararna": "två bärare vakar"
+      }
+    },
+    {
+      "id": "gravvaktarnas_vakteld",
+      "namn": "Gravvaktarnas vakteld",
+      "delomrade": "gravasen",
+      "ankare": "gravhogarna",
+      "sakert": true,
+      "radie": 5,
+      "syfte": "Gravvaktarna har hållit en eld vid högarna i hundratals år. Den slocknade på Askans natt och kan tändas igen.",
+      "innehall": ["stenring", "släckt eller brinnande eld"],
+      "npc": ["gravvaktare (om hjalpt_gravvaktarna_patrull)", "ragna_spjutbararen (dag 3)"],
+      "tillstand": {
+        "standard": "släckt, inte säkert",
+        "hjalpt_gravvaktarna_patrull": "brinner, säker zon"
+      },
+      "not": "Bara säker när elden brinner. Ring 2."
+    }
+  ]
+}
