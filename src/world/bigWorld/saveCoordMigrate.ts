@@ -1,8 +1,7 @@
 import { chunkWorldSpan, worldToChunk } from './bigWorldCoords';
 
-/** Migrerar bw:-uid från chunk-index utan offset 192 till nuvarande worldToChunk. */
+/** Migrerar bw:-uid från chunk-index före offset 192 (+1 chunk i x och y). */
 export function migrateBigWorldKillIds(killed: readonly string[]): string[] {
-  const span = chunkWorldSpan();
   return killed.map((uid) => {
     if (!uid.startsWith('bw:')) return uid;
     const rest = uid.slice(3);
@@ -14,9 +13,8 @@ export function migrateBigWorldKillIds(killed: readonly string[]): string[] {
     if (cyEnd < 0) return uid;
     const oldCy = Number(after.slice(0, cyEnd));
     if (Number.isNaN(oldCx) || Number.isNaN(oldCy)) return uid;
-    const wx = oldCx * span + span * 0.5;
-    const wy = oldCy * span + span * 0.5;
-    const { cx, cy } = worldToChunk(wx, wy);
+    const cx = oldCx + 1;
+    const cy = oldCy + 1;
     if (cx === oldCx && cy === oldCy) return uid;
     const tail = after.slice(cyEnd);
     return `bw:${cx},${cy}${tail}`;
