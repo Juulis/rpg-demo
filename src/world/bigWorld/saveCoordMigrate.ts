@@ -1,5 +1,3 @@
-import { chunkWorldSpan, worldToChunk } from './bigWorldCoords';
-
 /** Migrerar bw:-uid från chunk-index före offset 192 (+1 chunk i x och y). */
 export function migrateBigWorldKillIds(killed: readonly string[]): string[] {
   return killed.map((uid) => {
