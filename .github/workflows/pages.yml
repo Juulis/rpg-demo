@@ -28,7 +28,7 @@ jobs:
         run: node scripts/assemble-pages.mjs
       - run: npx playwright install --with-deps chromium
       - name: Röktest – 2D på roten måste vara spelbar
-        run: node scripts/smoke.mjs dist
+        run: SMOKE_MODE=plain node scripts/smoke.mjs dist
       - uses: actions/configure-pages@v5
         with:
           enablement: true

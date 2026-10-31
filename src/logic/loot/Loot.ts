@@ -1,4 +1,4 @@
-import { DATA } from '../../data';
+import { DATA, monsterDef } from '../../data';
 import type { Rng } from '../../core/Rng';
 import type { HeroClass } from '../../data/types';
 import type { Text } from '../../text/Text';
@@ -394,7 +394,8 @@ export class Loot {
     const boss = this.drops.bosses[o.id];
     const mon = this.drops.monsters[o.id];
     const src = boss ?? mon;
-    const fam = this.drops.family_tables[src?.table ?? src?.family ?? 'bestar'] ?? this.drops.family_tables.bestar;
+    const famKey = src?.table ?? src?.family ?? this.monsterFamily(o.id) ?? 'bestar';
+    const fam = this.drops.family_tables[famKey] ?? this.drops.family_tables.bestar;
     if (!fam) return { seed, drops: out };
     const mf = o.mf ?? 0;
     const mlvl = o.mlvl ?? (boss && typeof boss.monster_level === 'number' ? boss.monster_level : 1);
@@ -461,7 +462,7 @@ export class Loot {
     return { seed, drops: out };
   }
   monsterFamily(id: string): string | undefined {
-    return (this.drops.bosses[id] ?? this.drops.monsters[id])?.family;
+    return (this.drops.bosses[id] ?? this.drops.monsters[id])?.family ?? monsterDef(id).family;
   }
 
   // ----- samlade attribut (attribut.json) -----
