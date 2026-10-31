@@ -36,7 +36,8 @@
         "skelett_bagskytt",
         "skelett_runprast",
         "skelett_vakt",
-        "skelett_kapten"
+        "skelett_kapten",
+        "drunknad"
       ],
       "boss": "benkungen_valdemar"
     },
@@ -111,7 +112,11 @@
       "subtypes": [
         "smittbarare",
         "galen_munk",
-        "kottklump"
+        "kottklump",
+        "forvriden_jagare",
+        "smittad_bybo",
+        "forvriden_gruvarbetare",
+        "askkultist"
       ]
     },
     {
@@ -840,6 +845,116 @@
         "ref_level": 8
       },
       "dark_magic": true
+    },
+    {
+      "id": "forvriden_jagare",
+      "name": "Förvriden jägare",
+      "family": "forvridna",
+      "level": 4,
+      "hp": 88,
+      "damage": 14,
+      "defense": 1,
+      "speed": 3.2,
+      "attack_cd": 1.2,
+      "attacks_per_s": 0.83,
+      "xp": 48,
+      "aggro_range": 10,
+      "behavior": "Jagar i skogsbryn, kort sprint.",
+      "weapon_type": "yxa",
+      "zones": ["sodra_mon", "kolarmon"],
+      "boss": false,
+      "design_source": {
+        "from": "taggsvin",
+        "ref_level": 4
+      }
+    },
+    {
+      "id": "smittad_bybo",
+      "name": "Smittad bybo",
+      "family": "forvridna",
+      "level": 5,
+      "hp": 102,
+      "damage": 16,
+      "defense": 2,
+      "speed": 2.8,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 75,
+      "aggro_range": 10,
+      "behavior": "Klumpig men ihärdig, följer efter blod.",
+      "weapon_type": null,
+      "zones": ["sodra_mon"],
+      "boss": false,
+      "design_source": {
+        "from": "skuggvarg",
+        "ref_level": 5
+      }
+    },
+    {
+      "id": "forvriden_gruvarbetare",
+      "name": "Förvriden gruvarbetare",
+      "family": "forvridna",
+      "level": 16,
+      "hp": 420,
+      "damage": 38,
+      "defense": 12,
+      "speed": 2.6,
+      "attack_cd": 1.4,
+      "attacks_per_s": 0.71,
+      "xp": 890,
+      "aggro_range": 10,
+      "behavior": "Slår med hacka, tål trånga schakt.",
+      "weapon_type": "yxa",
+      "zones": ["jarnklostret", "gruvdjupen"],
+      "boss": false,
+      "design_source": {
+        "from": "kitinvakt",
+        "ref_level": 16
+      }
+    },
+    {
+      "id": "drunknad",
+      "name": "Drunknad",
+      "family": "ododa",
+      "level": 14,
+      "hp": 280,
+      "damage": 26,
+      "defense": 4,
+      "speed": 2.2,
+      "attack_cd": 1.6,
+      "attacks_per_s": 0.63,
+      "xp": 620,
+      "aggro_range": 10,
+      "behavior": "Drar offer mot vattnet, långsam men seglar.",
+      "weapon_type": null,
+      "zones": ["sjunkna_kyrkan", "dimmerstrand"],
+      "boss": false,
+      "design_source": {
+        "from": "trasknacken",
+        "ref_level": 14
+      }
+    },
+    {
+      "id": "askkultist",
+      "name": "Askkultist",
+      "family": "forvridna",
+      "level": 23,
+      "hp": 360,
+      "damage": 40,
+      "defense": 8,
+      "speed": 3.6,
+      "attack_cd": 1.2,
+      "attacks_per_s": 0.83,
+      "xp": 950,
+      "aggro_range": 10,
+      "behavior": "Ritualdolk och självmordsdyk mot hjälten.",
+      "weapon_type": "dolk",
+      "zones": ["kultens_katakomber", "askeborg"],
+      "boss": false,
+      "design_source": {
+        "from": "galen_munk",
+        "ref_level": 23
+      }
     },
     {
       "id": "smittbarare",

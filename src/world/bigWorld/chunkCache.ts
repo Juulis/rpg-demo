@@ -9,15 +9,20 @@ export interface ChunkCacheOptions {
 
 const DEFAULT_OPTS: ChunkCacheOptions = { maxEntries: 48, keepRadius: 3 };
 
+function cacheKey(gameSeed: number, cx: number, cy: number): string {
+  return `${gameSeed}|${cx}|${cy}`;
+}
+
 /**
  * LRU-liknande cache: syncNear släpper chunkar utanför keepRadius och cap:ar storlek.
- * Används av streaming (PR 2) och minnestester.
+ * Nyckeln inkluderar gameSeed så olika sparfiler aldrig delar D2-rullningar.
  */
 export class ChunkWorldCache {
   private readonly map = new Map<string, ChunkWorldData>();
   private readonly order: string[] = [];
   private heroCx = 0;
   private heroCy = 0;
+  private activeSeed: number | null = null;
 
   constructor(private readonly opts: ChunkCacheOptions = DEFAULT_OPTS) {}
 
@@ -28,10 +33,17 @@ export class ChunkWorldCache {
   clear(): void {
     this.map.clear();
     this.order.length = 0;
+    this.activeSeed = null;
+  }
+
+  private ensureSeed(gameSeed: number): void {
+    if (this.activeSeed !== null && this.activeSeed !== gameSeed) this.clear();
+    this.activeSeed = gameSeed;
   }
 
   get(gameSeed: number, cx: number, cy: number): ChunkWorldData {
-    const key = `${cx},${cy}`;
+    this.ensureSeed(gameSeed);
+    const key = cacheKey(gameSeed, cx, cy);
     const hit = this.map.get(key);
     if (hit) {
       this.touch(key);
@@ -44,6 +56,7 @@ export class ChunkWorldCache {
   }
 
   syncNear(gameSeed: number, heroCx: number, heroCy: number): void {
+    this.ensureSeed(gameSeed);
     this.heroCx = heroCx;
     this.heroCy = heroCy;
     const r = this.opts.keepRadius;
@@ -52,7 +65,7 @@ export class ChunkWorldCache {
       for (let dy = -r; dy <= r; dy++) {
         const cx = heroCx + dx;
         const cy = heroCy + dy;
-        const key = `${cx},${cy}`;
+        const key = cacheKey(gameSeed, cx, cy);
         keep.add(key);
         if (!this.map.has(key)) {
           this.store(key, generateChunkWorldData(gameSeed, cx, cy));
@@ -96,9 +109,9 @@ export class ChunkWorldCache {
     let best: string | undefined;
     let bestD = -1;
     for (const key of this.map.keys()) {
-      const parts = key.split(',').map(Number);
-      const cx = parts[0];
-      const cy = parts[1];
+      const parts = key.split('|');
+      const cx = Number(parts[1]);
+      const cy = Number(parts[2]);
       if (cx === undefined || cy === undefined) continue;
       const d = Math.max(Math.abs(cx - this.heroCx), Math.abs(cy - this.heroCy));
       if (d > bestD) {

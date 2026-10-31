@@ -499,7 +499,12 @@
     "smittbarare": 24,
     "galen_munk": 25,
     "kottklump": 27,
-    "fadern_av_smittan": 28
+    "fadern_av_smittan": 28,
+    "forvriden_jagare": 4,
+    "smittad_bybo": 5,
+    "forvriden_gruvarbetare": 16,
+    "drunknad": 14,
+    "askkultist": 23
   },
   "examples_fixed": [
     {

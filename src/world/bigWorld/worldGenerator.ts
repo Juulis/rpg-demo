@@ -4,7 +4,8 @@ import { Rng } from '../../core/Rng';
 import { blendBiomesAtChunk, biomeRenderPlaceholders, isTownBiomeChunk } from './biomeBlend';
 import { buildRoadIndex, roadsAtChunk, type RoadIndex } from './roads';
 import { resolveRegionAtChunk } from './regionIndex';
-import { chunkDistanceFromStart, ringAtChunkDistance, subtypeAllowedInBand } from './ringZone';
+import { chunkDistanceFromStart, ringAtChunkDistance } from './ringZone';
+import { biomeSpawnSubtypes, filterSubtypesByBand } from './spawnRules';
 
 export interface BigWorldSpawnRoll {
   uid: string;
@@ -88,33 +89,25 @@ function neighborBiomeFactory(catalog: BigWorldCatalog): (ncx: number, ncy: numb
   return (ncx, ncy) => primaryBiomeAt(catalog, ncx, ncy).region.biom;
 }
 
-function filterSubtypesByBand(subtypes: readonly string[], band: readonly [number, number]): string[] {
-  const fixed = (DATA.monsterLevels.fixed_levels ?? {}) as Record<string, number>;
-  return subtypes.filter((id) => {
-    const lv = fixed[id];
-    if (lv == null) return false;
-    return subtypeAllowedInBand(lv, band);
-  });
-}
-
 function rollChunkSpawns(
   gameSeed: number,
   cx: number,
   cy: number,
-  region: BigWorldRegion,
+  subtypes: readonly string[],
+  genereradSpawn: boolean,
   band: readonly [number, number],
 ): BigWorldSpawnRoll[] {
-  if (!region.genererad_spawn || !region.monsterfamilj) return [];
-  const allowed = filterSubtypesByBand(region.undertyper ?? [], band);
+  if (!genereradSpawn || subtypes.length === 0) return [];
+  const allowed = filterSubtypesByBand(subtypes, band);
   if (allowed.length === 0) return [];
   const rng = new Rng(chunkSeed(gameSeed, cx, cy));
   const count = rng.int([2, 5]);
   const out: BigWorldSpawnRoll[] = [];
   const tileSize = catalogSingleton?.data.meta.chunk?.storlek_rutor ?? 64;
+  const fixed = DATA.monsterLevels.fixed_levels ?? {};
   for (let i = 0; i < count; i++) {
     const enemy = rng.pick(allowed);
-    const levels = DATA.monsterLevels.fixed_levels ?? {};
-    const level = levels[enemy] ?? band[0];
+    const level = fixed[enemy] ?? band[0];
     const localX = rng.float(8, tileSize - 8);
     const localY = rng.float(8, tileSize - 8);
     const uid = `bw:${cx},${cy}:${i}:${enemy}`;
@@ -130,15 +123,39 @@ export function generateChunkWorldData(gameSeed: number, cx: number, cy: number)
   const distance = chunkDistanceFromStart(cx, cy, catalog.startChunk);
   const ringar = catalog.data.meta.zonmodell?.ringar ?? [];
   const { ring, levelBand } = ringAtChunkDistance(distance, ringar);
-  const band = region.nivaband ?? levelBand;
   const biome = catalog.data.biomer[region.biom];
   const blend = blendBiomesAtChunk(cx, cy, region.biom, neighborBiomeFactory(catalog));
   const { ids: roads, types: roadTypes } = roadsAtChunk(catalog.roads, cx, cy);
   const poiKey = `${region.chunk[0]},${region.chunk[1]}`;
-  const pois = region.chunk[0] === cx && region.chunk[1] === cy ? (catalog.poisByRegionChunk.get(poiKey) ?? region.poi ?? []) : [];
+  const pois =
+    !mellanmark && region.chunk[0] === cx && region.chunk[1] === cy ? (catalog.poisByRegionChunk.get(poiKey) ?? region.poi ?? []) : [];
+
   const placeholders = biomeRenderPlaceholders(biome);
-  const town = isTownBiomeChunk(region.typ);
-  const spawnSubtypes = filterSubtypesByBand(region.undertyper ?? [], band);
+  const town = !mellanmark && isTownBiomeChunk(region.typ);
+  const monsterFamily = region.monsterfamilj ?? null;
+
+  let spawnSubtypes: string[];
+  let generatedSpawn: boolean;
+  let access: string;
+  let regionTyp: string;
+  let safe: boolean;
+  let act: string | null;
+
+  if (mellanmark) {
+    spawnSubtypes = biomeSpawnSubtypes(biome, monsterFamily, levelBand);
+    generatedSpawn = spawnSubtypes.length > 0;
+    access = 'oppen';
+    regionTyp = 'mellanmark';
+    safe = false;
+    act = region.akt ?? null;
+  } else {
+    spawnSubtypes = filterSubtypesByBand(region.undertyper ?? [], levelBand);
+    generatedSpawn = region.genererad_spawn === true;
+    access = region.atkomst ?? 'oppen';
+    regionTyp = region.typ;
+    safe = region.sakert === true;
+    act = region.akt ?? null;
+  }
 
   return {
     cx,
@@ -146,25 +163,25 @@ export function generateChunkWorldData(gameSeed: number, cx: number, cy: number)
     chunkSeed: chunkSeed(gameSeed, cx, cy),
     distanceChunks: distance,
     ring,
-    levelBand: band,
+    levelBand,
     mellanmark,
-    regionId: region.id,
-    regionTyp: region.typ,
+    regionId: mellanmark ? `mellanmark:${region.id}` : region.id,
+    regionTyp,
     biomeId: region.biom,
     biomeBlend: blend,
     roads,
     roadTypes,
     pois,
-    safe: region.sakert === true,
-    act: region.akt ?? null,
-    access: region.atkomst ?? 'oppen',
-    monsterFamily: region.monsterfamilj ?? null,
+    safe,
+    act,
+    access,
+    monsterFamily,
     spawnSubtypes,
-    generatedSpawn: region.genererad_spawn === true,
+    generatedSpawn,
     tilePool: placeholders.tilePool,
     decorPool: placeholders.decorPool,
     music: town ? 'town' : placeholders.music,
-    spawns: rollChunkSpawns(gameSeed, cx, cy, region, band),
+    spawns: rollChunkSpawns(gameSeed, cx, cy, spawnSubtypes, generatedSpawn, levelBand),
   };
 }
 

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { DATA } from '../src/data';
+import { DATA, validateData } from '../src/data';
 import { generateChunkWorldData, getBigWorldCatalog, xpDistanceMultiplier } from '../src/world/bigWorld/worldGenerator';
 import { chunkDistanceFromStart } from '../src/world/bigWorld/ringZone';
 import { roadsAtChunk } from '../src/world/bigWorld/roads';
@@ -46,5 +46,32 @@ for (const s of vargstigen.spawns) {
   assert.ok(s.level >= vargstigen.levelBand[0]);
   assert.ok(s.level <= vargstigen.levelBand[1]);
 }
+
+const sodra = DATA.varldStor.regioner.find((r) => r.id === 'sodra_mon');
+assert.ok(sodra);
+const sodraChunk = generateChunkWorldData(seed, sodra.chunk[0], sodra.chunk[1]);
+assert.ok(sodraChunk.spawnSubtypes.length > 0);
+assert.ok(sodraChunk.spawns.length > 0);
+
+const katedral = DATA.varldStor.regioner.find((r) => r.id === 'katedralen');
+assert.ok(katedral);
+const katData = generateChunkWorldData(seed, katedral.chunk[0], katedral.chunk[1]);
+assert.ok(katData.spawnSubtypes.includes('hornslaktare') || katData.spawnSubtypes.includes('askriddare'));
+assert.ok(katData.spawns.length > 0);
+
+const sprickan = DATA.varldStor.regioner.find((r) => r.id === 'sprickans_botten');
+assert.ok(sprickan);
+const sprData = generateChunkWorldData(seed, sprickan.chunk[0], sprickan.chunk[1]);
+assert.ok(sprData.spawnSubtypes.includes('kottklump'));
+assert.ok(sprData.spawns.length > 0);
+
+const jarn = DATA.varldStor.regioner.find((r) => r.id === 'jarnklostret');
+assert.ok(jarn);
+const besideKloster = generateChunkWorldData(seed, jarn.chunk[0], jarn.chunk[1] + 1);
+assert.equal(besideKloster.mellanmark, true);
+assert.equal(besideKloster.access, 'oppen');
+assert.ok(besideKloster.regionId.startsWith('mellanmark:'));
+
+assert.equal(validateData().filter((i) => i.startsWith('varld_stor')).length, 0);
 
 console.log('big-world-generator.test.mts: ok');

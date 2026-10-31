@@ -19,6 +19,7 @@ import varldStor from './varld_stor.json';
 import type { BigWorldDataFile } from './bigWorldTypes';
 import type { QuestDataFile } from './questTypes';
 import type { RumorDataFile } from './rumorTypes';
+import { filterSubtypesByBand, levelBandForRingzon } from '../world/bigWorld/spawnRules';
 import type { DialogDataFile } from './dialogTypes';
 import { DIALOG_DATA } from '../npc/designDialoger';
 import type { NpcDataFile } from './npcTypes';
@@ -118,5 +119,23 @@ export function validateData(): string[] {
   }
   const rod = bw.pois.find((p) => p.id === 'rod_portal');
   if (!rod?.krav?.includes('runor')) issues.push('varld_stor: rod_portal saknar krav alla_tre_runor');
+  const fixed = DATA.monsterLevels.fixed_levels ?? {};
+  for (const r of bw.regioner) {
+    for (const id of r.undertyper ?? []) {
+      if (fixed[id] == null) issues.push(`varld_stor region ${r.id}: undertyp ${id} saknas i fixed_levels`);
+      else if (!MONSTERS.has(id)) issues.push(`varld_stor region ${r.id}: undertyp ${id} saknas i monsterfamiljer`);
+    }
+    if (r.genererad_spawn) {
+      const band = levelBandForRingzon(bw, r.ringzon) ?? r.nivaband;
+      if (!band) {
+        issues.push(`varld_stor region ${r.id}: genererad_spawn utan ringband`);
+        continue;
+      }
+      const allowed = filterSubtypesByBand(r.undertyper ?? [], band);
+      if (allowed.length === 0) {
+        issues.push(`varld_stor region ${r.id}: genererad_spawn men inga undertyper i ring ${r.ringzon ?? '?'}s band`);
+      }
+    }
+  }
   return issues;
 }
