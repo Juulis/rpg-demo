@@ -82,6 +82,7 @@ export interface EliteModifier {
   effect: string;
 }
 export interface MonsterLevels {
+  fixed_levels?: Record<string, number>;
   item_level: { cap: number; bonus: { boss: number } };
   elites: {
     champion: { level_bonus: number; hp_mult: number; damage_mult: number; defense_add: number; xp_mult: number; loot: EliteLoot };
@@ -200,6 +201,7 @@ export type Attributes = typeof import('./attribut.json');
 export type Lorebook = typeof import('./lorebok.json');
 export type { NpcDataFile } from './npcTypes';
 export type LootQualities = typeof import('./loot_kvaliteter.json');
+export type { BigWorldDataFile } from './bigWorldTypes';
 
 /** All speldata, tillgänglig för moduler via GameContext.data. */
 export interface GameData {
@@ -220,4 +222,5 @@ export interface GameData {
   dialoger: import('./dialogTypes').DialogDataFile;
   rykten: import('./rumorTypes').RumorDataFile;
   quests: import('./questTypes').QuestDataFile;
+  varldStor: import('./bigWorldTypes').BigWorldDataFile;
 }

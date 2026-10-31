@@ -1,0 +1,16 @@
+{
+  "skog": { "namn": "Forest" },
+  "trask": { "namn": "Marsh" },
+  "fjall": { "namn": "Mountains" },
+  "kust": { "namn": "Coast" },
+  "ask": { "namn": "Ashlands" },
+  "startlagret": { "namn": "Camp at the forest edge" },
+  "startskogen": { "namn": "Starting forest" },
+  "vargaby": { "namn": "Wolf Village" },
+  "gamla_byn": { "namn": "The old village" },
+  "dimmerstrand": { "namn": "Dimmerstrand" },
+  "kopparberg": { "namn": "Copper Mountain" },
+  "askeborg": { "namn": "Ashburg" },
+  "sista_ljuset": { "namn": "Last Light" },
+  "rod_portal": { "namn": "The red portal" }
+}
