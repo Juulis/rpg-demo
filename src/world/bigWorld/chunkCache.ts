@@ -1,4 +1,4 @@
-import { generateChunkWorldData, type ChunkWorldData } from './worldGenerator';
+import { generateChunkWorldData, chunkWorldSeed, type ChunkWorldData } from './worldGenerator';
 
 export interface ChunkCacheOptions {
   /** Max antal chunkar i minnet (streaming). */
@@ -45,7 +45,8 @@ export class ChunkWorldCache {
     this.ensureSeed(gameSeed);
     const key = cacheKey(gameSeed, cx, cy);
     const hit = this.map.get(key);
-    if (hit) {
+    const expectedSeed = chunkWorldSeed(gameSeed, cx, cy);
+    if (hit && hit.chunkSeed === expectedSeed) {
       this.touch(key);
       return hit;
     }
@@ -67,10 +68,12 @@ export class ChunkWorldCache {
         const cy = heroCy + dy;
         const key = cacheKey(gameSeed, cx, cy);
         keep.add(key);
-        if (!this.map.has(key)) {
-          this.store(key, generateChunkWorldData(gameSeed, cx, cy));
-        } else {
+        const existing = this.map.get(key);
+        const expectedSeed = chunkWorldSeed(gameSeed, cx, cy);
+        if (existing && existing.chunkSeed === expectedSeed) {
           this.touch(key);
+        } else {
+          this.store(key, generateChunkWorldData(gameSeed, cx, cy));
         }
       }
     }

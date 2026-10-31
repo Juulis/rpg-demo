@@ -72,6 +72,22 @@ assert.equal(besideKloster.mellanmark, true);
 assert.equal(besideKloster.access, 'oppen');
 assert.ok(besideKloster.regionId.startsWith('mellanmark:'));
 
+const gravasen = DATA.varldStor.regioner.find((r) => r.id === 'gravasen');
+assert.ok(gravasen);
+const gravasenEdge = generateChunkWorldData(seed, -1, 3);
+assert.equal(gravasenEdge.regionId, 'gravasen');
+assert.equal(gravasenEdge.generatedSpawn, true);
+assert.ok(gravasenEdge.spawns.length > 0);
+assert.deepEqual(gravasenEdge.levelBand, [7, 10]);
+
+for (const id of ['brandkanten', 'dimvagen', 'korpholmarna'] as const) {
+  const reg = DATA.varldStor.regioner.find((r) => r.id === id);
+  assert.ok(reg);
+  const at = generateChunkWorldData(seed, reg.chunk[0], reg.chunk[1]);
+  assert.equal(at.regionId, id);
+  assert.ok(at.spawns.length > 0, `${id} ska spawna`);
+}
+
 assert.equal(validateData().filter((i) => i.startsWith('varld_stor')).length, 0);
 
 console.log('big-world-generator.test.mts: ok');

@@ -1,4 +1,4 @@
-import type { BigWorldBiome, BigWorldDataFile } from '../../data/bigWorldTypes';
+import type { BigWorldBiome, BigWorldDataFile, BigWorldRegion } from '../../data/bigWorldTypes';
 import { DATA } from '../../data';
 import { subtypeAllowedInBand } from './ringZone';
 
@@ -7,6 +7,14 @@ export function levelBandForRingzon(data: BigWorldDataFile, ringzon: number | un
   if (ringzon == null) return null;
   const ring = data.meta.zonmodell?.ringar?.find((r) => r.ring === ringzon);
   return ring?.nivaband ?? null;
+}
+
+/** Spawnband inne i en region: ringzonens band (zonmodell), annars region.nivaband. */
+export function regionSpawnLevelBand(data: BigWorldDataFile, region: BigWorldRegion): [number, number] {
+  const fromRing = levelBandForRingzon(data, region.ringzon);
+  if (fromRing) return fromRing;
+  if (region.nivaband) return region.nivaband;
+  return [1, 3];
 }
 
 export function filterSubtypesByBand(subtypes: readonly string[], band: readonly [number, number]): string[] {
