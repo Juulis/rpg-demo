@@ -36,6 +36,8 @@ export class ChunkWorldCache {
   private heroCy = 0;
   private activeSeed: number | null = null;
   private keepSet = new Set<string>();
+  /** Senast laddade nyckel via get() — evictas inte direkt (get utan syncNear). */
+  private pinnedKey: string | null = null;
 
   constructor(private readonly opts: ChunkCacheOptions = DEFAULT_OPTS) {
     assertCacheOptions(opts);
@@ -50,6 +52,7 @@ export class ChunkWorldCache {
     this.order.length = 0;
     this.activeSeed = null;
     this.keepSet.clear();
+    this.pinnedKey = null;
   }
 
   private ensureSeed(gameSeed: number): void {
@@ -67,6 +70,7 @@ export class ChunkWorldCache {
       return hit;
     }
     const data = generateChunkWorldData(gameSeed, cx, cy);
+    this.pinnedKey = key;
     this.store(key, data);
     this.evictIfNeeded();
     return data;
@@ -130,6 +134,7 @@ export class ChunkWorldCache {
     let bestD = -1;
     for (const key of this.map.keys()) {
       if (this.keepSet.has(key)) continue;
+      if (key === this.pinnedKey) continue;
       const parts = key.split('|');
       const cx = Number(parts[1]);
       const cy = Number(parts[2]);

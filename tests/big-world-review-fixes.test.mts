@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { DATA, validateData } from '../src/data';
 import { validateVarldStor, filterKnownVarldStorDataDebt } from '../src/data/validateVarldStor';
-import { generateChunkWorldData } from '../src/world/bigWorld/worldGenerator';
+import { validateVarldStorSpawnScan } from '../src/data/validateVarldStorSpawnScan';
+import { buildBigWorldCatalog, generateChunkWorldData } from '../src/world/bigWorld/worldGenerator';
 import { ChunkWorldCache } from '../src/world/bigWorld/chunkCache';
 
 const ctx = {
@@ -10,7 +11,6 @@ const ctx = {
   familyIds: new Set(DATA.families.families.map((f) => f.id)),
 };
 
-/** Känd platshållare tills design #107 synkas till src (fjall_bergsulvar / gruvspindel). */
 function filterKnownVarldStorIssues(issues: string[]): string[] {
   return filterKnownVarldStorDataDebt(issues);
 }
@@ -21,19 +21,7 @@ assert.ok(
 );
 assert.equal(filterKnownVarldStorIssues(validateVarldStor(DATA.varldStor, ctx)).length, 0);
 
-const seed = 5;
-const scanR = 16;
-const emptyByRing = new Map<number, number>();
-for (let cx = -scanR; cx <= scanR; cx++) {
-  for (let cy = -scanR; cy <= scanR; cy++) {
-    const d = generateChunkWorldData(seed, cx, cy);
-    if (!d.mellanmark || d.safe) continue;
-    if (d.spawnSubtypes.length === 0) {
-      emptyByRing.set(d.ring, (emptyByRing.get(d.ring) ?? 0) + 1);
-    }
-  }
-}
-assert.equal(emptyByRing.size, 0, `tom mellanmark: ${[...emptyByRing.entries()]}`);
+assert.equal(validateVarldStorSpawnScan(DATA.varldStor, ctx, { seeds: [5], radius: 16, maxRing: 7 }).length, 0);
 
 assert.throws(() => new ChunkWorldCache({ maxEntries: 48, keepRadius: 3 }));
 const cache = new ChunkWorldCache({ maxEntries: 49, keepRadius: 3 });
@@ -47,6 +35,11 @@ for (let i = 0; i < 5; i++) {
   }
 }
 assert.equal(objs.size, 5 * 49, 'syncNear ska inte återanvända chunkobjekt inom keep');
+
+const tight = new ChunkWorldCache({ maxEntries: 9, keepRadius: 1 });
+for (let i = 0; i < 8; i++) tight.get(1, i, 0);
+const pinned = tight.get(1, 99, 0);
+assert.equal(pinned.cx, 99);
 
 const broken = structuredClone(DATA.varldStor);
 const firstRegion = broken.regioner[0];
@@ -62,10 +55,16 @@ const slot = fjall.egna_monster.find((s) => s.id === 'fjall_gruvkryp');
 assert.ok(slot);
 slot.familj = 'bestar';
 const slotIssues = validateVarldStor(brokenSlot, ctx);
-assert.ok(
-  slotIssues.some((i) => i.includes('egna_monster fjall_gruvkryp') && i.includes('tillhör')),
-  slotIssues.join('\n'),
-);
+assert.ok(slotIssues.some((i) => i.includes('egna_monster fjall_gruvkryp') && i.includes('tillhör')));
+
+const stripped = structuredClone(DATA.varldStor);
+stripped.biomer.kust.monsterfamiljer = { gastar: [], ododa: [] };
+stripped.biomer.kust.egna_monster = [];
+const strippedCat = buildBigWorldCatalog(stripped);
+const kustChunk = generateChunkWorldData(5, -10, -7, strippedCat);
+assert.equal(kustChunk.spawnSubtypes.length, 0);
+const stripScan = validateVarldStorSpawnScan(stripped, ctx, { seeds: [5], radius: 20, maxRing: 7 });
+assert.equal(stripScan.length, 0, 'tom spawn ska inte ge band-avvikelse');
 
 assert.equal(filterKnownVarldStorIssues(validateData().filter((i) => i.startsWith('varld_stor'))).length, 0);
 

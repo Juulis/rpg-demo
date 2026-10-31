@@ -5,7 +5,7 @@ import { blendBiomesAtChunk, biomeRenderPlaceholders, isTownBiomeChunk } from '.
 import { buildRoadIndex, roadsAtChunk, type RoadIndex } from './roads';
 import { resolveRegionAtChunk } from './regionIndex';
 import { chunkDistanceFromStart, ringAtChunkDistance } from './ringZone';
-import { planMellanmarkSpawn, filterSubtypesByBand, regionSpawnLevelBand } from './spawnRules';
+import { planMellanmarkSpawn, filterSubtypesByBand, regionSpawnLevelBand, mellanmarkLevelBand } from './spawnRules';
 
 export interface BigWorldSpawnRoll {
   uid: string;
@@ -52,9 +52,7 @@ export interface BigWorldCatalog {
 
 let catalogSingleton: BigWorldCatalog | null = null;
 
-export function getBigWorldCatalog(): BigWorldCatalog {
-  if (catalogSingleton) return catalogSingleton;
-  const data = DATA.varldStor;
+export function buildBigWorldCatalog(data: BigWorldDataFile): BigWorldCatalog {
   const roads = buildRoadIndex(data.vagar, data.regioner);
   const regionById = new Map(data.regioner.map((r) => [r.id, r]));
   const poisByRegionChunk = new Map<string, string[]>();
@@ -66,13 +64,22 @@ export function getBigWorldCatalog(): BigWorldCatalog {
     list.push(poi.id);
     poisByRegionChunk.set(k, list);
   }
-  catalogSingleton = {
+  return {
     data,
     roads,
     regionById,
     poisByRegionChunk,
     startChunk: data.meta.startpunkt.chunk,
   };
+}
+
+export function resetBigWorldCatalogCache(): void {
+  catalogSingleton = null;
+}
+
+export function getBigWorldCatalog(): BigWorldCatalog {
+  if (catalogSingleton) return catalogSingleton;
+  catalogSingleton = buildBigWorldCatalog(DATA.varldStor);
   return catalogSingleton;
 }
 
@@ -122,8 +129,12 @@ function rollChunkSpawns(
 }
 
 /** Genererar all data för en chunk (D2 — en gång per game seed). */
-export function generateChunkWorldData(gameSeed: number, cx: number, cy: number): ChunkWorldData {
-  const catalog = getBigWorldCatalog();
+export function generateChunkWorldData(
+  gameSeed: number,
+  cx: number,
+  cy: number,
+  catalog: BigWorldCatalog = getBigWorldCatalog(),
+): ChunkWorldData {
   const { region, mellanmark } = primaryBiomeAt(catalog, cx, cy);
   const distance = chunkDistanceFromStart(cx, cy, catalog.startChunk);
   const ringar = catalog.data.meta.zonmodell?.ringar ?? [];
@@ -145,7 +156,9 @@ export function generateChunkWorldData(gameSeed: number, cx: number, cy: number)
   let safe: boolean;
   let act: string | null;
   let monsterFamily: string | null = region.monsterfamilj ?? null;
-  let spawnBand = mellanmark ? chunkRing.levelBand : regionSpawnLevelBand(catalog.data, region);
+  let spawnBand = mellanmark
+    ? mellanmarkLevelBand(catalog.data, chunkRing.ring, chunkRing.levelBand)
+    : regionSpawnLevelBand(catalog.data, region);
 
   if (mellanmark) {
     const plan = planMellanmarkSpawn(catalog.data, biome, region, chunkRing.ring, chunkRing.levelBand);

@@ -1,8 +1,6 @@
 import type { BigWorldDataFile } from './bigWorldTypes';
 import type { MonsterDef } from './types';
 import { filterSubtypesByBand, regionSpawnLevelBand } from '../world/bigWorld/spawnRules';
-import { chebyshevChunkDist } from '../world/bigWorld/ringZone';
-import { generateChunkWorldData } from '../world/bigWorld/worldGenerator';
 
 export interface VarldStorValidateCtx {
   monsterIds: Set<string>;
@@ -92,43 +90,6 @@ export function validateVarldStor(bw: BigWorldDataFile, ctx: VarldStorValidateCt
     const regionBand = regionSpawnLevelBand(bw, r);
     if (filterSubtypesByBand(r.undertyper ?? [], regionBand).length === 0) {
       issues.push(`varld_stor region ${r.id}: genererad_spawn tom i regionband ${regionBand.join('-')}`);
-    }
-  }
-
-  const scanR = 16;
-  const seed = 5;
-  const emptyByRing = new Map<number, { empty: number; total: number }>();
-  for (let cx = -scanR; cx <= scanR; cx++) {
-    for (let cy = -scanR; cy <= scanR; cy++) {
-      const d = generateChunkWorldData(seed, cx, cy);
-      if (!d.mellanmark || d.safe) continue;
-      const stat = emptyByRing.get(d.ring) ?? { empty: 0, total: 0 };
-      stat.total++;
-      if (d.spawnSubtypes.length === 0) stat.empty++;
-      emptyByRing.set(d.ring, stat);
-    }
-  }
-  for (const [ring, stat] of emptyByRing) {
-    if (stat.empty > 0) {
-      issues.push(`varld_stor mellanmark ring ${ring}: ${stat.empty}/${stat.total} chunkar utan spawn (seed ${seed})`);
-    }
-  }
-
-  for (const r of bw.regioner) {
-    if (!r.genererad_spawn) continue;
-    const [rx, ry] = r.chunk;
-    const rad = r['radie'];
-    for (let dx = -rad; dx <= rad; dx++) {
-      for (let dy = -rad; dy <= rad; dy++) {
-        const cx = rx + dx;
-        const cy = ry + dy;
-        if (chebyshevChunkDist(cx, cy, rx, ry) > rad) continue;
-        const d = generateChunkWorldData(seed, cx, cy);
-        if (d.mellanmark || d.regionId !== r.id) continue;
-        if (d.generatedSpawn && d.spawnSubtypes.length === 0) {
-          issues.push(`varld_stor region ${r.id} chunk ${cx},${cy}: genererad_spawn utan undertyper`);
-        }
-      }
     }
   }
 

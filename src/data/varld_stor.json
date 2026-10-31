@@ -423,7 +423,7 @@
         "ododa": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt"],
         "insekter": ["gruvspindel", "syrabagge", "kitinvakt"],
         "demoner": ["askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
-        "forvridna": ["askkultist"]
+        "forvridna": ["askkultist", "smittbarare", "galen_munk", "kottklump"]
       },
       "nivaband": [8, 25],
       "regioner": ["brandkanten", "glodstranden", "askfalten", "askeborg", "kultens_katakomber", "katedralen", "brandkusten"],

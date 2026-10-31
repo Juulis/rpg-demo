@@ -18,8 +18,9 @@ export function regionSpawnLevelBand(data: BigWorldDataFile, region: BigWorldReg
 }
 
 /**
- * Mellanmark: ring 7+ saknar undertyper i band 28–30 tills maxnivå höjs.
- * Tills vidare använder spawn ring 6:s band (design meta.ytterkant + Juulis review #103).
+ * Mellanmark: effektivt ringband för spawn utifrån chunk-avstånd.
+ * varld_stor.json meta.ytterkant anger band 28–30 för ring 7+; tills undertyper täcker det
+ * använder vi ring 6:s band (24–30) så spawn inte faller tillbaka på biomet låga nivåer.
  */
 export function mellanmarkLevelBand(data: BigWorldDataFile, ring: number, chunkBand: readonly [number, number]): [number, number] {
   if (ring >= 7) {
@@ -38,77 +39,30 @@ export function filterSubtypesByBand(subtypes: readonly string[], band: readonly
   });
 }
 
-function bandKey(b: readonly [number, number]): string {
-  return `${b[0]}-${b[1]}`;
-}
-
-/** Alla fasta nivåer för undertyper listade i biomet (egna_monster + monsterfamiljer). */
-export function biomeSubtypeLevelSpan(biome: BigWorldBiome | undefined): [number, number] | null {
-  if (!biome) return null;
-  const fixed = DATA.monsterLevels.fixed_levels ?? {};
-  const levels: number[] = [];
-  for (const slot of biome.egna_monster ?? []) {
-    for (const id of slot.undertyper_nu) {
-      const lv = fixed[id];
-      if (lv != null) levels.push(lv);
-    }
-  }
-  for (const ids of Object.values(biome.monsterfamiljer ?? {})) {
-    for (const id of ids) {
-      const lv = fixed[id];
-      if (lv != null) levels.push(lv);
-    }
-  }
-  if (levels.length === 0) return null;
-  return [Math.min(...levels), Math.max(...levels)];
-}
-
-function intersectLevelBands(a: readonly [number, number], b: readonly [number, number]): [number, number] | null {
-  const lo = Math.max(a[0], b[0]);
-  const hi = Math.min(a[1], b[1]);
-  if (lo > hi) return null;
-  return [lo, hi];
-}
-
-/** Reservband: chunk/ring, region, biomet — klampat mot biomet om ringbandet är tomma. */
-export function mellanmarkBandsToTry(
-  data: BigWorldDataFile,
-  biome: BigWorldBiome | undefined,
-  region: BigWorldRegion,
-  chunkRing: number,
-  chunkBand: readonly [number, number],
-): [number, number][] {
-  const out: [number, number][] = [];
-  const seen = new Set<string>();
-  const push = (b: readonly [number, number] | null | undefined) => {
-    if (!b) return;
-    const k = bandKey(b);
-    if (seen.has(k)) return;
-    seen.add(k);
-    out.push([b[0], b[1]]);
-  };
-
-  push(mellanmarkLevelBand(data, chunkRing, chunkBand));
-  push(regionSpawnLevelBand(data, region));
-  push(chunkBand);
-  if (region.nivaband) push(region.nivaband);
-  if (biome?.nivaband) push(biome.nivaband);
-
-  const span = biomeSubtypeLevelSpan(biome);
-  if (span) {
-    push(intersectLevelBands(chunkBand, span));
-    push(intersectLevelBands(regionSpawnLevelBand(data, region), span));
-    push(span);
-  }
-
-  return out;
-}
-
 function familiesInBiome(biome: BigWorldBiome): string[] {
   const s = new Set<string>();
   for (const slot of biome.egna_monster ?? []) s.add(slot.familj);
   for (const k of Object.keys(biome.monsterfamiljer ?? {})) s.add(k);
   return [...s];
+}
+
+function collectBiomeSubtypeIds(biome: BigWorldBiome, monsterFamily: string): string[] {
+  const ids = new Set<string>();
+  const monsters = DATA.families.monsters;
+  const byId = new Map(monsters.map((m) => [m.id, m]));
+
+  for (const slot of biome.egna_monster ?? []) {
+    if (slot.familj !== monsterFamily) continue;
+    for (const id of slot.undertyper_nu) {
+      const def = byId.get(id);
+      if (def && def.family === monsterFamily) ids.add(id);
+    }
+  }
+  for (const id of biome.monsterfamiljer?.[monsterFamily] ?? []) {
+    const def = byId.get(id);
+    if (def && def.family === monsterFamily) ids.add(id);
+  }
+  return [...ids];
 }
 
 /** En familj i taget — ingen mix (spawnzoner meta.mixed_spawn_enabled = false). */
@@ -118,14 +72,7 @@ export function biomeSpawnSubtypes(
   band: readonly [number, number],
 ): string[] {
   if (!biome || !monsterFamily) return [];
-  const ids = new Set<string>();
-  for (const slot of biome.egna_monster ?? []) {
-    if (slot.familj !== monsterFamily) continue;
-    for (const id of slot.undertyper_nu) ids.add(id);
-  }
-  const famMap = biome.monsterfamiljer ?? {};
-  for (const id of famMap[monsterFamily] ?? []) ids.add(id);
-  return filterSubtypesByBand([...ids], band);
+  return filterSubtypesByBand(collectBiomeSubtypeIds(biome, monsterFamily), band);
 }
 
 /** Välj familj med flest giltiga undertyper i bandet; föredrar nearest regions familj om den fungerar. */
@@ -154,7 +101,10 @@ export interface MellanmarkSpawnPlan {
   spawnSubtypes: string[];
 }
 
-/** Mellanmark: band + familj + undertyper med reserv (regionband, ring-6 vid ytterkant). */
+/**
+ * Mellanmark: levelBand är alltid chunkens effektiva ringband.
+ * Undertyper måste ligga i ringbandet — annars ingen spawn (validering i tester).
+ */
 export function planMellanmarkSpawn(
   data: BigWorldDataFile,
   biome: BigWorldBiome | undefined,
@@ -162,18 +112,21 @@ export function planMellanmarkSpawn(
   chunkRing: number,
   chunkBand: readonly [number, number],
 ): MellanmarkSpawnPlan {
-  const bandsToTry = mellanmarkBandsToTry(data, biome, nearestRegion, chunkRing, chunkBand);
+  const ringBand = mellanmarkLevelBand(data, chunkRing, chunkBand);
   const prefer = nearestRegion.monsterfamilj ?? null;
-  for (const band of bandsToTry) {
-    const family = pickBiomeMonsterFamily(biome, band, prefer);
-    const spawnSubtypes = family ? biomeSpawnSubtypes(biome, family, band) : [];
-    if (spawnSubtypes.length > 0) {
-      return { spawnBand: band, monsterFamily: family, spawnSubtypes };
+
+  const family = pickBiomeMonsterFamily(biome, ringBand, prefer);
+  if (family) {
+    const inBand = biomeSpawnSubtypes(biome, family, ringBand);
+    if (inBand.length > 0) {
+      return { spawnBand: ringBand, monsterFamily: family, spawnSubtypes: inBand };
     }
   }
-  return {
-    spawnBand: bandsToTry[0] ?? [chunkBand[0], chunkBand[1]],
-    monsterFamily: null,
-    spawnSubtypes: [],
-  };
+
+  for (const fam of familiesInBiome(biome ?? ({} as BigWorldBiome))) {
+    const inBand = biomeSpawnSubtypes(biome, fam, ringBand);
+    if (inBand.length > 0) return { spawnBand: ringBand, monsterFamily: fam, spawnSubtypes: inBand };
+  }
+
+  return { spawnBand: ringBand, monsterFamily: null, spawnSubtypes: [] };
 }
