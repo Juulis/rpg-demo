@@ -248,8 +248,8 @@
     "ingen_andring": "Ingen tjänst ändrar föremål. Ingen smedja, inga hylsor, ingen identifiering, ingen reparation."
   },
   "snabbresa": {
-    "natverk": "varld_stor.json meta.waypoints. rod_portal är alltid med. Varje stad lägger till sin vägsten (id <stad>_vagsten) när den når aterbefolkad_3.",
-    "aktivering": "En waypoint aktiveras första gången hjälten går fram till den. Röda portalen aktiveras så, utan runkrav. En stads vägsten måste både vara byggd (aterbefolkad_3) och besökt.",
+    "natverk": "varld_stor.json meta.waypoints. rod_portal är med så snart alla tre runor är aktiva. Varje stad lägger till sin vägsten (id <stad>_vagsten) när den når aterbefolkad_3.",
+    "aktivering": "En waypoint aktiveras första gången hjälten går fram till den. Röda portalen finns först när alla tre runor är aktiva (inget annat villkor) och aktiveras därefter så. En stads vägsten måste både vara byggd (aterbefolkad_3) och besökt.",
     "resa": "Fråga vid valfri aktiv waypoint, välj mål i en lista. Gratis, ingen nedkylning. Lista visar namn och rekommenderad nivå.",
     "lore": "Vägstenarna är bitar av ristarens runor. Invånarna gräver fram dem och reser dem på torget. De glöder rött som portalen. Hjälten använder kraften men styr den inte.",
     "sparas": "Per hjälte, som stadstillstånd.",

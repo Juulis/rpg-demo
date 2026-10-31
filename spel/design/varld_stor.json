@@ -94,13 +94,13 @@
       "teleport": "instans (grotta, bana, bossplats eller händelse) med ingång i öppna världen. Teleporten är alltid öppen, inga krav, så det är ingen rörelsespärr."
     },
     "waypoints": {
-      "regel": "Snabbresepunkter utan krav. Röda portalen är en waypoint, inget runkrav. Norra vägen till Den gamla byn är alltid öppen.",
+      "regel": "Snabbresepunkter utan egna krav, men de måste finnas och vara besökta. Röda portalen finns först när alla tre runor är aktiva (Juulis beslut), därefter är den en waypoint. Norra vägen till Den gamla byn är alltid öppen.",
       "punkter": ["rod_portal"],
       "stadsvagstenar": "Varje stad lägger till <stad>_vagsten när den når aterbefolkad_3 och hjälten har besökt den. Se stader.json snabbresa."
     },
     "beslutat": [
       "Askfälten är ett eget biom, ask.",
-      "Röda portalen är en waypoint utan runkrav.",
+      "Röda portalen öppnas när alla tre runor är aktiva, utan andra villkor, och är därefter en waypoint. Det är ingen rörelsespärr, eftersom norra vägen till Den gamla byn alltid är öppen.",
       "Varje biom får egna monster, befintliga undertyper är platshållare tills UI gör nya.",
       "Instanser nås med teleport som alltid är öppen. Bosslåset i portal_by.json (arenan låses under striden) är godkänt av Juulis."
     ]
@@ -1573,7 +1573,7 @@
       "sakert": false,
       "atkomst": "oppen",
       "waypoint": true,
-      "krav": null
+      "krav": "alla_tre_runor_aktiva"
     },
     {
       "id": "runsten_ristarens",
