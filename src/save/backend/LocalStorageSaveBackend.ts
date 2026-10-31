@@ -109,7 +109,9 @@ export class LocalStorageSaveBackend implements SaveBackend {
     if (!file) return;
     file.fog = { ...(file.fog ?? {}), [zone]: base64 };
     file.savedAt = Date.now();
-    this.write(LocalStorageSaveBackend.heroKey(heroId), file);
+    if (!this.write(LocalStorageSaveBackend.heroKey(heroId), file)) {
+      throw new Error('Dimma kunde inte sparas (lagring full?)');
+    }
   }
 
   async clearFog(heroId: string): Promise<void> {
@@ -239,8 +241,14 @@ export class LocalStorageSaveBackend implements SaveBackend {
   private read(key: string): unknown {
     return parseJson(this.kv.get(key));
   }
-  private write(key: string, value: unknown): void {
-    this.kv.set(key, JSON.stringify(value));
+  private write(key: string, value: unknown): boolean {
+    try {
+      this.kv.set(key, JSON.stringify(value));
+      return true;
+    } catch (e) {
+      console.warn('Sparning misslyckades', e);
+      return false;
+    }
   }
 
   private writeFile(d: SaveFile): void {

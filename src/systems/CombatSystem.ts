@@ -16,6 +16,15 @@ interface HitOpts {
   ranged?: boolean;
 }
 
+function bossActForMonster(id: string): string {
+  const bx = DATA.monsterLevels.boss_xp_faktor;
+  if (bx && typeof bx === 'object' && 'bossar' in bx && bx.bossar && typeof bx.bossar === 'object') {
+    const act = (bx.bossar as Record<string, string>)[id];
+    if (act) return act;
+  }
+  return 'akt_1';
+}
+
 /** Strid i klienten: effekter, knuff, projektiler. Utfall (träff, skada, XP, droppar) avgörs av GameAuthority. Hjältens anfall och färdigheter, träffchans, skada, krosslag, knuff, livsstöld, taggar, XP och död. */
 export class CombatSystem {
   /** Anropas när bossen dör. */
@@ -48,7 +57,8 @@ export class CombatSystem {
       vulnerable: m.vuln > 0,
       shieldedFront: m.id === 'skelett_vakt' && f.x * to.x + f.y * to.y > 0.3,
       xp: m.def.xp,
-      xpMult: m.es?.xp ?? 1,
+      xpMult: m.boss ? 1 : (m.es?.xp ?? 1),
+      bossAct: m.boss ? bossActForMonster(m.id) : undefined,
     };
   }
 

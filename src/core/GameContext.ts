@@ -88,6 +88,8 @@ export interface ZoneView {
   /** Rensade delområden (bara information, ingen spärr). */
   cleared: Readonly<Record<string, boolean>>;
   arena?: { x0: number; y0: number; x1: number; y1: number } | null;
+  /** Stor skog med chunk-streaming (#85). */
+  bigWorldStreaming?: boolean;
 }
 
 /** Sparbar ögonblicksbild av hjälte + session (Game.getSnapshot / Game.loadHero). */
@@ -105,6 +107,8 @@ export interface HeroSave {
     city: string;
     /** Spelklocka i sekunder (#47). */
     worldTime?: number;
+    /** Stor-värld koordinat-epoch (offset 192); saknas → migreras vid load. */
+    bwCoordEpoch?: number;
   } | null;
   /** Per-hjälte fynd (lorebok); sätts av SaveBackend vid load, inte av Game.getSnapshot(). */
   foundItems?: Record<string, FoundEntry>;

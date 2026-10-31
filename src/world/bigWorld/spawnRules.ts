@@ -18,18 +18,9 @@ export function regionSpawnLevelBand(data: BigWorldDataFile, region: BigWorldReg
 }
 
 /**
- * Mellanmark: effektivt ringband för spawn utifrån chunk-avstånd.
- * varld_stor.json meta.ytterkant anger band 28–30 för ring 7+; tills undertyper täcker det
- * använder vi ring 6:s band (24–30) så spawn inte faller tillbaka på biomet låga nivåer.
- *
- * TODO(design-sync): när ring 7+ har full monster-täckning i data, använd meta.ytterkant (28–30)
- * i stället för ring 6:s band här.
+ * Mellanmark: effektivt ringband för spawn utifrån chunk-avstånd (design: ring 7 = 28–30 i data).
  */
-export function mellanmarkLevelBand(data: BigWorldDataFile, ring: number, chunkBand: readonly [number, number]): [number, number] {
-  if (ring >= 7) {
-    const ring6 = data.meta.zonmodell?.ringar?.find((r) => r.ring === 6);
-    if (ring6?.nivaband) return ring6.nivaband;
-  }
+export function mellanmarkLevelBand(_data: BigWorldDataFile, _ring: number, chunkBand: readonly [number, number]): [number, number] {
   return [chunkBand[0], chunkBand[1]];
 }
 

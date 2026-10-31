@@ -76,6 +76,8 @@ export class MapModule implements GameModule {
     this.d.add(
       bus.on('zone_enter', () => {
         this.flush();
+        const z = this.ctx?.zone;
+        if (z) this.fog.setWorldAnchored(z.bigWorldStreaming === true);
         this.reveal();
       }),
     );
@@ -90,6 +92,7 @@ export class MapModule implements GameModule {
   private resetFog(heroId: string | null): void {
     this.heroId = heroId;
     this.fog = new FogOfWar((zone) => (heroId ? this.fogRepo.load(heroId, zone) : null));
+    if (this.ctx?.zone.bigWorldStreaming) this.fog.setWorldAnchored(true);
   }
 
   private playing(): boolean {
@@ -107,7 +110,11 @@ export class MapModule implements GameModule {
   reveal(): void {
     const ctx = this.ctx;
     if (!ctx || !ctx.hero.playing) return;
-    if (this.fog.reveal(ctx.zone.name, ctx.hero.pos.x, ctx.hero.pos.y) && !this.saveTimer) {
+    const z = ctx.zone;
+    const changed = z.bigWorldStreaming
+      ? this.fog.revealWorld(z.name, ctx.hero.pos.x, ctx.hero.pos.y)
+      : this.fog.reveal(z.name, ctx.hero.pos.x, ctx.hero.pos.y);
+    if (changed && !this.saveTimer) {
       this.saveTimer = setTimeout(() => this.flush(), MapModule.SAVE_MS);
     }
   }
@@ -117,7 +124,17 @@ export class MapModule implements GameModule {
     this.saveTimer = undefined;
     const id = this.heroId;
     if (!id) return;
-    for (const [zone, cells] of this.fog.takeDirty()) this.fogRepo.save(id, zone, cells);
+    for (const [zone, cells] of this.fog.takeDirty()) {
+      if (!cells) continue;
+      void this.fogRepo.save(id, zone, cells).then((ok) => {
+        if (ok) return;
+        if (this.fog.storageQuotaExceeded) {
+          console.warn('[MapModule] Kartdimma: lagringsutrymmet fullt — nya avslöjanden sparas inte.');
+        } else if (this.fogRepo.lastError) {
+          console.warn('[MapModule] Kartdimma kunde inte sparas:', this.fogRepo.lastError);
+        }
+      });
+    }
   }
 
   private frame(t: number): void {

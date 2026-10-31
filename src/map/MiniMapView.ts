@@ -38,13 +38,21 @@ export class MiniMapView {
     if (!prep) return;
     const { c, W, H } = prep;
     const s = Math.min(W, H) / (MiniMapView.VIEW * 2);
-    const p = { s, ox: W / 2 - h.pos.x * s, oy: H / 2 - h.pos.y * s, mini: true };
+    const anchor = z.bigWorldStreaming ? this.painter.fogAnchor() : { x: 0, y: 0 };
+    const p = {
+      s,
+      ox: W / 2 - h.pos.x * s,
+      oy: H / 2 - h.pos.y * s,
+      mini: true,
+      fogOriginX: anchor.x,
+      fogOriginY: anchor.y,
+    };
     const pulse = 0.5 + 0.5 * Math.sin(time / 250);
     c.save();
     c.beginPath();
     c.arc(W / 2, H / 2, W / 2 - 2, 0, 7);
     c.clip();
-    this.painter.world(c, z, p, mapFogColor(clockTime, true));
+    this.painter.world(c, z, p, mapFogColor(clockTime, true), h);
     this.painter.hero(c, h, p);
     c.restore();
     const g = this.goals.goal(z, h.pos);

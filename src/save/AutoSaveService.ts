@@ -4,6 +4,7 @@ import type { GameContext } from '../core/GameContext';
 import type { HeroGateway } from './HeroGateway';
 import type { SaveRepository } from './SaveRepository';
 import { SAVE_VERSION, type SaveFile } from './types';
+import { BIG_WORLD_COORD_EPOCH } from '../world/bigWorld/saveCoordMigrate';
 
 /**
  * Autosparning drivs helt av bussen (issue #12): inga polling-timers. DOM-fri:
@@ -117,6 +118,7 @@ export class AutoSaveService {
         runes: g?.runes ?? 0,
         city: g?.city ?? 'besatt',
         ...(typeof g?.worldTime === 'number' ? { worldTime: g.worldTime } : {}),
+        bwCoordEpoch: g?.bwCoordEpoch ?? cur.game?.bwCoordEpoch ?? BIG_WORLD_COORD_EPOCH,
       },
       savedAt: Date.now(),
       worldState: snap.worldState ?? cur.worldState,

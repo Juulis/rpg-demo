@@ -7,7 +7,8 @@ import type { AssetStore, DecorId } from '../../render/Assets';
 import { Iso, TILE_WORLD } from '../../render/Iso';
 import { ChunkWorldCache } from './chunkCache';
 import type { ChunkWorldData } from './worldGenerator';
-import { chunkTileCount, chunkWorldSpan, worldToChunk } from './bigWorldCoords';
+import { chunkMinWorld, chunkTileCount, chunkWorldSpan, worldToChunk } from './bigWorldCoords';
+import { patchWorldBounds } from './groundPatchBounds';
 import {
   BIG_WORLD_CACHE_KEEP_RADIUS,
   BIG_WORLD_GROUND_BUILD_BUDGET_MS,
@@ -95,24 +96,6 @@ function aabbOverlap(a: BigWorldViewBounds, minX: number, minY: number, maxX: nu
   return minX <= a.maxX && maxX >= a.minX && minY <= a.maxY && maxY >= a.minY;
 }
 
-function patchWorldBounds(
-  cx: number,
-  cy: number,
-  pi: number,
-  pj: number,
-  patchTiles: number,
-  tiles: number,
-): { minX: number; minY: number; maxX: number; maxY: number } {
-  const span = chunkWorldSpan();
-  const ti0 = pi * patchTiles;
-  const tj0 = pj * patchTiles;
-  const tw = Math.min(patchTiles, tiles - ti0);
-  const th = Math.min(patchTiles, tiles - tj0);
-  const minX = cx * span + ti0 * TILE_WORLD;
-  const minY = cy * span + tj0 * TILE_WORLD;
-  return { minX, minY, maxX: minX + tw * TILE_WORLD, maxY: minY + th * TILE_WORLD };
-}
-
 /** Räknar RenderTexture-baserade mark-patchar (GPU-minne). */
 export function countBigWorldGroundRenderTextures(ground: BigWorldStreamGround): number {
   return ground.countRenderTextures();
@@ -126,6 +109,8 @@ export class BigWorldStreamGround extends PixiContainer {
   private readonly cache: ChunkWorldCache;
   private lastCx = NaN;
   private lastCy = NaN;
+  private lastHeroWx = NaN;
+  private lastHeroWy = NaN;
   private activeWorldSeed = 0;
   private activeGameSeed = 0;
   private scene: BigWorldStreamScene | null = null;
@@ -179,6 +164,14 @@ export class BigWorldStreamGround extends PixiContainer {
     return need > 0;
   }
 
+  /** Teleport eller stor hopp — tvinga om chunk-sync och markbygge. */
+  bumpHeroPosition(hero: Vec2): void {
+    this.lastCx = NaN;
+    this.lastCy = NaN;
+    this.lastHeroWx = hero.x;
+    this.lastHeroWy = hero.y;
+  }
+
   sync(
     hero: Vec2,
     worldSeed: number,
@@ -190,6 +183,13 @@ export class BigWorldStreamGround extends PixiContainer {
     this.scene = scene;
     this.allowBuild = renderer != null;
     this.viewBounds = viewBounds;
+    const span = chunkWorldSpan();
+    if (!Number.isNaN(this.lastHeroWx) && Math.hypot(hero.x - this.lastHeroWx, hero.y - this.lastHeroWy) > span * 1.25) {
+      this.lastCx = NaN;
+      this.lastCy = NaN;
+    }
+    this.lastHeroWx = hero.x;
+    this.lastHeroWy = hero.y;
     const { cx, cy } = worldToChunk(hero.x, hero.y);
     const movedChunk = cx !== this.lastCx || cy !== this.lastCy;
     const seedChanged = worldSeed !== this.activeWorldSeed || gameSeed !== this.activeGameSeed;
@@ -325,8 +325,8 @@ export class BigWorldStreamGround extends PixiContainer {
       vis.decorDone = true;
       return;
     }
-    const span = chunkWorldSpan();
     const tiles = chunkTileCount();
+    const chunkMin = chunkMinWorld(data.cx, data.cy);
     const decorEvery = 11;
     for (let ti = 0; ti < tiles; ti += decorEvery) {
       for (let tj = 0; tj < tiles; tj += decorEvery) {
@@ -337,8 +337,8 @@ export class BigWorldStreamGround extends PixiContainer {
         if (!decorId) continue;
         const d = this.assets.decor.get(decorId);
         if (!d?.tex) continue;
-        const wx = data.cx * span + (ti + cell.float(0, decorEvery - 1)) * TILE_WORLD;
-        const wy = data.cy * span + (tj + cell.float(0, decorEvery - 1)) * TILE_WORLD;
+        const wx = chunkMin.x + (ti + cell.float(0, decorEvery - 1)) * TILE_WORLD;
+        const wy = chunkMin.y + (tj + cell.float(0, decorEvery - 1)) * TILE_WORLD;
         const s = new Sprite(d.tex);
         s.anchor.set(d.size.anchor[0] / d.size.w, d.size.anchor[1] / d.size.h);
         s.scale.set(0.35 + cell.next() * 0.2, 0.35 + cell.next() * 0.2);
@@ -390,7 +390,7 @@ export class BigWorldStreamGround extends PixiContainer {
         if (!aabbOverlap(view, b.minX, b.minY, b.maxX, b.maxY)) return false;
       }
       const data = vis.data;
-      const span = chunkWorldSpan();
+      const chunkMin = chunkMinWorld(data.cx, data.cy);
       const pool = data.tilePool.length ? data.tilePool : ['gras_1'];
       const ti0 = pi * patchTiles;
       const tj0 = pj * patchTiles;
@@ -405,8 +405,8 @@ export class BigWorldStreamGround extends PixiContainer {
         const tileId = pickChunkGroundTileId(data.chunkSeed, ti, tj, pool);
         const tex = this.assets.tiles.get(tileId);
         if (tex) {
-          const wx = data.cx * span + ti * TILE_WORLD;
-          const wy = data.cy * span + tj * TILE_WORLD;
+          const wx = chunkMin.x + ti * TILE_WORLD;
+          const wy = chunkMin.y + tj * TILE_WORLD;
           const s = new Sprite(tex);
           s.anchor.set(0.5, 0.85);
           const pos = Iso.worldToScreen(wx, wy);

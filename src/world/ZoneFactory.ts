@@ -10,6 +10,7 @@ import { ForestGroundChunks } from './ForestGroundChunks';
 import { BigWorldStreamGround } from './bigWorld/BigWorldStreamGround';
 import { BIG_WORLD_STREAMING_ENABLED } from './bigWorld/bigWorldConfig';
 import { bigWorldCityPortalWorld } from './bigWorld/bigWorldPortals';
+import { applyStartskogenAnchor } from './bigWorld/startskogenSpawn';
 import {
   CITY_RNG_SEED,
   cityAreaId,
@@ -142,20 +143,22 @@ export class ZoneFactory {
     const zone = new Zone('forest', 'startskogen', 4096, 4096);
     zone.bigWorldStreaming = true;
     zone.safeRadius = FOREST_SAFE_RADIUS;
-    zone.entry = { x: 4, y: 4 };
+    zone.entry = { x: 0, y: 4 };
     const ground = new BigWorldStreamGround(this.assets);
     const decor: Container[] = [];
     const decorAnims: StripAnimSprite[] = [];
     const runeSprites: Sprite[] = [];
-    for (const [x, y] of RUNE_POS) {
+    for (const [lx, ly] of RUNE_POS) {
+      const { x, y } = applyStartskogenAnchor(lx, ly);
       zone.runes.push({ x, y, active: false });
       zone.colliders.push({ x, y, r: 0.8 });
       const s = this.decorSprite('runsten', x, y, 0.42);
       runeSprites.push(s);
       decor.push(s);
     }
-    decor.push(this.decorSprite('eldstad_kall', -1.2, 2.6, 0.34));
-    const fire = this.decorAnimSprite('lagereld_anim', -1.2, 2.6, 0.34);
+    const camp = { x: -128, y: -128 };
+    decor.push(this.decorSprite('eldstad_kall', camp.x, camp.y, 0.34));
+    const fire = this.decorAnimSprite('lagereld_anim', camp.x, camp.y, 0.34);
     if (fire) {
       decor.push(fire);
       decorAnims.push(fire);

@@ -13,6 +13,9 @@ export const BIG_WORLD_GROUND_VIEW_MARGIN = 8;
 /** Max ms tile-bygge per bildruta innan vi fortsätter nästa frame. */
 export const BIG_WORLD_GROUND_BUILD_BUDGET_MS = 4;
 
+/** Max chunk-monster som instansieras per frame (spawn-kö). */
+export const BIG_WORLD_MONSTER_SPAWN_BUDGET = 4;
+
 /** Rutor per byggbatch (64×64 chunk → 4×4 delar à 16×16 för budget). */
 export const BIG_WORLD_GROUND_PATCH_TILES = 16;
 

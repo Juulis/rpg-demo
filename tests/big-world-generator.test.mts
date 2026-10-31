@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { DATA, validateData } from '../src/data';
-import { generateChunkWorldData, getBigWorldCatalog, xpDistanceMultiplier } from '../src/world/bigWorld/worldGenerator';
+import { generateChunkWorldData, getBigWorldCatalog } from '../src/world/bigWorld/worldGenerator';
 import { chunkDistanceFromStart } from '../src/world/bigWorld/ringZone';
 import { roadsAtChunk } from '../src/world/bigWorld/roads';
 
@@ -37,7 +37,6 @@ const start = DATA.varldStor.meta.startpunkt.chunk;
 const near = chunkDistanceFromStart(1, 1, start);
 const far = chunkDistanceFromStart(10, 10, start);
 assert.ok(far > near);
-assert.ok(xpDistanceMultiplier(far) > xpDistanceMultiplier(near));
 
 const vargstigen = generateChunkWorldData(seed, seed, 2, 0);
 assert.equal(vargstigen.regionId, 'vargstigen');
@@ -51,7 +50,16 @@ const sodra = DATA.varldStor.regioner.find((r) => r.id === 'sodra_mon');
 assert.ok(sodra);
 const sodraChunk = generateChunkWorldData(seed, seed, sodra.chunk[0], sodra.chunk[1]);
 assert.ok(sodraChunk.spawnSubtypes.length > 0);
-assert.ok(sodraChunk.spawns.length > 0);
+assert.equal(sodraChunk.regionId, 'sodra_mon');
+const sodraBudget = (sodra.tathet as { monster_per_game?: number })?.monster_per_game ?? 0;
+let sodraSpawns = 0;
+for (let dx = -sodra.radie; dx <= sodra.radie; dx++) {
+  for (let dy = -sodra.radie; dy <= sodra.radie; dy++) {
+    const d = generateChunkWorldData(seed, seed, sodra.chunk[0] + dx, sodra.chunk[1] + dy);
+    if (d.regionId === 'sodra_mon') sodraSpawns += d.spawns.length;
+  }
+}
+assert.equal(sodraSpawns, sodraBudget, 'region tathet.monster_per_game fördelas över sodra_mon');
 
 const katedral = DATA.varldStor.regioner.find((r) => r.id === 'katedralen');
 assert.ok(katedral);

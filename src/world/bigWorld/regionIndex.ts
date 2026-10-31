@@ -16,6 +16,10 @@ export function resolveRegionAtChunk(cx: number, cy: number, regions: readonly B
 
   for (const region of regions) {
     const [rx, ry] = region.chunk;
+    if (region.sakert) {
+      if (cx === rx && cy === ry) return { region, inside: true };
+      continue;
+    }
     const d = chebyshevChunkDist(cx, cy, rx, ry);
     if (d <= region['radie']) {
       if (d < bestInsideDist || (d === bestInsideDist && region.id < (bestInside?.id ?? ''))) {
