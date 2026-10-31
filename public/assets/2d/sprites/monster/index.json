@@ -1,6 +1,8 @@
 {
  "sheets": [
   "benkungen_valdemar",
+  "bergsulv",
+  "fjallvatte",
   "forvriden_jagare",
   "gravgast",
   "likatare_varg",
@@ -23,6 +25,8 @@
  ],
  "eightDir": [
   "benkungen_valdemar",
+  "bergsulv",
+  "fjallvatte",
   "myrhund",
   "myrlik",
   "skelett_bagskytt",
