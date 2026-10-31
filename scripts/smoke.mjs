@@ -54,6 +54,7 @@ async function visit(path, check) {
 const gameReady = async () => {
   const d = document.documentElement.dataset;
   if (!document.querySelector('#app canvas') || d.zone !== 'forest' || !document.querySelector('#hud')) return false;
+  if (d.bigWorld !== '1') return false;
   const cm = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
   document.querySelector('#app canvas').dispatchEvent(cm);
   const alt = new KeyboardEvent('keydown', { key: 'Alt', code: 'AltLeft', bubbles: true, cancelable: true });

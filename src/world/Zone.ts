@@ -19,6 +19,8 @@ export class Zone implements ZoneView {
   arena: Rect | null = null;
   /** Fri cirkel i mitten där monster inte vandrar in (skogens glänta). */
   safeRadius = 0;
+  /** varld_stor chunk-streaming (#85 del 2) — ingen spawnzoner-rullning, obegränsad vandring. */
+  bigWorldStreaming = false;
   entry: Vec2 = { x: 0, y: 0 };
   /** Spawnområdets koordinater är rutor (byn): T(tx,ty) = ((tx-15.5)*2, (ty-15.5)*2). */
   tileCoords = false;

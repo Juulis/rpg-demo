@@ -15,6 +15,8 @@ import type { Monster } from '../entities/Monster';
 import { MonsterFactory } from '../entities/MonsterFactory';
 import { syncProximitySpawns } from '../systems/SpawnProximity';
 import { ForestGroundChunks } from '../world/ForestGroundChunks';
+import { BigWorldStreamGround } from '../world/bigWorld/BigWorldStreamGround';
+import { syncBigWorldChunkMonsters } from '../world/bigWorld/syncBigWorldChunkMonsters';
 import { Input } from '../input/Input';
 import { Loot } from '../logic/loot/Loot';
 import type { Item } from '../logic/loot/types';
@@ -161,7 +163,7 @@ export class Game {
   private targetDrop: GroundDrop | null = null;
   private dead = false;
   private decorAnims: StripAnimSprite[] = [];
-  private forestGround: ForestGroundChunks | null = null;
+  private forestGround: ForestGroundChunks | BigWorldStreamGround | null = null;
 
   constructor(private readonly modules: GameModule[] = []) {
     this.ctx = {
@@ -431,7 +433,7 @@ export class Game {
     this.dayNight?.attachWorldEffects(r.effects);
     const built = this.zones.build(name);
     r.ground.addChild(built.ground);
-    this.forestGround = built.ground instanceof ForestGroundChunks ? built.ground : null;
+    this.forestGround = built.ground instanceof ForestGroundChunks || built.ground instanceof BigWorldStreamGround ? built.ground : null;
     for (const d of built.decor) r.objects.addChild(d);
     this.decorAnims = built.decorAnims;
     const hs = this.heroState;
@@ -484,7 +486,12 @@ export class Game {
     const areaId = zone.areaId;
     const citySpawn = this.worldState.get().city_states[areaId] ?? (areaId === 'gamla_byn' ? hs.city : 'besatt');
     this.factory.populate(this.world, citySpawn);
-    syncProximitySpawns(this.world, this.factory, hs.pos);
+    if (zone.bigWorldStreaming && this.forestGround instanceof BigWorldStreamGround) {
+      this.forestGround.sync(hs.pos, this.session.seed);
+      syncBigWorldChunkMonsters(this.world, this.forestGround.chunkCache, this.factory, this.session.seed, hs.pos);
+    } else {
+      syncProximitySpawns(this.world, this.factory, hs.pos);
+    }
     this.portals.attach(built.runeSprites);
     this.parallax.set(
       this.assets.backgrounds.get('himmel'),
@@ -517,6 +524,8 @@ export class Game {
     this.hud.flash(this.text.t(zoneMsgKey));
     // DOM-signal för röktestet (ingen global): zon laddad och spelbar.
     document.documentElement.dataset.zone = name;
+    if (zone.bigWorldStreaming) document.documentElement.dataset.bigWorld = '1';
+    else delete document.documentElement.dataset.bigWorld;
     this.bus.emit('zone_enter', { name, areaId: zone.areaId });
   }
 
@@ -884,8 +893,13 @@ export class Game {
     if (qh) this.questEncounters.update(w, qh);
     const h = w.hero;
     if (h.s.playing) this.heroUpdate(dt);
-    this.forestGround?.sync(h.pos);
-    syncProximitySpawns(w, this.factory, h.pos);
+    if (this.forestGround instanceof BigWorldStreamGround) {
+      this.forestGround.sync(h.pos, w.session.seed);
+      syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.seed, h.pos);
+    } else {
+      this.forestGround?.sync(h.pos);
+      syncProximitySpawns(w, this.factory, h.pos);
+    }
     this.ai.update(dt);
     this.combat.update(dt);
     this.lootSys.update(dt);
