@@ -440,7 +440,7 @@
     }
   ],
   "progression_check": {
-    "path": ["startskogen 1 till 3 (2 till 3 games)", "vargaby 4 till 6 (1 till 2 games, Gråbjörnen en gång)", "gamla_byn 7 till 9"],
+    "path": ["startskogen 1 till 3 (2 till 3 games)", "vargaby 4 till 6 (1 game, Gråbjörnen en gång)", "gamla_byn 7 till 9"],
     "xp_per_game_simulerat": {
       "startskogen": 123,
       "vargaby_utan_boss": 2025,
@@ -485,7 +485,23 @@
     "fadern_av_smittan": 28,
     "korpmodern": 13,
     "jarnmunken": 17,
-    "askans_profet": 23
+    "askans_profet": 23,
+    "forvriden_jagare": 3,
+    "smittad_bybo": 5,
+    "bergsulv": 15,
+    "sprickvasen": 29,
+    "myrhund": 7,
+    "myrlik": 8,
+    "ruttnande_lik": 4,
+    "lyktgast": 16,
+    "fjallvatte": 12,
+    "forvriden_gruvarbetare": 16,
+    "likatare_varg": 8,
+    "klockdrunknad": 15,
+    "gravgast": 8,
+    "brandskelett": 21,
+    "havsgast": 28,
+    "askkultist": 20
   },
   "examples_fixed": [
     {

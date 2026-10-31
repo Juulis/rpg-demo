@@ -175,5 +175,17 @@
   },
   "bergsulv": {
     "name": "Mountain Wolf"
+  },
+  "sprickvasen": {
+    "name": "Rift Spawn"
+  },
+  "lyktgast": {
+    "name": "Lantern Wraith"
+  },
+  "klockdrunknad": {
+    "name": "Drowned Bellringer"
+  },
+  "havsgast": {
+    "name": "Sea Wraith"
   }
 }

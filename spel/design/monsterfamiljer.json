@@ -38,7 +38,8 @@
         "drunknad",
         "brandskelett",
         "myrlik",
-        "myrhund"
+        "myrhund",
+        "klockdrunknad"
       ],
       "boss": "benkungen_valdemar"
     },
@@ -70,7 +71,7 @@
       "weak": ["hugg"],
       "resist": ["kross", "stick"],
       "boss": "trasdrottningen",
-      "subtypes": ["dimgast", "klagokvinna", "trasknacken", "gravgast", "fjallvatte"],
+      "subtypes": ["dimgast", "klagokvinna", "trasknacken", "gravgast", "fjallvatte", "lyktgast", "havsgast"],
       "underbossar": ["korpmodern"]
     },
     {
@@ -81,7 +82,16 @@
       "weak": ["hugg", "stick"],
       "resist": [],
       "boss": "fadern_av_smittan",
-      "subtypes": ["smittbarare", "galen_munk", "kottklump", "forvriden_jagare", "smittad_bybo", "forvriden_gruvarbetare", "askkultist"],
+      "subtypes": [
+        "smittbarare",
+        "galen_munk",
+        "kottklump",
+        "forvriden_jagare",
+        "smittad_bybo",
+        "forvriden_gruvarbetare",
+        "askkultist",
+        "sprickvasen"
+      ],
       "underbossar": ["jarnmunken", "askans_profet"]
     },
     {
@@ -1380,6 +1390,120 @@
           "xpm": 0.4
         },
         "regel": "monster_niva.json underboss_regel"
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "sprickvasen",
+      "name": "Sprickväsen",
+      "family": "forvridna",
+      "level": 29,
+      "hp": 2239,
+      "damage": 85,
+      "defense": 11,
+      "speed": 2.0,
+      "attack_cd": 2.0,
+      "attacks_per_s": 0.5,
+      "xp": 2342,
+      "aggro_range": 10,
+      "behavior": "Väsen av kött och sten som kryper ur sprickan där världen är tunnast. Långsamt, slår hårt och drar sig ihop när det tar skada.",
+      "weapon_type": null,
+      "zones": ["sprickans_botten", "mellanmark"],
+      "boss": false,
+      "design_source": {
+        "from": "kottklump",
+        "from_level": 27,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
+    },
+    {
+      "id": "lyktgast",
+      "name": "Lyktgast",
+      "family": "gastar",
+      "level": 16,
+      "hp": 346,
+      "damage": 36,
+      "defense": 6,
+      "speed": 2.6,
+      "attack_cd": 3.0,
+      "attacks_per_s": 0.33,
+      "xp": 767,
+      "aggro_range": 10,
+      "behavior": "Ett ljus som svävar över myren. Lockar hjälten mot gölen och drar honom mot sig, räckvidd 6. Slocknar och dyker upp på nytt en bit bort.",
+      "weapon_type": null,
+      "zones": ["mellanmark"],
+      "boss": false,
+      "design_source": {
+        "from": "trasknacken",
+        "from_level": 13,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "klockdrunknad",
+      "name": "Klockdrunknad",
+      "family": "ododa",
+      "level": 15,
+      "hp": 252,
+      "damage": 26,
+      "defense": 7,
+      "speed": 3.4,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 348,
+      "aggro_range": 10,
+      "behavior": "Drunknad klockare med tång i skägget och en rostig klockkläpp som svärd. Kliver upp ur vattnet när kyrkklockan under ytan slår.",
+      "weapon_type": "svard",
+      "zones": ["sjunkna_kyrkan", "mellanmark"],
+      "boss": false,
+      "design_source": {
+        "from": "drunknad",
+        "from_level": 12,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
+    },
+    {
+      "id": "havsgast",
+      "name": "Havsgast",
+      "family": "gastar",
+      "level": 28,
+      "hp": 1084,
+      "damage": 80,
+      "defense": 11,
+      "speed": 2.6,
+      "attack_cd": 3.0,
+      "attacks_per_s": 0.33,
+      "xp": 1776,
+      "aggro_range": 12,
+      "behavior": "Stor gast av havsskum och dimma som rullar in med stormen. Drar spelaren mot sig från vattnet, räckvidd 6.",
+      "weapon_type": null,
+      "zones": ["mellanmark"],
+      "boss": false,
+      "design_source": {
+        "from": "trasknacken",
+        "from_level": 13,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
       },
       "dark_magic": true
     }

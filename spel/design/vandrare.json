@@ -142,7 +142,7 @@
           "ankare": "botgorarnas_lager"
         }
       ],
-      "rutt_regel": "Hon går aldrig längre söderut än Brandkantens läger. Handlar bara på natten.",
+      "rutt_regel": "Hon går aldrig längre söderut än Botgörarnas läger. Handlar bara på natten.",
       "handel": {
         "typ": "kuriosahandlare",
         "saljfaktor": 1.45,

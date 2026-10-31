@@ -242,7 +242,7 @@
       "id": "klockan_i_natten",
       "namn": "Klockan i natten",
       "delomrade": "vargaby_delomrade",
-      "nar": "natt, så länge Vargaby är besatt",
+      "nar": "natt, så länge Ulvhild lever",
       "vad": "Kyrkklockan i Vargaby slår tre slag vid midnatt fast repet är avskuret. Efter att Ulvhild fallit slår den aldrig mer.",
       "trigger": {
         "typ": "inspektera",
