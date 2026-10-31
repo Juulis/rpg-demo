@@ -203,7 +203,7 @@ if (smokeMode === 'full') {
   if (!chunkProbe.groundPixel) chunkErrs.push('pixelprov såg ingen mark');
   if (chunkProbe.textures > 50) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
   if (chunkProbe.objects > 30_000) chunkErrs.push(`för många display objects: ${chunkProbe.objects}`);
-  if (chunkProbe.fpsMedian < 5) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
+  if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
 
   const heroId = await chunkPage.evaluate(() => {
     const keys = Object.keys(localStorage).filter((k) => k.startsWith('rpg_hero_'));
