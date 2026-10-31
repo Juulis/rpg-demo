@@ -76,13 +76,13 @@ Varje biom har egna monsterplatser i `biomer.<id>.egna_monster`: roll, familj, n
 
 **Träsk** (7 till 30). Myr, spångar, lyktor och klockor under ytan. Variant rutt i Ruttmarken.
 
-- Egna monster: myrlik (7 till 9, platshållare skelett), dimgastar (10 till 14), ruttfolk (24 till 28), sprickans väsen (29 till 30, platshållare kottklump).
+- Egna monster: myrlik och myrhund (7 till 9, grafik klar), dimgastar (10 till 14), ruttfolk (24 till 28), sprickans väsen (29 till 30, platshållare kottklump).
 - Resurser: sjunket timmer, guld i sjunkna gårdar.
 - Mål: den sjunkna gården (mysterium), Hedkapellet (spår), Rökkärrets tingshus (återlämning), den andande lunden (mysterium).
 
 **Fjäll** (11 till 19). Kal sluttning, vind, gruvhål och tysta kloster.
 
-- Egna monster: fjällvättar (11 till 13, platshållare gastar), bergsulvar (14 till 15, platshållare gruvspindel), gruvkryp (15 till 19), järnbröder (16 till 17, platshållare forvriden_gruvarbetare).
+- Egna monster: fjällvättar (11 till 13, grafik klar), bergsulvar (14 till 15, grafik klar), gruvkryp (15 till 19), järnbröder (16 till 17, platshållare forvriden_gruvarbetare).
 - Resurser: sten, järn.
 - Mål: Fäbodlägret (eskort), vaktstugan (spår), lampan i schaktet (mysterium).
 
@@ -145,3 +145,8 @@ Questmallar i `quest_mallar`: spår, budbärare, mysterium, val mellan två NPC:
 
 Andra regioner påverkas inte: chunkar utanför alla radier är mellanmark, och en ny region tar bara sina egna chunkar.
 Exempel: Vrakkusten på chunk (-8,-5), ring 4, kust, som binder ihop Den sjunkna kyrkan med Brandkusten.
+
+## Generatorregler och stor bana 1
+
+Regler som generatorn behöver finns i [varldsgenerator.json](varldsgenerator.json): vilken region en chunk tillhör vid överlapp, övergångsband mellan biom, monsterpool med fallback, täthet, placering av läger, ruiner, grottor och andra platser (min avstånd, antal per biom, relativt start och vägar), malniva(d) som funktion av avstånd, ambient och musik per biom samt questankare.
+Ring 0 och 1 är delade i 10 delområden i [bana1_stor.json](bana1_stor.json). Liv i världen: [npc_grupper.json](npc_grupper.json), [varldshandelser.json](varldshandelser.json) och [vandrare.json](vandrare.json).

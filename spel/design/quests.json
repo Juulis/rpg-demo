@@ -11,7 +11,7 @@
     "trigger_typer": {
       "prata_med": "npc",
       "prata_med_en_av": "npc[]",
-      "gå_in_i": "region, ankare (valfritt)",
+      "gå_in_i": "region, ankare (valfritt), tid (valfritt, HH:MM till HH:MM)",
       "inspektera": "ankare, region och tid (valfritt)",
       "inspektera_alla": "ankare[], tid",
       "plocka_upp": "item",
@@ -123,7 +123,8 @@
         },
         "item_grant": {
           "falt": {
-            "item": "str"
+            "item": "str",
+            "antal": "int (valfritt, standard 1)"
           },
           "beskrivning": "Ger ett föremål (legendariskt, setdel eller bas)."
         },
@@ -228,7 +229,8 @@
         ]
       },
       "sparas": "per hjälte i sparfilen, inte per game"
-    }
+    },
+    "ankare_regel": "ankare är ett id i varld_stor.json pois, varldshandelser.json platser, vandrare.json lager, bana1_stor.json delomraden, npc.json platser eller portal_by.json och spawnzoner.json. Övriga är questegna ankare som placeras med varldsgenerator.json questplatser. Ett questeget ankare får inte dubblera en befintlig plats."
   },
   "akt_1": [
     {
@@ -249,7 +251,8 @@
           "text": "Hitta barnsandalen i mossan på vägen mot Vargaby.",
           "trigger": {
             "typ": "inspektera",
-            "ankare": "startskogen_barnsandal"
+            "ankare": "vargstigen_barnsandal",
+            "region": "vargstigen"
           }
         },
         {
@@ -258,7 +261,7 @@
           "trigger": {
             "typ": "gå_in_i",
             "region": "vargstigen",
-            "ankare": "kolarkojan"
+            "ankare": "kolarkojornas_ruin"
           }
         },
         {
@@ -1565,7 +1568,7 @@
           "trigger": {
             "typ": "gå_in_i",
             "region": "jarnklostret",
-            "ankare": "klosterporten"
+            "ankare": "jarnklostrets_port"
           }
         },
         {
@@ -2034,7 +2037,7 @@
           "trigger": {
             "typ": "gå_in_i",
             "region": "askeborg",
-            "ankare": "askeborgs_port"
+            "ankare": "askeborgs_stadsport"
           }
         },
         {
@@ -2091,7 +2094,7 @@
               "typ": "area_change",
               "region": "askeborg",
               "andring": "miljo",
-              "ankare": "askeborgs_port",
+              "ankare": "askeborgs_stadsport",
               "value": "en liten grav med staven, ett svagt ljus om natten"
             }
           ]

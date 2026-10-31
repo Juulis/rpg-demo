@@ -1,0 +1,42 @@
+{
+  "runglantan": {
+    "namn": "Rune Glade",
+    "miljo": "The three runestones and the Red Portal. Wolf tracks circling the stones, trampled moss."
+  },
+  "dimgranarna": {
+    "namn": "Mistpines",
+    "miljo": "Dense spruce where the mist lingers all day. Old snares, a hunting lodge with its door broken open."
+  },
+  "backravinen": {
+    "namn": "Brook Ravine",
+    "miljo": "A narrow ravine with a black brook and a collapsed stone bridge. The water is cold even in summer."
+  },
+  "kolarkojorna": {
+    "namn": "The Collier Huts",
+    "miljo": "The East Road through thinning forest. Abandoned huts, a supper still on the table, a child's sandal in the moss."
+  },
+  "milorna": {
+    "namn": "The Kilns",
+    "miljo": "The West Road. Dead charcoal kilns, sooty stumps, the Kiln Camp where one kiln still smoulders."
+  },
+  "brunna_garden": {
+    "namn": "The Burnt Farm",
+    "miljo": "The Ash Road south. A burnt farmstead, black fields, the first flakes of ash in the air."
+  },
+  "vargaby_utmark": {
+    "namn": "Wolfstead Outlands",
+    "miljo": "Pastures and fallen fences around Wolfstead. Hides drying on racks that no one takes down."
+  },
+  "vargaby_delomrade": {
+    "namn": "Wolfstead",
+    "miljo": "The town as it is. Claw marks on the church door, from the inside."
+  },
+  "idets_skog": {
+    "namn": "Den Woods",
+    "miljo": "Spruce roots and bones around the gate to Ulvhild's Den. Chains in the trees."
+  },
+  "norra_hygget": {
+    "namn": "The North Clearing",
+    "miljo": "The North Road. A clear-cut where the stumps look like gravestones. Barrow Ridge begins here."
+  }
+}

@@ -21,7 +21,10 @@
       "Kram",
       "Valdemar",
       "Ulvhild",
-      "Morvath"
+      "Morvath",
+      "Bertil",
+      "Ragna",
+      "Saga"
     ],
     "placeholders": "{hjalte}, {foremal} and {antal_bossar} are kept verbatim."
   },
@@ -395,6 +398,35 @@
     "Återbefolkad": "Resettled",
     "Återbefolkad nivå 1": "Resettled I",
     "Återbefolkad nivå 2": "Resettled II",
-    "Återbefolkad nivå 3": "Resettled III"
+    "Återbefolkad nivå 3": "Resettled III",
+    "Kolarmon": "The Kiln Heath",
+    "Södra mon": "The South Heath",
+    "Kolmilan": "The Kiln Camp",
+    "Den brunna gården": "The Burnt Farm",
+    "Askans natt": "the Night of Ash",
+    "Rungläntan": "Rune Glade",
+    "Dimgranarna": "Mistpines",
+    "Bäckravinen": "Brook Ravine",
+    "Milorna": "The Kilns",
+    "Kolarkojorna": "The Collier Huts",
+    "Vargabys utmark": "Wolfstead Outlands",
+    "Idets skog": "Den Woods",
+    "Norra hygget": "The North Clearing",
+    "Östra vägen": "The East Road",
+    "Västra vägen": "The West Road",
+    "Norra vägen": "The North Road",
+    "Gravvaktarna": "the Gravewardens",
+    "Gravvaktare": "Gravewarden",
+    "Spillrorna": "the Remnants of Old",
+    "Bertil med kärran": "Bertil with the Cart",
+    "Ragna Spjutbäraren": "Ragna the Spearbearer",
+    "Saga Askflykting": "Saga the Ash Refugee",
+    "Vagnborgen": "The Wagon Fort",
+    "Jaktlägret": "The Hunting Camp",
+    "Botgörarnas läger": "The Penitents' Camp",
+    "Likbärarnas läger": "The Corpse Bearers' Camp",
+    "Gravvaktarnas vakteld": "The Gravewardens' Watchfire",
+    "De saknades röse": "Cairn of the Missing",
+    "Torkat kött": "Dried Meat"
   }
 }

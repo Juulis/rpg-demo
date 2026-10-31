@@ -6,7 +6,8 @@
     "tid": "Dygnet i spelet är 24 timmar = 48 minuter realtid. Tider i HH:MM.",
     "rykten_ref": "varld.md rumor datamodell; rykten.id refereras i repliker.rykten",
     "akt_regel": "akt anger vilken akt NPC:n hör till. grafik_prioritet true = akt 1, behöver grafik först.",
-    "tillstand_regel": "tillstand_varianter väljs via world_state.npc_states. Fält i varianten skriver över standardfälten. dod tar bort NPC:n; ersatts_av anger vem som tar över platsen."
+    "tillstand_regel": "tillstand_varianter väljs via world_state.npc_states. Fält i varianten skriver över standardfälten. dod tar bort NPC:n; ersatts_av anger vem som tar över platsen.",
+    "visas_flagga": "visas kan också vara flag:<flagga>, då syns NPC:n från nästa speldygn efter att flaggan satts."
   },
   "npcs": [
     {
@@ -297,6 +298,41 @@
           "bark": "Har någon sett en pojke med nya sandaler?"
         }
       }
+    },
+    {
+      "id": "bybo_flykting",
+      "namn": "Flykting vid elden",
+      "roll": "flykting",
+      "faktion": "de_kvarvarande",
+      "omrade": "startlagret",
+      "plats": "lagerelden",
+      "visas": "flag:hjalpt_flyktingarna_vargstigen",
+      "personlighet": "Trött, tacksam, säger inte mycket.",
+      "utseende": "Bybo i lerig vadmal med en kärra full av bylten bakom sig.",
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "18:00",
+          "plats": "lagerelden",
+          "aktivitet": "lagar kärran och hjälper till vid elden"
+        },
+        {
+          "from": "18:00",
+          "to": "08:00",
+          "plats": "lagerelden",
+          "aktivitet": "sover vid elden"
+        }
+      ],
+      "repliker": {
+        "halsning": "Nio dygn gick vi. Utan dig hade det blivit tio, och sedan inga fler.",
+        "rader": ["Kärran klarade sig. Det är allt vi har.", "Vargarna följde oss ända till kojorna.", "Här är det varmt. Det räcker."],
+        "rykten": ["rykte_flyktingarna_framme"]
+      },
+      "relationer": {},
+      "quest_krokar": [],
+      "akt": "akt_1",
+      "grafik_prioritet": false,
+      "bakgrund": true
     },
     {
       "id": "viskaren",
