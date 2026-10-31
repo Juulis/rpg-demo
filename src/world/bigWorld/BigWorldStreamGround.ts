@@ -1,6 +1,7 @@
 import type { Container, Renderer } from 'pixi.js';
 import { Container as PixiContainer, Rectangle, Sprite } from 'pixi.js';
 import { Rng } from '../../core/Rng';
+import { pickChunkGroundTileId } from './groundTiles';
 import type { Vec2, Collider } from '../../core/GameContext';
 import type { AssetStore, DecorId } from '../../render/Assets';
 import { Iso, TILE_WORLD } from '../../render/Iso';
@@ -47,7 +48,6 @@ interface ChunkVisual {
   root: PixiContainer;
   data: ChunkWorldData;
   patches: PatchVisual[][];
-  tileRng: Rng;
   decor: DecorEntry[];
   decorDone: boolean;
 }
@@ -74,10 +74,6 @@ export function patchLayerUsable(layer: PixiContainer | null | undefined): layer
   return layer.position != null;
 }
 
-export function unqueuePatchesFromBakeQueue(_queue: PatchVisual[], _patches: Iterable<PatchVisual>): void {
-  /* Bakning borttagen — behålls för tester som verifierar API-stabilitet. */
-}
-
 function destroyPatch(patch: PatchVisual): void {
   if (patchLayerUsable(patch.layer)) clearContainerChildren(patch.layer);
   if (patchLayerUsable(patch.layer)) patch.layer.destroy();
@@ -87,7 +83,6 @@ function countPixiDisplayObjects(root: PixiContainer): number {
   let n = 0;
   const walk = (c: PixiContainer) => {
     for (const ch of c.children) {
-      if ('renderable' in ch && (ch as { renderable?: boolean }).renderable === false) continue;
       n++;
       if (ch instanceof PixiContainer) walk(ch);
     }
@@ -205,7 +200,10 @@ export class BigWorldStreamGround extends PixiContainer {
       this.lastCx = NaN;
       this.lastCy = NaN;
     }
-    if (!movedChunk && !seedChanged && !this.pendingBuild()) return;
+    if (!movedChunk && !seedChanged && !this.pendingBuild()) {
+      this.applyViewCulling();
+      return;
+    }
     this.lastCx = cx;
     this.lastCy = cy;
     this.cache.syncNear(worldSeed, gameSeed, cx, cy);
@@ -315,7 +313,6 @@ export class BigWorldStreamGround extends PixiContainer {
       root,
       data,
       patches,
-      tileRng: new Rng(data.chunkSeed),
       decor: [],
       decorDone: false,
     });
@@ -328,27 +325,23 @@ export class BigWorldStreamGround extends PixiContainer {
       vis.decorDone = true;
       return;
     }
-    const rng = new Rng(data.chunkSeed);
     const span = chunkWorldSpan();
     const tiles = chunkTileCount();
-    const pool = data.tilePool.length ? data.tilePool : ['gras_1'];
-    for (let ti = 0; ti < tiles; ti++) {
-      for (let tj = 0; tj < tiles; tj++) rng.pick(pool);
-    }
     const decorEvery = 11;
     for (let ti = 0; ti < tiles; ti += decorEvery) {
       for (let tj = 0; tj < tiles; tj += decorEvery) {
-        if (rng.next() > 0.55) continue;
-        const raw = rng.pick(data.decorPool);
+        const cell = new Rng(Rng.hash(data.chunkSeed, 'decor', ti, tj));
+        if (cell.next() > 0.55) continue;
+        const raw = cell.pick(data.decorPool.length ? data.decorPool : ['gran']);
         const decorId = DECOR_ALIASES[raw] ?? (this.assets.decor.has(raw as DecorId) ? (raw as DecorId) : null);
         if (!decorId) continue;
         const d = this.assets.decor.get(decorId);
         if (!d?.tex) continue;
-        const wx = data.cx * span + (ti + rng.float(0, decorEvery - 1)) * TILE_WORLD;
-        const wy = data.cy * span + (tj + rng.float(0, decorEvery - 1)) * TILE_WORLD;
+        const wx = data.cx * span + (ti + cell.float(0, decorEvery - 1)) * TILE_WORLD;
+        const wy = data.cy * span + (tj + cell.float(0, decorEvery - 1)) * TILE_WORLD;
         const s = new Sprite(d.tex);
         s.anchor.set(d.size.anchor[0] / d.size.w, d.size.anchor[1] / d.size.h);
-        s.scale.set(0.35 + rng.next() * 0.2, 0.35 + rng.next() * 0.2);
+        s.scale.set(0.35 + cell.next() * 0.2, 0.35 + cell.next() * 0.2);
         const p = Iso.worldToScreen(wx, wy);
         s.position.set(p.x, p.y);
         s.zIndex = wx + wy + 0.5;
@@ -409,7 +402,7 @@ export class BigWorldStreamGround extends PixiContainer {
         const dj = local % tw;
         const ti = ti0 + di;
         const tj = tj0 + dj;
-        const tileId = vis.tileRng.pick(pool);
+        const tileId = pickChunkGroundTileId(data.chunkSeed, ti, tj, pool);
         const tex = this.assets.tiles.get(tileId);
         if (tex) {
           const wx = data.cx * span + ti * TILE_WORLD;

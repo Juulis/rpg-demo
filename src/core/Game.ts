@@ -18,7 +18,7 @@ import { ForestGroundChunks } from '../world/ForestGroundChunks';
 import { BigWorldStreamGround } from '../world/bigWorld/BigWorldStreamGround';
 import { BIG_WORLD_GROUND_VIEW_MARGIN } from '../world/bigWorld/bigWorldConfig';
 import { syncBigWorldChunkMonsters, resetBigWorldMonsterSync } from '../world/bigWorld/syncBigWorldChunkMonsters';
-import { smokeOrCaptureEnabled } from '../dev/smokeGate';
+import { smokeMetricsEnabled } from '../dev/smokeGate';
 import { worldToChunk } from '../world/bigWorld/bigWorldCoords';
 import { Input } from '../input/Input';
 import { Loot } from '../logic/loot/Loot';
@@ -531,6 +531,7 @@ export class Game {
         view,
       );
       syncBigWorldChunkMonsters(this.world, this.forestGround.chunkCache, this.factory, this.session.worldSeed, this.session.seed, hs.pos);
+      syncProximitySpawns(this.world, this.factory, hs.pos);
     } else {
       syncProximitySpawns(this.world, this.factory, hs.pos);
     }
@@ -948,9 +949,10 @@ export class Game {
         view,
       );
       syncBigWorldChunkMonsters(w, this.forestGround.chunkCache, this.factory, w.session.worldSeed, w.session.seed, h.pos);
+      if (w.zone.areaId === 'startskogen') syncProximitySpawns(w, this.factory, h.pos);
       const hc = worldToChunk(h.pos.x, h.pos.y);
       const fg = this.forestGround;
-      if (smokeOrCaptureEnabled()) {
+      if (smokeMetricsEnabled()) {
         document.documentElement.dataset.heroWx = h.pos.x.toFixed(1);
         document.documentElement.dataset.heroWy = h.pos.y.toFixed(1);
         if (hc.cx !== this.streamMetricsCx || hc.cy !== this.streamMetricsCy) {

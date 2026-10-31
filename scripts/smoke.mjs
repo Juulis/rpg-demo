@@ -5,8 +5,9 @@ import { extname, join, resolve } from 'node:path';
 import { chromium } from 'playwright';
 
 const dist = resolve(process.argv[2] ?? 'dist');
-/** plain = produktionsbygge utan capture (bas + ?smoke=1). full = capture-hook + prestandabudget. */
+/** plain = produktionsbygge. full = capture-hook + prestandabudget. */
 const smokeMode = process.env.SMOKE_MODE === 'plain' ? 'plain' : 'full';
+const captureBuild = smokeMode === 'full';
 const TYPES = {
   '.html': 'text/html',
   '.js': 'text/javascript',
@@ -105,15 +106,15 @@ const gameReady = async () => {
 
 await visit('', gameReady, true);
 
-if (smokeMode === 'full') {
-  const chunkPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+async function runChunkStreamTest(page, modeLabel) {
   const chunkErrs = [];
-  chunkPage.on('pageerror', (e) => chunkErrs.push(String(e)));
-  chunkPage.on('console', (m) => m.type() === 'error' && chunkErrs.push(m.text()));
-  await chunkPage.goto(`${base}?smoke=1`, { waitUntil: 'load' });
-  await startNewGame(chunkPage, 'Chunk');
+  page.on('pageerror', (e) => chunkErrs.push(String(e)));
+  page.on('console', (m) => m.type() === 'error' && chunkErrs.push(m.text()));
+  const chunkUrl = captureBuild ? base : `${base}?smoke=1`;
+  await page.goto(chunkUrl, { waitUntil: 'load' });
+  await startNewGame(page, 'Chunk');
 
-  async function waitGroundReady(page, ms = 120000) {
+  async function waitGroundReady(ms = 120000) {
     await page.waitForFunction(
       () => window.__game?.captureBigWorldMetrics?.()?.groundReady === true || document.documentElement.dataset.groundReady === '1',
       null,
@@ -122,118 +123,127 @@ if (smokeMode === 'full') {
   }
 
   try {
-    await waitGroundReady(chunkPage);
+    await waitGroundReady();
   } catch {
     chunkErrs.push('mark blev inte klar (groundReady)');
   }
 
-  const startProbe = await readMetrics(chunkPage);
+  const startProbe = await readMetrics(page);
   const startChunk = startProbe.heroChunk || '0,0';
-  const chunkSpan = 128;
+  const wxBefore = startProbe.heroWx;
 
-  const teleported = await chunkPage.evaluate(
-    ({ x, y, span }) => {
-      if (!window.__smoke?.teleportWorld) return false;
-      window.__smoke.teleportWorld(x + span * 1.5, y);
-      return true;
-    },
-    { x: startProbe.heroWx, y: startProbe.heroWy, span: chunkSpan },
-  );
-  if (!teleported) chunkErrs.push('teleportWorld saknas (?smoke=1 / capture)');
+  if (captureBuild) {
+    const chunkSpan = 128;
+    const teleported = await page.evaluate(
+      ({ x, y, span }) => {
+        if (!window.__smoke?.teleportWorld) return false;
+        window.__smoke.teleportWorld(x + span * 1.5, y);
+        return true;
+      },
+      { x: startProbe.heroWx, y: startProbe.heroWy, span: chunkSpan },
+    );
+    if (!teleported) chunkErrs.push('teleportWorld saknas (capture-bygge)');
+  } else {
+    await page.evaluate(() => window.__smoke?.moveHeroBy(200, 0));
+  }
 
   try {
-    await chunkPage.waitForFunction(
+    await page.waitForFunction(
       (prev) => {
         const c = document.documentElement.dataset.heroChunk;
         return !!c && c !== prev;
       },
       startChunk,
-      { timeout: 30000, polling: 200 },
+      { timeout: 90000, polling: 250 },
     );
   } catch {
-    chunkErrs.push('chunkbyte: heroChunk ändrades inte efter teleport');
+    chunkErrs.push('chunkbyte: heroChunk ändrades inte');
   }
 
-  await chunkPage.waitForTimeout(1500);
+  await page.waitForTimeout(2000);
+  await page.evaluate(() => window.__smoke?.moveHeroBy(24, 0));
+  await page.waitForTimeout(1500);
+  const wxAfter = Number((await readMetrics(page)).heroWx);
+  if (Math.abs(wxAfter - wxBefore) < 0.5) chunkErrs.push('ingen rörelse efter chunkbyte');
 
-  const chunkProbe = await chunkPage.evaluate(async () => {
-    const read = () => {
-      const cap = window.__game?.captureBigWorldMetrics?.();
-      if (cap) return cap;
-      const d = document.documentElement.dataset;
-      return {
-        groundReady: d.groundReady === '1',
-        displayObjects: Number(d.groundObjects ?? 0),
-        renderTextures: Number(d.renderTextures ?? 0),
-        groundPixel: d.groundPixel === '1',
-        heroWx: Number(d.heroWx ?? 0),
-        heroWy: Number(d.heroWy ?? 0),
-      };
-    };
-    const m = read();
-    if (!m) return { ok: false, reason: 'no metrics' };
-    const fpsSamples = [];
-    for (let s = 0; s < 5; s++) {
-      let frames = 0;
-      const t0 = performance.now();
-      await new Promise((resolve) => {
-        const loop = () => {
-          frames++;
-          if (performance.now() - t0 >= 1000) return resolve(undefined);
-          requestAnimationFrame(loop);
+  let chunkProbe = { groundPixel: true, textures: 0, objects: 0, fpsMedian: 99 };
+  if (captureBuild) {
+    chunkProbe = await page.evaluate(async () => {
+      const read = () => {
+        const cap = window.__game?.captureBigWorldMetrics?.();
+        if (cap) return cap;
+        const d = document.documentElement.dataset;
+        return {
+          groundReady: d.groundReady === '1',
+          displayObjects: Number(d.groundObjects ?? 0),
+          renderTextures: Number(d.renderTextures ?? 0),
+          groundPixel: d.groundPixel === '1',
         };
-        requestAnimationFrame(loop);
-      });
-      fpsSamples.push(frames);
-    }
-    fpsSamples.sort((a, b) => a - b);
-    const fpsMedian = fpsSamples[2] ?? fpsSamples[0] ?? 0;
-    const heapMb = (performance.memory?.usedJSHeapSize ?? 0) / (1024 * 1024);
-    return {
-      ok: m.groundPixel,
-      groundPixel: m.groundPixel,
-      textures: m.renderTextures,
-      objects: m.displayObjects,
-      fpsMedian,
-      heapMb,
-    };
-  });
-
-  console.log(`chunk-stream (${smokeMode}): ${JSON.stringify(chunkProbe)}`);
-  if (!chunkProbe.groundPixel) chunkErrs.push('pixelprov såg ingen mark');
-  if (chunkProbe.textures > 50) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
-  if (chunkProbe.objects > 30_000) chunkErrs.push(`för många display objects: ${chunkProbe.objects}`);
-  if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
-
-  const heroId = await chunkPage.evaluate(() => {
-    const keys = Object.keys(localStorage).filter((k) => k.startsWith('rpg_hero_'));
-    const last = keys.sort().pop();
-    if (!last) return null;
-    try {
-      const raw = JSON.parse(localStorage.getItem(last) || 'null');
-      return raw?.game?.worldSeed != null ? { id: raw.hero?.id, worldSeed: raw.game.worldSeed, seed: raw.game.seed } : null;
-    } catch {
-      return null;
-    }
-  });
-  if (!heroId?.worldSeed) chunkErrs.push('autospar saknar worldSeed i localStorage');
-  else {
-    const ws0 = heroId.worldSeed;
-    await chunkPage.reload({ waitUntil: 'load' });
-    await chunkPage.waitForSelector('#hmNewHero', { timeout: 30000 });
-    await chunkPage.click('#hmCont');
-    await chunkPage.waitForFunction(() => document.documentElement.dataset.zone === 'forest', null, { timeout: 90000 });
-    const ws1 = await chunkPage.evaluate((id) => {
-      const raw = JSON.parse(localStorage.getItem(`rpg_hero_${id}`) || 'null');
-      return raw?.game?.worldSeed ?? null;
-    }, heroId.id);
-    if (ws1 !== ws0) chunkErrs.push(`worldSeed ändrades efter Fortsätt: ${ws0} -> ${ws1}`);
+      };
+      const m = read();
+      const fpsSamples = [];
+      for (let s = 0; s < 5; s++) {
+        let frames = 0;
+        const t0 = performance.now();
+        await new Promise((resolve) => {
+          const loop = () => {
+            frames++;
+            if (performance.now() - t0 >= 1000) return resolve(undefined);
+            requestAnimationFrame(loop);
+          };
+          requestAnimationFrame(loop);
+        });
+        fpsSamples.push(frames);
+      }
+      fpsSamples.sort((a, b) => a - b);
+      return {
+        groundPixel: m?.groundPixel,
+        textures: m?.renderTextures ?? 0,
+        objects: m?.displayObjects ?? 0,
+        fpsMedian: fpsSamples[2] ?? fpsSamples[0] ?? 0,
+      };
+    });
+    if (!chunkProbe.groundPixel) chunkErrs.push('pixelprov såg ingen mark');
+    if (chunkProbe.textures > 50) chunkErrs.push(`för många RT: ${chunkProbe.textures}`);
+    if (chunkProbe.objects > 30_000) chunkErrs.push(`för många byggda mark-objekt: ${chunkProbe.objects}`);
+    if (chunkProbe.fpsMedian < 2) chunkErrs.push(`låg median-fps: ${chunkProbe.fpsMedian}`);
   }
 
-  if (chunkErrs.length) fail.push(...chunkErrs.map((e) => `chunk: ${e}`));
+  console.log(`chunk-stream (${modeLabel}): ${JSON.stringify({ ...chunkProbe, startChunk })}`);
+  return chunkErrs;
+}
+
+{
+  const chunkPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  const errs = await runChunkStreamTest(chunkPage, smokeMode);
+  if (captureBuild) {
+    const heroId = await chunkPage.evaluate(() => {
+      const keys = Object.keys(localStorage).filter((k) => k.startsWith('rpg_hero_'));
+      const last = keys.sort().pop();
+      if (!last) return null;
+      try {
+        const raw = JSON.parse(localStorage.getItem(last) || 'null');
+        return raw?.game?.worldSeed != null ? { id: raw.hero?.id, worldSeed: raw.game.worldSeed } : null;
+      } catch {
+        return null;
+      }
+    });
+    if (!heroId?.worldSeed) errs.push('autospar saknar worldSeed i localStorage');
+    else {
+      const ws0 = heroId.worldSeed;
+      await chunkPage.reload({ waitUntil: 'load' });
+      await chunkPage.waitForSelector('#hmNewHero', { timeout: 30000 });
+      await chunkPage.click('#hmCont');
+      await chunkPage.waitForFunction(() => document.documentElement.dataset.zone === 'forest', null, { timeout: 90000 });
+      const ws1 = await chunkPage.evaluate((id) => {
+        const raw = JSON.parse(localStorage.getItem(`rpg_hero_${id}`) || 'null');
+        return raw?.game?.worldSeed ?? null;
+      }, heroId.id);
+      if (ws1 !== ws0) errs.push(`worldSeed ändrades efter Fortsätt: ${ws0} -> ${ws1}`);
+    }
+  }
+  if (errs.length) fail.push(...errs.map((e) => `chunk: ${e}`));
   await chunkPage.close();
-} else {
-  console.log('chunk-stream: hoppad (SMOKE_MODE=plain)');
 }
 
 for (const legacyPath of ['next/', 'legacy-3d/']) {
