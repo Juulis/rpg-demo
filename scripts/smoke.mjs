@@ -143,21 +143,37 @@ async function runChunkStreamTest(page, modeLabel) {
       { x: startProbe.heroWx, y: startProbe.heroWy, span: chunkSpan },
     );
     if (!teleported) chunkErrs.push('teleportWorld saknas (capture-bygge)');
+    try {
+      await page.waitForFunction(
+        (prev) => {
+          const c = document.documentElement.dataset.heroChunk;
+          return !!c && c !== prev;
+        },
+        startChunk,
+        { timeout: 30000, polling: 200 },
+      );
+    } catch {
+      chunkErrs.push('chunkbyte: heroChunk ändrades inte efter teleport');
+    }
   } else {
-    await page.evaluate(() => window.__smoke?.moveHeroBy(200, 0));
-  }
-
-  try {
-    await page.waitForFunction(
-      (prev) => {
-        const c = document.documentElement.dataset.heroChunk;
-        return !!c && c !== prev;
-      },
-      startChunk,
-      { timeout: 90000, polling: 250 },
-    );
-  } catch {
-    chunkErrs.push('chunkbyte: heroChunk ändrades inte');
+    let crossed = false;
+    for (let attempt = 0; attempt < 48 && !crossed; attempt++) {
+      await page.evaluate(() => window.__smoke?.moveHeroBy(48, 0));
+      try {
+        await page.waitForFunction(
+          (prev) => {
+            const c = document.documentElement.dataset.heroChunk;
+            return !!c && c !== prev;
+          },
+          startChunk,
+          { timeout: 8000, polling: 250 },
+        );
+        crossed = true;
+      } catch {
+        /* långsam gång på CI — fortsätt nudge */
+      }
+    }
+    if (!crossed) chunkErrs.push('chunkbyte: heroChunk ändrades inte (plain moveHeroBy)');
   }
 
   await page.waitForTimeout(2000);
