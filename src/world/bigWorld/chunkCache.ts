@@ -36,8 +36,6 @@ export class ChunkWorldCache {
   private heroCy = 0;
   private activeSeed: number | null = null;
   private keepSet = new Set<string>();
-  /** Senast laddade nyckel via get() — evictas inte direkt (get utan syncNear). */
-  private pinnedKey: string | null = null;
 
   constructor(private readonly opts: ChunkCacheOptions = DEFAULT_OPTS) {
     assertCacheOptions(opts);
@@ -52,7 +50,6 @@ export class ChunkWorldCache {
     this.order.length = 0;
     this.activeSeed = null;
     this.keepSet.clear();
-    this.pinnedKey = null;
   }
 
   private ensureSeed(gameSeed: number): void {
@@ -69,10 +66,14 @@ export class ChunkWorldCache {
       this.touch(key);
       return hit;
     }
+    while (this.map.size >= this.opts.maxEntries) {
+      if (!this.evictOne(key)) break;
+    }
     const data = generateChunkWorldData(gameSeed, cx, cy);
-    this.pinnedKey = key;
     this.store(key, data);
-    this.evictIfNeeded();
+    while (this.map.size > this.opts.maxEntries) {
+      if (!this.evictOne(key)) break;
+    }
     return data;
   }
 
@@ -93,6 +94,9 @@ export class ChunkWorldCache {
         if (existing && existing.chunkSeed === expectedSeed) {
           this.touch(key);
         } else {
+          while (this.map.size >= this.opts.maxEntries) {
+            if (!this.evictOne(key)) break;
+          }
           this.store(key, generateChunkWorldData(gameSeed, cx, cy));
         }
       }
@@ -121,20 +125,27 @@ export class ChunkWorldCache {
 
   private evictIfNeeded(): void {
     while (this.map.size > this.opts.maxEntries) {
-      const drop = this.farthestEvictableKey();
-      if (!drop) break;
-      this.map.delete(drop);
-      const i = this.order.indexOf(drop);
-      if (i >= 0) this.order.splice(i, 1);
+      if (!this.evictOne()) break;
     }
   }
 
-  private farthestEvictableKey(): string | undefined {
+  /** Släpper en chunk; undvik excludeKey om möjligt, evicta ur keep vid behov. */
+  private evictOne(excludeKey?: string): boolean {
+    let drop = this.pickEvictKey(false, excludeKey);
+    if (!drop) drop = this.pickEvictKey(true, excludeKey);
+    if (!drop) return false;
+    this.map.delete(drop);
+    const i = this.order.indexOf(drop);
+    if (i >= 0) this.order.splice(i, 1);
+    return true;
+  }
+
+  private pickEvictKey(allowKeep: boolean, excludeKey?: string): string | undefined {
     let best: string | undefined;
     let bestD = -1;
     for (const key of this.map.keys()) {
-      if (this.keepSet.has(key)) continue;
-      if (key === this.pinnedKey) continue;
+      if (key === excludeKey) continue;
+      if (!allowKeep && this.keepSet.has(key)) continue;
       const parts = key.split('|');
       const cx = Number(parts[1]);
       const cy = Number(parts[2]);

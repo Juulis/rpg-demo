@@ -38,8 +38,10 @@ assert.equal(objs.size, 5 * 49, 'syncNear ska inte återanvända chunkobjekt ino
 
 const tight = new ChunkWorldCache({ maxEntries: 9, keepRadius: 1 });
 for (let i = 0; i < 8; i++) tight.get(1, i, 0);
+assert.ok(tight.size() <= 9);
 const pinned = tight.get(1, 99, 0);
 assert.equal(pinned.cx, 99);
+assert.ok(tight.size() <= 9);
 
 const broken = structuredClone(DATA.varldStor);
 const firstRegion = broken.regioner[0];
@@ -63,8 +65,16 @@ stripped.biomer.kust.egna_monster = [];
 const strippedCat = buildBigWorldCatalog(stripped);
 const kustChunk = generateChunkWorldData(5, -10, -7, strippedCat);
 assert.equal(kustChunk.spawnSubtypes.length, 0);
-const stripScan = validateVarldStorSpawnScan(stripped, ctx, { seeds: [5], radius: 20, maxRing: 7 });
-assert.equal(stripScan.length, 0, 'tom spawn ska inte ge band-avvikelse');
+const stripScan = validateVarldStorSpawnScan(stripped, ctx, {
+  seeds: [5],
+  radius: 20,
+  maxRing: 7,
+  knownEmptyMellanmark: new Set<string>(),
+});
+assert.ok(
+  stripScan.some((i) => i.includes('mellanmark') && i.includes('kust')),
+  stripScan.join('\n'),
+);
 
 assert.equal(filterKnownVarldStorIssues(validateData().filter((i) => i.startsWith('varld_stor'))).length, 0);
 

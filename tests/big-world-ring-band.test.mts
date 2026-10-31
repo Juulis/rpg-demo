@@ -4,6 +4,7 @@ import { validateVarldStorSpawnScan, mellanmarkEmptyCoverage } from '../src/data
 import { buildBigWorldCatalog, generateChunkWorldData } from '../src/world/bigWorld/worldGenerator';
 import { chunkDistanceFromStart, ringAtChunkDistance } from '../src/world/bigWorld/ringZone';
 import { mellanmarkLevelBand } from '../src/world/bigWorld/spawnRules';
+import { KNOWN_EMPTY_MELLANMARK, mellanmarkEmptyIssues } from '../src/world/bigWorld/knownEmptyMellanmark';
 
 const ctx = {
   monsterIds: new Set(DATA.families.monsters.map((m) => m.id)),
@@ -13,8 +14,22 @@ const ctx = {
 
 const scanOpts = { seeds: [1, 5, 42, 12345], radius: 40, maxRing: 7 };
 
-const bandIssues = validateVarldStorSpawnScan(DATA.varldStor, ctx, scanOpts);
+const bandIssues = validateVarldStorSpawnScan(DATA.varldStor, ctx, { ...scanOpts, checkKnownEmpty: false });
 assert.equal(bandIssues.length, 0, bandIssues.slice(0, 20).join('\n'));
+
+const emptyCoverage = mellanmarkEmptyCoverage(DATA.varldStor, scanOpts);
+const emptyIssues = mellanmarkEmptyIssues(emptyCoverage, KNOWN_EMPTY_MELLANMARK);
+assert.equal(emptyIssues.length, 0, emptyIssues.join('\n'));
+
+const fullEmpty = [...emptyCoverage.entries()]
+  .filter(([, s]) => s.total > 0 && s.empty === s.total)
+  .map(([k]) => k)
+  .sort();
+const known = [...KNOWN_EMPTY_MELLANMARK].sort();
+assert.deepEqual(fullEmpty, known, 'KNOWN_EMPTY_MELLANMARK ska matcha alla helt tomma ring|biom');
+
+const scanAll = validateVarldStorSpawnScan(DATA.varldStor, ctx, scanOpts);
+assert.equal(scanAll.length, 0, scanAll.join('\n'));
 
 let bandMismatchChunks = 0;
 let spawnLevelOutside = 0;
@@ -43,11 +58,5 @@ for (const seed of scanOpts.seeds) {
 
 assert.equal(bandMismatchChunks, 0, `mellanmark levelBand avviker från ringband: ${bandMismatchChunks} chunkar`);
 assert.equal(spawnLevelOutside, 0, `spawn-nivå utanför band: ${spawnLevelOutside} träffar`);
-
-const empty = mellanmarkEmptyCoverage(DATA.varldStor, scanOpts);
-const emptyLines = [...empty.entries()].filter(([, s]) => s.empty > 0).map(([k, s]) => `${k}: ${s.empty}/${s.total}`);
-if (emptyLines.length) {
-  console.log('mellanmark tom (saknar undertyper i ringband — förväntat tills data utökas):\n' + emptyLines.join('\n'));
-}
 
 console.log('big-world-ring-band.test.mts: ok');

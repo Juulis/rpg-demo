@@ -4,11 +4,16 @@ import { buildBigWorldCatalog, generateChunkWorldData } from '../world/bigWorld/
 import { mellanmarkLevelBand } from '../world/bigWorld/spawnRules';
 import { chunkDistanceFromStart, ringAtChunkDistance } from '../world/bigWorld/ringZone';
 import { DATA } from './index';
+import { KNOWN_EMPTY_MELLANMARK, mellanmarkEmptyIssues } from '../world/bigWorld/knownEmptyMellanmark';
 
 export interface SpawnScanOptions {
   seeds?: number[];
   radius?: number;
   maxRing?: number;
+  /** Standard: KNOWN_EMPTY_MELLANMARK. Sätt tom Set för att kräva full täckning. */
+  knownEmptyMellanmark?: ReadonlySet<string>;
+  /** Om false, hoppar mellanmark-tomhetskontroll (band/spawn kvar). */
+  checkKnownEmpty?: boolean;
 }
 
 const DEFAULT_SEEDS = [1, 5, 42, 12345];
@@ -58,6 +63,11 @@ export function validateVarldStorSpawnScan(bw: BigWorldDataFile, _ctx: VarldStor
         }
       }
     }
+  }
+
+  if (opts.checkKnownEmpty !== false) {
+    const known = opts.knownEmptyMellanmark ?? KNOWN_EMPTY_MELLANMARK;
+    issues.push(...mellanmarkEmptyIssues(mellanmarkEmptyCoverage(bw, opts), known));
   }
 
   return issues;
