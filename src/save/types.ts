@@ -2,7 +2,7 @@ import type { FoundEntry } from '../core/SaveBackend';
 import type { Equipment, ItemInstance } from '../core/GameContext';
 import type { WorldState } from '../world/worldStateTypes';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 export const MAX_HEROES = 8;
 
 export interface HeroRecord {
@@ -32,6 +32,8 @@ export interface GameRecord {
   city: string;
   /** Total speltid för dygnscykeln (sekunder). */
   worldTime?: number;
+  /** Stor-värld chunk-index efter koordinat-migrering. */
+  bwCoordEpoch?: number;
 }
 
 export interface SaveFile {

@@ -76,6 +76,8 @@ export class MapModule implements GameModule {
     this.d.add(
       bus.on('zone_enter', () => {
         this.flush();
+        const z = this.ctx?.zone;
+        if (z) this.fog.setWorldAnchored(z.bigWorldStreaming === true);
         this.reveal();
       }),
     );
@@ -122,7 +124,10 @@ export class MapModule implements GameModule {
     this.saveTimer = undefined;
     const id = this.heroId;
     if (!id) return;
-    for (const [zone, cells] of this.fog.takeDirty()) this.fogRepo.save(id, zone, cells);
+    for (const [zone, cells] of this.fog.takeDirty()) {
+      if (!cells) continue;
+      this.fogRepo.save(id, zone, cells);
+    }
   }
 
   private frame(t: number): void {

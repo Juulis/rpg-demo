@@ -82,17 +82,22 @@ export class CombatRules {
     return { kind: 'hit', dmg: Math.max(1, Math.round(d - st.defReduce)), reduced };
   }
 
-  /** XP(L) = round(xp/10 · 3 · L^1,5) × avdrag efter nivåskillnad (boss golv 0,25). */
+  /** Boss-XP: xp_bas × boss_xp_faktor[akt] × xp_penalty (elit använder xpMult, inte denna gren). */
   monsterXp(m: Pick<MonsterSnapshot, 'lvl' | 'boss' | 'xp' | 'xpMult' | 'bossAct'>, heroLvl: number): number {
     const diff = heroLvl - m.lvl;
     const row = DATA.monsterLevels.xp_penalty.table.find((r) => r.hjalte_minus_monster === Math.max(-8, Math.min(12, diff)));
     let k = row ? row.xp_mult : 1;
-    if (m.boss) k = Math.max(0.25, k);
-    let xp = Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
-    if (m.boss && m.bossAct) {
-      const f = DATA.monsterLevels.boss_xp_faktor?.[m.bossAct];
-      if (f != null) xp = Math.round(xp * f);
+    if (m.boss) {
+      k = Math.max(0.25, k);
+      const bx = DATA.monsterLevels.boss_xp_faktor;
+      const act = m.bossAct ?? 'akt_1';
+      let factor = 1;
+      if (bx && typeof bx === 'object' && 'per_akt' in bx) {
+        const pa = bx.per_akt;
+        if (pa && typeof pa === 'object') factor = pa[act] ?? 1;
+      }
+      return Math.round((m.xp || 10) * factor * k * xpMultiplier());
     }
-    return xp;
+    return Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
   }
 }

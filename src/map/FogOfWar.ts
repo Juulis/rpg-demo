@@ -1,4 +1,6 @@
+import { chunkMinWorld, chunkTileCount, worldToChunk } from '../world/bigWorld/bigWorldCoords';
 import { fogRevealRadiusWorld } from '../world/bigWorld/spawnDensity';
+import { TILE_WORLD } from '../render/Iso';
 
 export type Rgba = readonly [number, number, number, number];
 
@@ -36,22 +38,31 @@ export class FogGrid {
 }
 
 const SAVE_V2 = 2;
+const SAVE_V3 = 3;
 const SECTOR = 32;
+const CHUNK_FOG_BYTES = 512;
+const MAX_FOG_SAVE_BYTES = 512 * 1024;
 
 function fogRadius(): number {
   return fogRevealRadiusWorld();
 }
 
-/** Fog of war: lokalt rutnät (legacy skog) eller världsförankrade sektorer (stor skog). */
+function chunkFogKey(zone: string, cx: number, cy: number): string {
+  return `${zone}|${cx},${cy}`;
+}
+
+/** Fog of war: lokalt rutnät (legacy skog) eller chunk-bitmask i världskoordinater (stor skog). */
 export class FogOfWar {
   static readonly CELL = 2;
   static readonly RADIUS = 11;
   static readonly GRID = 64;
   static readonly HALF = (FogOfWar.GRID * FogOfWar.CELL) / 2;
   private readonly grids = new Map<string, FogGrid>();
-  private readonly worldCells = new Map<string, Uint8Array>();
+  /** 512 B bitmask per chunk (64×64 rutor). */
+  private readonly chunkFog = new Map<string, Uint8Array>();
   private worldAnchored = false;
   private dirty = false;
+  private storageFull = false;
 
   constructor(private readonly loader: (zone: string) => Uint8Array | null = () => null) {}
 
@@ -61,6 +72,10 @@ export class FogOfWar {
 
   isWorldAnchored(): boolean {
     return this.worldAnchored;
+  }
+
+  get storageQuotaExceeded(): boolean {
+    return this.storageFull;
   }
 
   /** @deprecated stor skog använder världskoordinater direkt */
@@ -78,37 +93,89 @@ export class FogOfWar {
     return g;
   }
 
-  private sectorKey(zone: string, sx: number, sy: number): string {
-    return `${zone}|${sx},${sy}`;
+  private chunkMask(zone: string, cx: number, cy: number): Uint8Array {
+    const key = chunkFogKey(zone, cx, cy);
+    let m = this.chunkFog.get(key);
+    if (!m) {
+      m = new Uint8Array(CHUNK_FOG_BYTES);
+      this.chunkFog.set(key, m);
+    }
+    return m;
   }
 
-  private sectorFor(zone: string, ci: number, cj: number): { sector: Uint8Array; lx: number; ly: number } {
-    const sx = Math.floor(ci / SECTOR);
-    const sy = Math.floor(cj / SECTOR);
-    const key = this.sectorKey(zone, sx, sy);
-    let sector = this.worldCells.get(key);
-    if (!sector) {
-      sector = new Uint8Array(SECTOR * SECTOR);
-      this.worldCells.set(key, sector);
-    }
-    const lx = ((ci % SECTOR) + SECTOR) % SECTOR;
-    const ly = ((cj % SECTOR) + SECTOR) % SECTOR;
-    return { sector, lx, ly };
+  private tileIndex(ti: number, tj: number, tiles: number): number {
+    return tj * tiles + ti;
+  }
+
+  private setChunkTile(zone: string, cx: number, cy: number, ti: number, tj: number, on: boolean): boolean {
+    const tiles = chunkTileCount();
+    if (ti < 0 || tj < 0 || ti >= tiles || tj >= tiles) return false;
+    const mask = this.chunkMask(zone, cx, cy);
+    const bit = this.tileIndex(ti, tj, tiles);
+    const byte = bit >> 3;
+    const bitIn = bit & 7;
+    const cur = mask[byte] ?? 0;
+    const prev = (cur >> bitIn) & 1;
+    const next = on ? 1 : 0;
+    if (prev === next) return false;
+    if (on) mask[byte] = cur | (1 << bitIn);
+    else mask[byte] = cur & ~(1 << bitIn);
+    return true;
+  }
+
+  private chunkTileAtWorld(wx: number, wy: number): { cx: number; cy: number; ti: number; tj: number } {
+    const { cx, cy } = worldToChunk(wx, wy);
+    const min = chunkMinWorld(cx, cy);
+    const ti = Math.floor((wx - min.x) / TILE_WORLD);
+    const tj = Math.floor((wy - min.y) / TILE_WORLD);
+    return { cx, cy, ti, tj };
+  }
+
+  private isChunkTileRevealed(zone: string, cx: number, cy: number, ti: number, tj: number): boolean {
+    const tiles = chunkTileCount();
+    if (ti < 0 || tj < 0 || ti >= tiles || tj >= tiles) return false;
+    const key = chunkFogKey(zone, cx, cy);
+    const mask = this.chunkFog.get(key);
+    if (!mask) return false;
+    const bit = this.tileIndex(ti, tj, tiles);
+    return (((mask[bit >> 3] ?? 0) >> (bit & 7)) & 1) === 1;
   }
 
   private loadBlob(zone: string, saved: Uint8Array | null): void {
     if (!saved || saved.length === 0) return;
-    if (saved[0] === SAVE_V2) {
-      let o = 1;
+    if (saved[0] === SAVE_V3) {
       const view = new DataView(saved.buffer, saved.byteOffset, saved.byteLength);
-      while (o + 4 <= saved.length) {
-        const sx = view.getUint16(o);
-        const sy = view.getUint16(o + 2);
+      let o = 1;
+      while (o + 4 + CHUNK_FOG_BYTES <= saved.length) {
+        const cx = view.getInt16(o, true);
+        const cy = view.getInt16(o + 2, true);
         o += 4;
-        const sector = new Uint8Array(SECTOR * SECTOR);
-        sector.set(saved.subarray(o, o + SECTOR * SECTOR));
+        const slice = saved.subarray(o, o + CHUNK_FOG_BYTES);
+        o += CHUNK_FOG_BYTES;
+        this.chunkFog.set(chunkFogKey(zone, cx, cy), slice.slice());
+      }
+      return;
+    }
+    if (saved[0] === SAVE_V2) {
+      const view = new DataView(saved.buffer, saved.byteOffset, saved.byteLength);
+      let o = 1;
+      while (o + 4 <= saved.length) {
+        let sx = view.getInt16(o, true);
+        let sy = view.getInt16(o + 2, true);
+        if (sx > 400 || sx < -400) sx = view.getUint16(o) > 32767 ? view.getUint16(o) - 65536 : view.getUint16(o);
+        if (sy > 400 || sy < -400) sy = view.getUint16(o + 2) > 32767 ? view.getUint16(o + 2) - 65536 : view.getUint16(o + 2);
+        o += 4;
+        if (o + SECTOR * SECTOR > saved.length) break;
+        for (let ly = 0; ly < SECTOR; ly++) {
+          for (let lx = 0; lx < SECTOR; lx++) {
+            if (!saved[o + ly * SECTOR + lx]) continue;
+            const wx = (sx * SECTOR + lx + 0.5) * FogOfWar.CELL;
+            const wy = (sy * SECTOR + ly + 0.5) * FogOfWar.CELL;
+            const { cx, cy, ti, tj } = this.chunkTileAtWorld(wx, wy);
+            this.setChunkTile(zone, cx, cy, ti, tj, true);
+          }
+        }
         o += SECTOR * SECTOR;
-        this.worldCells.set(this.sectorKey(zone, sx, sy), sector);
       }
       return;
     }
@@ -118,41 +185,30 @@ export class FogOfWar {
           if (!saved[j * FogOfWar.GRID + i]) continue;
           const wx = (i - FogOfWar.GRID / 2) * FogOfWar.CELL;
           const wy = (j - FogOfWar.GRID / 2) * FogOfWar.CELL;
-          this.setWorldCell(zone, wx, wy, true);
+          const { cx, cy, ti, tj } = this.chunkTileAtWorld(wx, wy);
+          this.setChunkTile(zone, cx, cy, ti, tj, true);
         }
       }
     }
   }
 
   ensureLoaded(zone: string): void {
-    if (this.worldCells.size > 0 || this.grids.get(zone)?.cells.some((c) => c)) return;
+    if (this.chunkFog.size > 0 || this.grids.get(zone)?.cells.some((c) => c)) return;
     this.loadBlob(zone, this.loader(zone));
-  }
-
-  private setWorldCell(zone: string, wx: number, wy: number, on: boolean): boolean {
-    const ci = Math.floor(wx / FogOfWar.CELL);
-    const cj = Math.floor(wy / FogOfWar.CELL);
-    const { sector, lx, ly } = this.sectorFor(zone, ci, cj);
-    const idx = ly * SECTOR + lx;
-    if (sector[idx] === (on ? 1 : 0)) return false;
-    sector[idx] = on ? 1 : 0;
-    return true;
   }
 
   revealWorld(zone: string, wx: number, wy: number): boolean {
     this.ensureLoaded(zone);
-    const { CELL } = FogOfWar;
     const RADIUS = fogRadius();
     let changed = false;
-    const r = Math.ceil(RADIUS / CELL);
-    const cx = Math.floor(wx / CELL);
-    const cy = Math.floor(wy / CELL);
-    for (let j = cy - r; j <= cy + r; j++) {
-      for (let i = cx - r; i <= cx + r; i++) {
-        const wx2 = (i + 0.5) * CELL;
-        const wy2 = (j + 0.5) * CELL;
-        if (Math.hypot(wx2 - wx, wy2 - wy) > RADIUS) continue;
-        if (this.setWorldCell(zone, wx2, wy2, true)) changed = true;
+    const step = TILE_WORLD;
+    for (let dy = -RADIUS; dy <= RADIUS; dy += step) {
+      for (let dx = -RADIUS; dx <= RADIUS; dx += step) {
+        const px = wx + dx;
+        const py = wy + dy;
+        if (Math.hypot(dx, dy) > RADIUS) continue;
+        const { cx, cy, ti, tj } = this.chunkTileAtWorld(px, py);
+        if (this.setChunkTile(zone, cx, cy, ti, tj, true)) changed = true;
       }
     }
     if (changed) this.dirty = true;
@@ -161,10 +217,8 @@ export class FogOfWar {
 
   isWorldRevealed(zone: string, wx: number, wy: number): boolean {
     this.ensureLoaded(zone);
-    const ci = Math.floor(wx / FogOfWar.CELL);
-    const cj = Math.floor(wy / FogOfWar.CELL);
-    const { sector, lx, ly } = this.sectorFor(zone, ci, cj);
-    return sector[ly * SECTOR + lx] === 1;
+    const { cx, cy, ti, tj } = this.chunkTileAtWorld(wx, wy);
+    return this.isChunkTileRevealed(zone, cx, cy, ti, tj);
   }
 
   /** Avslöjar runt (x, y) i lokala koordinater (legacy). */
@@ -174,7 +228,7 @@ export class FogOfWar {
     const RADIUS = fogRadius();
     const F = this.grid(zone);
     const saved = this.loader(zone);
-    if (saved && saved[0] !== SAVE_V2 && F.cells.every((c) => c === 0)) {
+    if (saved && saved[0] !== SAVE_V2 && saved[0] !== SAVE_V3 && F.cells.every((c) => c === 0)) {
       F.cells.set(saved.subarray(0, F.cells.length));
     }
     const g = F.cells;
@@ -244,19 +298,42 @@ export class FogOfWar {
     }
   }
 
-  encodeZone(zone: string): Uint8Array {
+  encodeZone(zone: string): Uint8Array | null {
     if (!this.worldAnchored) return this.grid(zone).cells;
-    const parts: number[] = [SAVE_V2];
-    for (const [key, sector] of this.worldCells) {
+    const chunks: { cx: number; cy: number; mask: Uint8Array }[] = [];
+    for (const [key, mask] of this.chunkFog) {
       if (!key.startsWith(`${zone}|`)) continue;
+      let any = false;
+      for (const b of mask) {
+        if (b !== 0) {
+          any = true;
+          break;
+        }
+      }
+      if (!any) continue;
       const coords = key.slice(zone.length + 1).split(',');
-      const sx = Number(coords[0]);
-      const sy = Number(coords[1]);
-      if (Number.isNaN(sx) || Number.isNaN(sy)) continue;
-      parts.push((sx >> 8) & 255, sx & 255, (sy >> 8) & 255, sy & 255);
-      parts.push(...sector);
+      const cx = Number(coords[0]);
+      const cy = Number(coords[1]);
+      if (Number.isNaN(cx) || Number.isNaN(cy)) continue;
+      chunks.push({ cx, cy, mask });
     }
-    return Uint8Array.from(parts);
+    const size = 1 + chunks.length * (4 + CHUNK_FOG_BYTES);
+    if (size > MAX_FOG_SAVE_BYTES) {
+      this.storageFull = true;
+      return null;
+    }
+    const out = new Uint8Array(size);
+    out[0] = SAVE_V3;
+    const view = new DataView(out.buffer, out.byteOffset, out.byteLength);
+    let o = 1;
+    for (const ch of chunks) {
+      view.setInt16(o, ch.cx, true);
+      view.setInt16(o + 2, ch.cy, true);
+      o += 4;
+      out.set(ch.mask, o);
+      o += CHUNK_FOG_BYTES;
+    }
+    return out;
   }
 
   get isDirty(): boolean {
@@ -265,12 +342,20 @@ export class FogOfWar {
 
   takeDirty(): Array<[string, Uint8Array]> {
     if (!this.dirty) return [];
-    this.dirty = false;
+    let keepDirty = false;
     if (this.worldAnchored) {
       const zones = new Set<string>();
-      for (const key of this.worldCells.keys()) zones.add(key.split('|')[0] ?? 'forest');
-      return [...zones].map((z) => [z, this.encodeZone(z)]);
+      for (const key of this.chunkFog.keys()) zones.add(key.split('|')[0] ?? 'forest');
+      const out: Array<[string, Uint8Array]> = [];
+      for (const z of zones) {
+        const enc = this.encodeZone(z);
+        if (enc) out.push([z, enc]);
+        else keepDirty = true;
+      }
+      this.dirty = keepDirty;
+      return out;
     }
+    this.dirty = false;
     return [...this.grids].map(([k, g]) => [k, g.cells]);
   }
 }

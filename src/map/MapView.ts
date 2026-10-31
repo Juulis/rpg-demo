@@ -7,6 +7,7 @@ import type { MapPainter } from './MapPainter';
 /** Stor överlagrad karta (Tab). */
 export class MapView {
   readonly canvas: HTMLCanvasElement;
+  private lastDrawKey = '';
 
   constructor(
     private readonly painter: MapPainter,
@@ -31,6 +32,11 @@ export class MapView {
   }
 
   draw(z: ZoneView, h: Readonly<HeroState>, time: number, clockTime = 0): void {
+    if (z.bigWorldStreaming) {
+      const key = `${Math.round(h.pos.x / 16)}|${Math.round(h.pos.y / 16)}|${this.painter.fogDirty()}`;
+      if (key === this.lastDrawKey) return;
+      this.lastDrawKey = key;
+    }
     const prep = this.painter.prepare(this.canvas);
     if (!prep) return;
     const { c, W, H } = prep;

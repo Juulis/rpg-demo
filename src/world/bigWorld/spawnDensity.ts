@@ -1,12 +1,8 @@
 import { DATA } from '../../data';
 import type { BigWorldDataFile, BigWorldRegion } from '../../data/bigWorldTypes';
+import { regionSpawnCountForChunk, regionMonsterPerGame } from './regionSpawnBudget';
 
 type RingRange = readonly [number, number];
-
-function asRange(v: number | RingRange): RingRange {
-  if (typeof v === 'number') return [v, v];
-  return v;
-}
 
 function ringKey(ring: number): string {
   if (ring <= 0) return 'ring_0';
@@ -23,21 +19,21 @@ export function mellanmarkSpawnCountRange(ring: number): RingRange {
   return genTable[key] ?? [0, 1];
 }
 
-/** Namngiven region / delområde — region.tathet eller meta.tathet_regel. */
-export function regionSpawnCountRange(region: BigWorldRegion, ring: number, data: BigWorldDataFile = DATA.varldStor): RingRange {
-  if (region.tathet != null) return asRange(region.tathet);
-  const regel = data.meta.tathet_regel;
-  if (region.genererad_spawn !== true) {
-    if (region.typ === 'by' || region.typ === 'stad') return [0, 0];
-    if (regel?.byar != null && region.typ === 'by') return [regel.byar, regel.byar];
-    return [0, 0];
+/** Namngiven region — fördelar region.tathet.monster_per_game över regionens chunkar. */
+export function regionSpawnCountRange(
+  region: BigWorldRegion,
+  ring: number,
+  data: BigWorldDataFile = DATA.varldStor,
+  cx?: number,
+  cy?: number,
+  gameSeed?: number,
+): RingRange {
+  if (cx != null && cy != null && gameSeed != null) {
+    const n = regionSpawnCountForChunk(region, cx, cy, gameSeed, ring, data);
+    return [n, n];
   }
-  if (regel) {
-    if (ring === 2 && regel.ring_2_kontroll != null) return [regel.ring_2_kontroll, regel.ring_2_kontroll];
-    if (ring <= 1 && regel.delomrade_ring_0_1 != null) return [regel.delomrade_ring_0_1, regel.delomrade_ring_0_1];
-    if (ring >= 3 && regel.vildmark_ring_3_plus != null) return [regel.vildmark_ring_3_plus, regel.vildmark_ring_3_plus];
-  }
-  return [2, 2];
+  const total = regionMonsterPerGame(region, ring, data);
+  return [total, total];
 }
 
 /** @deprecated use regionSpawnCountRange */

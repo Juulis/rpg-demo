@@ -27,11 +27,15 @@ const nearChunksBuf: { cx: number; cy: number }[] = [];
 
 function fillNearChunks(wx: number, wy: number, r: number): { cx: number; cy: number }[] {
   nearChunksBuf.length = 0;
-  const corners = [worldToChunk(wx - r, wy - r), worldToChunk(wx + r, wy - r), worldToChunk(wx - r, wy + r), worldToChunk(wx + r, wy + r)];
-  let minCx = corners[0]!.cx;
-  let maxCx = corners[0]!.cx;
-  let minCy = corners[0]!.cy;
-  let maxCy = corners[0]!.cy;
+  const c0 = worldToChunk(wx - r, wy - r);
+  const c1 = worldToChunk(wx + r, wy - r);
+  const c2 = worldToChunk(wx - r, wy + r);
+  const c3 = worldToChunk(wx + r, wy + r);
+  const corners = [c0, c1, c2, c3];
+  let minCx = c0.cx;
+  let maxCx = c0.cx;
+  let minCy = c0.cy;
+  let maxCy = c0.cy;
   for (const c of corners) {
     minCx = Math.min(minCx, c.cx);
     maxCx = Math.max(maxCx, c.cx);

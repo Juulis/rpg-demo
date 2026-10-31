@@ -3,6 +3,7 @@ import { isRecord } from '../core/json';
 import { parseFogMap } from './fog';
 import { parseFoundItemsMap } from './foundItems';
 import { hydrateWorldStateFromLegacy, parseWorldState } from '../world/worldStateTypes';
+import { BIG_WORLD_COORD_EPOCH, migrateBigWorldKillIds } from '../world/bigWorld/saveCoordMigrate';
 import { SAVE_VERSION, type GameRecord, type HeroRecord, type SaveFile } from './types';
 
 const num = (v: unknown, d: number): number => (typeof v === 'number' && Number.isFinite(v) ? v : d);
@@ -96,6 +97,11 @@ export class SaveMigrator {
     if (typeof g.rot === 'number') rec.rot = g.rot;
     if (typeof g.worldSeed === 'number' && Number.isFinite(g.worldSeed)) rec.worldSeed = g.worldSeed;
     if (typeof g.worldTime === 'number' && Number.isFinite(g.worldTime) && g.worldTime >= 0) rec.worldTime = g.worldTime;
+    const epoch = typeof g.bwCoordEpoch === 'number' ? g.bwCoordEpoch : 0;
+    if (epoch < BIG_WORLD_COORD_EPOCH) {
+      rec.killed = migrateBigWorldKillIds(rec.killed);
+      rec.bwCoordEpoch = BIG_WORLD_COORD_EPOCH;
+    } else if (typeof g.bwCoordEpoch === 'number') rec.bwCoordEpoch = g.bwCoordEpoch;
     return rec;
   }
 

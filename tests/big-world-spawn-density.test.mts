@@ -15,7 +15,14 @@ assert.equal(start.spawns.length, 0, 'startskogen-chunk ska inte få genererade 
 
 const gamla = DATA.varldStor.regioner.find((r) => r.id === 'gamla_byn');
 assert.ok(gamla);
-const byChunk = generateChunkWorldData(worldSeed, gameSeed, gamla.chunk[0], gamla.chunk[1], catalog);
-assert.ok(byChunk.spawns.length <= mellanmarkSpawnCountRange(byChunk.ring)[1], 'namngiven region ska inte använda full mellanmark-täthet');
+const gamlaBudget = (gamla.tathet as { monster_per_game?: number })?.monster_per_game ?? 2;
+let gamlaSpawns = 0;
+for (let dx = -gamla.radie; dx <= gamla.radie; dx++) {
+  for (let dy = -gamla.radie; dy <= gamla.radie; dy++) {
+    const d = generateChunkWorldData(worldSeed, gameSeed, gamla.chunk[0] + dx, gamla.chunk[1] + dy, catalog);
+    if (d.regionId === 'gamla_byn') gamlaSpawns += d.spawns.length;
+  }
+}
+assert.ok(gamlaSpawns <= gamlaBudget, 'region ska följa tathet.monster_per_game, inte mellanmark per chunk');
 
 console.log('big-world-spawn-density.test.mts: ok');

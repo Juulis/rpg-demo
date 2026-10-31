@@ -49,8 +49,8 @@ export interface BigWorldRegion {
   boss?: string | null;
   spawnzoner?: string[];
   genererad_spawn?: boolean;
-  /** Monster per chunk och game (en siffra eller [min, max]). */
-  tathet?: number | [number, number];
+  /** Monster per game fördelat över regionens chunkar (design: tathet.monster_per_game). */
+  tathet?: number | [number, number] | { monster_per_game?: number; kalla?: string };
   akt?: string;
   sakert?: boolean;
   monsterplatser?: string[];

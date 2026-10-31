@@ -30,16 +30,18 @@ export class FogRepository {
     }
   }
 
-  save(heroId: string, zone: string, cells: Uint8Array): void {
-    if (heroId !== this.heroId) return;
+  save(heroId: string, zone: string, cells: Uint8Array): boolean {
+    if (heroId !== this.heroId) return false;
     try {
       let s = '';
       for (const v of cells) s += String.fromCharCode(v);
       const b64 = btoa(s);
       this.cache.set(zone, b64);
       void this.backend.setFog(heroId, zone, b64);
-    } catch {
-      /* full lagring: fog är inte kritisk */
+      return true;
+    } catch (e) {
+      console.warn('[FogRepository] kunde inte spara dimma (lagring full?):', e);
+      return false;
     }
   }
 

@@ -1,4 +1,4 @@
-import { chunkWorldSpan, worldToChunk } from '../world/bigWorld/bigWorldCoords';
+import { chunkCenterWorld, chunkMinWorld, chunkWorldSpan, worldToChunk } from '../world/bigWorld/bigWorldCoords';
 import { chunkDistanceFromStart, ringAtChunkDistance } from '../world/bigWorld/ringZone';
 import { getBigWorldCatalog } from '../world/bigWorld/worldGenerator';
 import type { Projection } from './MapPainter';
@@ -33,34 +33,32 @@ export function drawBigWorldMapLayer(
       const cy = heroChunk.cy + dy;
       const dist = chunkDistanceFromStart(cx, cy, start);
       const { ring } = ringAtChunkDistance(dist, ringar);
-      const x0 = cx * span;
-      const y0 = cy * span;
-      const cxw = x0 + span * 0.5;
-      const cyw = y0 + span * 0.5;
+      const min = chunkMinWorld(cx, cy);
+      const cxw = min.x + span * 0.5;
+      const cyw = min.y + span * 0.5;
       if (opts.isRevealed && !opts.isRevealed(cxw, cyw)) continue;
       c.fillStyle = ringColor(ring);
-      c.fillRect(X(x0), Y(y0), span * p.s, span * p.s);
+      c.fillRect(X(min.x), Y(min.y), span * p.s, span * p.s);
       c.strokeStyle = '#1a1e18';
       c.lineWidth = 0.5;
-      c.strokeRect(X(x0), Y(y0), span * p.s, span * p.s);
+      c.strokeRect(X(min.x), Y(min.y), span * p.s, span * p.s);
     }
   }
 
   for (const region of catalog.data.regioner) {
     const [rcx, rcy] = region.chunk;
     if (Math.abs(rcx - heroChunk.cx) > r + 2 || Math.abs(rcy - heroChunk.cy) > r + 2) continue;
-    const wx = rcx * span + span * 0.5;
-    const wy = rcy * span + span * 0.5;
-    if (opts.isRevealed && !opts.isRevealed(wx, wy)) continue;
+    const center = chunkCenterWorld(rcx, rcy);
+    if (opts.isRevealed && !opts.isRevealed(center.x, center.y)) continue;
     c.fillStyle = region.sakert ? '#f2c46b' : '#9fc4d4';
     c.beginPath();
-    c.arc(X(wx), Y(wy), Math.max(2, 3 * p.s), 0, 7);
+    c.arc(X(center.x), Y(center.y), Math.max(2, 3 * p.s), 0, 7);
     c.fill();
     if (opts.showLabels && !p.mini) {
       c.fillStyle = '#c8d8e0';
       c.font = '11px Cinzel, Georgia, serif';
       c.textAlign = 'center';
-      c.fillText(region.namn ?? region.id, X(wx), Y(wy) - 10);
+      c.fillText(region.namn ?? region.id, X(center.x), Y(center.y) - 10);
     }
   }
 
@@ -71,12 +69,14 @@ export function drawBigWorldMapLayer(
     for (const id of road.strackning) {
       const reg = catalog.regionById.get(id);
       if (!reg) continue;
-      const [cx, cy] = reg.chunk;
-      pts.push({ x: cx * span + span * 0.5, y: cy * span + span * 0.5 });
+      const c0 = chunkCenterWorld(reg.chunk[0], reg.chunk[1]);
+      if (Math.abs(reg.chunk[0] - heroChunk.cx) > r + 3 || Math.abs(reg.chunk[1] - heroChunk.cy) > r + 3) continue;
+      pts.push(c0);
     }
     if (pts.length < 2) continue;
     const first = pts[0];
     if (!first) continue;
+    if (opts.isRevealed && !opts.isRevealed(first.x, first.y)) continue;
     c.beginPath();
     c.moveTo(X(first.x), Y(first.y));
     for (let i = 1; i < pts.length; i++) {
@@ -86,10 +86,10 @@ export function drawBigWorldMapLayer(
     c.stroke();
   }
 
-  const [sx, sy] = start;
+  const startCenter = chunkCenterWorld(start[0], start[1]);
   c.fillStyle = '#f2c46b88';
   c.beginPath();
-  c.arc(X(sx * span + span * 0.5), Y(sy * span + span * 0.5), Math.max(3, 4 * p.s), 0, 7);
+  c.arc(X(startCenter.x), Y(startCenter.y), Math.max(3, 4 * p.s), 0, 7);
   c.fill();
 }
 

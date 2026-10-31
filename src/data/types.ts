@@ -100,8 +100,8 @@ export interface MonsterLevels {
     unique_names: string[];
   };
   xp_penalty: { table: { hjalte_minus_monster: number; xp_mult: number }[] };
-  /** Per akt (t.ex. akt_1) — datasynk från monster_niva.json. */
-  boss_xp_faktor?: Record<string, number>;
+  /** Per akt — boss-XP = xp_bas × per_akt[akt] (design monster_niva.json). */
+  boss_xp_faktor?: Record<string, number> | { per_akt?: Record<string, number>; bossar?: Record<string, string>; regel?: string };
 }
 export interface EliteLoot {
   extra_rolls: number;

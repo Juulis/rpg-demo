@@ -31,6 +31,10 @@ export class MapPainter {
     return this.fog().getAnchor();
   }
 
+  fogDirty(): boolean {
+    return this.fog().isDirty;
+  }
+
   /** Anpassar canvasens upplösning efter CSS-storlek och DPR; returnerar context och CSS-mått. */
   prepare(cv: HTMLCanvasElement): { c: CanvasRenderingContext2D; W: number; H: number } | null {
     const dpr = window.devicePixelRatio || 1;

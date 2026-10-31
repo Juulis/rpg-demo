@@ -15,6 +15,7 @@ import {
   spawnTileNearRoad,
 } from './spawnDensity';
 import { isLegacyOnlySpawnChunk } from './heroRegion';
+import { regionMonsterPerGame } from './regionSpawnBudget';
 
 export interface BigWorldSpawnRoll {
   uid: string;
@@ -133,7 +134,7 @@ function rollChunkSpawns(
   if (allowed.length === 0) return [];
   const rng = new Rng(chunkSpawnRollSeed(gameSeed, cx, cy));
   const champ = mellanmarkChampionRoll();
-  const range = mellanmark ? mellanmarkSpawnCountRange(ring) : regionSpawnCountRange(region, ring, catalog.data);
+  const range = mellanmark ? mellanmarkSpawnCountRange(ring) : regionSpawnCountRange(region, ring, catalog.data, cx, cy, gameSeed);
   const target = rng.int(range);
   const tileSize = catalog.data.meta.chunk?.storlek_rutor ?? 64;
   const hasRoadAtTile = (ccx: number, ccy: number, ti: number, tj: number) => roadTileInChunk(catalog.roads, ccx, ccy, ti, tj, tileSize);
@@ -154,7 +155,11 @@ function rollChunkSpawns(
   if (mellanmark && ring >= champ.minRing && out.length > 0 && rng.next() < champ.chance) {
     const idx = rng.int([0, out.length - 1]);
     const pick = out[idx];
-    if (pick) pick.elite = 'champion';
+    if (pick) {
+      pick.elite = 'champion';
+      const bonus = DATA.monsterLevels.elites.champion.level_bonus;
+      pick.level = Math.min(pick.level + bonus, band[1]);
+    }
   }
   return out;
 }
@@ -204,7 +209,9 @@ export function generateChunkWorldData(
     act = region.akt ?? null;
   } else {
     spawnSubtypes = filterSubtypesByBand(region.undertyper ?? [], spawnBand);
-    generatedSpawn = region.genererad_spawn === true;
+    const legacyChunk = isLegacyOnlySpawnChunk(cx, cy);
+    const regionBudget = regionMonsterPerGame(region, chunkRing.ring, catalog.data);
+    generatedSpawn = !legacyChunk && spawnSubtypes.length > 0 && (region.genererad_spawn === true || regionBudget > 0);
     access = region.atkomst ?? 'oppen';
     regionTyp = region.typ;
     safe = region.sakert === true;
