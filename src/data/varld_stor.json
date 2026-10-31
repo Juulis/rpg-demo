@@ -115,11 +115,11 @@
       "variant": {},
       "id": "skog",
       "monsterfamiljer": {
-        "bestar": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn"],
-        "forvridna": ["forvriden_jagare", "smittad_bybo"],
+        "bestar": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn", "bergsulv"],
+        "forvridna": ["forvriden_jagare", "smittad_bybo", "smittbarare", "galen_munk", "sprickvasen"],
         "ododa": ["skelett_hund", "skelett_krigare", "skelett_bagskytt", "skelett_runprast", "skelett_vakt", "skelett_kapten"]
       },
-      "nivaband": [1, 10],
+      "nivaband": [1, 29],
       "regioner": [
         "startlagret",
         "startskogen",
@@ -134,7 +134,7 @@
       ],
       "mal": [
         {
-          "poi": "kolarkojorna",
+          "poi": "kolarkojornas_ruin",
           "quest_mall": "spar"
         },
         {
@@ -146,7 +146,7 @@
           "quest_mall": "val_tva_npc"
         },
         {
-          "poi": "brunna_garden",
+          "poi": "brunna_gardens_ruin",
           "quest_mall": "aterlamning"
         }
       ],
@@ -177,6 +177,24 @@
           "undertyper_nu": ["skelett_hund", "skelett_krigare", "skelett_bagskytt", "skelett_runprast", "skelett_vakt", "skelett_kapten"],
           "platshallare": false,
           "ersatts_av": null
+        },
+        {
+          "id": "skog_utmarksulvar",
+          "roll": "Ulvar i utmarken",
+          "familj": "bestar",
+          "nivaband": [15, 15],
+          "undertyper_nu": ["bergsulv"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "skog_ytterkant",
+          "roll": "Ruttfolk och sprickväsen i den sjuka skogen",
+          "familj": "forvridna",
+          "nivaband": [24, 29],
+          "undertyper_nu": ["smittbarare", "galen_munk", "sprickvasen"],
+          "platshallare": false,
+          "ersatts_av": null
         }
       ],
       "overgangar": [
@@ -205,11 +223,11 @@
       },
       "id": "trask",
       "monsterfamiljer": {
-        "ododa": ["skelett_hund", "skelett_krigare", "skelett_bagskytt"],
-        "gastar": ["dimgast", "klagokvinna", "trasknacken"],
-        "forvridna": ["smittbarare", "galen_munk", "kottklump"]
+        "ododa": ["myrhund", "myrlik", "ruttnande_lik"],
+        "gastar": ["dimgast", "klagokvinna", "trasknacken", "lyktgast"],
+        "forvridna": ["smittbarare", "galen_munk", "kottklump", "sprickvasen"]
       },
-      "nivaband": [7, 30],
+      "nivaband": [4, 29],
       "regioner": ["myrkanten", "dimvagen", "dimmerstrand", "rokkarret", "ruttmarken", "smittans_katedral", "sprickans_botten"],
       "mal": [
         {
@@ -235,9 +253,9 @@
           "roll": "Myrlik",
           "familj": "ododa",
           "nivaband": [7, 9],
-          "undertyper_nu": ["skelett_hund", "skelett_krigare", "skelett_bagskytt"],
-          "platshallare": true,
-          "ersatts_av": "ny undertyp myrlik"
+          "undertyper_nu": ["myrhund", "myrlik"],
+          "platshallare": false,
+          "ersatts_av": null
         },
         {
           "id": "trask_gastar",
@@ -262,9 +280,27 @@
           "roll": "Sprickans väsen",
           "familj": "forvridna",
           "nivaband": [29, 30],
-          "undertyper_nu": ["kottklump"],
-          "platshallare": true,
-          "ersatts_av": "ny undertyp sprickväsen"
+          "undertyper_nu": ["sprickvasen"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "trask_lik",
+          "roll": "Ruttnande lik i myrkanten",
+          "familj": "ododa",
+          "nivaband": [4, 4],
+          "undertyper_nu": ["ruttnande_lik"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "trask_lyktgastar",
+          "roll": "Lyktgastar",
+          "familj": "gastar",
+          "nivaband": [16, 16],
+          "undertyper_nu": ["lyktgast"],
+          "platshallare": false,
+          "ersatts_av": null
         }
       ],
       "overgangar": [
@@ -291,11 +327,12 @@
       "variant": {},
       "id": "fjall",
       "monsterfamiljer": {
-        "gastar": ["dimgast", "klagokvinna"],
+        "gastar": ["fjallvatte"],
+        "bestar": ["bergsulv", "skuggvarg", "likatare_varg"],
         "insekter": ["gruvspindel", "syrabagge", "kitinvakt"],
-        "forvridna": ["forvriden_gruvarbetare"]
+        "forvridna": ["forvriden_gruvarbetare", "galen_munk", "sprickvasen"]
       },
-      "nivaband": [11, 19],
+      "nivaband": [5, 29],
       "regioner": ["fjallfoten", "bergsvagen", "kopparberg", "jarnklostret", "gruvdjupen"],
       "mal": [
         {
@@ -317,18 +354,18 @@
           "roll": "Fjällvättar",
           "familj": "gastar",
           "nivaband": [11, 13],
-          "undertyper_nu": ["dimgast", "klagokvinna"],
-          "platshallare": true,
-          "ersatts_av": "ny undertyp fjällvätte"
+          "undertyper_nu": ["fjallvatte"],
+          "platshallare": false,
+          "ersatts_av": null
         },
         {
           "id": "fjall_bergsulvar",
           "roll": "Bergsulvar",
           "familj": "bestar",
           "nivaband": [14, 15],
-          "undertyper_nu": ["gruvspindel"],
-          "platshallare": true,
-          "ersatts_av": "ny undertyp bergsulv"
+          "undertyper_nu": ["bergsulv"],
+          "platshallare": false,
+          "ersatts_av": null
         },
         {
           "id": "fjall_gruvkryp",
@@ -347,6 +384,33 @@
           "undertyper_nu": ["forvriden_gruvarbetare"],
           "platshallare": true,
           "ersatts_av": "ny undertyp järnbroder"
+        },
+        {
+          "id": "fjall_vargar",
+          "roll": "Vargar i fjällbjörkskogen",
+          "familj": "bestar",
+          "nivaband": [5, 8],
+          "undertyper_nu": ["skuggvarg", "likatare_varg"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "fjall_munkar",
+          "roll": "Galna munkar från Järnklostret",
+          "familj": "forvridna",
+          "nivaband": [25, 25],
+          "undertyper_nu": ["galen_munk"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "fjall_sprickvasen",
+          "roll": "Sprickväsen",
+          "familj": "forvridna",
+          "nivaband": [29, 29],
+          "undertyper_nu": ["sprickvasen"],
+          "platshallare": false,
+          "ersatts_av": null
         }
       ],
       "overgangar": [
@@ -365,10 +429,10 @@
       "variant": {},
       "id": "kust",
       "monsterfamiljer": {
-        "gastar": ["klagokvinna", "trasknacken"],
-        "ododa": ["drunknad"]
+        "gastar": ["klagokvinna", "trasknacken", "gravgast", "havsgast"],
+        "ododa": ["klockdrunknad", "ruttnande_lik", "brandskelett"]
       },
-      "nivaband": [12, 15],
+      "nivaband": [4, 28],
       "regioner": ["korpholmarna", "sjunkna_kyrkan", "sista_ljuset"],
       "mal": [
         {
@@ -395,9 +459,45 @@
           "roll": "Klockans drunknade",
           "familj": "ododa",
           "nivaband": [14, 15],
-          "undertyper_nu": ["drunknad"],
-          "platshallare": true,
-          "ersatts_av": "ny undertyp klockdrunknad"
+          "undertyper_nu": ["klockdrunknad"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "kust_strandlik",
+          "roll": "Lik på stranden",
+          "familj": "ododa",
+          "nivaband": [4, 4],
+          "undertyper_nu": ["ruttnande_lik"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "kust_strandgastar",
+          "roll": "Strandgastar",
+          "familj": "gastar",
+          "nivaband": [8, 8],
+          "undertyper_nu": ["gravgast"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "kust_askvakter",
+          "roll": "Askeborgs drunknade vakter",
+          "familj": "ododa",
+          "nivaband": [21, 21],
+          "undertyper_nu": ["brandskelett"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "kust_havsgastar",
+          "roll": "Havsgastar",
+          "familj": "gastar",
+          "nivaband": [28, 28],
+          "undertyper_nu": ["havsgast"],
+          "platshallare": false,
+          "ersatts_av": null
         }
       ],
       "overgangar": [
@@ -420,12 +520,12 @@
       "variant": {},
       "id": "ask",
       "monsterfamiljer": {
-        "ododa": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt"],
+        "ododa": ["skelett_bagskytt", "skelett_runprast", "skelett_vakt", "ruttnande_lik"],
         "insekter": ["gruvspindel", "syrabagge", "kitinvakt"],
         "demoner": ["askimp", "eldpiska_demon", "hornslaktare", "askriddare"],
-        "forvridna": ["askkultist"]
+        "forvridna": ["askkultist", "sprickvasen"]
       },
-      "nivaband": [8, 25],
+      "nivaband": [4, 29],
       "regioner": ["brandkanten", "glodstranden", "askfalten", "askeborg", "kultens_katakomber", "katedralen", "brandkusten"],
       "mal": [
         {
@@ -490,6 +590,24 @@
           "undertyper_nu": ["hornslaktare", "askriddare"],
           "platshallare": true,
           "ersatts_av": "ny undertyp katedralväktare"
+        },
+        {
+          "id": "ask_brandlik",
+          "roll": "Brända lik",
+          "familj": "ododa",
+          "nivaband": [4, 4],
+          "undertyper_nu": ["ruttnande_lik"],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "ask_sprickvasen",
+          "roll": "Sprickväsen",
+          "familj": "forvridna",
+          "nivaband": [29, 29],
+          "undertyper_nu": ["sprickvasen"],
+          "platshallare": false,
+          "ersatts_av": null
         }
       ],
       "overgangar": [
@@ -540,13 +658,13 @@
       "chunk": [1, 1],
       "radie": 1,
       "ringzon": 0,
-      "nivaband": [1, 3],
-      "grannar": ["gravasen", "startlagret", "vargstigen"],
+      "nivaband": [1, 5],
+      "grannar": ["gravasen", "kolarmon", "sodra_mon", "startlagret", "vargaby", "vargstigen"],
       "vagar": ["vag_ostra", "vag_norra"],
       "byar": [],
       "poi": ["rod_portal", "runsten_ristarens", "viskarens_lager"],
       "monsterfamilj": "bestar",
-      "undertyper": ["skogsvarg", "vargbest"],
+      "undertyper": ["skogsvarg", "vargbest", "skuggvarg", "taggsvin"],
       "boss": null,
       "spawnzoner": ["startskogen"],
       "genererad_spawn": false,
@@ -563,13 +681,13 @@
       "chunk": [2, 0],
       "radie": 1,
       "ringzon": 1,
-      "nivaband": [3, 4],
+      "nivaband": [3, 6],
       "grannar": ["startskogen", "vargaby"],
       "vagar": ["vag_ostra"],
       "byar": [],
-      "poi": ["kolarkojorna"],
+      "poi": ["kolarkojornas_ruin"],
       "monsterfamilj": "bestar",
-      "undertyper": ["vargbest", "taggsvin"],
+      "undertyper": ["vargbest", "taggsvin", "skuggvarg", "gravargsledare"],
       "boss": null,
       "spawnzoner": [],
       "genererad_spawn": true,
@@ -587,7 +705,7 @@
       "radie": 1,
       "ringzon": 1,
       "nivaband": [4, 6],
-      "grannar": ["ulvhilds_ide", "vargstigen"],
+      "grannar": ["startskogen", "ulvhilds_ide", "vargstigen"],
       "vagar": ["vag_ostra", "stig_idet"],
       "byar": ["vargaby_by"],
       "poi": ["vargaby_by", "vargaby_kyrka"],
@@ -634,7 +752,7 @@
       "radie": 1,
       "ringzon": 1,
       "nivaband": [3, 5],
-      "grannar": ["gravasen", "myrkanten", "startlagret"],
+      "grannar": ["gravasen", "myrkanten", "startlagret", "startskogen"],
       "vagar": ["vag_vastra", "kolarstigen"],
       "byar": [],
       "poi": ["kolmilan"],
@@ -657,10 +775,10 @@
       "radie": 1,
       "ringzon": 1,
       "nivaband": [3, 5],
-      "grannar": ["brandkanten", "startlagret"],
+      "grannar": ["brandkanten", "startlagret", "startskogen"],
       "vagar": ["askvagen"],
       "byar": [],
-      "poi": ["brunna_garden"],
+      "poi": ["brunna_gardens_ruin"],
       "monsterfamilj": "forvridna",
       "undertyper": ["forvriden_jagare", "smittad_bybo"],
       "boss": null,
@@ -756,7 +874,7 @@
       "byar": [],
       "poi": ["sjunkna_garden"],
       "monsterfamilj": "ododa",
-      "undertyper": ["skelett_hund", "skelett_krigare", "skelett_bagskytt"],
+      "undertyper": ["myrhund", "myrlik"],
       "boss": null,
       "spawnzoner": [],
       "genererad_spawn": true,
@@ -871,7 +989,7 @@
       "byar": [],
       "poi": ["sjunkna_kyrkans_port"],
       "monsterfamilj": "ododa",
-      "undertyper": ["drunknad"],
+      "undertyper": ["klockdrunknad"],
       "boss": null,
       "spawnzoner": [],
       "genererad_spawn": true,
@@ -895,7 +1013,7 @@
       "byar": [],
       "poi": ["fabodlagret"],
       "monsterfamilj": "gastar",
-      "undertyper": ["dimgast", "klagokvinna"],
+      "undertyper": ["fjallvatte"],
       "boss": null,
       "spawnzoner": [],
       "genererad_spawn": true,
@@ -940,8 +1058,8 @@
       "vagar": ["vag_norra"],
       "byar": [],
       "poi": ["vaktstugan"],
-      "monsterfamilj": "insekter",
-      "undertyper": ["gruvspindel"],
+      "monsterfamilj": "bestar",
+      "undertyper": ["bergsulv"],
       "boss": null,
       "spawnzoner": [],
       "genererad_spawn": true,
@@ -1248,7 +1366,7 @@
       "byar": [],
       "poi": ["fjarde_stenen"],
       "monsterfamilj": "forvridna",
-      "undertyper": ["kottklump"],
+      "undertyper": ["sprickvasen"],
       "boss": "den_slocknade",
       "spawnzoner": [],
       "genererad_spawn": true,
@@ -1598,7 +1716,7 @@
       "atkomst": "oppen"
     },
     {
-      "id": "kolarkojorna",
+      "id": "kolarkojornas_ruin",
       "namn": "De övergivna kolarkojorna",
       "typ": "ruin",
       "region": "vargstigen",
@@ -1653,7 +1771,7 @@
       "atkomst": "oppen"
     },
     {
-      "id": "brunna_garden",
+      "id": "brunna_gardens_ruin",
       "namn": "Den brunna gården",
       "typ": "ruin",
       "region": "sodra_mon",
