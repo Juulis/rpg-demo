@@ -95,8 +95,8 @@ export class FogOfWar {
     if (saved[0] === SAVE_V2) {
       let o = 1;
       while (o + 4 < saved.length) {
-        const sx = (saved[o]! << 8) | saved[o + 1]!;
-        const sy = (saved[o + 2]! << 8) | saved[o + 3]!;
+        const sx = (saved[o] << 8) | saved[o + 1];
+        const sy = (saved[o + 2] << 8) | saved[o + 3];
         o += 4;
         const sector = new Uint8Array(SECTOR * SECTOR);
         sector.set(saved.subarray(o, o + SECTOR * SECTOR));

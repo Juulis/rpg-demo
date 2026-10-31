@@ -46,13 +46,15 @@ w.spawnQueue = mapStartskogenSpecsToQueue(w, [spec]);
 assert.equal(w.spawnQueue.length, 1);
 assert.ok(isInsideStartskogenChunk(skog.chunk[0], skog.chunk[1]));
 
-w.spawnQueue[0]!.done = true;
+const q0 = w.spawnQueue[0];
+assert.ok(q0);
+q0.done = true;
 releaseStartskogenQueueSlot(w, 'startskogen:test');
-assert.equal(w.spawnQueue[0]!.done, false, 'despawn ska frigöra spawnkön om monstret inte dödades');
+assert.equal(q0.done, false, 'despawn ska frigöra spawnkön om monstret inte dödades');
 
-w.spawnQueue[0]!.done = true;
+q0.done = true;
 w.session.killed.add('startskogen:test');
 releaseStartskogenQueueSlot(w, 'startskogen:test');
-assert.equal(w.spawnQueue[0]!.done, true, 'dödade monster ska inte återaktivera kön');
+assert.equal(q0.done, true, 'dödade monster ska inte återaktivera kön');
 
 console.log('big-world-startskogen-spawn.test.mts: ok');

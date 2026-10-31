@@ -188,7 +188,7 @@ async function runChunkStreamTest(page, modeLabel) {
   const wxAfter = Number((await readMetrics(page)).heroWx);
   if (Math.abs(wxAfter - wxBefore) < 0.5) chunkErrs.push('ingen rörelse efter chunkbyte');
 
-  let chunkProbe = await readMetrics(page);
+  let chunkProbe;
   if (captureBuild) {
     chunkProbe = await page.evaluate(async () => {
       const read = () => {
