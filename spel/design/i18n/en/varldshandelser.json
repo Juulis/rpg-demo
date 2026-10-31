@@ -1,78 +1,74 @@
 {
-  "platser": {
-    "saknades_roset": {
-      "namn": "Cairn of the Missing",
-      "beskrivning": "A wayside cairn where the Remnant carved the names of those who never came back. Fresh flowers appear every morning, and no one knows who brings them.",
-      "text": "The names are many. One is newly carved, and the stone chips still lie on the ground."
-    },
-    "jaktkojan": {
-      "namn": "The Broken Hunting Lodge",
-      "beskrivning": "A hunting lodge whose door was broken open from the inside. Tally marks on the wall count days, then stop.",
-      "text": "Forty-one marks. The last is only half drawn."
-    },
-    "stenbron": {
-      "namn": "The Fallen Stone Bridge",
-      "beskrivning": "An old bridge with rune marks in the arch. Half of it lies in the brook. The marks resemble those on the runestones.",
-      "text": "The same hand that carved the runestones carved this bridge. Someone has chiselled one mark away."
-    },
-    "kolarkojan_middag": {
-      "namn": "The Hut with the Laid Table",
-      "beskrivning": "Four plates, a pot, a chair knocked over. The food looks warm but is not.",
-      "text": "Four plates. Three have been eaten from."
-    },
-    "tjardalen": {
-      "namn": "The Tar Pit",
-      "beskrivning": "An abandoned tar pit where black tar still seeps. Animal tracks go around it, never across.",
-      "text": "The tar is warm. Beneath the surface something gleams like bone."
-    },
-    "brunnen": {
-      "namn": "The Well at the Burnt Farm",
-      "beskrivning": "The farm's well survived the fire. At night a lullaby rises from below.",
-      "text": "The lullaby stops when you lean over the edge. Then it starts again, further down."
-    },
-    "skinnstallningarna": {
-      "namn": "The Hide Racks",
-      "beskrivning": "Rows of wolf hides stretched thirty winters ago. Some still have shining claws.",
-      "text": "One hide is grey and far larger than the others. No one has dared take it down."
-    },
-    "likbararnas_bar": {
-      "namn": "The Bier in the Clearing",
-      "beskrivning": "A bier of spruce poles left in the middle of the clearing. Its lantern still burns.",
-      "text": "The bier is empty. The lantern has never needed filling."
-    }
+  "saknades_roset": {
+    "namn": "Cairn of the Missing",
+    "beskrivning": "A wayside cairn where the Remnant carved the names of those who never came back. Fresh flowers appear every morning, and no one knows who brings them.",
+    "text": "The names are many. One is newly carved, and the stone chips still lie on the ground."
   },
-  "handelser": {
-    "vargringen": {
-      "namn": "The Wolf Ring",
-      "vad": "Wolves howl in a ring around the runestones but never step between them. When a rune wakes, the howling falls silent that night."
-    },
-    "ugglan_som_raknar": {
-      "namn": "The Counting Owl",
-      "vad": "An owl hoots as many times as there are living souls in the camp. The count rises as the camp's hope grows."
-    },
-    "backen_som_tystnar": {
-      "namn": "The Brook Falls Silent",
-      "vad": "The brook stops babbling for a few seconds. Everything in the ravine stands still, even the mist. Then all goes on as before."
-    },
-    "kojan_dukad": {
-      "namn": "The Table Is Laid Again",
-      "vad": "The supper in the hut is laid again in every new game, with four plates. Whoever takes the food gets dried meat."
-    },
-    "milan_som_pyr": {
-      "namn": "The Smouldering Kiln",
-      "vad": "One kiln has smouldered for thirty years. If the hero adds timber, it lights up the whole Kiln Heath for a night and the camp sees the smoke."
-    },
-    "askregnet": {
-      "namn": "The Ashfall",
-      "vad": "Ash falls like snow over the South Heath for an hour. Footprints in the ash lead south and end in the middle of the field."
-    },
-    "klockan_i_natten": {
-      "namn": "The Bell in the Night",
-      "vad": "Wolfstead's church bell strikes three times at midnight, though its rope is cut. Once Ulvhild has fallen, it never rings again."
-    },
-    "den_stilla_processionen": {
-      "namn": "The Silent Procession",
-      "vad": "Lanterns move in a line across the clearing towards Barrow Ridge. Those who follow find only the barrows and a lantern going out."
-    }
+  "jaktkojan": {
+    "namn": "The Broken Hunting Lodge",
+    "beskrivning": "A hunting lodge whose door was broken open from the inside. Tally marks on the wall count days, then stop.",
+    "text": "Forty-one marks. The last is only half drawn."
+  },
+  "stenbron": {
+    "namn": "The Fallen Stone Bridge",
+    "beskrivning": "An old bridge with rune marks in the arch. Half of it lies in the brook. The marks resemble those on the runestones.",
+    "text": "The same hand that carved the runestones carved this bridge. Someone has chiselled one mark away."
+  },
+  "kolarkojan_middag": {
+    "namn": "The Hut with the Laid Table",
+    "beskrivning": "Four plates, a pot, a chair knocked over. The food looks warm but is not.",
+    "text": "Four plates. Three have been eaten from."
+  },
+  "tjardalen": {
+    "namn": "The Tar Pit",
+    "beskrivning": "An abandoned tar pit where black tar still seeps. Animal tracks go around it, never across.",
+    "text": "The tar is warm. Beneath the surface something gleams like bone."
+  },
+  "brunnen": {
+    "namn": "The Well at the Burnt Farm",
+    "beskrivning": "The farm's well survived the fire. At night a lullaby rises from below.",
+    "text": "The lullaby stops when you lean over the edge. Then it starts again, further down."
+  },
+  "skinnstallningarna": {
+    "namn": "The Hide Racks",
+    "beskrivning": "Rows of wolf hides stretched thirty winters ago. Some still have shining claws.",
+    "text": "One hide is grey and far larger than the others. No one has dared take it down."
+  },
+  "likbararnas_bar": {
+    "namn": "The Bier in the Clearing",
+    "beskrivning": "A bier of spruce poles left in the middle of the clearing. Its lantern still burns.",
+    "text": "The bier is empty. The lantern has never needed filling."
+  },
+  "vargringen": {
+    "namn": "The Wolf Ring",
+    "vad": "Wolves howl in a ring around the runestones but never step between them. When a rune wakes, the howling falls silent that night."
+  },
+  "ugglan_som_raknar": {
+    "namn": "The Counting Owl",
+    "vad": "An owl hoots as many times as there are living souls in the camp. The count rises as the camp's hope grows."
+  },
+  "backen_som_tystnar": {
+    "namn": "The Brook Falls Silent",
+    "vad": "The brook stops babbling for a few seconds. Everything in the ravine stands still, even the mist. Then all goes on as before."
+  },
+  "kojan_dukad": {
+    "namn": "The Table Is Laid Again",
+    "vad": "The supper in the hut is laid again in every new game, with four plates. Whoever takes the food gets dried meat."
+  },
+  "milan_som_pyr": {
+    "namn": "The Smouldering Kiln",
+    "vad": "One kiln has smouldered for thirty years. If the hero adds timber, it lights up the whole Kiln Heath for a night and the camp sees the smoke."
+  },
+  "askregnet": {
+    "namn": "The Ashfall",
+    "vad": "Ash falls like snow over the South Heath for an hour. Footprints in the ash lead south and end in the middle of the field."
+  },
+  "klockan_i_natten": {
+    "namn": "The Bell in the Night",
+    "vad": "Wolfstead's church bell strikes three times at midnight, though its rope is cut. Once Ulvhild has fallen, it never rings again."
+  },
+  "den_stilla_processionen": {
+    "namn": "The Silent Procession",
+    "vad": "Lanterns move in a line across the clearing towards Barrow Ridge. Those who follow find only the barrows and a lantern going out."
   }
 }

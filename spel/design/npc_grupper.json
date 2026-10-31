@@ -4,9 +4,9 @@
     "issue": "GitHub Juulis/rpg-demo #33",
     "regel": "NPC-grupper är små möten ute i världen, inte quests. Ingen questlogg, inget mål att döda X. Gruppen slåss mot en vanlig spawngrupp; hjälper hjälten eller inte så ändras världen lite. Inget spärrar rörelse.",
     "strid": "Gruppmedlemmar är vanliga människor utan magi. De har fast nivå, HP, skada per träff och försvar som monster, och träffchans enligt attribut.json. Monster väljer närmaste mål, hjälte eller medlem. Medlemmar läker inte mellan strider.",
-    "skala": "HP och skada ligger under monster av samma nivå så att gruppen inte klarar sig själv mer än en kort stund, men bidrar i striden.",
+    "skala": "HP och skada ligger under monster av samma nivå så att gruppen inte klarar sig själv mer än en kort stund, men bidrar i striden. Regel: HP och skada högst medelvärdet för vanliga monster (ej boss) av samma nivå i monsterfamiljer.json, försvar högst nivåns högsta, och medlemmens nivå högst områdets högsta monsternivå.",
     "spawn": "visas.chans_per_game rullas med hash(game_seed, grupp_id). När utfallet är satt (en flagga om_hjalpt eller om_ej_hjalpt) visas gruppen aldrig igen för den hjälten.",
-    "om_ej_hjalpt": "Körs om alla medlemmar dör, eller om hjälten lämnar delområdet medan striden pågår. Ingen straffeffekt utöver rykten och miljö.",
+    "om_ej_hjalpt": "Körs om alla medlemmar med skada över 0 dör (civila som inte slåss räknas inte), eller om hjälten lämnar delområdet medan striden pågår. Ingen straffeffekt utöver rykten och miljö.",
     "xp": "Angriparna ger vanlig XP och loot. Gruppen ger ingen XP i sig, belöningen är världsstaten.",
     "effekter": "Samma effekttyper som quests.json meta.konsekvenssystem. Flaggor sparas i world_state.flags.",
     "nya_varden": {
@@ -22,7 +22,7 @@
       "faktion": "de_kvarvarande",
       "region": "vargstigen",
       "delomrade": "kolarkojorna",
-      "ankare": "kolarkojorna",
+      "ankare": "kolarkojornas_ruin",
       "vilka": "En familj från en tömd by i öster som drar en kärra mot lägret. De har gått i nio dygn.",
       "medlemmar": [
         {
@@ -42,7 +42,7 @@
           "namn": "Kärrdragaren",
           "roll": "civil",
           "niva": 2,
-          "hp": 55,
+          "hp": 42,
           "skada": 4,
           "forsvar": 1,
           "antal": [1, 1],
@@ -102,7 +102,7 @@
           "region": "vargstigen",
           "andring": "miljo",
           "value": "gravkors_av_bjork",
-          "ankare": "kolarkojorna"
+          "ankare": "kolarkojornas_ruin"
         },
         {
           "typ": "rumor_add",
@@ -125,9 +125,9 @@
           "namn": "Jägare",
           "roll": "skytt",
           "niva": 5,
-          "hp": 110,
-          "skada": 12,
-          "forsvar": 3,
+          "hp": 75,
+          "skada": 11,
+          "forsvar": 2,
           "antal": [3, 3],
           "skadetyp": "stick",
           "beteende": "skjuter båge på avstånd, backar när monster kommer nära"
@@ -249,6 +249,7 @@
         "tills": "flaggan hjalpt_kolarfamiljen eller kolarfamiljen_foll är satt"
       },
       "hjalpt_villkor": "Alla angripare döda medan minst en kolare lever.",
+      "ej_hjalpt_villkor": "Alla kolare döda (kolarbarnet slåss aldrig och räknas inte), eller hjälten lämnar delområdet medan striden pågår.",
       "om_hjalpt": [
         {
           "typ": "flag_set",
@@ -298,7 +299,7 @@
       "faktion": "askans_barn_avfallen",
       "region": "sodra_mon",
       "delomrade": "brunna_garden",
-      "ankare": "brunna_garden",
+      "ankare": "brunna_gardens_ruin",
       "vilka": "Två unga som flytt Askans barn i Askeborg. De har bränt sina kåpor men bär fortfarande kulttecknen på händerna.",
       "medlemmar": [
         {
@@ -466,9 +467,9 @@
           "namn": "Gravvaktare",
           "roll": "krigare",
           "niva": 8,
-          "hp": 240,
-          "skada": 20,
-          "forsvar": 8,
+          "hp": 90,
+          "skada": 14,
+          "forsvar": 3,
           "antal": [2, 2],
           "skadetyp": "kross",
           "beteende": "håller linjen vid högarna, slåss med klubbor mot odöda"

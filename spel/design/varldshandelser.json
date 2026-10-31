@@ -43,7 +43,7 @@
       "namn": "Kojan med den dukade middagen",
       "typ": "ruin",
       "delomrade": "kolarkojorna",
-      "ankare": "dukade_kojan",
+      "ankare": "kolarkojan_middag",
       "beskrivning": "Fyra tallrikar, en gryta, en stol omkullvält. Maten ser varm ut men är det inte.",
       "interaktion": "inspektera",
       "text": "Fyra tallrikar. Tre har ätits ur."
@@ -101,6 +101,9 @@
         "region": "startskogen",
         "ankare": "runglantan",
         "tid": "20:00 till 06:00"
+      },
+      "villkor": {
+        "runes_active_lt": 3
       },
       "effekter": [
         {
@@ -168,7 +171,7 @@
       "vad": "Middagen i kojan står dukad igen i varje nytt game, med fyra tallrikar. Den som tar maten får torkat kött.",
       "trigger": {
         "typ": "inspektera",
-        "ankare": "dukade_kojan",
+        "ankare": "kolarkojan_middag",
         "region": "vargstigen"
       },
       "effekter": [
@@ -176,11 +179,6 @@
           "typ": "item_grant",
           "item": "torkat_kott",
           "antal": 1
-        },
-        {
-          "typ": "flag_set",
-          "flag": "at_ur_kojan",
-          "value": true
         }
       ],
       "upprepning": "en gång per game"
@@ -252,6 +250,9 @@
         "region": "vargaby",
         "tid": "23:00 till 01:00"
       },
+      "villkor": {
+        "boss_not_killed": "grabjornen_ulvhild"
+      },
       "effekter": [
         {
           "typ": "flag_set",
@@ -269,7 +270,7 @@
       "id": "den_stilla_processionen",
       "namn": "Den stilla processionen",
       "delomrade": "norra_hygget",
-      "nar": "natt, efter att likbärarna mötts",
+      "nar": "natt, efter att likbärarna fått hjälp",
       "vad": "Lyktor rör sig i en rad över hygget mot Gravåsen. Den som följer dem hittar bara Gravåsens högar och en lykta som slocknar.",
       "trigger": {
         "typ": "gå_in_i",

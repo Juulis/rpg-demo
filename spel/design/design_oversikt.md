@@ -76,7 +76,7 @@ Svag ger 150 % skada, resistent 60 %.
 
 Tillstånd: Besatt, Rensad, Återbefolkad 1 (handlare), 2 (vapenhandlare, vakter), 3 (kuriosahandlare, helare, tavern, snabbresa). Priser och tjänster i stadstjanster.md.
 Underbossar: Korpmodern (13, Korpholmarna), Järnmunken (17, Järnklostret), Askans profet (23, Kultens katakomber). Stats i quests.md och monsterfamiljer.json.
-Före städerna: Startskogen, nivå 1 till 3, Bestar. Rekommenderad väg: Startskogen (2 till 3 games), Vargaby (1 till 2 games), sedan portalbyn på nivå 6 till 7.
+Före städerna: Startskogen, nivå 1 till 3, Bestar. Rekommenderad väg: Startskogen (2 till 3 games), Vargaby (1 game), sedan portalbyn på nivå 7.
 
 1. Vargaby, nivå 4 till 6, boss nivå 6, Bestar
 2. Den gamla byn (portalbyn), nivå 7 till 9, Benkungen nivå 10, Odöda
@@ -113,7 +113,7 @@ Kvaliteter Normal (vit), Magisk (blå), Sällsynt (gul), Set (grön), Legendaris
 
 ## Progression
 
-Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 1478 plus Gråbjörnen 2425, vilket ger nivå 6 till 7 före portalbyn för den som följer den rekommenderade vägen. Med stor bana 1 (bana1_stor.json) når hjälten nivå 7 före ring 2 och nivå 11 till 12 före akt 2.
+Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 2025 (20 monster) plus Gråbjörnen 2425, vilket ger nivå 7 före portalbyn för den som följer den rekommenderade vägen. Med stor bana 1 (bana1_stor.json) når hjälten nivå 7 före ring 2 och nivå 11 till 13 före akt 2.
 
 Utvecklare: i activate() när S.count når 3, öppna portalen efter 2 s. Inga nivå eller rensningsvillkor.
 

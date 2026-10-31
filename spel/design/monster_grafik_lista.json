@@ -510,6 +510,28 @@
       "approx_px_h": 130,
       "look": "Mager dränkt hund med tång i pälsen och blanka ögon.",
       "has_image": false
+    },
+    {
+      "id": "fjallvatte",
+      "name": "Fjällvätte",
+      "family": "gastar",
+      "level": 12,
+      "boss": false,
+      "size_rel_hero": 0.84,
+      "approx_px_h": 130,
+      "look": "Liten grå vätte med lav i håret och långa fingrar, halvt genomskinlig.",
+      "has_image": false
+    },
+    {
+      "id": "bergsulv",
+      "name": "Bergsulv",
+      "family": "bestar",
+      "level": 15,
+      "boss": false,
+      "size_rel_hero": 1.06,
+      "approx_px_h": 165,
+      "look": "Stor ljusgrå ulv med tjock päls och frost i nosen.",
+      "has_image": false
     }
   ]
 }

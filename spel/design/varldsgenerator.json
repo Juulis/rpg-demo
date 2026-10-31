@@ -197,7 +197,7 @@
       }
     ],
     "regel": "malniva väljer bara vilka undertyper som får spawna (fönster ± 2). Stats är fasta per undertyp, ingen skalning. Namngivna regioner med egen nivaband går före.",
-    "xp": "Hjältens kurva i monster_niva.json hero_xp_curve (100 × n^1,5). Kontroll för akt 1 i bana1_stor.json nivakurva: nivå 7 före ring 2, nivå 11 till 12 före akt 2.",
+    "xp": "Hjältens kurva i monster_niva.json hero_xp_curve (100 × n^1,5). Kontroll för akt 1 i bana1_stor.json nivakurva: nivå 7 före ring 2, nivå 11 till 13 före akt 2.",
     "kontroll_per_ring": "Hjälten ska vara cirka malniva vid ringens inre kant om han utforskar ungefär hälften av ringen. Räkna om med bana1_stor.json metod när tätheten ändras."
   },
   "ljud_och_musik": {

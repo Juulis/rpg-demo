@@ -53,7 +53,7 @@ Byn har monsternivå 7 till 9 (byporten 7, torget 7 till 8, husen 8, kyrkogårde
 | 9    | 2700          | 8406   | 220 | 49    |
 | 10   | 3162          | 11106  | 235 | 52    |
 
-Spelaren väntas komma hit på nivå 6 till 7 efter Startskogen och Vargaby. XP per monster följer monster_niva.json (t.ex. Skelettkrigare nivå 7 ger 111 XP, Benkungen nivå 10 cirka 3795 XP).
+Spelaren väntas komma hit på nivå 7 efter Startskogen och Vargaby. XP per monster följer monster_niva.json (t.ex. Skelettkrigare nivå 7 ger 111 XP, Benkungen nivå 10 cirka 3795 XP).
 
 ## 5. Byn
 

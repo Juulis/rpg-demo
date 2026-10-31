@@ -60,7 +60,7 @@
       "weak": ["hugg"],
       "resist": [],
       "boss": "grabjornen_ulvhild",
-      "subtypes": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn", "likatare_varg"]
+      "subtypes": ["skogsvarg", "vargbest", "taggsvin", "skuggvarg", "gravargsledare", "ruttbjorn", "likatare_varg", "bergsulv"]
     },
     {
       "id": "gastar",
@@ -70,7 +70,7 @@
       "weak": ["hugg"],
       "resist": ["kross", "stick"],
       "boss": "trasdrottningen",
-      "subtypes": ["dimgast", "klagokvinna", "trasknacken", "gravgast"],
+      "subtypes": ["dimgast", "klagokvinna", "trasknacken", "gravgast", "fjallvatte"],
       "underbossar": ["korpmodern"]
     },
     {
@@ -1236,6 +1236,63 @@
         }
       },
       "pack_size": [2, 4]
+    },
+    {
+      "id": "fjallvatte",
+      "name": "Fjällvätte",
+      "family": "gastar",
+      "level": 12,
+      "hp": 128,
+      "damage": 19,
+      "defense": 2,
+      "speed": 3.2,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 275,
+      "aggro_range": 10,
+      "behavior": "Liten grå vätte ur stenröset. Smyger fram bland ljungen, blir osynlig 2 s efter träff och dyker upp bakom hjälten.",
+      "weapon_type": null,
+      "zones": ["fjallfoten"],
+      "boss": false,
+      "design_source": {
+        "from": "dimgast",
+        "from_level": 11,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      },
+      "dark_magic": true
+    },
+    {
+      "id": "bergsulv",
+      "name": "Bergsulv",
+      "family": "bestar",
+      "level": 15,
+      "hp": 243,
+      "damage": 28,
+      "defense": 6,
+      "speed": 4.2,
+      "attack_cd": 1.0,
+      "attacks_per_s": 1.0,
+      "xp": 312,
+      "aggro_range": 12,
+      "behavior": "Ljusgrå ulv från fjället i flock om 2 till 3. Flankerar på bergsvägen och biter i tur och ordning.",
+      "weapon_type": null,
+      "zones": ["bergsvagen"],
+      "boss": false,
+      "design_source": {
+        "from": "skuggvarg",
+        "from_level": 5,
+        "mods": {
+          "hpm": 1.1,
+          "dmgm": 1,
+          "defa": 0,
+          "xpm": 1
+        }
+      }
     },
     {
       "id": "korpmodern",

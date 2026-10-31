@@ -11,7 +11,7 @@
     "trigger_typer": {
       "prata_med": "npc",
       "prata_med_en_av": "npc[]",
-      "gå_in_i": "region, ankare (valfritt)",
+      "gå_in_i": "region, ankare (valfritt), tid (valfritt, HH:MM till HH:MM)",
       "inspektera": "ankare, region och tid (valfritt)",
       "inspektera_alla": "ankare[], tid",
       "plocka_upp": "item",
@@ -123,7 +123,8 @@
         },
         "item_grant": {
           "falt": {
-            "item": "str"
+            "item": "str",
+            "antal": "int (valfritt, standard 1)"
           },
           "beskrivning": "Ger ett föremål (legendariskt, setdel eller bas)."
         },
@@ -250,7 +251,8 @@
           "text": "Hitta barnsandalen i mossan på vägen mot Vargaby.",
           "trigger": {
             "typ": "inspektera",
-            "ankare": "startskogen_barnsandal"
+            "ankare": "vargstigen_barnsandal",
+            "region": "vargstigen"
           }
         },
         {
@@ -259,7 +261,7 @@
           "trigger": {
             "typ": "gå_in_i",
             "region": "vargstigen",
-            "ankare": "kolarkojorna"
+            "ankare": "kolarkojornas_ruin"
           }
         },
         {

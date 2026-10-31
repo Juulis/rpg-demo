@@ -221,7 +221,7 @@
       "id": "rykte_fjarde_stenen",
       "text": "Det sägs att det fanns en fjärde runsten. Den ligger på sprickans botten.",
       "villkor": {},
-      "talare": ["fyrvaktaren_hulda", "gamla_ylva"],
+      "talare": ["fyrvaktaren_hulda", "gamla_ylva", "saga_askflykting"],
       "prioritet": 1
     },
     {

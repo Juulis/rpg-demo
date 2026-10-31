@@ -82,7 +82,7 @@ Varje biom har egna monsterplatser i `biomer.<id>.egna_monster`: roll, familj, n
 
 **Fjäll** (11 till 19). Kal sluttning, vind, gruvhål och tysta kloster.
 
-- Egna monster: fjällvättar (11 till 13, platshållare gastar), bergsulvar (14 till 15, platshållare gruvspindel), gruvkryp (15 till 19), järnbröder (16 till 17, platshållare forvriden_gruvarbetare).
+- Egna monster: fjällvättar (11 till 13, grafik klar), bergsulvar (14 till 15, grafik klar), gruvkryp (15 till 19), järnbröder (16 till 17, platshållare forvriden_gruvarbetare).
 - Resurser: sten, järn.
 - Mål: Fäbodlägret (eskort), vaktstugan (spår), lampan i schaktet (mysterium).
 

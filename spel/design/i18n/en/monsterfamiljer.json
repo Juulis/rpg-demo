@@ -169,5 +169,11 @@
   },
   "myrhund": {
     "name": "Bog Hound"
+  },
+  "fjallvatte": {
+    "name": "Fell Wight"
+  },
+  "bergsulv": {
+    "name": "Mountain Wolf"
   }
 }

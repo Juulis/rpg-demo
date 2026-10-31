@@ -59,7 +59,14 @@
           "Tre dygn till Vargaby om vargarna vill."
         ]
       },
-      "rykten": ["rykte_flyktingarna_framme", "rykte_flyktingarna_foll", "rykte_kolarna_lever", "rykte_milan_slocknad", "rykte_vargringen"]
+      "rykten": [
+        "rykte_flyktingarna_framme",
+        "rykte_flyktingarna_foll",
+        "rykte_kolarna_lever",
+        "rykte_milan_slocknad",
+        "rykte_vargringen",
+        "rykte_klockan_utan_rep"
+      ]
     },
     {
       "id": "ragna_spjutbararen",
