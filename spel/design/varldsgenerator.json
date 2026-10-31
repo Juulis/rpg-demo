@@ -39,7 +39,7 @@
     "fallback": [
       "1. Finns ingen undertyp i fönstret: vidga fönstret till hela ringens band.",
       "2. Fortfarande tomt: ta undertypen i biomens pool med nivå närmast malniva(d). Stats ändras aldrig.",
-      "3. Biomet saknar helt monster i bandet (till exempel kust i ring 1): använd närmaste regions huvudfamilj och dess undertyper enligt steg 1 till 2."
+      "3. Biomet saknar helt monster i bandet: använd närmaste regions huvudfamilj och dess undertyper enligt steg 1 till 2. Ska inte inträffa i ring 1 till 7 (se tackning)."
     ],
     "tathet_per_chunk": {
       "ring_0": [8, 12],
@@ -53,38 +53,37 @@
     "per_biom": [
       {
         "biom": "skog",
-        "nivaband": [1, 10],
-        "pool": "skog_vargar 1 till 6, skog_kolare 3 till 5, skog_gravfolk 7 till 10",
+        "nivaband": [1, 29],
+        "pool": "skog_vargar 1 till 6, skog_kolare 3 till 5, skog_gravfolk 7 till 9, utmarksulvar 15, ytterkant (ruttfolk 24 till 25, sprickväsen 29)",
         "ring": [0, 2]
       },
       {
         "biom": "trask",
-        "nivaband": [7, 30],
-        "pool": "trask_myrlik 7 till 9, dimgastar 10 till 14, ruttfolk 24 till 28, sprickans väsen 29 till 30",
-        "ring": [2, 7],
-        "lucka": "Inga träskmonster för 15 till 23. Träsk i ring 4 och 5 (mellanmark kring Rökkärret och Glödstranden) använder fallback steg 2."
+        "nivaband": [4, 29],
+        "pool": "lik 4, trask_myrlik 7 till 8, dimgastar 11 till 13, lyktgastar 16, ruttfolk 24 till 27, sprickväsen 29",
+        "ring": [2, 7]
       },
       {
         "biom": "fjall",
-        "nivaband": [11, 19],
-        "pool": "fjällvättar 11 till 13, bergsulvar 14 till 15, gruvkryp 15 till 19, järnbröder 16 till 17",
+        "nivaband": [5, 29],
+        "pool": "vargar 5 till 8, fjällvättar 12, bergsulvar 15, gruvkryp 15 till 18, järnbröder 16, galna munkar 25, sprickväsen 29",
         "ring": [3, 4]
       },
       {
         "biom": "kust",
-        "nivaband": [12, 15],
-        "pool": "korpfolk 12 till 13, klockans drunknade 14 till 15",
-        "ring": [3, 4],
-        "lucka": "Sista ljuset (ring 6) är säker by. Kust i ring 6 och ut använder fallback steg 3."
+        "nivaband": [4, 28],
+        "pool": "strandlik 4, strandgastar 8, korpfolk 12 till 13, klockdrunknade 15, askvakter 21, havsgastar 28",
+        "ring": [3, 4]
       },
       {
         "biom": "ask",
-        "nivaband": [8, 25],
-        "pool": "kolnade skelett 8 till 10, glödbaggar 15 till 18, askdemoner 19 till 25, askans präster 22 till 24, katedralväktare 24 till 25",
-        "ring": [2, 5],
-        "lucka": "Inga askmonster 11 till 14. Ask i ring 3 använder fallback steg 2."
+        "nivaband": [4, 29],
+        "pool": "brända lik 4, kolnade skelett 8 till 9, glödbaggar 15 till 18, askdemoner 19 till 23, askans präster 20, sprickväsen 29",
+        "ring": [2, 5]
       }
-    ]
+    ],
+    "familjeregel": "En chunk spawnar en familj, ingen mix. Familjen är huvudfamiljen från närmaste region om biomet har en undertyp av den familjen i ringens band, annars den egna_monster-grupp i biomet vars undertyp ligger närmast malniva(d).",
+    "tackning": "Varje biom har minst en vanlig undertyp (en familj) i varje ringband 1 till 7 (ring 7 band 28 till 30). Kontrolleras med /workspace/tmp/tackning.py. Fallback steg 2 och 3 behövs då inte i mellanmark."
   },
   "platser": {
     "typer": {

@@ -76,7 +76,7 @@
         }
       ],
       "monster_per_game": 16,
-      "xp_per_game": 128,
+      "xp_per_game": 133,
       "miljo": "Täta granar där dimman står kvar hela dagen. Gamla snaror, en jaktkoja med dörren uppbruten.",
       "grannar": ["runglantan", "norra_hygget", "milorna"],
       "platser": ["jaktkojan"],
@@ -168,7 +168,7 @@
         }
       ],
       "monster_per_game": 12,
-      "xp_per_game": 456,
+      "xp_per_game": 472,
       "miljo": "Västra vägen. Slocknade kolmilor, sotiga stubbar, Kolmilan där en mila fortfarande pyr.",
       "grannar": ["dimgranarna", "myrkanten"],
       "platser": ["tjardalen"],
@@ -197,7 +197,7 @@
         }
       ],
       "monster_per_game": 12,
-      "xp_per_game": 636,
+      "xp_per_game": 648,
       "miljo": "Askvägen söderut. En nedbränd gård, svarta åkrar, de första askflagorna i luften.",
       "grannar": ["backravinen", "brandkanten"],
       "platser": ["brunnen"],
@@ -309,7 +309,7 @@
       ],
       "monster_per_game": 8,
       "xp_per_game": 440,
-      "miljo": "Norra vägen. Ett kalhygge där stubbarna ser ut som gravstenar. Här börjar Gravåsen.",
+      "miljo": "Norra vägen mot Gravåsen. Ett hygge där stubbarna ser ut som gravstenar.",
       "grannar": ["dimgranarna", "idets_skog", "gravasen", "vargaby_utmark"],
       "platser": ["likbararnas_bar"],
       "handelser": ["den_stilla_processionen"],
@@ -320,7 +320,7 @@
   "nivakurva": {
     "mal": "Hjälten når nivå 7 innan ring 2 (Gravåsen och Den gamla byn) och nivå 11 innan akt 2 (Dimmerstrand 11 till 13).",
     "xp_kurva": "monster_niva.json hero_xp_curve: nivå 3 383, nivå 5 1703, nivå 7 4291, nivå 8 6143, nivå 10 11106, nivå 11 14268, nivå 12 17916, nivå 13 22073",
-    "metod": "Simulerat i ordning med fasta XP per undertyp, monster_per_game (Vargaby 20 enligt spawnzoner.json medel), andel enligt vikt i enemy_table och xp_penalty mot hjältens nivå vid varje delområde (inklusive bonus när hjälten är lägre, bossgolv 0,25). Ring 2 räknas med tabellerna i ring_2_kontroll. Elitmonster ej medräknade, de ger cirka 5 procent extra.",
+    "metod": "Simulerat i ordning med fasta XP per undertyp, monster_per_game (Vargaby 20 enligt spawnzoner.json medel), andel enligt vikt i enemy_table och xp_penalty mot hjältens nivå vid varje delområde (inklusive bonus när hjälten är lägre, bossgolv 0,25). Ring 2 räknas med tabellerna i ring_2_kontroll. Elitmonster ej medräknade, de ger cirka 5 procent extra. Maltavlan summerar oavrundade värden, så summan av de avrundade xp_per_game kan skilja 1 XP (87 + 133 + 209 = 429 mot 428).",
     "maltavla": [
       {
         "efter": "ring 0 (Rungläntan, Dimgranarna, Bäckravinen)",

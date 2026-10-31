@@ -2,7 +2,8 @@
   "meta": {
     "hero_px_h": 155,
     "source": "monsterfamiljer.json",
-    "images_dir": "/workspace/spel/grafik/2d/sprites/monster/"
+    "images_dir": "/workspace/spel/grafik/2d/sprites/monster/",
+    "kraver_grafik": "NYA monster utan grafik (ringtäckning 2026-10-31): sprickvasen 230, lyktgast 170, klockdrunknad 190, havsgast 210 (målhöjd enligt grafik/monster_anim/README.md). Fält kraver_grafik: true och malhojd på posterna."
   },
   "monsters": [
     {
@@ -532,6 +533,58 @@
       "approx_px_h": 165,
       "look": "Stor ljusgrå ulv med tjock päls och frost i nosen.",
       "has_image": false
+    },
+    {
+      "id": "sprickvasen",
+      "name": "Sprickväsen",
+      "family": "forvridna",
+      "level": 29,
+      "boss": false,
+      "size_rel_hero": 1.28,
+      "approx_px_h": 198,
+      "look": "Hopkrupen massa av grått kött och spräckt sten, röd glöd i sprickorna, långa armar.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 230
+    },
+    {
+      "id": "lyktgast",
+      "name": "Lyktgast",
+      "family": "gastar",
+      "level": 16,
+      "boss": false,
+      "size_rel_hero": 0.94,
+      "approx_px_h": 146,
+      "look": "Blek gestalt som bär en svagt blå lykta, nedre delen löses upp i dimma över vattnet.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 170
+    },
+    {
+      "id": "klockdrunknad",
+      "name": "Klockdrunknad",
+      "family": "ododa",
+      "level": 15,
+      "boss": false,
+      "size_rel_hero": 1.06,
+      "approx_px_h": 164,
+      "look": "Uppsvälld drunknad klockare i trasig prästkappa, tång i skägget, rostig klockkläpp.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 190
+    },
+    {
+      "id": "havsgast",
+      "name": "Havsgast",
+      "family": "gastar",
+      "level": 28,
+      "boss": false,
+      "size_rel_hero": 1.17,
+      "approx_px_h": 181,
+      "look": "Stor gestalt av havsskum och dimma, tångslingor som hår, ihåligt ansikte.",
+      "has_image": false,
+      "kraver_grafik": true,
+      "malhojd": 210
     }
   ]
 }
