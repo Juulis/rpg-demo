@@ -47,7 +47,7 @@
         }
       ],
       "monster_per_game": 14,
-      "xp_per_game": 87,
+      "xp_per_game": 86,
       "miljo": "De tre runstenarna och röda portalen. Vargspår i cirklar runt stenarna, nedtrampad mossa.",
       "grannar": ["dimgranarna", "backravinen", "kolarkojorna"],
       "platser": ["saknades_roset"],
@@ -77,7 +77,7 @@
         }
       ],
       "monster_per_game": 16,
-      "xp_per_game": 133,
+      "xp_per_game": 128,
       "miljo": "Täta granar där dimman står kvar hela dagen. Gamla snaror, en jaktkoja med dörren uppbruten.",
       "grannar": ["runglantan", "norra_hygget", "milorna"],
       "platser": ["jaktkojan"],
@@ -106,7 +106,7 @@
         }
       ],
       "monster_per_game": 16,
-      "xp_per_game": 209,
+      "xp_per_game": 206,
       "miljo": "En smal ravin med svart bäck och en rasad stenbro. Vattnet är kallt även på sommaren.",
       "grannar": ["runglantan", "brunna_garden"],
       "platser": ["stenbron"],
@@ -135,7 +135,7 @@
         }
       ],
       "monster_per_game": 14,
-      "xp_per_game": 467,
+      "xp_per_game": 465,
       "miljo": "Östra vägen genom glesnande skog. Övergivna kojor, en middag kvar på bordet, en barnsandal i mossan.",
       "grannar": ["runglantan", "vargaby_utmark"],
       "platser": ["kolarkojan_middag"],
@@ -169,7 +169,7 @@
         }
       ],
       "monster_per_game": 12,
-      "xp_per_game": 472,
+      "xp_per_game": 457,
       "miljo": "Västra vägen. Slocknade kolmilor, sotiga stubbar, Kolmilan där en mila fortfarande pyr.",
       "grannar": ["dimgranarna", "myrkanten"],
       "platser": ["tjardalen"],
@@ -198,7 +198,7 @@
         }
       ],
       "monster_per_game": 12,
-      "xp_per_game": 648,
+      "xp_per_game": 642,
       "miljo": "Askvägen söderut. En nedbränd gård, svarta åkrar, de första askflagorna i luften.",
       "grannar": ["backravinen", "brandkanten"],
       "platser": ["brunnen"],
@@ -245,7 +245,7 @@
       "familj": "bestar",
       "enemy_table": "spawnzoner.json areas.vargaby (oförändrad)",
       "monster_per_game": 20,
-      "xp_per_game": 2088,
+      "xp_per_game": 2031,
       "miljo": "Staden som den är (stader.json). Klösmärken på kyrkdörren från insidan.",
       "grannar": ["vargaby_utmark", "idets_skog"],
       "platser": [],
@@ -279,7 +279,7 @@
         }
       ],
       "monster_per_game": 6,
-      "xp_per_game": 775,
+      "xp_per_game": 3200,
       "miljo": "Granrötter och ben runt teleporten till Ulvhilds ide. Kedjor i träden.",
       "grannar": ["vargaby_delomrade", "norra_hygget"],
       "platser": [],
@@ -310,7 +310,7 @@
         }
       ],
       "monster_per_game": 8,
-      "xp_per_game": 440,
+      "xp_per_game": 439,
       "miljo": "Norra vägen mot Gravåsen. Ett hygge där stubbarna ser ut som gravstenar.",
       "grannar": ["dimgranarna", "idets_skog", "gravasen", "vargaby_utmark"],
       "platser": ["likbararnas_bar"],
@@ -320,39 +320,39 @@
     }
   ],
   "nivakurva": {
-    "mal": "Kortaste vägen: nivå 6 efter Vargaby, nivå 7 nås i Idets skog och hjälten går in i ring 2 (Gravåsen och Den gamla byn) på nivå 8, nivå 11 efter Benkungen. Allt rensat: nivå 7 efter Vargaby, nivå 8 efter ring 0 och 1 och nivå 13 efter hela akt 1, före Dimmerstrand 11 till 13.",
-    "xp_kurva": "monster_niva.json hero_xp_curve: nivå 3 383, nivå 5 1703, nivå 7 4291, nivå 8 6143, nivå 10 11106, nivå 11 14268, nivå 12 17916, nivå 13 22073",
-    "metod": "Räknat med spel/design/verktyg/akt1.py i ordning med fasta XP per undertyp, monster_per_game (Vargaby 20 enligt spawnzoner.json medel), andel enligt vikt i enemy_table och xp_penalty mot hjältens nivå vid varje delområde (inklusive bonus när hjälten är lägre, bossgolv 0,25). Ring 2 räknas med tabellerna i ring_2_kontroll (Den gamla byn 23 enligt spawnzoner.json medel). Bossar ur fältet boss (idets_skog Ulvhild, kapellets_krypta Benkungen). Elitmonster ej medräknade, de ger cirka 5 procent extra. Maltavlan summerar oavrundade värden, så summan av de avrundade xp_per_game kan skilja 1 XP (87 + 133 + 209 = 429 mot 428).",
+    "mal": "Kortaste vägen: nivå 7 efter Ulvhild, alltså före ring 2 (Gravåsen och Den gamla byn), och nivå 11 efter Benkungen. Allt rensat: nivå 9 efter ring 1 och 13 efter ring 2 med regionernas täthet och mellanmarken (tathet.py), före Dimmerstrand 11 till 13.",
+    "xp_kurva": "monster_niva.json hero_xp_curve (xp_to_next(n) = round(100 × n^1,5)): nivå 3 383, nivå 5 1703, nivå 7 4291, nivå 8 6143, nivå 9 8406, nivå 10 11106, nivå 11 14268, nivå 12 17916, nivå 13 22073",
+    "metod": "Räknat med spel/design/verktyg/akt1.py med spelets XP-formel (monster_niva.json meta.xp_regel: kill-XP = round(xp/10 × 3 × L^1,5 × avdrag × bossfaktor), ett kill i taget så att avdraget följer hjältens nivå, bossgolv 0,25). monster_per_game per delområde (Vargaby 20 enligt spawnzoner.json medel), andel enligt vikt i enemy_table. Ring 2 räknas med tabellerna i ring_2_kontroll (Den gamla byn 23). Bossar ur fältet boss (idets_skog Ulvhild, kapellets_krypta Benkungen). xp_per_game är kill-XP i ordningen för hela akt 1. Elitmonster ej medräknade (cirka 5 procent extra).",
     "maltavla": [
       {
         "efter": "ring 0 (Rungläntan, Dimgranarna, Bäckravinen)",
-        "xp": 428,
+        "xp": 421,
         "niva": 3
       },
       {
         "efter": "ring 1 utan Vargaby och Ulvhild",
-        "xp": 2663,
+        "xp": 2633,
         "niva": 5
       },
       {
         "efter": "Vargaby",
-        "xp": 4751,
+        "xp": 4665,
         "niva": 7
       },
       {
         "efter": "Ulvhild och Norra hygget, allt i ring 0 och 1",
-        "xp": 8391,
+        "xp": 8304,
         "niva": 8
       },
       {
         "efter": "Gravåsen och Den gamla byn",
-        "xp": 12986,
+        "xp": 11285,
         "niva": 10
       },
       {
         "efter": "Myrkanten, Brandkanten och Kapellets krypta med Benkungen, hela akt 1",
-        "xp": 23817,
-        "niva": 13
+        "xp": 19640,
+        "niva": 12
       }
     ],
     "kortaste_vag": {
@@ -367,7 +367,7 @@
         "gamla_byn",
         "kapellets_krypta"
       ],
-      "resultat": "Nivå 6 efter Vargaby, nivå 8 efter Ulvhild, nivå 8 vid Gravåsen, nivå 11 efter Benkungen (17897 XP).",
+      "resultat": "Nivå 6 efter Vargaby (2902 XP), nivå 7 efter Ulvhild (6102), nivå 8 vid Gravåsen, nivå 11 efter Benkungen (15119 XP).",
       "utan_ulvhild": "Den som hoppar över Ulvhild tar i stället Dimgranarna, Milorna, Brunna gården och Utmarken och når nivå 7 efter Vargaby.",
       "genomgang": "Vägen räknar bara delområden som rensas. Backravinen till Kolarkojorna går tillbaka genom Rungläntan, Kolarkojorna till Vargaby går längs vägen genom Vargabys utmark utan att rensa den. Övriga steg är direkta grannar."
     },
@@ -399,6 +399,6 @@
         "tabell": "skelett_bagskytt 40, skelett_runprast 30, skelett_vakt 30"
       }
     ],
-    "resultat": "Kortaste vägen: nivå 7 nås i Idets skog och hjälten går in i ring 2 på nivå 8; utan Ulvhild nås nivå 7 efter Vargaby om man utforskar mer. Allt rensat i ring 0 och 1 ger nivå 8 (8391 XP), inom Den gamla byns 7 till 9. Hela akt 1 ger nivå 11 (kortaste vägen, 17897) till 13 (allt rensat, 23817) före Dimmerstrand 11 till 13. Med regionernas täthet och mellanmarken (spel/design/verktyg/tathet.py, allt rensat) blir det nivå 9 efter ring 1 (9790 XP) och 13 efter ring 2 (25919 XP); det är varldsgenerator.json monsterpooler.tathet.malniva_yttre_kant. Räkna om med akt1.py och tathet.py när tätheten ändras."
+    "resultat": "Kortaste vägen: nivå 7 efter Ulvhild (6102 XP) och nivå 8 vid ring 2, nivå 11 efter Benkungen (15119). Bara delområdena i ring 0 och 1 rensade ger 8304 XP (nivå 8) och hela akt 1 19640 (nivå 12). Med regionernas täthet, mellanmarken (1,0 monster per chunk) och champions (spel/design/verktyg/tathet.py, allt rensat) blir det nivå 9 efter ring 1 och 13 efter ring 2; det är varldsgenerator.json monsterpooler.tathet.malniva_yttre_kant. Räkna om med akt1.py och tathet.py när tätheten eller xp ändras."
   }
 }

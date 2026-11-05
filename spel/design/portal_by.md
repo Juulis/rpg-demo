@@ -10,14 +10,14 @@ När den tredje runan aktiveras visas inte längre vinstskärmen. Efter 2 s öpp
 
 ## 2. Fiender
 
-| id               | Namn            | Nivå | HP  | Skada | Försvar | Fart | XP  | Beteende                             |
-| ---------------- | --------------- | ---- | --- | ----- | ------- | ---- | --- | ------------------------------------ |
-| skelett_hund     | Benhund         | 7    | 48  | 9     | 2       | 5,0  | 67  | Flock om 2 till 4, cirklar           |
-| skelett_krigare  | Skelettkrigare  | 7    | 97  | 15    | 4       | 3,4  | 111 | Närstrid med svärd                   |
-| skelett_bagskytt | Skelettbågskytt | 8    | 71  | 13    | 2       | 3,0  | 170 | Håller avstånd, skjuter pilar        |
-| skelett_runprast | Runpräst        | 8    | 89  | 21    | 3       | 2,8  | 238 | Återupplivar döda, eldboll, teleport |
-| skelett_vakt     | Skelettväktare  | 9    | 234 | 27    | 9       | 2,4  | 364 | Tank med sköld, patrull              |
-| skelett_kapten   | Skelettkapten   | 9    | 187 | 22    | 7       | 3,4  | 324 | Leder krigare, ger +15 % skada       |
+| id               | Namn            | Nivå | HP  | Skada | Försvar | Fart | XP (rå bas) | Beteende                             |
+| ---------------- | --------------- | ---- | --- | ----- | ------- | ---- | ----------- | ------------------------------------ |
+| skelett_hund     | Benhund         | 7    | 48  | 9     | 2       | 5,0  | 8           | Flock om 2 till 4, cirklar           |
+| skelett_krigare  | Skelettkrigare  | 7    | 97  | 15    | 4       | 3,4  | 13          | Närstrid med svärd                   |
+| skelett_bagskytt | Skelettbågskytt | 8    | 71  | 13    | 2       | 3,0  | 16          | Håller avstånd, skjuter pilar        |
+| skelett_runprast | Runpräst        | 8    | 89  | 21    | 3       | 2,8  | 23          | Återupplivar döda, eldboll, teleport |
+| skelett_vakt     | Skelettväktare  | 9    | 234 | 27    | 9       | 2,4  | 29          | Tank med sköld, patrull              |
+| skelett_kapten   | Skelettkapten   | 9    | 187 | 22    | 7       | 3,4  | 26          | Leder krigare, ger +15 % skada       |
 
 Fasta stats, ingen slump eller skalning (källa monsterfamiljer.json).
 
@@ -53,7 +53,7 @@ Byn har monsternivå 7 till 9 (byporten 7, torget 7 till 8, husen 8, kyrkogårde
 | 9    | 2700          | 8406   | 220 | 49    |
 | 10   | 3162          | 11106  | 235 | 52    |
 
-Spelaren väntas komma hit på nivå 7 efter Startskogen och Vargaby. XP per monster följer monster_niva.json (t.ex. Skelettkrigare nivå 7 ger 111 XP, Benkungen nivå 10 cirka 3795 XP).
+Spelaren väntas komma hit på nivå 7 efter Startskogen och Vargaby. XP per monster följer monster_niva.json (rå bas: Skelettkrigare 13, Benkungen 400; kill-XP enligt meta.xp_regel blir t.ex. Skelettkrigare nivå 7 cirka 72 och Benkungen nivå 10 cirka 3795 före avdrag).
 
 ## 5. Byn
 

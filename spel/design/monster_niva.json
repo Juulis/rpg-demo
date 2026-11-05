@@ -2,7 +2,8 @@
   "meta": {
     "version": "1.0",
     "rule": "Varje monstertyp har fast nivå och fasta stats (monsterfamiljer.json). Formlerna nedan är designverktyg för att räkna fram nya undertyper, inte runtime.",
-    "hero_max_level": 30
+    "hero_max_level": 30,
+    "xp_regel": "EN plats för XP: monsterfamiljer.json fältet xp är monstrets råa bas. Spelet (src/logic/CombatRules.ts monsterXp) räknar kill-XP = round(xp / 10 × 3 × L^1,5 × k × elit × bossfaktor), där L = monstrets nivå (champion + 1, unik + 3), k = xp_penalty efter hjältens nivå minus L (klippt till −8 till 12, bossar och underbossar golv 0,25), elit = elites.*.xp_mult (champion 3, unik 5). Bossfaktor = boss_xp_faktor.per_akt för aktens boss, underboss_mult (0,4) × per_akt för underboss, annars 1. Faktorerna tillämpas bara i koden och i verktygen (spel/design/verktyg/spelregler.py Xp), aldrig i datafilerna; ingen XP-siffra i designen har faktorn inräknad. Hjältens nivå: xp_to_next(n) = round(100 × n^1,5)."
   },
   "scaling": {
     "reference": "Basstats i monsterfamiljer.json och portal_by.json gäller vid monstrets ref_level. d = level − ref_level (kan vara negativ).",
@@ -11,7 +12,7 @@
     "defense": "forsvar(L) = max(0, forsvar_ref + 0,4 × d)",
     "attack_rating": "AR(L) = 15 + 8 × L",
     "defense_rating": "DR(L) = 15 + 8 × L + forsvar(L) × 2",
-    "xp": "xp(L) = round(xp_mult × 3 × L^1,5) där xp_mult = xp_ref / 10 (xp_ref är monstrets xp i datafilen)",
+    "xp": "kill-XP(L) = round(xp/10 × 3 × L^1,5) före avdrag, elit och bossfaktor; xp = råa basen i monsterfamiljer.json (se meta.xp_regel)",
     "speed": "Fart skalas inte.",
     "note": "XP räknas från level, inte från d, så samma monster ger mer på högre nivå oavsett ref.",
     "hit_ref": "attribut.json hit_chance",
@@ -442,14 +443,15 @@
   "progression_check": {
     "path": ["startskogen 1 till 3 (2 till 3 games)", "vargaby 4 till 6 (1 game, Gråbjörnen en gång)", "gamla_byn 7 till 9"],
     "xp_per_game_simulerat": {
-      "startskogen": 123,
-      "vargaby_utan_boss": 2025,
-      "grabjornen_ulvhild": 2425
+      "runglantan": 86,
+      "vargaby_delomrade": 2137,
+      "grabjornen_ulvhild": 2425,
+      "kalla": "spel/design/verktyg/akt1.py med spelets formel (kill-XP med avdrag, Ulvhild rå 550 × aktfaktor 1)"
     },
-    "kalkyl": "2 till 3 skogsgames ger cirka 250 till 370 XP (nivå 2, nära 3 med bonus för lägre nivå). Ett Vargaby game (20 monster, cirka 2025 XP, mer med bonus för lägre nivå) med Gråbjörnen ger cirka 4450 XP till, totalt cirka 4700 till 4800: nivå 7 (4291).",
-    "resultat": "Spelaren når nivå 7 innan portalbyn.",
+    "kalkyl": "Kortaste vägen (akt1.py): Rungläntan, Bäckravinen och Kolarkojorna 765 XP (nivå 3), Vargaby 2902 (nivå 6), Ulvhild i Idets skog 6102 (nivå 7), Gravåsen 7239 (nivå 8), Benkungen 15119 (nivå 11).",
+    "resultat": "Spelaren når nivå 7 före ring 2 och nivå 11 efter Benkungen.",
     "xp_curve": "100 × n^1,5, totalt nivå 6: 2821, nivå 7: 4291",
-    "bana1_stor": "Stor bana 1 (#33): se bana1_stor.json nivakurva. Nivå 7 före ring 2, nivå 11 till 13 före akt 2."
+    "bana1_stor": "Stor bana 1 (#33): se bana1_stor.json nivakurva. Allt rensat: nivå 9 efter ring 1 och 13 efter ring 2 (tathet.py)."
   },
   "fixed_levels": {
     "skogsvarg": 1,
@@ -523,7 +525,7 @@
       "hp": 50,
       "damage": 10,
       "defense": 0,
-      "xp": 3
+      "xp": 10
     },
     {
       "id": "vargbest",
@@ -532,7 +534,7 @@
       "hp": 79,
       "damage": 13,
       "defense": 2,
-      "xp": 22
+      "xp": 14
     },
     {
       "id": "taggsvin",
@@ -541,7 +543,7 @@
       "hp": 88,
       "damage": 16,
       "defense": 3,
-      "xp": 48
+      "xp": 20
     },
     {
       "id": "skuggvarg",
@@ -550,7 +552,7 @@
       "hp": 85,
       "damage": 14,
       "defense": 2,
-      "xp": 60
+      "xp": 18
     },
     {
       "id": "gravargsledare",
@@ -559,7 +561,7 @@
       "hp": 168,
       "damage": 19,
       "defense": 4,
-      "xp": 154
+      "xp": 35
     },
     {
       "id": "ruttbjorn",
@@ -568,7 +570,7 @@
       "hp": 293,
       "damage": 29,
       "defense": 6,
-      "xp": 265
+      "xp": 60
     },
     {
       "id": "grabjornen_ulvhild",
@@ -577,7 +579,7 @@
       "hp": 1730,
       "damage": 34,
       "defense": 8,
-      "xp": 2425
+      "xp": 550
     },
     {
       "id": "skelett_hund",
@@ -586,7 +588,7 @@
       "hp": 48,
       "damage": 9,
       "defense": 2,
-      "xp": 67
+      "xp": 8
     },
     {
       "id": "skelett_krigare",
@@ -595,7 +597,7 @@
       "hp": 97,
       "damage": 15,
       "defense": 4,
-      "xp": 111
+      "xp": 13
     },
     {
       "id": "skelett_bagskytt",
@@ -604,7 +606,7 @@
       "hp": 71,
       "damage": 13,
       "defense": 2,
-      "xp": 170
+      "xp": 16
     },
     {
       "id": "skelett_runprast",
@@ -613,7 +615,7 @@
       "hp": 89,
       "damage": 21,
       "defense": 3,
-      "xp": 238
+      "xp": 23
     },
     {
       "id": "skelett_vakt",
@@ -622,7 +624,7 @@
       "hp": 234,
       "damage": 27,
       "defense": 9,
-      "xp": 364
+      "xp": 29
     },
     {
       "id": "skelett_kapten",
@@ -631,7 +633,7 @@
       "hp": 187,
       "damage": 22,
       "defense": 7,
-      "xp": 324
+      "xp": 26
     },
     {
       "id": "benkungen_valdemar",
@@ -640,7 +642,7 @@
       "hp": 1594,
       "damage": 32,
       "defense": 7,
-      "xp": 3795
+      "xp": 400
     },
     {
       "id": "dimgast",
@@ -649,7 +651,7 @@
       "hp": 106,
       "damage": 18,
       "defense": 2,
-      "xp": 241
+      "xp": 14
     },
     {
       "id": "klagokvinna",
@@ -658,7 +660,7 @@
       "hp": 136,
       "damage": 12,
       "defense": 3,
-      "xp": 436
+      "xp": 23
     },
     {
       "id": "trasknacken",
@@ -667,7 +669,7 @@
       "hp": 236,
       "damage": 29,
       "defense": 5,
-      "xp": 562
+      "xp": 26
     },
     {
       "id": "trasdrottningen",
@@ -676,7 +678,7 @@
       "hp": 3773,
       "damage": 55,
       "defense": 8,
-      "xp": 1100
+      "xp": 700
     },
     {
       "id": "gruvspindel",
@@ -685,7 +687,7 @@
       "hp": 106,
       "damage": 17,
       "defense": 6,
-      "xp": 279
+      "xp": 10
     },
     {
       "id": "syrabagge",
@@ -694,7 +696,7 @@
       "hp": 233,
       "damage": 25,
       "defense": 10,
-      "xp": 576
+      "xp": 20
     },
     {
       "id": "kitinvakt",
@@ -703,7 +705,7 @@
       "hp": 565,
       "damage": 47,
       "defense": 15,
-      "xp": 1260
+      "xp": 36
     },
     {
       "id": "spinnmodern",
@@ -712,7 +714,7 @@
       "hp": 5649,
       "damage": 72,
       "defense": 13,
-      "xp": 6598
+      "xp": 800
     },
     {
       "id": "askimp",
@@ -721,7 +723,7 @@
       "hp": 157,
       "damage": 25,
       "defense": 5,
-      "xp": 596
+      "xp": 16
     },
     {
       "id": "eldpiska_demon",
@@ -730,7 +732,7 @@
       "hp": 552,
       "damage": 53,
       "defense": 9,
-      "xp": 1877
+      "xp": 42
     },
     {
       "id": "hornslaktare",
@@ -739,7 +741,7 @@
       "hp": 759,
       "damage": 72,
       "defense": 12,
-      "xp": 2167
+      "xp": 46
     },
     {
       "id": "askriddare",
@@ -748,7 +750,7 @@
       "hp": 919,
       "damage": 70,
       "defense": 16,
-      "xp": 2647
+      "xp": 52
     },
     {
       "id": "askfursten_morvath",
@@ -757,7 +759,7 @@
       "hp": 12636,
       "damage": 123,
       "defense": 17,
-      "xp": 12150
+      "xp": 1200
     },
     {
       "id": "smittbarare",
@@ -766,7 +768,7 @@
       "hp": 404,
       "damage": 35,
       "defense": 8,
-      "xp": 705
+      "xp": 13
     },
     {
       "id": "galen_munk",
@@ -775,7 +777,7 @@
       "hp": 500,
       "damage": 47,
       "defense": 9,
-      "xp": 1125
+      "xp": 20
     },
     {
       "id": "kottklump",
@@ -784,7 +786,7 @@
       "hp": 1682,
       "damage": 74,
       "defense": 10,
-      "xp": 2104
+      "xp": 32
     },
     {
       "id": "fadern_av_smittan",
@@ -793,11 +795,11 @@
       "hp": 11100,
       "damage": 116,
       "defense": 13,
-      "xp": 28892
+      "xp": 650
     }
   ],
   "underboss_regel": {
-    "regel": "Underboss = aktens huvudboss skalad till underbossens nivå med formlerna i scaling, sedan HP x 0,45, skada x 0,85, XP x 0,4 och sedan aktens boss_xp_faktor. Försvar enligt scaling utan ändring. Familjen styr svag och resistent, inte källbossen.",
+    "regel": "Underboss = aktens huvudboss skalad till underbossens nivå med formlerna i scaling, sedan HP x 0,45 och skada x 0,85. XP: samma råa bas som källbossen; spelet multiplicerar kill-XP med underboss_mult 0,4 × aktens boss_xp_faktor (boss_xp_faktor). Försvar enligt scaling utan ändring. Familjen styr svag och resistent, inte källbossen.",
     "loot": "Som boss: ilvl = nivå + 2, gold_mult 5, first_kill_bonus en sällsynt. Questens belöningsföremål ges av questvalet, inte av dropen.",
     "xp_avdrag": "Bossgolvet 0,25 i xp_penalty gäller även underbossar.",
     "ej_champion": "Underbossar blir aldrig champion eller unik.",
@@ -807,31 +809,32 @@
         "hp": 1544,
         "damage": 44,
         "defense": 8,
-        "xp": 394
+        "xp": 700
       },
       "jarnmunken": {
         "level": 17,
         "hp": 2311,
         "damage": 57,
         "defense": 13,
-        "xp": 2422
+        "xp": 800
       },
       "askans_profet": {
         "level": 23,
         "hp": 4699,
         "damage": 91,
         "defense": 16,
-        "xp": 4289
+        "xp": 1200
       }
-    }
+    },
+    "varden_not": "xp i varden är rå bas (meta.xp_regel)."
   },
   "boss_xp_faktor": {
-    "regel": "Bossars och underbossars XP = round(xp_bas × faktorn för deras akt). xp_bas = XP enligt scaling (underbossar med underboss_regel XP × 0,4) och står i monsterfamiljer.json design_source.xp_bas. Faktorn räknas fram med spel/design/verktyg/tathet.py --forslag så att målnivån per ring håller (varldsgenerator.json monsterpooler.tathet.malniva_yttre_kant). Akt 1 är kalibrerad i bana1_stor.json och har faktor 1.",
+    "regel": "Faktor per akt som spelet multiplicerar in i bossars kill-XP; underbossar får underboss_mult × aktens faktor. xp i monsterfamiljer.json är rå bas utan faktor (meta.xp_regel). Faktorerna räknas med spel/design/verktyg/tathet.py --forslag så att målnivån per ring håller (varldsgenerator.json monsterpooler.tathet.malniva_yttre_kant). Akt 1 och 5 har faktor 1.",
     "per_akt": {
       "akt_1": 1.0,
-      "akt_2": 0.1,
-      "akt_3": 0.36,
-      "akt_4": 0.27,
+      "akt_2": 0.17,
+      "akt_3": 0.37,
+      "akt_4": 0.3,
       "akt_5": 1.0
     },
     "bossar": {
@@ -845,9 +848,10 @@
       "askans_profet": "akt_4",
       "fadern_av_smittan": "akt_5"
     },
-    "resultat": "tathet.py --forslag 2026-10-31 med mellanmark 0,5 monster per chunk: ring 3 nivå 15, ring 4 nivå 19, ring 5 nivå 24, ring 6 nivå 29 (akt 5 behåller faktor 1; mål 30, inom 1 nivå). Akt 1 oförändrad. Faktorn i data behålls när ringen redan landar på målnivån.",
+    "resultat": "tathet.py --forslag 2026-11-05 med spelets formel, mellanmark 1,0 monster per chunk (0 till 2) och champions: ring 3 nivå 15, ring 4 19, ring 5 24, ring 6 29 (mål 30, inom 1). Faktorn i data behålls när ringen redan landar på målnivån.",
     "ej_designade": {
-      "den_slocknade": "Boss i sprickans_botten (akt 5). Saknar post i monsterfamiljer.json tills akt 5 designas; läggs då in här med akt_5 och xp_bas. tackning.py visar den som INFO."
-    }
+      "den_slocknade": "Boss i sprickans_botten (akt 5). Saknar post i monsterfamiljer.json tills akt 5 designas; läggs då in här med akt_5 och sin råa xp. tackning.py visar den som INFO."
+    },
+    "underboss_mult": 0.4
   }
 }

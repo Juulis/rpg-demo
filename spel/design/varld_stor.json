@@ -122,7 +122,9 @@
         "brors_talt": [-133, -127],
         "lagrets_utkant": [-127, -123],
         "helartaltet": [-126, -126]
-      }
+      },
+      "start_pos": [-128, -132],
+      "start_pos_regel": "Hjälten startar i (−128, −132), 4 enheter söder om lägerelden (−128, −128): inom säkra radien 12, inte på elden (minst 2) och minst 1,5 från varje lägernpc (npc.json omrade startlagret) och varje rutinankare i lager_ankare. Närmast: Ylva 4,1, Bror och palissaden 4,2. Kontrolleras av spel/design/verktyg/tackning.py. Ersätter kodens start i gamla Startskogen."
     },
     "grannar_regel": {
       "regel": "grannar är dubbelriktade. Två regioner är grannar när de delar en chunkkant (delområdenas chunkar i bana1_stor.json räknas till sin region även utanför radien, t.ex. Bäckravinen [1, −1] till startskogen) eller ligger i följd på samma väg i vagar; banor (typ bana) och instanser är bara grannar via sin stig eller ingång. Kontroll: spel/design/verktyg/tackning.py.",

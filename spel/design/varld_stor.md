@@ -49,6 +49,8 @@ Ide, krypta, sjunkna kyrkan, klostret, gruvdjupen, katakomberna, katedralen, Smi
 
 Rungläntan (gamla Startskogen, chunk [1, 1] runt origo) spawnar bara från spawnzoner.json areas.startskogen: 14 monster per game med 3 till 7 aktiva punkter (simulerat med kodens algoritm: medel 14,2, p5 7, p95 23). Det ersätter det gamla snittet 17, som egentligen gav 18,5.
 
+Startposition: hjälten startar i (−128, −132), 4 enheter söder om lägerelden (−128, −128), inom säkra radien 12 och fri från elden, lägrets NPC:er och rutinankare (minst 1,5; närmast Ylva 4,1). Data i varld_stor.json meta.startskogen_fotavtryck.start_pos, kontroll i tackning.py.
+
 ## Svårighet och zonmodell
 
 Avstånd mäts i chunkar (euklidiskt) från Lägret vid skogsbrynet. Ringen ger nivåbandet. Undertyper vars fasta nivå ligger i bandet får spawna.
