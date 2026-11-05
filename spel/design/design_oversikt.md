@@ -113,11 +113,13 @@ Kvaliteter Normal (vit), Magisk (blå), Sällsynt (gul), Set (grön), Legendaris
 
 ## Progression
 
-Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check): skogen ger cirka 123 XP per game, Vargaby cirka 2025 (20 monster) plus Gråbjörnen 2425, vilket ger nivå 7 före portalbyn för den som följer den rekommenderade vägen. Med stor bana 1 (bana1_stor.json, spel/design/verktyg/akt1.py) når hjälten på kortaste vägen nivå 7 i Idets skog, går in i ring 2 på nivå 8 och är nivå 11 efter Benkungen; allt rensat ger nivå 8 efter ring 1 och 13 efter akt 1. Rungläntan (gamla Startskogen, spawnzoner.json) ger 14 monster per game: 3 till 7 aktiva punkter, simulerat medel 14,2, p5 7, p95 23 (det gamla snittet 17 gav egentligen 18,5). Med regionernas täthet och mellanmarken (tathet.py, allt rensat) blir det nivå 9 efter ring 1 och 13 efter ring 2 (varldsgenerator.json malniva_yttre_kant 3, 9, 13, 15, 19, 24, 30).
+Juulis har satt portalbyn till nivå 7 till 9. Den röda portalen öppnas när alla tre runor är aktiva, utan andra villkor. Rekommenderad väg (bara information): Startskogen (nivå 1 till 3), Vargaby (4 till 6), portalbyn (7 till 9). Monstrens nivå och träffchansen gör att en för låg hjälte märker skillnaden direkt. XP kontroll (monster_niva.json progression_check, spel/design/verktyg/akt1.py, spelets formel): på kortaste vägen ger Rungläntan cirka 86 XP per game och Vargaby cirka 2137 (20 monster), Ulvhild 2425; hjälten är nivå 6 efter Vargaby, nivå 7 efter Ulvhild, alltså före ring 2, går in i ring 2 på nivå 8 och är nivå 11 efter Benkungen. Bara delområdena rensade ger nivå 8 efter ring 1 och 12 efter akt 1. Rungläntan (gamla Startskogen, spawnzoner.json) ger 14 monster per game: 3 till 7 aktiva punkter, simulerat medel 14,2, p5 7, p95 23 (det gamla snittet 17 gav egentligen 18,5). Med regionernas täthet och mellanmarken (tathet.py, allt rensat) blir det nivå 9 efter ring 1 och 13 efter ring 2 (varldsgenerator.json malniva_yttre_kant 3, 9, 13, 15, 19, 24, 30).
 
 BESLUT: ingen avstånds-XP. Hjältens XP kommer bara från monstrens XP per monster (monsterfamiljer.json, champions och unika med sina multiplikatorer) med XP avdraget i monster_niva.json. Svårigheten styrs enbart av monsternivån efter ring (varldsgenerator.json svarighet_avstand.malniva och ringens band). Tätheten är data (varldsgenerator.json monsterpooler.tathet_per_chunk, varld_stor.json regioner[].tathet, bana1_stor.json) och XP takten per ring kontrolleras med spel/design/verktyg/tathet.py.
 
-Boss-XP: bossar och underbossar får XP = xp_bas × aktens boss_xp_faktor (monster_niva.json boss_xp_faktor): akt 1 1,0, akt 2 0,1, akt 3 0,36, akt 4 0,27, akt 5 1,0. Faktorerna räknas med spel/design/verktyg/tathet.py --forslag så att hjälten är nivå 15 efter ring 3, 19 efter ring 4, 24 efter ring 5 och 29 till 30 efter ring 6 med 0,5 monster per chunk i mellanmarken.
+XP-REGEL (en plats, monster_niva.json meta.xp_regel): fältet xp i monsterfamiljer.json är monstrets RÅA bas utan bossfaktor. Spelet räknar kill-XP = round(xp / 10 × 3 × L^1,5 × k × elit × bossfaktor) där L = monstrets nivå, k = xp_penalty efter hjältens nivå minus L (bossgolv 0,25), elit = champion 3 eller unik 5. Bossfaktor = aktens boss_xp_faktor (akt 1 1,0, akt 2 0,17, akt 3 0,37, akt 4 0,3, akt 5 1,0) för huvudbossen och 0,4 × aktens faktor för underbossar, annars 1. Faktorn tillämpas bara i koden och i verktygen (verktyg/spelregler.py), aldrig i datafilerna; alla XP-tabeller i designen visar rå bas. Faktorerna räknas med tathet.py --forslag så att hjälten är nivå 15 efter ring 3, 19 efter ring 4, 24 efter ring 5 och 29 till 30 efter ring 6 med 1,0 monster per chunk i mellanmarken (cirka 1 per 2 skärmlägen) och champions i 10 procent av grupperna från ring 2.
+
+Startposition: (−128, −132), 4 enheter söder om lägerelden (−128, −128), inom radie 12 och fri från NPC:er och ankare (varld_stor.json meta.startskogen_fotavtryck.start_pos, kontroll i tackning.py).
 
 Kartan: dimma som avslöjas i radie 14 rutor runt hjälten, sparas per chunk i sparfilen, ingen spärr (varldsgenerator.json karta_och_dimma).
 
@@ -133,64 +135,64 @@ Alla monster av samma typ har exakt samma stats: fast nivå, fast HP, fast skada
 
 Bestar
 
-| Namn                      | Nivå | HP   | Skada | Försvar | XP   | Zon         |
-| ------------------------- | ---- | ---- | ----- | ------- | ---- | ----------- |
-| Varg                      | 1    | 50   | 10    | 0       | 3    | startskogen |
-| Vargbest                  | 3    | 79   | 13    | 2       | 22   | startskogen |
-| Taggsvin                  | 4    | 88   | 16    | 3       | 48   | vargaby     |
-| Gråvarg                   | 5    | 85   | 14    | 2       | 60   | vargaby     |
-| Gråvargsledare            | 6    | 168  | 19    | 4       | 154  | vargaby     |
-| Ruttbjörn                 | 6    | 293  | 29    | 6       | 265  | vargaby     |
-| Gråbjörnen Ulvhild (boss) | 6    | 1730 | 34    | 8       | 2425 | vargaby     |
+| Namn                      | Nivå | HP   | Skada | Försvar | XP (rå bas) | Zon         |
+| ------------------------- | ---- | ---- | ----- | ------- | ----------- | ----------- |
+| Varg                      | 1    | 50   | 10    | 0       | 10          | startskogen |
+| Vargbest                  | 3    | 79   | 13    | 2       | 14          | startskogen |
+| Taggsvin                  | 4    | 88   | 16    | 3       | 20          | vargaby     |
+| Gråvarg                   | 5    | 85   | 14    | 2       | 18          | vargaby     |
+| Gråvargsledare            | 6    | 168  | 19    | 4       | 35          | vargaby     |
+| Ruttbjörn                 | 6    | 293  | 29    | 6       | 60          | vargaby     |
+| Gråbjörnen Ulvhild (boss) | 6    | 1730 | 34    | 8       | 550         | vargaby     |
 
 Odöda
 
-| Namn                      | Nivå | HP   | Skada | Försvar | XP   | Zon       |
-| ------------------------- | ---- | ---- | ----- | ------- | ---- | --------- |
-| Benhund                   | 7    | 48   | 9     | 2       | 67   | gamla_byn |
-| Skelettkrigare            | 7    | 97   | 15    | 4       | 111  | gamla_byn |
-| Skelettbågskytt           | 8    | 71   | 13    | 2       | 170  | gamla_byn |
-| Runpräst                  | 8    | 89   | 21    | 3       | 238  | gamla_byn |
-| Skelettväktare            | 9    | 234  | 27    | 9       | 364  | gamla_byn |
-| Skelettkapten             | 9    | 187  | 22    | 7       | 324  | gamla_byn |
-| Benkungen Valdemar (boss) | 10   | 1594 | 32    | 7       | 3795 | gamla_byn |
+| Namn                      | Nivå | HP   | Skada | Försvar | XP (rå bas) | Zon       |
+| ------------------------- | ---- | ---- | ----- | ------- | ----------- | --------- |
+| Benhund                   | 7    | 48   | 9     | 2       | 8           | gamla_byn |
+| Skelettkrigare            | 7    | 97   | 15    | 4       | 13          | gamla_byn |
+| Skelettbågskytt           | 8    | 71   | 13    | 2       | 16          | gamla_byn |
+| Runpräst                  | 8    | 89   | 21    | 3       | 23          | gamla_byn |
+| Skelettväktare            | 9    | 234  | 27    | 9       | 29          | gamla_byn |
+| Skelettkapten             | 9    | 187  | 22    | 7       | 26          | gamla_byn |
+| Benkungen Valdemar (boss) | 10   | 1594 | 32    | 7       | 400         | gamla_byn |
 
 Gastar
 
-| Namn                   | Nivå | HP   | Skada | Försvar | XP   | Zon          |
-| ---------------------- | ---- | ---- | ----- | ------- | ---- | ------------ |
-| Dimgast                | 11   | 106  | 18    | 2       | 241  | dimmerstrand |
-| Klagokvinna            | 12   | 136  | 12    | 3       | 436  | dimmerstrand |
-| Träsknäcken            | 13   | 236  | 29    | 5       | 562  | dimmerstrand |
-| Träsdrottningen (boss) | 14   | 3773 | 55    | 8       | 1100 | dimmerstrand |
+| Namn                   | Nivå | HP   | Skada | Försvar | XP (rå bas) | Zon          |
+| ---------------------- | ---- | ---- | ----- | ------- | ----------- | ------------ |
+| Dimgast                | 11   | 106  | 18    | 2       | 14          | dimmerstrand |
+| Klagokvinna            | 12   | 136  | 12    | 3       | 23          | dimmerstrand |
+| Träsknäcken            | 13   | 236  | 29    | 5       | 26          | dimmerstrand |
+| Träsdrottningen (boss) | 14   | 3773 | 55    | 8       | 700         | dimmerstrand |
 
 Kryp
 
-| Namn               | Nivå | HP   | Skada | Försvar | XP   | Zon        |
-| ------------------ | ---- | ---- | ----- | ------- | ---- | ---------- |
-| Gruvspindel        | 15   | 106  | 17    | 6       | 279  | kopparberg |
-| Syrabagge          | 16   | 233  | 25    | 10      | 576  | kopparberg |
-| Kitinvakt          | 18   | 565  | 47    | 15      | 1260 | kopparberg |
-| Spinnmodern (boss) | 18   | 5649 | 72    | 13      | 6598 | kopparberg |
+| Namn               | Nivå | HP   | Skada | Försvar | XP (rå bas) | Zon        |
+| ------------------ | ---- | ---- | ----- | ------- | ----------- | ---------- |
+| Gruvspindel        | 15   | 106  | 17    | 6       | 10          | kopparberg |
+| Syrabagge          | 16   | 233  | 25    | 10      | 20          | kopparberg |
+| Kitinvakt          | 18   | 565  | 47    | 15      | 36          | kopparberg |
+| Spinnmodern (boss) | 18   | 5649 | 72    | 13      | 800         | kopparberg |
 
 Demoner
 
-| Namn                      | Nivå | HP    | Skada | Försvar | XP    | Zon      |
-| ------------------------- | ---- | ----- | ----- | ------- | ----- | -------- |
-| Askimp                    | 19   | 157   | 25    | 5       | 596   | askeborg |
-| Eldpiskedemon             | 21   | 552   | 53    | 9       | 1877  | askeborg |
-| Hornslaktare              | 22   | 759   | 72    | 12      | 2167  | askeborg |
-| Askriddare                | 23   | 919   | 70    | 16      | 2647  | askeborg |
-| Askfursten Morvath (boss) | 25   | 12636 | 123   | 17      | 12150 | askeborg |
+| Namn                      | Nivå | HP    | Skada | Försvar | XP (rå bas) | Zon      |
+| ------------------------- | ---- | ----- | ----- | ------- | ----------- | -------- |
+| Askimp                    | 19   | 157   | 25    | 5       | 16          | askeborg |
+| Eldpiskedemon             | 21   | 552   | 53    | 9       | 42          | askeborg |
+| Hornslaktare              | 22   | 759   | 72    | 12      | 46          | askeborg |
+| Askriddare                | 23   | 919   | 70    | 16      | 52          | askeborg |
+| Askfursten Morvath (boss) | 25   | 12636 | 123   | 17      | 1200        | askeborg |
 
 Förvridna
 
-| Namn                     | Nivå | HP    | Skada | Försvar | XP    | Zon                 |
-| ------------------------ | ---- | ----- | ----- | ------- | ----- | ------------------- |
-| Smittbärare              | 24   | 404   | 35    | 8       | 705   | framtida_slutomrade |
-| Galen munk               | 25   | 500   | 47    | 9       | 1125  | framtida_slutomrade |
-| Köttklump                | 27   | 1682  | 74    | 10      | 2104  | framtida_slutomrade |
-| Fadern av smittan (boss) | 28   | 11100 | 116   | 13      | 28892 | framtida_slutomrade |
+| Namn                     | Nivå | HP    | Skada | Försvar | XP (rå bas) | Zon                 |
+| ------------------------ | ---- | ----- | ----- | ------- | ----------- | ------------------- |
+| Smittbärare              | 24   | 404   | 35    | 8       | 13          | framtida_slutomrade |
+| Galen munk               | 25   | 500   | 47    | 9       | 20          | framtida_slutomrade |
+| Köttklump                | 27   | 1682  | 74    | 10      | 32          | framtida_slutomrade |
+| Fadern av smittan (boss) | 28   | 11100 | 116   | 13      | 650         | framtida_slutomrade |
 
 Elitmonster har fasta multiplikatorer: Champion nivå +1, HP × 2,5, skada × 1,4, försvar +3, XP × 3. Unik nivå +3, HP × 4, skada × 1,6, försvar +5, XP × 5, en modifierare med fast effekt, 2 till 3 champion följeslagare. XP sänks när hjälten är mer än 3 nivåer över monstret (ned till 5 %) och höjs upp till 25 % när hjälten är lägre.
 

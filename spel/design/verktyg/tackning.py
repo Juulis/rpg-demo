@@ -71,6 +71,16 @@ import math
 npc=L(d,'npc.json'); eld=w['meta']['startskogen_fotavtryck']['lager_ankare']['lagerelden']
 for x in npc['npcs']:
     if x.get('omrade')=='startlagret' and (x.get('area')!='startskogen' or not x.get('pos') or math.dist(x['pos'],eld)>12): fel.add(f'lägernpc {x["id"]} står inte inom 12 från lägerelden {eld}')
+# D4: startposition nära elden, inte på elden eller på en NPC eller ett ankare
+fa=w['meta']['startskogen_fotavtryck']; sp=fa.get('start_pos')
+if not sp: fel.add('start_pos saknas i varld_stor.json meta.startskogen_fotavtryck')
+else:
+    if math.dist(sp,eld)>12: fel.add(f'start_pos {sp} ligger utanför radie 12 från lägerelden')
+    if math.dist(sp,eld)<2: fel.add(f'start_pos {sp} ligger på lägerelden')
+    for x in npc['npcs']:
+        if x.get('pos') and len(x['pos'])==2 and x.get('area')=='startskogen' and math.dist(sp,x['pos'])<1.5: fel.add(f'start_pos {sp} krockar med npc {x["id"]}')
+    for k,a in fa['lager_ankare'].items():
+        if k not in ('regel','lagerelden') and isinstance(a,list) and math.dist(sp,a)<1.5: fel.add(f'start_pos {sp} krockar med ankaret {k}')
 for r in w['regioner']:
     if r.get('boss') and r['boss'] not in M: fel.add(f'INFO boss {r["boss"]} i {r["id"]} saknas i monsterfamiljer (ej designad)')
 print('\n'.join(sorted(fel)) if fel else 'inga fel')
