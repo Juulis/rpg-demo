@@ -128,6 +128,10 @@ export class MapModule implements GameModule {
       if (!cells) continue;
       void this.fogRepo.save(id, zone, cells).then((ok) => {
         if (ok) return;
+        const ctx = this.ctx;
+        if (ctx) {
+          ctx.bus.emit('save_failed', { reason: 'fog' });
+        }
         if (this.fog.storageQuotaExceeded) {
           console.warn('[MapModule] Kartdimma: lagringsutrymmet fullt — nya avslöjanden sparas inte.');
         } else if (this.fogRepo.lastError) {

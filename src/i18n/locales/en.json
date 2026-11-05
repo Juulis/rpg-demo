@@ -39,7 +39,8 @@
     "slots_full": "All hero slots are taken."
   },
   "save": {
-    "saved": "Saved"
+    "saved": "Saved",
+    "failed": "Could not save the game."
   },
   "skill": {
     "locked": "Unlocks at level {level}",

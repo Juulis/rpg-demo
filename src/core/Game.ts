@@ -301,6 +301,9 @@ export class Game {
       const h = this.questHooks();
       if (h) this.questEngine.onEnterRegion(areaId, undefined, h);
     });
+    this.bus.on('save_failed', () => {
+      this.hud.flash(this.text.t('msg.save_failed'));
+    });
     this.bindInput(r.app.canvas);
     DevCheatsView.tryCreate(this.input);
     const resize = (): void => {

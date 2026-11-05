@@ -39,9 +39,42 @@ export class FogGrid {
 
 const SAVE_V2 = 2;
 const SAVE_V3 = 3;
+const SAVE_V4 = 4;
 const SECTOR = 32;
 const CHUNK_FOG_BYTES = 512;
-const MAX_FOG_SAVE_BYTES = 512 * 1024;
+const MAX_FOG_SAVE_BYTES = 2 * 1024 * 1024; // raised with compression; 5000+ chunks now fit
+
+/** Simple RLE for byte arrays. Format: [runLen(1B), value(1B)] repeated. runLen 0-255. */
+function rleEncode(data: Uint8Array): Uint8Array {
+  if (data.length === 0) return new Uint8Array(0);
+  const out: number[] = [];
+  let run = 1;
+  let prev = data[0] ?? 0;
+  for (let i = 1; i < data.length; i++) {
+    const v = data[i] ?? 0;
+    if (v === prev && run < 255) {
+      run++;
+    } else {
+      out.push(run, prev);
+      prev = v;
+      run = 1;
+    }
+  }
+  out.push(run, prev);
+  return new Uint8Array(out);
+}
+
+function rleDecode(comp: Uint8Array): Uint8Array {
+  const out: number[] = [];
+  for (let i = 0; i + 1 < comp.length; i += 2) {
+    const len = comp[i] ?? 0;
+    const val = comp[i + 1] ?? 0;
+    for (let k = 0; k < len; k++) out.push(val);
+  }
+  // pad/truncate to expected if needed
+  while (out.length < CHUNK_FOG_BYTES) out.push(0);
+  return new Uint8Array(out.slice(0, CHUNK_FOG_BYTES));
+}
 /** In-memory (hot) chunk-bitmasks kept around the hero for fast access. All revealed masks are kept in allRevealed for persistence. */
 const CHUNK_FOG_MEMORY_RADIUS = 12;
 
@@ -68,6 +101,8 @@ export class FogOfWar {
   private worldAnchored = false;
   private dirty = false;
   private storageFull = false;
+  /** Keys of chunks (zone|cx,cy) that have been revealed since last takeDirty. */
+  private dirtyChunks = new Set<string>();
 
   constructor(private readonly loader: (zone: string) => Uint8Array | null = () => null) {}
 
@@ -138,6 +173,7 @@ export class FogOfWar {
     if (prevA !== nextA) {
       if (on) auth[byte] = curA | (1 << bitIn);
       else auth[byte] = curA & ~(1 << bitIn);
+      this.dirtyChunks.add(chunkFogKey(zone, cx, cy));
     }
     // Also keep hot chunkFog in sync for current nearby chunks
     const mask = this.chunkMask(zone, cx, cy);
@@ -171,6 +207,29 @@ export class FogOfWar {
 
   private loadBlob(zone: string, saved: Uint8Array | null): void {
     if (!saved || saved.length === 0) return;
+    if (saved[0] === SAVE_V4) {
+      const view = new DataView(saved.buffer, saved.byteOffset, saved.byteLength);
+      let o = 1;
+      while (o + 4 <= saved.length) {
+        const cx = view.getInt16(o, true);
+        const cy = view.getInt16(o + 2, true);
+        o += 4;
+        if (o + 2 > saved.length) break;
+        const clen = view.getUint16(o, true);
+        o += 2;
+        if (o + clen > saved.length) break;
+        const comp = saved.subarray(o, o + clen);
+        o += clen;
+        const mask = rleDecode(comp);
+        if (mask.length !== CHUNK_FOG_BYTES) continue;
+        const key = chunkFogKey(zone, cx, cy);
+        const copy = mask.slice();
+        this.chunkFog.set(key, copy);
+        this.allRevealed.set(key, copy.slice());
+      }
+      this.loadedZones.add(zone);
+      return;
+    }
     if (saved[0] === SAVE_V3) {
       const view = new DataView(saved.buffer, saved.byteOffset, saved.byteLength);
       let o = 1;
@@ -373,21 +432,33 @@ export class FogOfWar {
       if (Number.isNaN(cx) || Number.isNaN(cy)) continue;
       chunks.push({ cx, cy, mask });
     }
-    const size = 1 + chunks.length * (4 + CHUNK_FOG_BYTES);
-    if (size > MAX_FOG_SAVE_BYTES) {
+    // V4: header byte + per chunk [cx(2),cy(2),clen(2),rleData]
+    let total = 1;
+    const comps: Uint8Array[] = [];
+    for (const ch of chunks) {
+      const comp = rleEncode(ch.mask);
+      comps.push(comp);
+      total += 4 + 2 + comp.length;
+    }
+    if (total > MAX_FOG_SAVE_BYTES) {
       this.storageFull = true;
       return null;
     }
-    const out = new Uint8Array(size);
-    out[0] = SAVE_V3;
+    const out = new Uint8Array(total);
+    out[0] = SAVE_V4;
     const view = new DataView(out.buffer, out.byteOffset, out.byteLength);
     let o = 1;
-    for (const ch of chunks) {
+    for (let i = 0; i < chunks.length; i++) {
+      const ch = chunks[i];
+      const comp = comps[i];
+      if (!ch || !comp) continue;
       view.setInt16(o, ch.cx, true);
       view.setInt16(o + 2, ch.cy, true);
       o += 4;
-      out.set(ch.mask, o);
-      o += CHUNK_FOG_BYTES;
+      view.setUint16(o, comp.length, true);
+      o += 2;
+      out.set(comp, o);
+      o += comp.length;
     }
     return out;
   }
@@ -400,15 +471,24 @@ export class FogOfWar {
     if (!this.dirty) return [];
     let keepDirty = false;
     if (this.worldAnchored) {
+      // only encode zones that have dirty chunks (simple changed-sector optimization)
       const zones = new Set<string>();
-      for (const key of this.chunkFog.keys()) zones.add(key.split('|')[0] ?? 'forest');
-      for (const key of this.allRevealed.keys()) zones.add(key.split('|')[0] ?? 'forest');
+      for (const k of this.dirtyChunks) {
+        const z = k.split('|')[0];
+        if (z) zones.add(z);
+      }
+      if (zones.size === 0) {
+        // fallback: if dirty flag set but no tracked, fall back to all (should not normally happen)
+        for (const key of this.allRevealed.keys()) zones.add(key.split('|')[0] ?? 'forest');
+      }
       const out: Array<[string, Uint8Array]> = [];
       for (const z of zones) {
         const enc = this.encodeZone(z);
         if (enc) out.push([z, enc]);
         else keepDirty = true;
       }
+      // clear only the flushed dirty chunk markers for zones we successfully encoded
+      if (!keepDirty) this.dirtyChunks.clear();
       this.dirty = keepDirty;
       return out;
     }

@@ -40,6 +40,7 @@ export class AutoSaveService {
     private readonly game: HeroGateway,
     private readonly repo: SaveRepository,
     private readonly onSaved: (d: SaveFile) => void = () => undefined,
+    private readonly onFailed: (reason?: string) => void = () => undefined,
     private readonly debounceMs = 150,
   ) {}
 
@@ -92,7 +93,11 @@ export class AutoSaveService {
     const snap = this.snapshot(this.current);
     this.current = snap;
     // köas direkt (före ev. radering), så att en sen sparning aldrig återskapar en raderad hjälte
-    if (!(await this.repo.save(snap))) return false;
+    if (!(await this.repo.save(snap))) {
+      this.ctx.bus.emit('save_failed', { reason });
+      this.onFailed(reason);
+      return false;
+    }
     this.lastSave = { reason, at: snap.savedAt ?? Date.now() };
     this.onSaved(snap);
     return true;

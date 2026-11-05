@@ -52,6 +52,7 @@ export const SV = {
     gold: '+{amount} guld',
     too_far: 'Gå närmare för att prata.',
     patrol_aid: 'Du hjälpte en patrull — byborna minns det.',
+    save_failed: 'Kunde inte spara spelet.',
   },
   fx: { miss: 'Miss', dodge: 'Undvek', block: 'Block', immune: 'Immun', strong: 'Krosslag', thorns: '-{n} torn' },
   tooltip: {

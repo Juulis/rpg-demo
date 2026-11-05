@@ -41,4 +41,6 @@ export type GameEvents = {
   day_changed: { day: number };
   /** Avlägset nattljud (inte spawn-relaterat). */
   night_ambient: { intensity: number };
+  /** Sparning misslyckades (R5-M1). */
+  save_failed: { reason?: string };
 };
