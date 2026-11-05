@@ -29,7 +29,7 @@ export class MenuAssets {
 
   css(): string {
     const u = (n: string): string => `url(${this.url(n)})`;
-    return `.save-icon{position:fixed;right:14px;top:12px;z-index:30;width:24px;height:24px;background:center/contain no-repeat;opacity:0;transition:opacity .3s;pointer-events:none;filter:drop-shadow(0 0 4px #000)}.save-icon.on{opacity:.95}
+    return `.save-icon{position:fixed;right:14px;top:12px;z-index:30;width:24px;height:24px;background:center/contain no-repeat;opacity:0;transition:opacity .3s;pointer-events:none;filter:drop-shadow(0 0 4px #000)}.save-icon.on{opacity:.95}.save-icon.save-error{filter:drop-shadow(0 0 6px #c00) hue-rotate(320deg) saturate(1.8);opacity:.95}
 .hero-menu{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;background:#000 ${u('bg')} center/cover;gap:8px;overflow:auto}
 .hero-menu.hidden{display:none}
 .hero-menu .titel{width:min(34vw,420px);margin-top:1vh;filter:drop-shadow(0 0 18px rgba(192,24,42,.35))}

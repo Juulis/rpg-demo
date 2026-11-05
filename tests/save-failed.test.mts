@@ -1,6 +1,7 @@
 /**
  * Test for R5-M1: save_failed event emitted on repo save failure.
  * Also covers callers returning false.
+ * R6-M1: HUD visar meddelandet EN gång (inte två) vid save_failed.
  */
 import assert from 'node:assert/strict';
 import { EventBus } from '../src/core/EventBus';
@@ -14,6 +15,12 @@ import { SAVE_VERSION, type SaveFile } from '../src/save/types';
 const bus = new EventBus<GameEvents>();
 const received: Array<{ reason?: string }> = [];
 bus.on('save_failed', (p) => received.push(p));
+
+// Simulerar HUD-lyssnare som räknar visade meddelanden (R6-M1)
+let hudFlashes = 0;
+bus.on('save_failed', () => {
+  hudFlashes++;
+});
 
 const ctx: GameContext = {
   bus,
@@ -62,5 +69,6 @@ const ok2 = await autosave.saveNow('fail-reason');
 assert.equal(ok2, false, 'misslyckad save ska returnera false');
 assert.equal(received.length, 1, 'save_failed ska ha emit:ats');
 assert.equal(received[0]?.reason, 'fail-reason');
+assert.equal(hudFlashes, 1, 'HUD ska visa save_failed-meddelandet EN gång (inte två)');
 
 console.log('save-failed.test.mts: ok');

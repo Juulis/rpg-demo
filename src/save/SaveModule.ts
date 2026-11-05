@@ -58,10 +58,8 @@ export class SaveModule implements GameModule, SaveBackendSource {
         roster.track(d, true);
         indicator?.show();
       },
-      (reason) => {
+      (_reason) => {
         indicator?.showError();
-        // also emit on bus for any listeners
-        ctx.bus.emit('save_failed', { reason });
       },
     );
     const lifecycle = this.withDom ? new PageLifecycleSaver(autosave) : null;
