@@ -42,7 +42,7 @@ const SAVE_V3 = 3;
 const SECTOR = 32;
 const CHUNK_FOG_BYTES = 512;
 const MAX_FOG_SAVE_BYTES = 512 * 1024;
-/** In-memory chunk-bitmasks kept around the hero (rest stays on disk until re-reveal). */
+/** In-memory (hot) chunk-bitmasks kept around the hero for fast access. All revealed masks are kept in allRevealed for persistence. */
 const CHUNK_FOG_MEMORY_RADIUS = 12;
 
 function fogRadius(): number {
@@ -60,8 +60,11 @@ export class FogOfWar {
   static readonly GRID = 64;
   static readonly HALF = (FogOfWar.GRID * FogOfWar.CELL) / 2;
   private readonly grids = new Map<string, FogGrid>();
-  /** 512 B bitmask per chunk (64×64 rutor). */
+  /** 512 B bitmask per chunk (64×64 rutor). Hot set (trimmed). */
   private readonly chunkFog = new Map<string, Uint8Array>();
+  /** Authoritative revealed masks (load + all reveals). Never trimmed. Used for encode and isRevealed. */
+  private readonly allRevealed = new Map<string, Uint8Array>();
+  private loadedZones = new Set<string>();
   private worldAnchored = false;
   private dirty = false;
   private storageFull = false;
@@ -99,8 +102,20 @@ export class FogOfWar {
     const key = chunkFogKey(zone, cx, cy);
     let m = this.chunkFog.get(key);
     if (!m) {
-      m = new Uint8Array(CHUNK_FOG_BYTES);
+      // seed hot mask from authoritative persistent data if present (after trim or on far reveal)
+      const auth = this.allRevealed.get(key);
+      m = auth ? auth.slice() : new Uint8Array(CHUNK_FOG_BYTES);
       this.chunkFog.set(key, m);
+    }
+    return m;
+  }
+
+  private revealedMask(zone: string, cx: number, cy: number): Uint8Array {
+    const key = chunkFogKey(zone, cx, cy);
+    let m = this.allRevealed.get(key);
+    if (!m) {
+      m = new Uint8Array(CHUNK_FOG_BYTES);
+      this.allRevealed.set(key, m);
     }
     return m;
   }
@@ -112,14 +127,23 @@ export class FogOfWar {
   private setChunkTile(zone: string, cx: number, cy: number, ti: number, tj: number, on: boolean): boolean {
     const tiles = chunkTileCount();
     if (ti < 0 || tj < 0 || ti >= tiles || tj >= tiles) return false;
-    const mask = this.chunkMask(zone, cx, cy);
+    // Always update the authoritative persistent mask (survives trim and is encoded)
+    const auth = this.revealedMask(zone, cx, cy);
     const bit = this.tileIndex(ti, tj, tiles);
     const byte = bit >> 3;
     const bitIn = bit & 7;
+    const curA = auth[byte] ?? 0;
+    const prevA = (curA >> bitIn) & 1;
+    const nextA = on ? 1 : 0;
+    if (prevA !== nextA) {
+      if (on) auth[byte] = curA | (1 << bitIn);
+      else auth[byte] = curA & ~(1 << bitIn);
+    }
+    // Also keep hot chunkFog in sync for current nearby chunks
+    const mask = this.chunkMask(zone, cx, cy);
     const cur = mask[byte] ?? 0;
     const prev = (cur >> bitIn) & 1;
-    const next = on ? 1 : 0;
-    if (prev === next) return false;
+    if (prev === nextA) return prevA !== nextA;
     if (on) mask[byte] = cur | (1 << bitIn);
     else mask[byte] = cur & ~(1 << bitIn);
     return true;
@@ -137,7 +161,9 @@ export class FogOfWar {
     const tiles = chunkTileCount();
     if (ti < 0 || tj < 0 || ti >= tiles || tj >= tiles) return false;
     const key = chunkFogKey(zone, cx, cy);
-    const mask = this.chunkFog.get(key);
+    // Prefer hot, fall back to authoritative persistent set
+    let mask = this.chunkFog.get(key);
+    if (!mask) mask = this.allRevealed.get(key);
     if (!mask) return false;
     const bit = this.tileIndex(ti, tj, tiles);
     return (((mask[bit >> 3] ?? 0) >> (bit & 7)) & 1) === 1;
@@ -154,8 +180,12 @@ export class FogOfWar {
         o += 4;
         const slice = saved.subarray(o, o + CHUNK_FOG_BYTES);
         o += CHUNK_FOG_BYTES;
-        this.chunkFog.set(chunkFogKey(zone, cx, cy), slice.slice());
+        const key = chunkFogKey(zone, cx, cy);
+        const copy = slice.slice();
+        this.chunkFog.set(key, copy);
+        this.allRevealed.set(key, copy.slice());
       }
+      this.loadedZones.add(zone);
       return;
     }
     if (saved[0] === SAVE_V2) {
@@ -177,6 +207,7 @@ export class FogOfWar {
         }
         o += SECTOR * SECTOR;
       }
+      this.loadedZones.add(zone);
       return;
     }
     if (saved.length >= FogOfWar.GRID * FogOfWar.GRID) {
@@ -189,12 +220,14 @@ export class FogOfWar {
           this.setChunkTile(zone, cx, cy, ti, tj, true);
         }
       }
+      this.loadedZones.add(zone);
     }
   }
 
   ensureLoaded(zone: string): void {
-    if (this.chunkFog.size > 0 || this.grids.get(zone)?.cells.some((c) => c)) return;
+    if (this.loadedZones.has(zone)) return;
     this.loadBlob(zone, this.loader(zone));
+    this.loadedZones.add(zone);
   }
 
   revealWorld(zone: string, wx: number, wy: number): boolean {
@@ -324,7 +357,7 @@ export class FogOfWar {
   encodeZone(zone: string): Uint8Array | null {
     if (!this.worldAnchored) return this.grid(zone).cells;
     const chunks: { cx: number; cy: number; mask: Uint8Array }[] = [];
-    for (const [key, mask] of this.chunkFog) {
+    for (const [key, mask] of this.allRevealed) {
       if (!key.startsWith(`${zone}|`)) continue;
       let any = false;
       for (const b of mask) {
@@ -369,6 +402,7 @@ export class FogOfWar {
     if (this.worldAnchored) {
       const zones = new Set<string>();
       for (const key of this.chunkFog.keys()) zones.add(key.split('|')[0] ?? 'forest');
+      for (const key of this.allRevealed.keys()) zones.add(key.split('|')[0] ?? 'forest');
       const out: Array<[string, Uint8Array]> = [];
       for (const z of zones) {
         const enc = this.encodeZone(z);

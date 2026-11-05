@@ -254,13 +254,16 @@ export class LocalStorageSaveBackend implements SaveBackend {
   private writeFile(d: SaveFile): void {
     const prev = this.readSaveFile(d.hero.id);
     if (prev?.fog && !d.fog) d.fog = prev.fog;
-    this.write(LocalStorageSaveBackend.heroKey(d.hero.id), d);
+    if (!this.write(LocalStorageSaveBackend.heroKey(d.hero.id), d)) {
+      throw new Error('Kunde inte spara hjälten (lagring full?)');
+    }
     const entry: HeroIndexEntry = { id: d.hero.id, name: d.hero.name, cls: d.hero.cls, level: d.hero.level };
     if (d.savedAt) entry.savedAt = d.savedAt;
     const idx = this.index();
     const i = idx.findIndex((x) => x.id === d.hero.id);
     if (i >= 0) idx[i] = entry;
     else idx.push(entry);
+    // Index write failure is non-fatal for the hero data itself; do not swallow hero errors above.
     this.write(LocalStorageSaveBackend.K_INDEX, idx);
   }
 

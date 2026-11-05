@@ -30,9 +30,15 @@ const ok = await fogRepo.save('hq', 'forest', new Uint8Array([3, 0, 0]));
 assert.equal(ok, false);
 assert.ok(fogRepo.lastError);
 
-await backend.save('hq', {
-  hero: raw.hero,
-  game: { seed: 1, killed: [], zone: 'forest', pos: { x: 1, y: 1 }, stage: 0, runes: 0, city: 'besatt', bwCoordEpoch: 2 },
-});
+let heroOk = true;
+try {
+  await backend.save('hq', {
+    hero: raw.hero,
+    game: { seed: 1, killed: [], zone: 'forest', pos: { x: 1, y: 1 }, stage: 0, runes: 0, city: 'besatt', bwCoordEpoch: 2 },
+  });
+} catch {
+  heroOk = false;
+}
+assert.equal(heroOk, false);
 
 console.log('fog-storage-quota.test.mts: ok');
