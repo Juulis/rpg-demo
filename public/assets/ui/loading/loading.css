@@ -1,0 +1,99 @@
+/* Runornas kall – loadingskärm (#132)
+   Syns direkt i index.html innan PixiJS. Färger fungerar utan bilder.
+   Progress: sätt --rk-p till 0..1 på #rk-loading (eller .rk-load-fill width/height). */
+:root{
+  --rk-bg:#0d0f12;
+  --rk-dimma:#1c2128;
+  --rk-sten:#3a3f45;
+  --rk-gast:#4a6a7a;
+  --rk-gast-ljus:#6a9aaa;
+  --rk-rod:#c0182a;
+  --rk-hopp:#f2c46b;
+  --rk-text:#e6dfcc;
+  --rk-dim:#8a8070;
+  --rk-p:0;
+}
+#rk-loading{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--rk-bg);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 50% 42%, rgba(74,106,122,.12), transparent 70%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 55%, #000 100%);
+  font-family:Cinzel,serif;color:var(--rk-text);
+  transition:opacity .45s ease;
+}
+#rk-loading.rk-done{opacity:0;pointer-events:none}
+#rk-loading .rk-frame{
+  position:relative;width:min(92vw,520px);padding:36px 28px 28px;
+  border:1px solid rgba(58,63,69,.7);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.5), 0 0 40px rgba(0,0,0,.6);
+  background:rgba(13,15,18,.55) center/180px no-repeat;
+  /* bakgrundsbild runa sätts inline eller via .rk-has-art */
+  text-align:center;
+}
+#rk-loading.rk-has-art .rk-frame{
+  background-image:url(runa.webp);
+  background-size:160px;background-repeat:no-repeat;background-position:center 28%;
+  border-image:url(stenram.webp) 40 fill / 20px stretch;
+  border-width:20px;border-style:solid;
+}
+#rk-loading .rk-title{
+  margin:0 0 8px;font:700 clamp(28px,6vw,44px)/1.05 Cinzel,serif;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--rk-text);
+  text-shadow:0 0 18px rgba(192,24,42,.35), 0 2px 4px #000;
+}
+#rk-loading .rk-title-img{
+  display:none;width:min(70vw,360px);height:auto;margin:0 auto 10px;
+  filter:drop-shadow(0 0 14px rgba(192,24,42,.3));
+}
+#rk-loading.rk-has-art .rk-title{display:none}
+#rk-loading.rk-has-art .rk-title-img{display:block}
+#rk-loading .rk-sub{
+  margin:0 0 22px;font:14px Cinzel,serif;color:var(--rk-dim);letter-spacing:.2em;
+  text-transform:uppercase;
+}
+/* Progress: smal list (CSS, fungerar utan bilder). Fyllnad vänster → höger. */
+#rk-loading .rk-bar{
+  position:relative;width:min(78vw,360px);height:10px;margin:0 auto 10px;
+  background:#0a0c0e;border:1px solid #2a2e34;border-radius:6px;overflow:hidden;
+}
+#rk-loading .rk-bar-fill{
+  height:100%;width:calc(var(--rk-p) * 100%);
+  background:linear-gradient(90deg, #2a4050, var(--rk-gast) 40%, var(--rk-gast-ljus));
+  box-shadow:0 0 10px rgba(74,106,122,.55);
+  transition:width .2s linear;
+  border-radius:5px;
+}
+#rk-loading.rk-has-art .rk-bar{
+  height:12px;border:0;background:transparent;
+  border-image:url(progress_track.webp) 0 8 fill / 0 6px stretch;
+  border-style:solid;border-width:0 6px;
+}
+#rk-loading.rk-has-art .rk-bar-fill{
+  background:transparent;
+  border-image:url(progress_fill.webp) 0 8 fill / 0 6px stretch;
+  border-style:solid;border-width:0 6px;
+  box-shadow:none;
+}
+/* Valfri runsten (fylls underifrån). Sätt --rk-p samma. */
+#rk-loading .rk-runsten{
+  display:none;width:48px;height:72px;margin:0 auto 14px;position:relative;
+  background:#1a1e24;
+  -webkit-mask:url(runsten.webp) center/contain no-repeat;
+  mask:url(runsten.webp) center/contain no-repeat;
+}
+#rk-loading.rk-has-art .rk-runsten{display:block}
+#rk-loading .rk-runsten-fill{
+  position:absolute;left:0;right:0;bottom:0;
+  height:calc(var(--rk-p) * 100%);
+  background:linear-gradient(to top, #2a4050, var(--rk-gast), var(--rk-gast-ljus));
+  box-shadow:0 0 12px rgba(74,106,122,.4);
+  transition:height .2s linear;
+}
+#rk-loading .rk-pct{
+  font:13px Cinzel,serif;color:var(--rk-dim);letter-spacing:.08em;
+  min-height:1.2em;
+}
+#rk-loading .rk-pct b{color:var(--rk-gast-ljus);font-weight:700}

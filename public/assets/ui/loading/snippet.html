@@ -1,0 +1,13 @@
+<!-- Infoga i <body> före #app. Kräver Cinzel (redan i head). Progress: element.style.setProperty('--rk-p', String(p)) -->
+<div id="rk-loading" class="rk-has-art" style="--rk-p:0" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Laddar">
+  <div class="rk-frame">
+    <img class="rk-title-img" src="assets/ui/loading/titel.webp" width="360" height="172" alt="Runornas kall" />
+    <h1 class="rk-title">Runornas kall</h1>
+    <p class="rk-sub" data-i18n="loading.hint">Världen vaknar</p>
+    <div class="rk-runsten" aria-hidden="true"><div class="rk-runsten-fill"></div></div>
+    <div class="rk-bar"><div class="rk-bar-fill"></div></div>
+    <div class="rk-pct"><b data-rk-pct>0</b> %</div>
+  </div>
+</div>
+<link rel="stylesheet" href="assets/ui/loading/loading.css" />
+<!-- Utan bilder: ta bort class="rk-has-art" så CSS-text och CSS-list används. -->
