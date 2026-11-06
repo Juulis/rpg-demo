@@ -4,6 +4,7 @@ import type { GameContext } from '../core/GameContext';
 import type { HeroGateway } from './HeroGateway';
 import type { SaveRepository } from './SaveRepository';
 import { SAVE_VERSION, type SaveFile } from './types';
+import { BIG_WORLD_COORD_EPOCH } from '../world/bigWorld/saveCoordMigrate';
 
 /**
  * Autosparning drivs helt av bussen (issue #12): inga polling-timers. DOM-fri:
@@ -39,6 +40,7 @@ export class AutoSaveService {
     private readonly game: HeroGateway,
     private readonly repo: SaveRepository,
     private readonly onSaved: (d: SaveFile) => void = () => undefined,
+    private readonly onFailed: (reason?: string) => void = () => undefined,
     private readonly debounceMs = 150,
   ) {}
 
@@ -91,7 +93,11 @@ export class AutoSaveService {
     const snap = this.snapshot(this.current);
     this.current = snap;
     // köas direkt (före ev. radering), så att en sen sparning aldrig återskapar en raderad hjälte
-    if (!(await this.repo.save(snap))) return false;
+    if (!(await this.repo.save(snap))) {
+      this.ctx.bus.emit('save_failed', { reason });
+      this.onFailed(reason);
+      return false;
+    }
     this.lastSave = { reason, at: snap.savedAt ?? Date.now() };
     this.onSaved(snap);
     return true;
@@ -117,6 +123,7 @@ export class AutoSaveService {
         runes: g?.runes ?? 0,
         city: g?.city ?? 'besatt',
         ...(typeof g?.worldTime === 'number' ? { worldTime: g.worldTime } : {}),
+        bwCoordEpoch: g?.bwCoordEpoch ?? cur.game?.bwCoordEpoch ?? BIG_WORLD_COORD_EPOCH,
       },
       savedAt: Date.now(),
       worldState: snap.worldState ?? cur.worldState,

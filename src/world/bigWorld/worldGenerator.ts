@@ -3,10 +3,19 @@ import type { BigWorldDataFile, BigWorldRegion } from '../../data/bigWorldTypes'
 import type { EliteKind } from '../../data/types';
 import { Rng } from '../../core/Rng';
 import { blendBiomesAtChunk, biomeRenderPlaceholders, isTownBiomeChunk } from './biomeBlend';
-import { buildRoadIndex, roadsAtChunk, type RoadIndex } from './roads';
+import { buildRoadIndex, roadTileInChunk, roadsAtChunk, type RoadIndex } from './roads';
 import { resolveRegionAtChunk } from './regionIndex';
 import { chunkDistanceFromStart, ringAtChunkDistance } from './ringZone';
 import { planMellanmarkSpawn, filterSubtypesByBand, regionSpawnLevelBand, mellanmarkLevelBand } from './spawnRules';
+import {
+  mellanmarkChampionRoll,
+  mellanmarkSpawnCountRange,
+  regionSpawnCountRange,
+  skipSpawnNearRoad,
+  spawnTileNearRoad,
+} from './spawnDensity';
+import { isLegacyOnlySpawnChunk } from './heroRegion';
+import { regionMonsterPerGame } from './regionSpawnBudget';
 
 export interface BigWorldSpawnRoll {
   uid: string;
@@ -108,74 +117,54 @@ function neighborBiomeFactory(catalog: BigWorldCatalog): (ncx: number, ncy: numb
 }
 
 function rollChunkSpawns(
+  catalog: BigWorldCatalog,
   gameSeed: number,
   cx: number,
   cy: number,
   subtypes: readonly string[],
   genereradSpawn: boolean,
   band: readonly [number, number],
+  ring: number,
+  mellanmark: boolean,
+  region: BigWorldRegion,
+  roadIds: readonly string[],
 ): BigWorldSpawnRoll[] {
   if (!genereradSpawn || subtypes.length === 0) return [];
   const allowed = filterSubtypesByBand(subtypes, band);
   if (allowed.length === 0) return [];
   const rng = new Rng(chunkSpawnRollSeed(gameSeed, cx, cy));
-  const count = rng.int([2, 5]);
+  const champ = mellanmarkChampionRoll();
+  const range = mellanmark ? mellanmarkSpawnCountRange(ring) : regionSpawnCountRange(region, ring, catalog.data, cx, cy, gameSeed);
+  const target = rng.int(range);
+  const tileSize = catalog.data.meta.chunk?.storlek_rutor ?? 64;
+  const hasRoadAtTile = (ccx: number, ccy: number, ti: number, tj: number) => roadTileInChunk(catalog.roads, ccx, ccy, ti, tj, tileSize);
   const out: BigWorldSpawnRoll[] = [];
-  const tileSize = catalogSingleton?.data.meta.chunk?.storlek_rutor ?? 64;
   const fixed = DATA.monsterLevels.fixed_levels ?? {};
-  for (let i = 0; i < count; i++) {
+  let guard = 0;
+  while (out.length < target && guard < target * 8) {
+    guard++;
     const enemy = rng.pick(allowed);
-    const level = fixed[enemy] ?? band[0];
     const localX = rng.float(8, tileSize - 8);
     const localY = rng.float(8, tileSize - 8);
-    const uid = `bw:${cx},${cy}:${i}:${enemy}`;
+    const nearRoad = spawnTileNearRoad(localX, localY, cx, cy, roadIds, hasRoadAtTile);
+    if (skipSpawnNearRoad(nearRoad, rng.next())) continue;
+    const level = fixed[enemy] ?? band[0];
+    const uid = `bw:${cx},${cy}:${out.length}:${enemy}`;
     out.push({ uid, enemy, level, localX, localY });
   }
-  return out;
-}
-
-/** Champions/unika på startchunken (ersätter spawnzoner i strömmad stor skog). */
-function rollStartskogenElites(gameSeed: number, cx: number, cy: number, catalog: BigWorldCatalog): BigWorldSpawnRoll[] {
-  const [sx, sy] = catalog.data.regioner.find((r) => r.id === 'startskogen')?.chunk ?? [];
-  if (sx !== cx || sy !== cy) return [];
-  const area = DATA.spawn.areas.find((a) => a.id === 'startskogen');
-  const R = area?.session_roll;
-  if (!area || !R) return [];
-  const rng = new Rng(Rng.hash(gameSeed, 'startskogen', 'elites'));
-  const tileSize = catalog.data.meta.chunk?.storlek_rutor ?? 64;
-  const E = DATA.monsterLevels.elites;
-  const out: BigWorldSpawnRoll[] = [];
-  let idx = 100;
-  const champMax = R.champions?.max ?? 0;
-  for (let c = 0; c < champMax && rng.chance(R.champions?.chance_per_group ?? 0); c++) {
-    const row = rng.weighted(area.enemy_table ?? []);
-    const enemy = row.enemy;
-    const level = (DATA.monsterLevels.fixed_levels?.[enemy] ?? 1) + E.champion.level_bonus;
-    out.push({
-      uid: `bw:${cx},${cy}:elite:${idx++}:${enemy}`,
-      enemy,
-      level,
-      localX: rng.float(10, tileSize - 10),
-      localY: rng.float(10, tileSize - 10),
-      elite: 'champion',
-    });
-  }
-  const uMax = R.uniques?.max ?? 0;
-  for (let u = 0; u < uMax && rng.chance(R.uniques?.chance_per_game ?? 0); u++) {
-    const row = rng.weighted(area.enemy_table ?? []);
-    out.push({
-      uid: `bw:${cx},${cy}:unik:${idx++}:${row.enemy}`,
-      enemy: row.enemy,
-      level: row.enemy ? (DATA.monsterLevels.fixed_levels?.[row.enemy] ?? 1) : 1,
-      localX: rng.float(12, tileSize - 12),
-      localY: rng.float(12, tileSize - 12),
-      elite: 'unik',
-    });
+  if (mellanmark && ring >= champ.minRing && out.length > 0 && rng.next() < champ.chance) {
+    const idx = rng.int([0, out.length - 1]);
+    const pick = out[idx];
+    if (pick) {
+      pick.elite = 'champion';
+      const bonus = DATA.monsterLevels.elites.champion.level_bonus;
+      pick.level = Math.min(pick.level + bonus, band[1]);
+    }
   }
   return out;
 }
 
-/** Genererar all data för en chunk (layout = world_seed, spawns = game_seed). */
+/** Generererar all data för en chunk (layout = world_seed, spawns = game_seed). */
 export function generateChunkWorldData(
   worldSeed: number,
   gameSeed: number,
@@ -220,7 +209,9 @@ export function generateChunkWorldData(
     act = region.akt ?? null;
   } else {
     spawnSubtypes = filterSubtypesByBand(region.undertyper ?? [], spawnBand);
-    generatedSpawn = region.genererad_spawn === true;
+    const legacyChunk = isLegacyOnlySpawnChunk(cx, cy);
+    const regionBudget = regionMonsterPerGame(region, chunkRing.ring, catalog.data);
+    generatedSpawn = !legacyChunk && spawnSubtypes.length > 0 && (region.genererad_spawn === true || regionBudget > 0);
     access = region.atkomst ?? 'oppen';
     regionTyp = region.typ;
     safe = region.sakert === true;
@@ -251,14 +242,18 @@ export function generateChunkWorldData(
     tilePool: placeholders.tilePool,
     decorPool: placeholders.decorPool,
     music: town ? 'town' : placeholders.music,
-    spawns: [
-      ...rollChunkSpawns(gameSeed, cx, cy, spawnSubtypes, generatedSpawn, spawnBand),
-      ...rollStartskogenElites(gameSeed, cx, cy, catalog),
-    ],
+    spawns: rollChunkSpawns(
+      catalog,
+      gameSeed,
+      cx,
+      cy,
+      spawnSubtypes,
+      generatedSpawn && !isLegacyOnlySpawnChunk(cx, cy),
+      spawnBand,
+      chunkRing.ring,
+      mellanmark,
+      region,
+      roads,
+    ),
   };
-}
-
-/** XP-mult baserat på avstånd från start (design: längre bort = mer XP via högre nivåmonster). */
-export function xpDistanceMultiplier(distanceChunks: number): number {
-  return 1 + Math.min(distanceChunks, 20) * 0.02;
 }

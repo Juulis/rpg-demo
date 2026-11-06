@@ -39,7 +39,8 @@
     "slots_full": "Alla hjälteplatser är upptagna."
   },
   "save": {
-    "saved": "Sparat"
+    "saved": "Sparat",
+    "failed": "Kunde inte spara spelet."
   },
   "skill": {
     "locked": "Låses upp nivå {level}",

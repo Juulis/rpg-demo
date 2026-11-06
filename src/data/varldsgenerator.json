@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "source": "spel/design/varldsgenerator.json (delar; full sync i uppföljning)",
+    "note": "Kod läser täthet och dimma här tills DATA syncas från design."
+  },
+  "monsterpooler": {
+    "tathet_per_chunk": {
+      "ring_0": [0, 1],
+      "ring_1": [0, 1],
+      "ring_2": [0, 1],
+      "ring_3_och_ut": [0, 1]
+    },
+    "elit": {
+      "mellanmark_champion_chance_per_chunk": 0.1,
+      "mellanmark_champion_min_ring": 2,
+      "mellanmark_unika": false
+    }
+  },
+  "karta_och_dimma": {
+    "dimma_radie_rutor": 14,
+    "dimma_radie_enheter": 28,
+    "regel": "Avslöjade rutor sparas i världskoordinater per sparfil tillsammans med world_seed."
+  }
+}

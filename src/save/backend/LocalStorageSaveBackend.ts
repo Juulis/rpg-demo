@@ -109,7 +109,9 @@ export class LocalStorageSaveBackend implements SaveBackend {
     if (!file) return;
     file.fog = { ...(file.fog ?? {}), [zone]: base64 };
     file.savedAt = Date.now();
-    this.write(LocalStorageSaveBackend.heroKey(heroId), file);
+    if (!this.write(LocalStorageSaveBackend.heroKey(heroId), file)) {
+      throw new Error('Dimma kunde inte sparas (lagring full?)');
+    }
   }
 
   async clearFog(heroId: string): Promise<void> {
@@ -239,20 +241,29 @@ export class LocalStorageSaveBackend implements SaveBackend {
   private read(key: string): unknown {
     return parseJson(this.kv.get(key));
   }
-  private write(key: string, value: unknown): void {
-    this.kv.set(key, JSON.stringify(value));
+  private write(key: string, value: unknown): boolean {
+    try {
+      this.kv.set(key, JSON.stringify(value));
+      return true;
+    } catch (e) {
+      console.warn('Sparning misslyckades', e);
+      return false;
+    }
   }
 
   private writeFile(d: SaveFile): void {
     const prev = this.readSaveFile(d.hero.id);
     if (prev?.fog && !d.fog) d.fog = prev.fog;
-    this.write(LocalStorageSaveBackend.heroKey(d.hero.id), d);
+    if (!this.write(LocalStorageSaveBackend.heroKey(d.hero.id), d)) {
+      throw new Error('Kunde inte spara hjälten (lagring full?)');
+    }
     const entry: HeroIndexEntry = { id: d.hero.id, name: d.hero.name, cls: d.hero.cls, level: d.hero.level };
     if (d.savedAt) entry.savedAt = d.savedAt;
     const idx = this.index();
     const i = idx.findIndex((x) => x.id === d.hero.id);
     if (i >= 0) idx[i] = entry;
     else idx.push(entry);
+    // Index write failure is non-fatal for the hero data itself; do not swallow hero errors above.
     this.write(LocalStorageSaveBackend.K_INDEX, idx);
   }
 

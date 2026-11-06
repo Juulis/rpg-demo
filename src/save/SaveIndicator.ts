@@ -17,16 +17,27 @@ export class SaveIndicator {
     this.el.style.backgroundImage = `url(${assetUrl('ui/save.webp')})`;
   }
 
-  private titleText(): string {
-    return this.i18n?.t('save.saved') ?? 'Sparat';
+  private titleText(success = true): string {
+    return success ? (this.i18n?.t('save.saved') ?? 'Sparat') : (this.i18n?.t('save.failed') ?? 'Kunde inte spara spelet.');
   }
 
   show(): void {
-    this.el.title = this.titleText();
+    this.el.title = this.titleText(true);
     if (!this.el.isConnected) this.host.appendChild(this.el);
+    this.el.classList.remove('save-error');
     this.el.classList.add('on');
     clearTimeout(this.timer);
     this.timer = setTimeout(() => this.el.classList.remove('on'), this.visibleMs);
+  }
+
+  showError(): void {
+    this.el.title = this.titleText(false);
+    if (!this.el.isConnected) this.host.appendChild(this.el);
+    this.el.classList.add('on', 'save-error');
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.el.classList.remove('on', 'save-error');
+    }, this.visibleMs);
   }
 
   dispose(): void {

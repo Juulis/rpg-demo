@@ -813,4 +813,25 @@
       }
     }
   }
+  ,
+  "boss_xp_faktor": {
+    "per_akt": {
+      "akt_1": 1.0,
+      "akt_2": 0.1,
+      "akt_3": 0.36,
+      "akt_4": 0.27,
+      "akt_5": 1.0
+    },
+    "bossar": {
+      "grabjornen_ulvhild": "akt_1",
+      "benkungen_valdemar": "akt_1",
+      "trasdrottningen": "akt_2",
+      "korpmodern": "akt_2",
+      "spinnmodern": "akt_3",
+      "jarnmunken": "akt_3",
+      "askans_profet": "akt_4",
+      "askfursten_morvath": "akt_4",
+      "fadern_av_smittan": "akt_5"
+    }
+  }
 }

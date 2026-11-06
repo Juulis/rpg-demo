@@ -77,3 +77,17 @@ export function roadsAtChunk(index: RoadIndex, cx: number, cy: number): { ids: s
     types: index.typeByChunk.get(k) ?? [],
   };
 }
+
+/** Lokal ruta inom chunk ligger i vägkorridor (centrum ±4 rutor när chunk har väg). */
+export function roadTileInChunk(
+  index: RoadIndex,
+  cx: number,
+  cy: number,
+  localTileI: number,
+  localTileJ: number,
+  tileSize: number,
+): boolean {
+  if ((index.byChunk.get(chunkKey(cx, cy)) ?? []).length === 0) return false;
+  const center = tileSize / 2;
+  return Math.abs(localTileI - center) + Math.abs(localTileJ - center) <= 4;
+}

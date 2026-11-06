@@ -49,6 +49,8 @@ export interface BigWorldRegion {
   boss?: string | null;
   spawnzoner?: string[];
   genererad_spawn?: boolean;
+  /** Monster per game fördelat över regionens chunkar (design: tathet.monster_per_game). */
+  tathet?: number | [number, number] | { monster_per_game?: number; kalla?: string };
   akt?: string;
   sakert?: boolean;
   monsterplatser?: string[];
@@ -83,6 +85,23 @@ export interface BigWorldDataFile {
     version?: string;
     startpunkt: { region: string; poi?: string; chunk: [number, number] };
     chunk?: { storlek_rutor?: number; seed?: string; region_for_chunk?: string; generering?: string };
+    chunk_koordinater?: {
+      offset_enheter?: number;
+      origo_chunk?: [number, number];
+      formel?: string;
+    };
+    startskogen_fotavtryck?: {
+      chunk: [number, number];
+      legacy_spawn_endast?: boolean;
+      region_id?: string;
+    };
+    tathet_regel?: {
+      byar?: number;
+      stad_spawnzoner?: number;
+      ring_2_kontroll?: number;
+      delomrade_ring_0_1?: number;
+      vildmark_ring_3_plus?: number;
+    };
     zonmodell?: { avstand?: string; ringar?: BigWorldRing[]; regel?: string; ytterkant?: string };
     waypoints?: { regel?: string; punkter?: string[]; stadsvagstenar?: string };
   };

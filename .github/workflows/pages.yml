@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
       - name: Bygg 2D-spelet till dist/ (Pages-rot)
         run: npm run build
       - name: Sätt ihop Pages-artefakt (next/-omdirigering)

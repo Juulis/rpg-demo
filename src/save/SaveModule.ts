@@ -50,10 +50,18 @@ export class SaveModule implements GameModule, SaveBackendSource {
     this.game.setSaveBackend(this.repo.backend);
     const indicator = this.withDom ? new SaveIndicator(this.i18n) : null;
     const roster = new HeroRoster(this.repo, ctx.bus, this.entropy);
-    const autosave = new AutoSaveService(ctx, this.game, this.repo, (d) => {
-      roster.track(d, true);
-      indicator?.show();
-    });
+    const autosave = new AutoSaveService(
+      ctx,
+      this.game,
+      this.repo,
+      (d) => {
+        roster.track(d, true);
+        indicator?.show();
+      },
+      (_reason) => {
+        indicator?.showError();
+      },
+    );
     const lifecycle = this.withDom ? new PageLifecycleSaver(autosave) : null;
     autosave.start();
     lifecycle?.start();
