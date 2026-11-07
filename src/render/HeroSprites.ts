@@ -10,6 +10,10 @@ const HERO_CLASS_SHEETS: readonly { cls: string; folder: string; prefix: string 
   { cls: 'barbar', folder: 'barbar', prefix: 'barbar' },
 ];
 
+/** walk, run, idle, attack, dodge — ett anrop per ark i load(). */
+export const HERO_CLASS_SHEET_COUNT = 5;
+export const HERO_SHEET_STEPS = HERO_CLASS_SHEETS.length * HERO_CLASS_SHEET_COUNT;
+
 /** NV/NO i run-arket är profil — använd walk-rader, snabbare fps i run. */
 export function patchRunDiagonals(run: Anim, walk: Anim): void {
   for (const d of [3, 5]) {
@@ -56,7 +60,8 @@ export class HeroSprites {
   private fallback: AnimSet | null = null;
   readonly knightEquipment = new KnightEquipmentSprites();
 
-  async load(tex: TexLoader): Promise<void> {
+  async load(tex: TexLoader, onStep?: () => void): Promise<void> {
+    const step = (): void => onStep?.();
     for (const { cls, folder, prefix } of HERO_CLASS_SHEETS) {
       const base = folder ? `2d/sprites/hero/${folder}` : '2d/sprites/hero';
       const trySheet = async (id: string): Promise<Anim | undefined> => {
@@ -65,6 +70,8 @@ export class HeroSprites {
         } catch (e) {
           console.warn(`[HeroSprites] kunde inte ladda ${base}/${id}:`, e);
           return undefined;
+        } finally {
+          step();
         }
       };
       const walk = await trySheet(`${prefix}_walk_8dir`);
@@ -83,7 +90,7 @@ export class HeroSprites {
     const riddare = this.byClass.get('riddare');
     this.fallback = riddare ?? (await emergencySet(tex));
     if (!riddare) this.byClass.set('riddare', this.fallback);
-    await this.knightEquipment.load(tex);
+    await this.knightEquipment.load(tex, onStep);
   }
 
   hasDedicated(cls: string): boolean {

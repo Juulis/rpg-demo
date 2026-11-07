@@ -25,11 +25,22 @@ function complete(partial: AnimSet): AnimSet | null {
   };
 }
 
+/** Antal loadSheet8dir-försök i load() (människor: walk/idle/attack|gest, djur: walk/idle + ev. run/attack). */
+export function worldFigureLoadSteps(): number {
+  let n = WORLD_HUMAN_FIGURES.length * 3;
+  for (const id of WORLD_ANIMAL_FIGURES) {
+    n += 2;
+    if (ANIMAL_RUN.has(id)) n += 1;
+    if (ANIMAL_ATTACK.has(id)) n += 1;
+  }
+  return n;
+}
+
 /** 8-dir figurer under sprites/varld/<id>/ (jägare, handlare med gest, djur). */
 export class WorldFigureSprites {
   private readonly byId = new Map<WorldFigureId, AnimSet>();
 
-  async load(tex: TexLoader): Promise<void> {
+  async load(tex: TexLoader, onStep?: () => void): Promise<void> {
     const tryAnim = async (id: WorldFigureId, anim: string): Promise<Anim | undefined> => {
       const base = `2d/sprites/varld/${id}`;
       try {
@@ -37,6 +48,8 @@ export class WorldFigureSprites {
       } catch (e) {
         console.warn(`[WorldFigureSprites] ${id}_${anim}:`, e);
         return undefined;
+      } finally {
+        onStep?.();
       }
     };
 

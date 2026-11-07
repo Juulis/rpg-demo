@@ -9,6 +9,10 @@
     "sv": "Svenska",
     "en": "English"
   },
+  "loading": {
+    "hint": "The world awakens",
+    "aria": "Loading"
+  },
   "classes": {
     "amazonkrigare": "Amazon Warrior",
     "barbar": "Barbarian",

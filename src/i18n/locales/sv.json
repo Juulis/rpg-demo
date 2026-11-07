@@ -9,6 +9,10 @@
     "sv": "Svenska",
     "en": "English"
   },
+  "loading": {
+    "hint": "Världen vaknar",
+    "aria": "Laddar"
+  },
   "classes": {
     "amazonkrigare": "Amazonkrigare",
     "barbar": "Barbar",

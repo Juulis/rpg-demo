@@ -6,12 +6,16 @@ import { AudioModule, LoreBookModule, MapModule, MenuModule, SaveModule, WorldSt
 import { cryptoSeed } from './core/entropy';
 import { LocaleManager } from './i18n';
 import { smokeMetricsEnabled, captureSmokeHooksEnabled } from './dev/smokeGate';
+import { bootLoadingScreen, primeLoadingLocale } from './ui/loadingScreen';
+
+bootLoadingScreen();
 
 /**
  * Moduler registreras här. Varje modul får GameContext (bus, hero, zone, session, data) via init().
  * LocaleManager före save så språkval kan läsas innan menyn visas.
  */
 const i18n = new LocaleManager();
+await primeLoadingLocale(i18n);
 const save = new SaveModule(
   {
     loadHero: (s) => game.loadHero(s),

@@ -1,6 +1,7 @@
 import type { GameContext, GameModule } from '../core/GameContext';
 import type { SaveModule } from '../save/SaveModule';
 import type { LocaleManager } from '../i18n/LocaleManager';
+import { applyLoadingLocale, dismissLoadingWhenMenuReady } from '../ui/loadingScreen';
 import { ConfirmDialog } from './ConfirmDialog';
 import { CreateHeroDialog } from './CreateHeroDialog';
 import { HeroSelectMenu } from './HeroSelectMenu';
@@ -41,8 +42,13 @@ export class MenuModule implements GameModule {
     const menu = this.menu;
     if (this.showOnInit)
       void this.save.ready.then(() => {
-        if (this.save.autosave.isPlaying) return;
+        applyLoadingLocale(document, (key) => this.i18n.t(key));
+        if (this.save.autosave.isPlaying) {
+          dismissLoadingWhenMenuReady(false);
+          return;
+        }
         menu.show();
+        dismissLoadingWhenMenuReady(menu.isOpen);
       });
   }
 

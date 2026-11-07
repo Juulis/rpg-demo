@@ -42,6 +42,7 @@ import { SpawnSystem } from '../systems/SpawnSystem';
 import type { GroundDrop, World } from '../systems/World';
 import { Text } from '../text/Text';
 import { Hud } from '../ui/Hud';
+import { setLoadingProgress } from '../ui/loadingScreen';
 import { InventoryUI } from '../ui/InventoryUI';
 import { ItemText } from '../ui/ItemText';
 import { LootLabels } from '../ui/LootLabels';
@@ -232,7 +233,10 @@ export class Game {
     const issues = validateData();
     if (issues.length) console.warn('Datavarningar:', issues);
     await this.renderer.init(host);
-    await this.assets.load();
+    await this.assets.load((ratio) => {
+      const el = document.getElementById('rk-loading');
+      if (el) setLoadingProgress(el, ratio);
+    });
     const r = this.renderer;
     this.camera = new Camera(r.world);
     this.parallax = new Parallax(r.background);

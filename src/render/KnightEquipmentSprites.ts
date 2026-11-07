@@ -31,6 +31,11 @@ function parseDrawOrders(spec: UtrustningIndexAnim): AnimDrawOrders {
   return orders;
 }
 
+/** Ett fetch av riddare_utrustning.json. */
+export const KNIGHT_EQUIP_INDEX_STEPS = 1;
+/** Antal ark i riddare_utrustning.json (`anims.*.filer`). Synkas av loading-screen-testet. */
+export const KNIGHT_EQUIP_SHEET_STEPS = 40;
+
 /** Laddade riddar-lager + ritordning per animation (ärende #87). */
 export class KnightEquipmentSprites {
   private ready = false;
@@ -43,8 +48,10 @@ export class KnightEquipmentSprites {
     return this.ready;
   }
 
-  async load(tex: TexLoader): Promise<void> {
+  async load(tex: TexLoader, onStep?: () => void): Promise<void> {
+    const step = (): void => onStep?.();
     const res = await fetch(assetUrl(`${BASE_DIR}/riddare_utrustning.json`));
+    step();
     if (!res.ok) {
       console.warn('[KnightEquipmentSprites] saknar riddare_utrustning.json');
       return;
@@ -61,6 +68,8 @@ export class KnightEquipmentSprites {
           byLayer[layer as UtrustningLayer] = await loadSheet8dir(tex, BASE_DIR, stem, HERO_SCALE);
         } catch (e) {
           console.warn(`[KnightEquipmentSprites] kunde inte ladda ${stem}:`, e);
+        } finally {
+          step();
         }
       }
       loadedByJsonAnim.set(jsonAnim, byLayer);
