@@ -1,6 +1,8 @@
 import { Rectangle, Texture } from 'pixi.js';
-import { HeroSprites } from './HeroSprites';
-import { WorldFigureSprites } from './WorldFigureSprites';
+import { HERO_SHEET_STEPS, HeroSprites } from './HeroSprites';
+import { KNIGHT_EQUIP_INDEX_STEPS, KNIGHT_EQUIP_SHEET_STEPS } from './KnightEquipmentSprites';
+import { WorldFigureSprites, worldFigureLoadSteps } from './WorldFigureSprites';
+import { fraction, WeightedLoadProgress } from './loadProgress';
 import { fetchJsonResilient, loadTextureResilient } from './resilientAssets';
 import { loadMonster8dirSet, loadSheet8dir, loadStripAnim } from './sheet8dir';
 import { assetUrl, DIRS, type Anim, type AnimName, type AnimSet } from './spriteAnim';
@@ -92,6 +94,27 @@ export const DECOR = [
 ] as const;
 export type DecorId = (typeof DECOR)[number];
 
+const BG_FILES = ['himmel.jpg', 'fjarran_skog.png', 'fjarran_portalby.png', 'fjarran_stad.png'] as const;
+const EFFECT_FILES = ['glod_rare', 'glod_set', 'glod_legendary'] as const;
+
+/**
+ * Vikter för startladdningen. tiles/decor/hero/worldFigures/bg/icons är antal riktiga
+ * steg (textur, ark eller manifest). monsters är tyngre (8-dir-ark) än en markplatta.
+ * npcs = manifest + en post per npc i npc.json (13 idag; testet låser antalet).
+ */
+export function startupLoadWeights(): Record<'tiles' | 'decor' | 'hero' | 'worldFigures' | 'monsters' | 'npcs' | 'bg' | 'icons', number> {
+  return {
+    tiles: TILES.length,
+    decor: DECOR.length + 2,
+    hero: HERO_SHEET_STEPS + KNIGHT_EQUIP_INDEX_STEPS + KNIGHT_EQUIP_SHEET_STEPS,
+    worldFigures: worldFigureLoadSteps(),
+    monsters: 90,
+    npcs: 14,
+    bg: BG_FILES.length + EFFECT_FILES.length,
+    icons: 1,
+  };
+}
+
 const tex = (p: string): Promise<Texture> => loadTextureResilient(p);
 
 function cut(src: Texture, x: number, y: number, w: number, h: number): Texture {
@@ -138,29 +161,56 @@ export class AssetStore {
   /** Animerad dekor (t.ex. lägereld). */
   readonly decorAnims = new Map<string, Anim>();
   iconIndex: Record<string, string> = {};
+  private loadProgress: WeightedLoadProgress | null = null;
 
-  async load(): Promise<void> {
-    await Promise.all([
-      this.loadTiles(),
-      this.loadDecor(),
-      this.loadHero(),
-      this.loadWorldFigures(),
-      this.loadMonsters(),
-      this.loadNpcs(),
-      this.loadBg(),
-      this.loadIcons(),
-    ]);
+  /** @param onProgress kvot 0..1 av verkligt startarbete (plattor, ark, manifest). */
+  async load(onProgress?: (ratio: number) => void): Promise<void> {
+    const progress = new WeightedLoadProgress(startupLoadWeights());
+    this.loadProgress = progress;
+    const stop = onProgress ? progress.subscribe(onProgress) : undefined;
+    try {
+      await Promise.all([
+        this.loadTiles(),
+        this.loadDecor(),
+        this.loadHero(),
+        this.loadWorldFigures(),
+        this.loadMonsters(),
+        this.loadNpcs(),
+        this.loadBg(),
+        this.loadIcons(),
+      ]);
+      progress.seal();
+    } finally {
+      stop?.();
+      this.loadProgress = null;
+    }
   }
   private async loadTiles(): Promise<void> {
-    await Promise.all(TILES.map(async (t) => this.tiles.set(t, await tex(`2d/tiles/${t}.png`))));
+    const total = TILES.length;
+    let done = 0;
+    await Promise.all(
+      TILES.map(async (t) => {
+        this.tiles.set(t, await tex(`2d/tiles/${t}.png`));
+        done += 1;
+        this.loadProgress?.setPhase('tiles', fraction(done, total));
+      }),
+    );
+    this.loadProgress?.setPhase('tiles', 1);
   }
   private async loadDecor(): Promise<void> {
+    const total = DECOR.length + 2;
+    let done = 0;
+    const tick = (): void => {
+      done += 1;
+      this.loadProgress?.setPhase('decor', fraction(done, total));
+    };
     const meta = await fetchJsonResilient<Record<string, Size>>('2d/dekor/dekor.json', {});
+    tick();
     await Promise.all(
       DECOR.map(async (d) => {
         const size = meta[d];
-        if (!size) return;
-        this.decor.set(d, { tex: await tex(`2d/dekor/${d}.png`), size });
+        if (size) this.decor.set(d, { tex: await tex(`2d/dekor/${d}.png`), size });
+        tick();
       }),
     );
     try {
@@ -168,28 +218,54 @@ export class AssetStore {
     } catch (e) {
       console.warn('[AssetStore] lagereld_anim:', e);
     }
+    tick();
+    this.loadProgress?.setPhase('decor', 1);
   }
   private async loadHero(): Promise<void> {
+    const total = HERO_SHEET_STEPS + KNIGHT_EQUIP_INDEX_STEPS + KNIGHT_EQUIP_SHEET_STEPS;
+    let done = 0;
+    const tick = (): void => {
+      done += 1;
+      this.loadProgress?.setPhase('hero', fraction(done, total));
+    };
     try {
-      await this.heroes.load((p) => tex(p));
+      await this.heroes.load((p) => tex(p), tick);
     } catch (e) {
       console.warn('[AssetStore] hjältesprites:', e);
     }
+    this.loadProgress?.setPhase('hero', 1);
   }
   private async loadWorldFigures(): Promise<void> {
+    const total = worldFigureLoadSteps();
+    let done = 0;
+    const tick = (): void => {
+      done += 1;
+      this.loadProgress?.setPhase('worldFigures', fraction(done, total));
+    };
     try {
-      await this.worldFigures.load((p) => tex(p));
+      await this.worldFigures.load((p) => tex(p), tick);
     } catch (e) {
       console.warn('[AssetStore] världsfigurer:', e);
     }
+    this.loadProgress?.setPhase('worldFigures', 1);
   }
   private async loadMonsters(): Promise<void> {
     const index = await fetchJsonResilient<{ sheets: string[]; eightDir?: string[] }>('2d/sprites/monster/index.json', {
       sheets: [],
     });
     const eightDir = new Set(index.eightDir ?? []);
+    const sheets = index.sheets;
+    const sheetUnits = sheets.length;
+    let sheetsDone = 0;
+    // Arkens andel stannar på 0.95 så den lilla monster.json-svansen inte drar kvoten bakåt.
+    const reportMonsters = (tailDone: number, tailUnits: number): void => {
+      const head = sheetUnits <= 0 ? 0.95 : 0.95 * (sheetsDone / sheetUnits);
+      const tail = tailUnits <= 0 ? 0 : 0.05 * (tailDone / tailUnits);
+      this.loadProgress?.setPhase('monsters', head + tail);
+    };
+    if (sheetUnits === 0) this.loadProgress?.setPhase('monsters', 0.95);
     await Promise.all(
-      index.sheets.map(async (id) => {
+      sheets.map(async (id) => {
         try {
           if (eightDir.has(id)) {
             const eight = await loadMonster8dirSet(tex, id);
@@ -211,30 +287,43 @@ export class AssetStore {
           if (Object.keys(set).length) this.monsters.set(id, completeAnimSet(set));
         } catch (e) {
           console.warn(`[AssetStore] monster ${id}:`, e);
+        } finally {
+          sheetsDone += 1;
+          reportMonsters(0, 0);
         }
       }),
     );
     const meta = await fetchJsonResilient<{ monster: Record<string, Size & { fil: string }> }>('2d/sprites/monster/monster.json', {
       monster: {},
     });
+    const singles = Object.entries(meta.monster);
+    let singlesDone = 0;
     await Promise.all(
-      Object.entries(meta.monster).map(async ([id, s]) => {
-        if (this.monsters.has(id)) return;
+      singles.map(async ([id, s]) => {
         try {
+          if (this.monsters.has(id)) return;
           const a = single(await tex(`2d/sprites/monster/${s.fil}`), s);
           this.monsters.set(id, completeAnimSet({ idle: a, gang: a, attack: a }));
         } catch (e) {
           console.warn(`[AssetStore] monsterbild ${id}:`, e);
+        } finally {
+          singlesDone += 1;
+          reportMonsters(singlesDone, singles.length);
         }
       }),
     );
+    this.loadProgress?.setPhase('monsters', 1);
   }
   private async loadNpcs(): Promise<void> {
     const meta = await fetchJsonResilient<{
       npc: Record<string, Size & { fil: string; portratt?: string }>;
     }>('2d/sprites/npc/npc.json', { npc: {} });
+    const entries = Object.entries(meta.npc);
+    const total = 1 + entries.length;
+    let done = 1;
+    this.loadProgress?.setPhase('npcs', fraction(done, total));
     await Promise.all(
-      Object.entries(meta.npc).map(async ([id, s]) => {
+      entries.map(async ([id, s]) => {
         try {
           const dir = `2d/sprites/npc/${id}`;
           try {
@@ -246,26 +335,43 @@ export class AssetStore {
           if (s.portratt) this.npcPortraits.set(id, `2d/sprites/npc/${s.portratt}`);
         } catch (e) {
           console.warn(`[AssetStore] npc ${id}:`, e);
+        } finally {
+          done += 1;
+          this.loadProgress?.setPhase('npcs', fraction(done, total));
         }
       }),
     );
+    this.loadProgress?.setPhase('npcs', 1);
   }
   npcPortraitUrl(spriteId: string): string | null {
     const p = this.npcPortraits.get(spriteId);
     return p ? assetUrl(p) : null;
   }
   private async loadBg(): Promise<void> {
-    const list = ['himmel.jpg', 'fjarran_skog.png', 'fjarran_portalby.png', 'fjarran_stad.png'];
-    await Promise.all(list.map(async (f) => this.backgrounds.set(f.replace(/\..*/, ''), await tex(`2d/bakgrund/${f}`))));
+    const total = BG_FILES.length + EFFECT_FILES.length;
+    let done = 0;
+    const tick = (): void => {
+      done += 1;
+      this.loadProgress?.setPhase('bg', fraction(done, total));
+    };
     await Promise.all(
-      ['glod_rare', 'glod_set', 'glod_legendary'].map(async (f) => {
-        this.effects.set(f, await tex(`effekter/${f}.png`));
+      BG_FILES.map(async (f) => {
+        this.backgrounds.set(f.replace(/\..*/, ''), await tex(`2d/bakgrund/${f}`));
+        tick();
       }),
     );
+    await Promise.all(
+      EFFECT_FILES.map(async (f) => {
+        this.effects.set(f, await tex(`effekter/${f}.png`));
+        tick();
+      }),
+    );
+    this.loadProgress?.setPhase('bg', 1);
   }
   private async loadIcons(): Promise<void> {
     const idx = await fetchJsonResilient<Record<string, unknown>>('ikoner/index.json', {});
     for (const [k, v] of Object.entries(idx)) if (!k.startsWith('_') && typeof v === 'string') this.iconIndex[k] = v;
+    this.loadProgress?.setPhase('icons', 1);
   }
   /** URL till föremålsikon (DOM), eller null. Sökordning: legendarisk, setdel, set.bas, bas. */
   iconUrl(keys: (string | undefined)[]): string | null {

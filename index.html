@@ -6,8 +6,28 @@
     <title>Runornas kall</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="%BASE_URL%assets/ui/loading/loading.css" />
   </head>
-  <body>
+  <body style="background: #0d0f12; margin: 0">
+    <div
+      id="rk-loading"
+      class="rk-has-art"
+      style="--rk-p: 0"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      aria-label="Laddar"
+    >
+      <div class="rk-frame">
+        <img class="rk-title-img" src="%BASE_URL%assets/ui/loading/titel.webp" width="360" height="172" alt="Runornas kall" />
+        <h1 class="rk-title">Runornas kall</h1>
+        <p class="rk-sub" data-i18n="loading.hint">Världen vaknar</p>
+        <div class="rk-runsten" aria-hidden="true"><div class="rk-runsten-fill"></div></div>
+        <div class="rk-bar"><div class="rk-bar-fill"></div></div>
+        <div class="rk-pct"><b data-rk-pct>0</b> %</div>
+      </div>
+    </div>
     <div id="topbar"><button id="newGame">Ny seed</button></div>
     <div id="app"></div>
     <div id="fade"></div>
