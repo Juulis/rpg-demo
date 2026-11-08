@@ -37,8 +37,8 @@ function clipSegment(
     if ((c0 | c1) === 0) return { ax, ay, bx, by };
     if ((c0 & c1) !== 0) return null;
     const c = c0 !== 0 ? c0 : c1;
-    let x = ax;
-    let y = ay;
+    let x: number;
+    let y: number;
     if (c & TOP) {
       x = ax + ((bx - ax) * (y1 - ay)) / (by - ay);
       y = y1;
