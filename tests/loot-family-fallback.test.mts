@@ -5,7 +5,7 @@ import { Text } from '../src/text/Text';
 import { Rng } from '../src/core/Rng';
 
 const id = 'lyktgast';
-assert.ok(!DATA.drops.monsters[id]);
+assert.ok(DATA.drops.monsters[id], 'lyktgast har egen rad i drop_tabeller');
 const loot = new Loot(new Text(), new Rng(1));
 assert.equal(loot.monsterFamily(id), 'gastar');
 assert.equal(loot.monsterFamily('totally_unknown_monster_xyz'), undefined);

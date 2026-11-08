@@ -41,14 +41,18 @@
   },
   "olle_vardshus": {
     "name": "Olle",
-    "default_line": "Sit down! First round's on me."
+    "default_line": "Sit! First tankard's on me, the next one's on you."
   },
   "sara_benlasare": {
     "name": "Sara",
-    "default_line": "Bones tell truths people do not want to hear."
+    "default_line": "Bones tell. Trinkets listen."
   },
   "vaktkapten_ingrid": {
     "name": "Ingrid",
-    "default_line": "The village is under my protection."
+    "default_line": "This village is under my protection. Act accordingly."
+  },
+  "bybo_flykting": {
+    "name": "Refugee by the Fire",
+    "default_line": "Nine days we walked. Without you it would have been ten, and then no more."
   }
 }

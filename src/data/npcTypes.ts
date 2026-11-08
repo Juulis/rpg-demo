@@ -18,6 +18,8 @@ export interface NpcDef {
   tillstand_varianter?: Record<string, NpcStateVariant>;
   /** Bakgrundsbybo: rutinmall från npcRoutines.templates */
   routineTemplate?: string;
+  /** `flag:<id>` döljer NPC:n tills world.flags[id] är sann. */
+  visas?: string;
 }
 
 export interface NpcDataFile {

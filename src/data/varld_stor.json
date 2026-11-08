@@ -24,7 +24,46 @@
         1
       ],
       "legacy_spawn_endast": true,
-      "region_id": "startskogen"
+      "region_id": "startskogen",
+      "start_pos": [
+        -128,
+        -132
+      ],
+      "lager_ankare": {
+        "regel": "Rutinankare i lägret = kodens routineAnchors (areaId startskogen) + (−133, −139). Ankarna ligger 0 till 6,7 enheter från elden och lägrets NPC:er 1 till 4,1 enheter (Tor längst bort), alla inom säkra radien 12.",
+        "lagerelden": [
+          -128,
+          -128
+        ],
+        "ylvas_talt": [
+          -130,
+          -126
+        ],
+        "lagrets_karra": [
+          -124,
+          -127
+        ],
+        "tors_talt": [
+          -122,
+          -125
+        ],
+        "lagrets_palissad": [
+          -131,
+          -129
+        ],
+        "brors_talt": [
+          -133,
+          -127
+        ],
+        "lagrets_utkant": [
+          -127,
+          -123
+        ],
+        "helartaltet": [
+          -126,
+          -126
+        ]
+      }
     },
     "tathet_regel": {
       "byar": 0,
@@ -198,15 +237,15 @@
           "taggsvin",
           "skuggvarg",
           "gravargsledare",
-          "ruttbjorn",
-          "bergsulv"
+          "ruttbjorn"
         ],
         "forvridna": [
           "forvriden_jagare",
           "smittad_bybo",
           "smittbarare",
           "galen_munk",
-          "sprickvasen"
+          "sprickpilgrim",
+          "vriden_jatte"
         ],
         "ododa": [
           "skelett_hund",
@@ -215,6 +254,12 @@
           "skelett_runprast",
           "skelett_vakt",
           "skelett_kapten"
+        ],
+        "insekter": [
+          "trask_igel",
+          "gruvspindel",
+          "syrabagge",
+          "kitinvakt"
         ]
       },
       "nivaband": [
@@ -306,31 +351,35 @@
           "ersatts_av": null
         },
         {
-          "id": "skog_utmarksulvar",
-          "roll": "Ulvar i utmarken",
-          "familj": "bestar",
+          "id": "skog_kryp",
+          "roll": "Kryp i djupskogen",
+          "familj": "insekter",
           "nivaband": [
-            15,
-            15
+            12,
+            18
           ],
           "undertyper_nu": [
-            "bergsulv"
+            "trask_igel",
+            "gruvspindel",
+            "syrabagge",
+            "kitinvakt"
           ],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "skog_ytterkant",
-          "roll": "Ruttfolk och sprickväsen i den sjuka skogen",
+          "roll": "Ruttfolk, sprickpilgrimer och vridna jättar i den sjuka skogen",
           "familj": "forvridna",
           "nivaband": [
             24,
-            29
+            30
           ],
           "undertyper_nu": [
             "smittbarare",
             "galen_munk",
-            "sprickvasen"
+            "sprickpilgrim",
+            "vriden_jatte"
           ],
           "platshallare": false,
           "ersatts_av": null
@@ -378,20 +427,24 @@
       "monsterfamiljer": {
         "ododa": [
           "myrhund",
-          "myrlik",
-          "ruttnande_lik"
+          "myrlik"
         ],
         "gastar": [
           "dimgast",
           "klagokvinna",
           "trasknacken",
-          "lyktgast"
+          "lyktgast",
+          "irrbloss"
         ],
         "forvridna": [
           "smittbarare",
           "galen_munk",
           "kottklump",
-          "sprickvasen"
+          "sprickpilgrim",
+          "sprickvasen",
+          "vriden_jatte",
+          "forvriden_jagare",
+          "smittad_bybo"
         ]
       },
       "nivaband": [
@@ -475,42 +528,50 @@
         },
         {
           "id": "trask_sprickvasen",
-          "roll": "Sprickans väsen",
+          "roll": "Sprickans väsen och pilgrimer",
           "familj": "forvridna",
           "nivaband": [
-            29,
+            28,
             30
           ],
           "undertyper_nu": [
-            "sprickvasen"
+            "sprickpilgrim",
+            "sprickvasen",
+            "vriden_jatte"
           ],
           "platshallare": false,
-          "ersatts_av": null
+          "ersatts_av": null,
+          "vikter": {
+            "sprickvasen": 0.25
+          },
+          "vikt_not": "Övriga undertyper vikt 1. Se varldsgenerator.json monsterpooler.vikter."
         },
         {
-          "id": "trask_lik",
-          "roll": "Ruttnande lik i myrkanten",
-          "familj": "ododa",
+          "id": "trask_smittade",
+          "roll": "Smittade myrbor",
+          "familj": "forvridna",
           "nivaband": [
-            4,
-            4
+            3,
+            5
           ],
           "undertyper_nu": [
-            "ruttnande_lik"
+            "forvriden_jagare",
+            "smittad_bybo"
           ],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "trask_lyktgastar",
-          "roll": "Lyktgastar",
+          "roll": "Lyktgastar och irrbloss",
           "familj": "gastar",
           "nivaband": [
             16,
-            16
+            18
           ],
           "undertyper_nu": [
-            "lyktgast"
+            "lyktgast",
+            "irrbloss"
           ],
           "platshallare": false,
           "ersatts_av": null
@@ -556,22 +617,35 @@
       "id": "fjall",
       "monsterfamiljer": {
         "gastar": [
+          "dimgast",
           "fjallvatte"
         ],
         "bestar": [
+          "fjallbjorn",
           "bergsulv",
+          "taggsvin",
           "skuggvarg",
-          "likatare_varg"
+          "ruttbjorn"
         ],
         "insekter": [
+          "trask_igel",
           "gruvspindel",
           "syrabagge",
           "kitinvakt"
         ],
         "forvridna": [
           "forvriden_gruvarbetare",
+          "jarnbroder",
+          "askkultist",
+          "smittbarare",
           "galen_munk",
-          "sprickvasen"
+          "sprickpilgrim",
+          "vriden_jatte"
+        ],
+        "ododa": [
+          "skelett_krigare",
+          "skelett_bagskytt",
+          "skelett_vakt"
         ]
       },
       "nivaband": [
@@ -606,9 +680,10 @@
           "familj": "gastar",
           "nivaband": [
             11,
-            13
+            12
           ],
           "undertyper_nu": [
+            "dimgast",
             "fjallvatte"
           ],
           "platshallare": false,
@@ -616,13 +691,14 @@
         },
         {
           "id": "fjall_bergsulvar",
-          "roll": "Bergsulvar",
+          "roll": "Bergsulvar och fjällbjörnar",
           "familj": "bestar",
           "nivaband": [
             14,
             15
           ],
           "undertyper_nu": [
+            "fjallbjorn",
             "bergsulv"
           ],
           "platshallare": false,
@@ -630,13 +706,14 @@
         },
         {
           "id": "fjall_gruvkryp",
-          "roll": "Gruvkryp",
+          "roll": "Gruvkryp och grottiglar",
           "familj": "insekter",
           "nivaband": [
-            15,
-            19
+            12,
+            18
           ],
           "undertyper_nu": [
+            "trask_igel",
             "gruvspindel",
             "syrabagge",
             "kitinvakt"
@@ -650,53 +727,74 @@
           "familj": "forvridna",
           "nivaband": [
             16,
-            17
+            18
           ],
           "undertyper_nu": [
-            "forvriden_gruvarbetare"
+            "forvriden_gruvarbetare",
+            "jarnbroder"
           ],
-          "platshallare": true,
-          "ersatts_av": "ny undertyp järnbroder"
+          "platshallare": false,
+          "ersatts_av": null
         },
         {
           "id": "fjall_vargar",
-          "roll": "Vargar i fjällbjörkskogen",
+          "roll": "Vargar och björnar i fjällbjörkskogen",
           "familj": "bestar",
           "nivaband": [
-            5,
-            8
+            4,
+            6
           ],
           "undertyper_nu": [
+            "taggsvin",
             "skuggvarg",
-            "likatare_varg"
+            "ruttbjorn"
           ],
           "platshallare": false,
           "ersatts_av": null
         },
         {
           "id": "fjall_munkar",
-          "roll": "Galna munkar från Järnklostret",
+          "roll": "Galna munkar och askpredikanter",
           "familj": "forvridna",
           "nivaband": [
-            25,
+            20,
             25
           ],
           "undertyper_nu": [
+            "askkultist",
+            "smittbarare",
             "galen_munk"
           ],
           "platshallare": false,
           "ersatts_av": null
         },
         {
-          "id": "fjall_sprickvasen",
-          "roll": "Sprickväsen",
+          "id": "fjall_ytterkant",
+          "roll": "Sprickpilgrimer och vridna jättar",
           "familj": "forvridna",
           "nivaband": [
-            29,
-            29
+            28,
+            30
           ],
           "undertyper_nu": [
-            "sprickvasen"
+            "sprickpilgrim",
+            "vriden_jatte"
+          ],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "fjall_stupade",
+          "roll": "Frusna stupade på passen",
+          "familj": "ododa",
+          "nivaband": [
+            7,
+            9
+          ],
+          "undertyper_nu": [
+            "skelett_krigare",
+            "skelett_bagskytt",
+            "skelett_vakt"
           ],
           "platshallare": false,
           "ersatts_av": null
@@ -737,13 +835,23 @@
         "gastar": [
           "klagokvinna",
           "trasknacken",
-          "gravgast",
-          "havsgast"
+          "havsgast",
+          "dodsljus",
+          "lyktgast",
+          "irrbloss"
         ],
         "ododa": [
+          "drunknad",
           "klockdrunknad",
-          "ruttnande_lik",
+          "skelett_krigare",
+          "skelett_bagskytt",
+          "skelett_kapten",
+          "drunknad_vakt",
           "brandskelett"
+        ],
+        "forvridna": [
+          "forvriden_jagare",
+          "smittad_bybo"
         ]
       },
       "nivaband": [
@@ -786,39 +894,43 @@
           "roll": "Klockans drunknade",
           "familj": "ododa",
           "nivaband": [
-            14,
+            12,
             15
           ],
           "undertyper_nu": [
+            "drunknad",
             "klockdrunknad"
           ],
           "platshallare": false,
           "ersatts_av": null
         },
         {
-          "id": "kust_strandlik",
-          "roll": "Lik på stranden",
-          "familj": "ododa",
+          "id": "kust_smittade",
+          "roll": "Smittade strandbor",
+          "familj": "forvridna",
           "nivaband": [
-            4,
-            4
+            3,
+            5
           ],
           "undertyper_nu": [
-            "ruttnande_lik"
+            "forvriden_jagare",
+            "smittad_bybo"
           ],
           "platshallare": false,
           "ersatts_av": null
         },
         {
-          "id": "kust_strandgastar",
-          "roll": "Strandgastar",
-          "familj": "gastar",
+          "id": "kust_skeppsbrutna",
+          "roll": "Skeppsbrutna skelett",
+          "familj": "ododa",
           "nivaband": [
-            8,
-            8
+            7,
+            9
           ],
           "undertyper_nu": [
-            "gravgast"
+            "skelett_krigare",
+            "skelett_bagskytt",
+            "skelett_kapten"
           ],
           "platshallare": false,
           "ersatts_av": null
@@ -828,10 +940,11 @@
           "roll": "Askeborgs drunknade vakter",
           "familj": "ododa",
           "nivaband": [
-            21,
+            19,
             21
           ],
           "undertyper_nu": [
+            "drunknad_vakt",
             "brandskelett"
           ],
           "platshallare": false,
@@ -839,14 +952,30 @@
         },
         {
           "id": "kust_havsgastar",
-          "roll": "Havsgastar",
+          "roll": "Havsgastar och dödsljus",
           "familj": "gastar",
           "nivaband": [
             28,
-            28
+            30
           ],
           "undertyper_nu": [
-            "havsgast"
+            "havsgast",
+            "dodsljus"
+          ],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "kust_lyktor",
+          "roll": "Lyktgastar längs fyrkusten",
+          "familj": "gastar",
+          "nivaband": [
+            16,
+            18
+          ],
+          "undertyper_nu": [
+            "lyktgast",
+            "irrbloss"
           ],
           "platshallare": false,
           "ersatts_av": null
@@ -891,15 +1020,16 @@
         "ododa": [
           "skelett_bagskytt",
           "skelett_runprast",
-          "skelett_vakt",
-          "ruttnande_lik"
+          "skelett_vakt"
         ],
         "insekter": [
+          "trask_igel",
           "gruvspindel",
           "syrabagge",
           "kitinvakt"
         ],
         "demoner": [
+          "gruvdemon",
           "askimp",
           "eldpiska_demon",
           "hornslaktare",
@@ -907,7 +1037,12 @@
         ],
         "forvridna": [
           "askkultist",
-          "sprickvasen"
+          "forvriden_jagare",
+          "smittad_bybo",
+          "sprickpilgrim",
+          "vriden_jatte",
+          "smittbarare",
+          "galen_munk"
         ]
       },
       "nivaband": [
@@ -963,10 +1098,11 @@
           "roll": "Glödbaggar",
           "familj": "insekter",
           "nivaband": [
-            15,
+            12,
             18
           ],
           "undertyper_nu": [
+            "trask_igel",
             "gruvspindel",
             "syrabagge",
             "kitinvakt"
@@ -979,10 +1115,11 @@
           "roll": "Askdemoner",
           "familj": "demoner",
           "nivaband": [
-            19,
-            25
+            17,
+            23
           ],
           "undertyper_nu": [
+            "gruvdemon",
             "askimp",
             "eldpiska_demon",
             "hornslaktare",
@@ -1021,29 +1158,46 @@
           "ersatts_av": "ny undertyp katedralväktare"
         },
         {
-          "id": "ask_brandlik",
-          "roll": "Brända lik",
-          "familj": "ododa",
+          "id": "ask_smittade",
+          "roll": "Smittade askbor",
+          "familj": "forvridna",
           "nivaband": [
-            4,
-            4
+            3,
+            5
           ],
           "undertyper_nu": [
-            "ruttnande_lik"
+            "forvriden_jagare",
+            "smittad_bybo"
           ],
           "platshallare": false,
           "ersatts_av": null
         },
         {
-          "id": "ask_sprickvasen",
-          "roll": "Sprickväsen",
+          "id": "ask_ytterkant",
+          "roll": "Sprickpilgrimer och vridna jättar",
           "familj": "forvridna",
           "nivaband": [
-            29,
-            29
+            28,
+            30
           ],
           "undertyper_nu": [
-            "sprickvasen"
+            "sprickpilgrim",
+            "vriden_jatte"
+          ],
+          "platshallare": false,
+          "ersatts_av": null
+        },
+        {
+          "id": "ask_ruttfolk",
+          "roll": "Ruttfolk vid askgränsen",
+          "familj": "forvridna",
+          "nivaband": [
+            24,
+            25
+          ],
+          "undertyper_nu": [
+            "smittbarare",
+            "galen_munk"
           ],
           "platshallare": false,
           "ersatts_av": null
@@ -1509,7 +1663,7 @@
       "atkomst": "oppen",
       "boss_poi": "gamla_byn_kyrkogard",
       "tathet": {
-        "monster_per_game": 22,
+        "monster_per_game": 23,
         "kalla": "bana1_stor.json nivakurva.ring_2_kontroll (spawnzoner.json areas.gamla_byn)"
       }
     },

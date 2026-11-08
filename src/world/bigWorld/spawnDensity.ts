@@ -4,19 +4,20 @@ import { regionSpawnCountForChunk, regionMonsterPerGame } from './regionSpawnBud
 
 type RingRange = readonly [number, number];
 
-function ringKey(ring: number): string {
-  if (ring <= 0) return 'ring_0';
-  if (ring === 1) return 'ring_1';
-  if (ring === 2) return 'ring_2';
-  return 'ring_3_och_ut';
-}
-
 const genTable = DATA.varldGenerator.monsterpooler.tathet_per_chunk as Record<string, RingRange>;
 
-/** Mellanmark — värden från varldsgenerator.json (design: snitt 0,5 = [0,1]). */
+function ringKey(ring: number): string {
+  const n = Math.max(0, Math.floor(ring));
+  const specific = `ring_${n}`;
+  if (genTable[specific]) return specific;
+  if (n >= 3 && genTable.ring_3_och_ut) return 'ring_3_och_ut';
+  return specific;
+}
+
+/** Mellanmark — monster per chunk från varldsgenerator.json (design: [0,2], medel 1). */
 export function mellanmarkSpawnCountRange(ring: number): RingRange {
   const key = ringKey(ring);
-  return genTable[key] ?? [0, 1];
+  return genTable[key] ?? genTable.ring_3_och_ut ?? [0, 2];
 }
 
 /** Namngiven region — fördelar region.tathet.monster_per_game över regionens chunkar. */
@@ -67,16 +68,35 @@ export function skipSpawnNearRoad(nearRoad: boolean, rngNext: number): boolean {
   return nearRoad && rngNext > 0.5;
 }
 
+/** Champion per grupp (hela gruppen), från elit_modell. Inte per chunk. */
 export function mellanmarkChampionRoll(): { minRing: number; chance: number } {
-  const elit = DATA.varldGenerator.monsterpooler.elit;
-  return {
-    minRing: elit.mellanmark_champion_min_ring ?? 2,
-    chance: elit.mellanmark_champion_chance_per_chunk ?? 0.1,
-  };
+  const pool = DATA.varldGenerator.monsterpooler;
+  const model = pool.elit_modell;
+  if (model && typeof model === 'object') {
+    return {
+      minRing: model.fran_ring ?? 2,
+      chance: model.chans_per_grupp ?? 0.1,
+    };
+  }
+  const elit = pool.elit;
+  if (elit && typeof elit === 'object') {
+    return {
+      minRing: elit.mellanmark_champion_min_ring ?? 2,
+      chance: elit.mellanmark_champion_chance_per_chunk ?? 0.1,
+    };
+  }
+  return { minRing: 2, chance: 0.1 };
+}
+
+/** Vikt inom familjens pool. Saknad vikt = 1. max_andel är en global andel, inte ett chunktak. */
+export function subtypeSpawnWeight(id: string): number {
+  const w = DATA.varldGenerator.monsterpooler.vikter?.undertyper?.[id];
+  return typeof w === 'number' && w > 0 ? w : 1;
 }
 
 export function fogRevealRadiusWorld(): number {
   const k = DATA.varldGenerator.karta_och_dimma;
+  if (!k || typeof k === 'string') return 28;
   if (k.dimma_radie_enheter != null) return k.dimma_radie_enheter;
   const rutor = k.dimma_radie_rutor ?? 14;
   return rutor * 2;

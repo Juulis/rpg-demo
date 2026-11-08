@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { Container as PixiContainer, Texture } from 'pixi.js';
 import { BIG_WORLD_GROUND_PATCH_TILES, BIG_WORLD_RENDER_RADIUS } from '../src/world/bigWorld/bigWorldConfig';
-import { chunkTileCount, chunkWorldSpan } from '../src/world/bigWorld/bigWorldCoords';
+import { chunkTileCount, chunkWorldSpan, worldToChunk } from '../src/world/bigWorld/bigWorldCoords';
 import { BigWorldStreamGround, patchLayerUsable } from '../src/world/bigWorld/BigWorldStreamGround';
 import { Zone } from '../src/world/Zone';
 import type { AssetStore } from '../src/render/Assets';
@@ -37,6 +37,11 @@ for (let i = 0; i < 40 && !ground.isGroundReady(); i++) {
   ground.sync(hero, 42, 99, { objects, zone }, {} as import('pixi.js').Renderer, view);
 }
 assert.ok(ground.countGroundDisplayObjects() > 0, 'BigWorldStreamGround ska bygga mark-sprites via sync/tickBuildBudget');
+const heroChunk = worldToChunk(hero.x, hero.y);
+const cached = ground.chunkCache.get(42, 99, heroChunk.cx, heroChunk.cy);
+assert.equal(cached.cx, heroChunk.cx);
+assert.equal(cached.cy, heroChunk.cy);
+assert.ok(ground.children.length > 0, 'BigWorldStreamGround själv ska ha barn efter sync');
 ground.destroy({ children: true });
 
 console.log('big-world-ground-bake.test.mts: ok', { visibleChunks, patchesPerChunk, bake: 'sprites' });

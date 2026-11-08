@@ -69,7 +69,21 @@ export function biomeSpawnSubtypes(
   return filterSubtypesByBand(collectBiomeSubtypeIds(biome, monsterFamily), band);
 }
 
-/** Välj familj med flest giltiga undertyper i bandet; föredrar nearest regions familj om den fungerar. */
+function familyLevelDistance(biome: BigWorldBiome, monsterFamily: string, band: readonly [number, number]): number | null {
+  const ids = biomeSpawnSubtypes(biome, monsterFamily, band);
+  if (ids.length === 0) return null;
+  const fixed = DATA.monsterLevels.fixed_levels ?? {};
+  const mid = (band[0] + band[1]) / 2;
+  let best = Infinity;
+  for (const id of ids) {
+    const lv = fixed[id];
+    if (lv == null) continue;
+    best = Math.min(best, Math.abs(lv - mid));
+  }
+  return Number.isFinite(best) ? best : null;
+}
+
+/** En familj: närmaste regions familj om den har en undertyp i bandet, annars den vars nivå ligger närmast bandets mitt. */
 export function pickBiomeMonsterFamily(
   biome: BigWorldBiome | undefined,
   band: readonly [number, number],
@@ -78,13 +92,12 @@ export function pickBiomeMonsterFamily(
   if (!biome) return null;
   if (prefer && biomeSpawnSubtypes(biome, prefer, band).length > 0) return prefer;
   let best: string | null = null;
-  let bestN = 0;
+  let bestD = Infinity;
   for (const fam of familiesInBiome(biome)) {
-    const n = biomeSpawnSubtypes(biome, fam, band).length;
-    if (n > bestN) {
-      bestN = n;
-      best = fam;
-    }
+    const d = familyLevelDistance(biome, fam, band);
+    if (d == null || d >= bestD) continue;
+    bestD = d;
+    best = fam;
   }
   return best;
 }

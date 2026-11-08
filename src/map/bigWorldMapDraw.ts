@@ -5,6 +5,66 @@ import type { Projection } from './MapPainter';
 
 const RING_FILL: readonly string[] = ['#3a5040', '#425848', '#4a6048', '#526850', '#5a7050', '#627850', '#6a8050', '#728850'];
 
+const INSIDE = 0;
+const LEFT = 1;
+const RIGHT = 2;
+const BOTTOM = 4;
+const TOP = 8;
+
+function outCode(x: number, y: number, x0: number, y0: number, x1: number, y1: number): number {
+  let c = INSIDE;
+  if (x < x0) c |= LEFT;
+  else if (x > x1) c |= RIGHT;
+  if (y < y0) c |= BOTTOM;
+  else if (y > y1) c |= TOP;
+  return c;
+}
+
+/** Cohen–Sutherland. Returnerar null om segmentet ligger helt utanför rektangeln. */
+function clipSegment(
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number,
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number,
+): { ax: number; ay: number; bx: number; by: number } | null {
+  let c0 = outCode(ax, ay, x0, y0, x1, y1);
+  let c1 = outCode(bx, by, x0, y0, x1, y1);
+  for (let i = 0; i < 8; i++) {
+    if ((c0 | c1) === 0) return { ax, ay, bx, by };
+    if ((c0 & c1) !== 0) return null;
+    const c = c0 !== 0 ? c0 : c1;
+    let x = ax;
+    let y = ay;
+    if (c & TOP) {
+      x = ax + ((bx - ax) * (y1 - ay)) / (by - ay);
+      y = y1;
+    } else if (c & BOTTOM) {
+      x = ax + ((bx - ax) * (y0 - ay)) / (by - ay);
+      y = y0;
+    } else if (c & RIGHT) {
+      y = ay + ((by - ay) * (x1 - ax)) / (bx - ax);
+      x = x1;
+    } else {
+      y = ay + ((by - ay) * (x0 - ax)) / (bx - ax);
+      x = x0;
+    }
+    if (c === c0) {
+      ax = x;
+      ay = y;
+      c0 = outCode(ax, ay, x0, y0, x1, y1);
+    } else {
+      bx = x;
+      by = y;
+      c1 = outCode(bx, by, x0, y0, x1, y1);
+    }
+  }
+  return { ax, ay, bx, by };
+}
+
 function ringColor(ring: number): string {
   const idx = Math.min(ring, RING_FILL.length - 1);
   return RING_FILL[idx] ?? '#243028';
@@ -80,13 +140,31 @@ export function drawBigWorldMapLayer(
     const revealWx = firstReg ? chunkMinWorld(firstReg.chunk[0], firstReg.chunk[1]).x : first.x;
     const revealWy = firstReg ? chunkMinWorld(firstReg.chunk[0], firstReg.chunk[1]).y : first.y;
     if (opts.isRevealed && !opts.isRevealed(revealWx, revealWy)) continue;
-    c.beginPath();
-    c.moveTo(X(first.x), Y(first.y));
-    for (let i = 1; i < pts.length; i++) {
-      const pt = pts[i];
-      if (pt) c.lineTo(X(pt.x), Y(pt.y));
+    const clip =
+      p.clipX0 != null && p.clipY0 != null && p.clipX1 != null && p.clipY1 != null
+        ? { x0: p.clipX0, y0: p.clipY0, x1: p.clipX1, y1: p.clipY1 }
+        : null;
+    if (!clip) {
+      c.beginPath();
+      c.moveTo(X(first.x), Y(first.y));
+      for (let i = 1; i < pts.length; i++) {
+        const pt = pts[i];
+        if (pt) c.lineTo(X(pt.x), Y(pt.y));
+      }
+      c.stroke();
+      continue;
     }
-    c.stroke();
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1];
+      const b = pts[i];
+      if (!a || !b) continue;
+      const seg = clipSegment(a.x, a.y, b.x, b.y, clip.x0, clip.y0, clip.x1, clip.y1);
+      if (!seg) continue;
+      c.beginPath();
+      c.moveTo(X(seg.ax), Y(seg.ay));
+      c.lineTo(X(seg.bx), Y(seg.by));
+      c.stroke();
+    }
   }
 
   const startCenter = chunkCenterWorld(start[0], start[1]);

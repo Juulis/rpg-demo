@@ -13,6 +13,7 @@ import {
   regionSpawnCountRange,
   skipSpawnNearRoad,
   spawnTileNearRoad,
+  subtypeSpawnWeight,
 } from './spawnDensity';
 import { isLegacyOnlySpawnChunk } from './heroRegion';
 import { regionMonsterPerGame } from './regionSpawnBudget';
@@ -116,6 +117,39 @@ function neighborBiomeFactory(catalog: BigWorldCatalog): (ncx: number, ncy: numb
   return (ncx, ncy) => primaryBiomeAt(catalog, ncx, ncy).region.biom;
 }
 
+const GROUP_MAX = 3;
+
+function isPackLeader(id: string): boolean {
+  return id.includes('ledare') || id.endsWith('kapten');
+}
+
+function nearestLowerSameFamily(leaderId: string, allowed: readonly string[]): string | null {
+  const byId = new Map(DATA.families.monsters.map((m) => [m.id, m]));
+  const leader = byId.get(leaderId);
+  if (!leader) return null;
+  const fixed = DATA.monsterLevels.fixed_levels ?? {};
+  const leaderLv = fixed[leaderId] ?? leader.level;
+  let best: string | null = null;
+  let bestGap = Infinity;
+  for (const id of allowed) {
+    if (id === leaderId || isPackLeader(id)) continue;
+    const def = byId.get(id);
+    if (!def || def.family !== leader.family) continue;
+    const lv = fixed[id] ?? def.level;
+    if (lv > leaderLv) continue;
+    const gap = leaderLv - lv;
+    if (gap < bestGap) {
+      bestGap = gap;
+      best = id;
+    }
+  }
+  return best;
+}
+
+function weightedSubtype(rng: Rng, ids: readonly string[]): string {
+  return rng.weighted(ids.map((id) => ({ id, weight: subtypeSpawnWeight(id) }))).id;
+}
+
 function rollChunkSpawns(
   catalog: BigWorldCatalog,
   gameSeed: number,
@@ -140,26 +174,52 @@ function rollChunkSpawns(
   const hasRoadAtTile = (ccx: number, ccy: number, ti: number, tj: number) => roadTileInChunk(catalog.roads, ccx, ccy, ti, tj, tileSize);
   const out: BigWorldSpawnRoll[] = [];
   const fixed = DATA.monsterLevels.fixed_levels ?? {};
+  const levelBonus = DATA.monsterLevels.elites.champion.level_bonus;
+  let championUsed = false;
   let guard = 0;
-  while (out.length < target && guard < target * 8) {
-    guard++;
-    const enemy = rng.pick(allowed);
-    const localX = rng.float(8, tileSize - 8);
-    const localY = rng.float(8, tileSize - 8);
-    const nearRoad = spawnTileNearRoad(localX, localY, cx, cy, roadIds, hasRoadAtTile);
-    if (skipSpawnNearRoad(nearRoad, rng.next())) continue;
-    const level = fixed[enemy] ?? band[0];
-    const uid = `bw:${cx},${cy}:${out.length}:${enemy}`;
-    out.push({ uid, enemy, level, localX, localY });
-  }
-  if (mellanmark && ring >= champ.minRing && out.length > 0 && rng.next() < champ.chance) {
-    const idx = rng.int([0, out.length - 1]);
-    const pick = out[idx];
-    if (pick) {
-      pick.elite = 'champion';
-      const bonus = DATA.monsterLevels.elites.champion.level_bonus;
-      pick.level = Math.min(pick.level + bonus, band[1]);
+  const place = (id: string, makeChamp: boolean): boolean => {
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const localX = rng.float(8, tileSize - 8);
+      const localY = rng.float(8, tileSize - 8);
+      const nearRoad = spawnTileNearRoad(localX, localY, cx, cy, roadIds, hasRoadAtTile);
+      if (skipSpawnNearRoad(nearRoad, rng.next())) continue;
+      const base = fixed[id] ?? band[0];
+      out.push({
+        uid: `bw:${cx},${cy}:${out.length}:${id}`,
+        enemy: id,
+        level: makeChamp ? base + levelBonus : base,
+        localX,
+        localY,
+        elite: makeChamp ? 'champion' : null,
+      });
+      return true;
     }
+    return false;
+  };
+  while (out.length < target && guard < Math.max(target * 16, 16)) {
+    guard++;
+    const remaining = target - out.length;
+    let size = mellanmark ? remaining : rng.int([1, Math.min(GROUP_MAX, remaining)]);
+    const enemy = weightedSubtype(rng, allowed);
+    const members: string[] = [];
+    if (!mellanmark && isPackLeader(enemy) && remaining >= GROUP_MAX) {
+      size = GROUP_MAX;
+      const follower = nearestLowerSameFamily(enemy, allowed);
+      members.push(enemy);
+      for (let i = 1; i < size; i++) members.push(follower ?? enemy);
+    } else {
+      for (let i = 0; i < size; i++) members.push(enemy);
+    }
+    const canChamp = mellanmark && ring >= champ.minRing && !championUsed;
+    const makeChamp = canChamp && rng.chance(champ.chance);
+    const before = out.length;
+    for (const id of members) {
+      if (out.length >= target) break;
+      let placed = false;
+      for (let t = 0; t < 12 && !placed; t++) placed = place(id, makeChamp);
+    }
+    if (makeChamp && out.length > before) championUsed = true;
+    if (mellanmark) break;
   }
   return out;
 }

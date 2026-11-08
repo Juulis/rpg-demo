@@ -57,8 +57,9 @@ export class CombatSystem {
       vulnerable: m.vuln > 0,
       shieldedFront: m.id === 'skelett_vakt' && f.x * to.x + f.y * to.y > 0.3,
       xp: m.def.xp,
-      xpMult: m.boss ? 1 : (m.es?.xp ?? 1),
-      bossAct: m.boss ? bossActForMonster(m.id) : undefined,
+      xpMult: m.boss || m.def.underboss ? 1 : (m.es?.xp ?? 1),
+      underboss: m.def.underboss === true,
+      bossAct: m.boss || m.def.underboss ? bossActForMonster(m.id) : undefined,
     };
   }
 

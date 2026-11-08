@@ -100,6 +100,8 @@ export class FogOfWar {
   private loadedZones = new Set<string>();
   private worldAnchored = false;
   private dirty = false;
+  /** Ökar bara när en ruta faktiskt avslöjas, så kartcachen ser ny dimma även om dirty redan var sann. */
+  private revision = 0;
   private storageFull = false;
   /** Keys of chunks (zone|cx,cy) that have been revealed since last takeDirty. */
   private dirtyChunks = new Set<string>();
@@ -305,6 +307,7 @@ export class FogOfWar {
     }
     if (changed) {
       this.dirty = true;
+      this.revision++;
       this.trimChunkFogMemory(zone, wx, wy);
     }
     return changed;
@@ -365,6 +368,7 @@ export class FogOfWar {
     if (changed) {
       F.ver++;
       this.dirty = true;
+      this.revision++;
     }
     return changed;
   }
@@ -465,6 +469,10 @@ export class FogOfWar {
 
   get isDirty(): boolean {
     return this.dirty;
+  }
+
+  get fogRevision(): number {
+    return this.revision;
   }
 
   takeDirty(): Array<[string, Uint8Array]> {

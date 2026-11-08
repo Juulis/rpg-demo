@@ -17,6 +17,8 @@ export interface MonsterDef {
   xp: number;
   aggro_range: number;
   boss: boolean;
+  /** Underboss: boss_xp_faktor.underboss_mult × aktens faktor, rå xp_bas. */
+  underboss?: boolean;
   behavior?: string;
   weapon_type?: string | null;
   knockback_resist?: number;
@@ -58,6 +60,8 @@ export interface SessionRoll {
   monsters_per_group?: Range;
   champions?: { chance_per_group: number; max: number };
   uniques?: { chance_per_game: number; max: number };
+  /** Utfall från design (simulerat). SpawnSystem klämmer inte mot detta. */
+  groups_total?: Range;
 }
 export interface SpawnArea {
   id: string;
@@ -100,8 +104,14 @@ export interface MonsterLevels {
     unique_names: string[];
   };
   xp_penalty: { table: { hjalte_minus_monster: number; xp_mult: number }[] };
-  /** Per akt — boss-XP = xp_bas × per_akt[akt] (design monster_niva.json). */
-  boss_xp_faktor?: Record<string, number> | { per_akt?: Record<string, number>; bossar?: Record<string, string>; regel?: string };
+  /** Per akt. Kill-XP räknas i koden från rå xp_bas; faktorn bakas inte in i data. */
+  boss_xp_faktor?: {
+    per_akt?: Record<string, number>;
+    bossar?: Record<string, string>;
+    regel?: string;
+    underboss_mult?: number;
+    resultat?: string;
+  };
 }
 export interface EliteLoot {
   extra_rolls: number;
@@ -208,17 +218,34 @@ export type { BigWorldDataFile } from './bigWorldTypes';
 export interface VarldGeneratorFile {
   monsterpooler: {
     tathet_per_chunk: Record<string, [number, number]>;
-    elit: {
-      mellanmark_champion_chance_per_chunk?: number;
-      mellanmark_champion_min_ring?: number;
-      mellanmark_unika?: boolean;
+    grupper?: string;
+    per_biom?: unknown;
+    familjeregel?: string;
+    vikter?: {
+      undertyper?: Record<string, number>;
+      max_andel?: Record<string, number>;
+    };
+    /** Prosa i design, eller äldre maskinobjekt. */
+    elit?:
+      | string
+      | {
+          mellanmark_champion_chance_per_chunk?: number;
+          mellanmark_champion_min_ring?: number;
+          mellanmark_unika?: boolean;
+        };
+    elit_modell?: {
+      fran_ring?: number;
+      chans_per_grupp?: number;
     };
   };
-  karta_och_dimma: {
-    dimma_radie_rutor?: number;
-    dimma_radie_enheter?: number;
-    regel?: string;
-  };
+  karta_och_dimma?:
+    | string
+    | {
+        dimma_radie_rutor?: number;
+        dimma_radie_enheter?: number;
+        regel?: string;
+        avslojning?: string;
+      };
 }
 
 /** All speldata, tillgänglig för moduler via GameContext.data. */

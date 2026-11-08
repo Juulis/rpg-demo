@@ -663,7 +663,7 @@ export class Game {
   private respawn(): void {
     const h = this.mustWorld().hero;
     h.s.hp = h.stats.maxHp;
-    this.enterZone('forest', { x: 0, y: 4 });
+    this.enterZone('forest');
   }
 
   // ---------- input ----------

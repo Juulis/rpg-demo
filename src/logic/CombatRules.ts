@@ -11,7 +11,9 @@ export function bossXpFactorFor(act: string, underboss = false): number {
   const pa = bx.per_akt;
   if (!pa || typeof pa !== 'object') return 1;
   const base = pa[act] ?? 1;
-  return underboss ? base * 0.4 : base;
+  if (!underboss) return base;
+  const mult = typeof bx.underboss_mult === 'number' ? bx.underboss_mult : 0.4;
+  return base * mult;
 }
 
 /** Vad reglerna behöver veta om ett monster (ren data, ingen figur). */
@@ -31,6 +33,8 @@ export interface MonsterSnapshot {
   shieldedFront: boolean;
   xp: number;
   xpMult: number;
+  /** Underboss: underboss_mult × aktens boss_xp_faktor. xp är rå bas. */
+  underboss?: boolean;
   /** Boss-XP skalning per akt när boss_xp_faktor finns i data. */
   bossAct?: string;
 }
@@ -92,16 +96,17 @@ export class CombatRules {
     return { kind: 'hit', dmg: Math.max(1, Math.round(d - st.defReduce)), reduced };
   }
 
-  /** Boss-XP: enda plats där boss_xp_faktor tillämpas (xp_bas i data är rå bas; design synkar utan inbakad faktor). */
-  monsterXp(m: Pick<MonsterSnapshot, 'lvl' | 'boss' | 'xp' | 'xpMult' | 'bossAct'>, heroLvl: number): number {
+  /**
+   * Kill-XP = round(xp/10 × 3 × L^1.5 × k × elit × bossfaktor).
+   * xp i data är rå bas. boss_xp_faktor tillämpas bara här.
+   */
+  monsterXp(m: Pick<MonsterSnapshot, 'lvl' | 'boss' | 'underboss' | 'xp' | 'xpMult' | 'bossAct'>, heroLvl: number): number {
     const diff = heroLvl - m.lvl;
     const row = DATA.monsterLevels.xp_penalty.table.find((r) => r.hjalte_minus_monster === Math.max(-8, Math.min(12, diff)));
     let k = row ? row.xp_mult : 1;
-    if (m.boss) {
-      k = Math.max(0.25, k);
-      const factor = bossXpFactorFor(m.bossAct ?? 'akt_1', false);
-      return Math.round((m.xp || 10) * factor * k * xpMultiplier());
-    }
-    return Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * xpMultiplier());
+    const bossLike = !!(m.boss || m.underboss);
+    if (bossLike) k = Math.max(0.25, k);
+    const factor = bossLike ? bossXpFactorFor(m.bossAct ?? 'akt_1', !!m.underboss) : 1;
+    return Math.round(((m.xp || 10) / 10) * 3 * Math.pow(m.lvl, 1.5) * k * m.xpMult * factor * xpMultiplier());
   }
 }

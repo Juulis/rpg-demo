@@ -41,7 +41,7 @@ export class MapView {
     if (z.bigWorldStreaming) {
       const W = this.canvas.clientWidth;
       const H = this.canvas.clientHeight;
-      const key = `${z.name}|${Math.round(h.pos.x / 16)}|${Math.round(h.pos.y / 16)}|${W}x${H}|${this.painter.fogDirty()}`;
+      const key = `${z.name}|${z.areaId}|${Math.round(h.pos.x / 16)}|${Math.round(h.pos.y / 16)}|${W}x${H}|${this.painter.fogRevision()}`;
       if (key === this.lastDrawKey) return;
       this.lastDrawKey = key;
     }
