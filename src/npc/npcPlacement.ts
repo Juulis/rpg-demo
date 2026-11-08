@@ -28,10 +28,16 @@ export function resolveNpcPosition(def: NpcDef): Vec2 {
   return { x: pos[0], y: pos[1] };
 }
 
+function hiddenByFlag(def: NpcDef, world: Readonly<WorldState>): boolean {
+  const visas = def.visas;
+  if (!visas?.startsWith('flag:')) return false;
+  return world.flags[visas.slice('flag:'.length)] !== true;
+}
+
 export function resolveNpc(def: NpcDef, world: Readonly<WorldState>, ctx?: NpcPlacementContext): ResolvedNpc {
   const state = world.npc_states[def.id] ?? 'levande';
   const variant = def.tillstand_varianter?.[state];
-  let hidden = !!variant?.hidden;
+  let hidden = !!variant?.hidden || hiddenByFlag(def, world);
   let pos = resolveNpcPosition(def);
   let routinePlats: string | undefined;
   let routineActivity: string | undefined;

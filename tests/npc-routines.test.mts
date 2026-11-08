@@ -27,7 +27,8 @@ assert.equal(merchantInTradeHours('tor_kolare', midnight), false);
 assert.equal(merchantInTradeHours('tor_kolare', 12 * SECONDS_PER_HOUR), true);
 
 const campFire = anchorPosition('startskogen', 'lagerelden');
-assert.ok(campFire && Math.abs(campFire.x - 5) < 0.01);
+assert.ok(campFire && Math.abs(campFire.x - -128) < 0.01);
+assert.ok(campFire && Math.abs(campFire.y - -128) < 0.01);
 
 const ws = createEmptyWorldState();
 ws.npc_locations.tor_kolare = 'startlagret:tors_talt';
@@ -51,6 +52,20 @@ assert.equal(plats, 'lagerelden');
 setNpcLocale('en');
 assert.ok(merchantNightGreeting('tor_kolare').includes('gold'));
 assert.ok(routineActivityLabel('sover').includes('sleep'));
+
+const flykt = npcById('bybo_flykting');
+assert.ok(flykt);
+const flyktHidden = resolveNpc(flykt, createEmptyWorldState(), { zoneAreaId: 'startskogen', worldTime: 12 * SECONDS_PER_HOUR });
+assert.equal(flyktHidden.hidden, true);
+const flyktWorld = createEmptyWorldState();
+flyktWorld.flags.hjalpt_flyktingarna_vargstigen = true;
+const flyktShown = resolveNpc(flykt, flyktWorld, { zoneAreaId: 'startskogen', worldTime: 12 * SECONDS_PER_HOUR });
+assert.equal(flyktShown.hidden, false);
+assert.ok(Math.abs(flyktShown.pos.x - -128) < 0.01);
+
+const sigrun = npcById('sigrun_helare');
+assert.equal(sigrun?.zone, 'forest');
+assert.equal(sigrun?.area, 'startskogen');
 
 ws.city_states.gamla_byn = 'aterbefolkad_1';
 const bybor = backgroundVillagerDefs('gamla_byn', ws);

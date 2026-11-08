@@ -9,169 +9,268 @@
       "sprite": "gamla_ylva",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [4, 11],
+      "pos": [
+        -129,
+        -128
+      ],
       "act": 1,
       "name": "Gamla Ylva",
       "default_line": "Runorna sover, barn. Men de drömmer.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "alltid"
     },
     {
       "id": "tor_kolare",
       "sprite": "tor_kolare",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [9, 12],
+      "pos": [
+        -124,
+        -127
+      ],
       "act": 1,
       "name": "Tor Kolare",
       "default_line": "Har du guld så har jag varor. Har du inte, ha en trevlig dag.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "alltid"
     },
     {
       "id": "lilla_mira",
       "sprite": "lilla_mira",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [6, 14],
+      "pos": [
+        -127,
+        -125
+      ],
       "act": 1,
       "name": "Lilla Mira",
       "default_line": "Har du sett min bror? Han hade nya sandaler.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "alltid"
     },
     {
       "id": "viskaren",
       "sprite": "viskaren",
       "area": "startskogen",
       "zone": "forest",
-      "pos": [2, 6],
+      "pos": [
+        2,
+        6
+      ],
       "act": 1,
       "name": "Viskaren",
       "default_line": "Hör du dem? Nej. Du hör aldrig.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "alltid"
     },
     {
       "id": "hedda_jagare",
       "sprite": "hedda_jagare",
       "area": "vargaby",
       "zone": "wolfstead",
-      "tile": [20, 28],
+      "tile": [
+        20,
+        28
+      ],
       "act": 1,
       "name": "Hedda",
       "default_line": "Päls, ben, pilar. Det är vad Vargaby har nu.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "vargaby aterbefolkad_1"
     },
     {
       "id": "bror_vakt",
       "sprite": "bror_vakt",
-      "area": "gamla_byn",
-      "zone": "village",
-      "tile": [2, 17],
+      "area": "startskogen",
+      "zone": "forest",
       "act": 1,
       "name": "Bror",
       "default_line": "Håll dig på stigen. Skogen är hungrig.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "alltid",
+      "pos": [
+        -131,
+        -129
+      ]
     },
     {
       "id": "sigrun_helare",
       "sprite": "sigrun_helare",
-      "area": "gamla_byn",
-      "zone": "village",
-      "tile": [9, 9],
+      "area": "startskogen",
+      "zone": "forest",
       "act": 1,
       "name": "Sigrun",
       "default_line": "Sitt ner. Låt mig se på dig.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "alltid",
+      "pos": [
+        -126,
+        -126
+      ]
     },
     {
       "id": "gravvaktaren_ebbe",
       "sprite": "gravvaktaren_ebbe",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [22, 20],
+      "tile": [
+        22,
+        20
+      ],
       "act": 1,
       "name": "Ebbe",
-      "default_line": "Gravarna är oroliga i natt. Jag håller dem stilla.",
+      "default_line": "Ingen borde komma hit. Ändå kom du.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "alltid"
     },
     {
       "id": "marta_torghandlare",
       "sprite": "marta_torghandlare",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [12, 13],
+      "tile": [
+        12,
+        13
+      ],
       "act": 1,
       "name": "Märta",
-      "default_line": "Allt har ett pris. Ibland två.",
+      "default_line": "Nya ansikten! Äntligen nya ansikten!",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "gamla_byn aterbefolkad_1"
     },
     {
       "id": "gunnar_jarnhand",
       "sprite": "gunnar_jarnhand",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [15, 13],
+      "tile": [
+        15,
+        13
+      ],
       "act": 1,
       "name": "Gunnar",
-      "default_line": "Stål ska hålla. Människor med, om de får välja.",
+      "default_line": "Jag smider inte längre. Men jag säljer.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "gamla_byn aterbefolkad_2"
     },
     {
       "id": "olle_vardshus",
       "sprite": "olle_vardshus",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [18, 11],
+      "tile": [
+        18,
+        11
+      ],
       "act": 1,
       "name": "Olle",
-      "default_line": "Sätt dig! Första stopet är på mig.",
+      "default_line": "Sätt dig! Första stopet är på mig, nästa är på dig.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "gamla_byn aterbefolkad_3"
     },
     {
       "id": "sara_benlasare",
       "sprite": "sara_benlasare",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [7, 16],
+      "tile": [
+        7,
+        16
+      ],
       "act": 1,
       "name": "Sara",
-      "default_line": "Ben berättar sanningar folk inte vill höra.",
+      "default_line": "Ben berättar. Smycken lyssnar.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "gamla_byn aterbefolkad_3"
     },
     {
       "id": "vaktkapten_ingrid",
       "sprite": "vaktkapten_ingrid",
       "area": "gamla_byn",
       "zone": "village",
-      "tile": [4, 19],
+      "tile": [
+        4,
+        19
+      ],
       "act": 1,
       "name": "Ingrid",
-      "default_line": "Byn är under mitt skydd.",
+      "default_line": "Byn är under mitt skydd. Bete dig därefter.",
       "tillstand_varianter": {
-        "dod": { "hidden": true }
-      }
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "gamla_byn aterbefolkad_2"
+    },
+    {
+      "id": "bybo_flykting",
+      "sprite": "bybo_flykting",
+      "area": "startskogen",
+      "zone": "forest",
+      "act": 1,
+      "name": "Flykting vid elden",
+      "default_line": "Nio dygn gick vi. Utan dig hade det blivit tio, och sedan inga fler.",
+      "tillstand_varianter": {
+        "dod": {
+          "hidden": true
+        }
+      },
+      "visas": "flag:hjalpt_flyktingarna_vargstigen",
+      "routineTemplate": "bybo_bonde",
+      "pos": [
+        -128,
+        -127
+      ],
+      "kraver_grafik": true
     }
   ]
 }

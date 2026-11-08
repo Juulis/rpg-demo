@@ -49,7 +49,7 @@
     },
     "sigrun_helare": {
       "roll": "helare",
-      "omrade": "gamla_byn",
+      "omrade": "startlagret",
       "home": "helartaltet",
       "dygnsrutin": [
         {
@@ -74,7 +74,7 @@
     },
     "bror_vakt": {
       "roll": "vakt",
-      "omrade": "gamla_byn",
+      "omrade": "startlagret",
       "home": "lagrets_palissad",
       "dygnsrutin": [
         {
@@ -277,6 +277,25 @@
           "to": "20:00",
           "plats": "kapellet_krypta",
           "aktivitet": "sover"
+        }
+      ]
+    },
+    "bybo_flykting": {
+      "roll": "flykting",
+      "omrade": "startlagret",
+      "home": "lagerelden",
+      "dygnsrutin": [
+        {
+          "from": "08:00",
+          "to": "18:00",
+          "plats": "lagerelden",
+          "aktivitet": "lagar kärran och hjälper till vid elden"
+        },
+        {
+          "from": "18:00",
+          "to": "08:00",
+          "plats": "lagerelden",
+          "aktivitet": "sover vid elden"
         }
       ]
     }

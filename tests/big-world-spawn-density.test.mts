@@ -25,4 +25,37 @@ for (let dx = -gamla.radie; dx <= gamla.radie; dx++) {
 }
 assert.ok(gamlaSpawns <= gamlaBudget, 'region ska följa tathet.monster_per_game, inte mellanmark per chunk');
 
+const bonus = DATA.monsterLevels.elites.champion.level_bonus;
+let sawPair = false;
+let sawChampGroup = false;
+let champEarly = 0;
+let unik = 0;
+let mixed = 0;
+for (let seed = 1; seed <= 24; seed++) {
+  for (let cx = 4; cx <= 16; cx++) {
+    for (let cy = -4; cy <= 8; cy++) {
+      const d = generateChunkWorldData(seed, seed, cx, cy, catalog);
+      if (!d.mellanmark) continue;
+      assert.ok(d.spawns.length <= mellanmarkSpawnCountRange(d.ring)[1]);
+      assert.ok(d.spawns.length <= 3, 'mellanmarkens budget är högst en grupp');
+      const champs = d.spawns.filter((s) => s.elite === 'champion');
+      if (champs.length > 0 && champs.length !== d.spawns.length) mixed++;
+      if (d.ring < 2 && champs.length > 0) champEarly++;
+      if (d.spawns.length >= 2) sawPair = true;
+      if (champs.length >= 2) sawChampGroup = true;
+      for (const s of d.spawns) {
+        if (s.elite === 'unik') unik++;
+        if (s.elite !== 'champion') continue;
+        const base = DATA.monsterLevels.fixed_levels?.[s.enemy];
+        if (base != null) assert.equal(s.level, base + bonus);
+      }
+    }
+  }
+}
+assert.equal(mixed, 0, 'champion gäller hela gruppen, högst en grupp');
+assert.equal(champEarly, 0, 'ring 0–1 har inga mellanmarkschampions');
+assert.equal(unik, 0, 'inga unika i mellanmark');
+assert.ok(sawPair, 'mellanmark ska kunna spawna mer än ett monster');
+assert.ok(sawChampGroup, 'en championgrupp ska lyfta hela gruppen');
+
 console.log('big-world-spawn-density.test.mts: ok');

@@ -50,7 +50,8 @@ for (const seed of scanOpts.seeds) {
       }
       for (const s of d.spawns) {
         const band = d.mellanmark ? ringBand : d.levelBand;
-        if (s.level < band[0] || s.level > band[1]) spawnLevelOutside++;
+        const hi = band[1] + (s.elite === 'champion' ? DATA.monsterLevels.elites.champion.level_bonus : 0);
+        if (s.level < band[0] || s.level > hi) spawnLevelOutside++;
       }
     }
   }

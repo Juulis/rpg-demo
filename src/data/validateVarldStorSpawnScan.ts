@@ -46,8 +46,10 @@ export function validateVarldStorSpawnScan(bw: BigWorldDataFile, _ctx: VarldStor
         }
 
         if (!d.generatedSpawn || d.spawns.length === 0) continue;
+        const champBonus = DATA.monsterLevels.elites.champion.level_bonus ?? 0;
         for (const s of d.spawns) {
-          if (s.level < expectedBand[0] || s.level > expectedBand[1]) {
+          const hi = expectedBand[1] + (s.elite === 'champion' ? champBonus : 0);
+          if (s.level < expectedBand[0] || s.level > hi) {
             issues.push(
               `varld_stor spawn seed ${seed} chunk ${cx},${cy} ring ${d.ring}: ${s.enemy} nivå ${s.level} utanför ${expectedBand.join('-')}`,
             );

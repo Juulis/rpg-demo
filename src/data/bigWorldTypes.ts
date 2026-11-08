@@ -94,6 +94,9 @@ export interface BigWorldDataFile {
       chunk: [number, number];
       legacy_spawn_endast?: boolean;
       region_id?: string;
+      /** Hjältens start i världsenheter (design: söder om lägerelden). */
+      start_pos?: [number, number];
+      lager_ankare?: Record<string, [number, number] | string>;
     };
     tathet_regel?: {
       byar?: number;

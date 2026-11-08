@@ -30,6 +30,13 @@ export function regionAtHero(hero: Vec2): ReturnType<typeof resolveRegionAtChunk
   return resolveRegionAtChunk(cx, cy, getBigWorldCatalog().data.regioner);
 }
 
+/** Hjältens start vid lägret (design start_pos), inte Rungläntan. */
+export function campStartPos(): Vec2 {
+  const p = DATA.varldStor.meta.startskogen_fotavtryck?.start_pos;
+  if (p && p.length === 2) return { x: p[0], y: p[1] };
+  return { x: -128, y: -132 };
+}
+
 /** Världsposition för Rungläntans mitt (0,0). */
 export function runglantanWorldCenter(): Vec2 {
   const fp = DATA.varldStor.meta.startskogen_fotavtryck?.chunk ?? [1, 1];

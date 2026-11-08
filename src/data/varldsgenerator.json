@@ -1,24 +1,345 @@
 {
   "meta": {
-    "source": "spel/design/varldsgenerator.json (delar; full sync i uppföljning)",
-    "note": "Kod läser täthet och dimma här tills DATA syncas från design."
+    "version": "1.0",
+    "issue": "GitHub Juulis/rpg-demo #85 (världsgeneratorn), kompletterar varld_stor.json",
+    "regel": "Generatorregler som saknades i varld_stor.json. Namngivna regioner, vägar och POI:er i varld_stor.json är fasta; generatorn fyller mellanmarken och placerar mindre platser. Inga spärrar, svårighet styrs bara av monsternivå.",
+    "seed": "Allt geografiskt (biom, tiles, dekor, platser) använder world_seed som skapas en gång per sparfil och aldrig ändras, så kartan är densamma i varje game. Bara monster och butikslager använder game_seed (spawnzoner.json).",
+    "refs": ["varld_stor.json", "bana1_stor.json", "spawnzoner.json", "monster_niva.json", "musik.md", "quests.json"]
+  },
+  "biomgranser": {
+    "region_for_chunk": [
+      "1. Delområden i bana1_stor.json och namngivna regioners mittchunk vinner alltid sin egen chunk.",
+      "2. Säkra regioner (sakert: true) tar bara sin mittchunk, oavsett radie.",
+      "3. Annars: regioner med chebyshevavstånd till mittchunk ≤ radie. Flera träffar: minst euklidiskt avstånd vinner, vid lika vinner regionen med lägst ring, sedan lägst id i bokstavsordning.",
+      "4. Ingen träff: mellanmark. Biom och huvudfamilj från närmaste region (euklidiskt), samma likaregel."
+    ],
+    "ringgrans": "Ring väljs med avstånd d i chunkar från startpunkten mätt till chunkens mitt: ring = den första ring där fran ≤ d < till.",
+    "overgang": {
+      "bredd_rutor": 12,
+      "regel": "Där två biom möts blandas tiles i ett band 12 rutor in på var sida om chunkgränsen. Andel av grannbiomets tiles = 50 procent vid gränsen och faller linjärt till 0 vid bandets kant. Dekor i bandet tas ur biomens overgangar (varld_stor.json biomer.<id>.overgangar).",
+      "brus": "Gränslinjen förskjuts upp till 6 rutor med lågfrekvent brus (world_seed) så att den inte blir rak.",
+      "par_utan_overgang": "Fjäll och träsk, fjäll och kust, fjäll och ask samt skog och kust saknar egen övergång. Om de möts: fjäll går via skog (vindtall), skog och kust går via träsk (myr, sedan tång). Bandbredd 24 rutor.",
+      "monster": "Övergångsbandet spawnar huvudfamiljen för chunkens egen region, ingen mix.",
+      "vagar": "Vägar korsar gränser utan avbrott. Vägytan byter tile vid gränsen (stig, spång, bränd väg, stenväg)."
+    },
+    "vagbredd": {
+      "vag": 3,
+      "stig": 2,
+      "spang": 2,
+      "ebbstig": 2,
+      "bergspass": 3,
+      "gata": 4,
+      "trappa": 3,
+      "schakt": 2
+    },
+    "vagar_spawn": "Inom 4 rutor från väg spawnar högst hälften av normal täthet, så att vägar känns lite tryggare. Ingen säker zon."
   },
   "monsterpooler": {
+    "regel": "Pool = biomens egna_monster (varld_stor.json) där undertypens fasta nivå ligger i chunkens nivåfönster. Fönstret är malniva(d) ± 2, klippt till ringens nivaband.",
+    "fallback": [
+      "1. Finns ingen undertyp i fönstret: vidga fönstret till hela ringens band.",
+      "2. Fortfarande tomt: ta undertypen i biomens pool med nivå närmast malniva(d). Stats ändras aldrig.",
+      "3. Biomet saknar helt monster i bandet: använd närmaste regions huvudfamilj och dess undertyper enligt steg 1 till 2. Ska inte inträffa i ring 1 till 7 (se tackning)."
+    ],
     "tathet_per_chunk": {
-      "ring_0": [0, 1],
-      "ring_1": [0, 1],
-      "ring_2": [0, 1],
-      "ring_3_och_ut": [0, 1]
+      "ring_0": [0, 2],
+      "ring_1": [0, 2],
+      "ring_2": [0, 2],
+      "ring_3": [0, 2],
+      "ring_4": [0, 2],
+      "ring_5": [0, 2],
+      "ring_6": [0, 2],
+      "ring_7": [0, 2],
+      "ring_3_och_ut": [0, 2],
+      "not": "Monster per chunk och game i mellanmark, slumpat jämnt i intervallet (medel 1,0). En chunk är 128 × 128 och skärmen ser radie 52, alltså π × 52² / 128² = 0,52 chunk per skärmläge: medel 1,0 per chunk ger cirka 0,5 monster per skärmläge, ungefär 1 monster per 2 skärmlägen (förut 0,5 per chunk, 1 per 4). Klart glesare än regionerna (minst 1,5 × mellanmarken, tathet.region_golv). ring_3_och_ut finns kvar för koden och är lika med ring_3 till ring_7. Namngivna regioner och delområden använder sina egna tal (varld_stor.json regioner[].tathet, bana1_stor.json)."
     },
-    "elit": {
-      "mellanmark_champion_chance_per_chunk": 0.1,
-      "mellanmark_champion_min_ring": 2,
-      "mellanmark_unika": false
+    "grupper": "Grupper om 1 till 3, ledare (gravargsledare, skelett_kapten och liknande) alltid ensam med 2 till 3 av närmaste lägre undertyp som följe.",
+    "elit": "Mellanmark: bara champions, inga unika. Från ring 2 blir en mellanmarksgrupp champion med chans 0,10 (hela gruppen, monster_niva.json elites.champion), högst en per chunk. Med tätheten 0 till 2 monster per chunk (cirka 0,5 grupper per chunk) blir det ungefär en championgrupp per 20 chunkar. Ring 0 och 1 har inga champions i mellanmarken. Unika finns bara i namngivna områden enligt spawnzoner.json session_roll.uniques. Rullas med chunk_seed vid spawn som övriga monster. Belöning: elites.champion.loot (en extra rullning, drop 1,0, kvalitet × 1,5) ovanpå undertypens tabell i drop_tabeller.json, XP × 3.",
+    "per_biom": [
+      {
+        "biom": "skog",
+        "nivaband": [1, 30],
+        "pool": "skog_vargar 1 till 6, skog_kolare 3 till 5, skog_gravfolk 7 till 9, kryp 12 till 18, ytterkant (ruttfolk 24 till 25, sprickpilgrim 28, vriden jätte 30)",
+        "ring": [0, 2]
+      },
+      {
+        "biom": "trask",
+        "nivaband": [3, 30],
+        "pool": "smittade myrbor 3 till 5, trask_myrlik 7 till 8, dimgastar 11 till 13, lyktgastar och irrbloss 16 till 18, ruttfolk 24 till 27, Sprickans väsen 28 till 30 (sprickväsen vikt 0,25)",
+        "ring": [2, 6]
+      },
+      {
+        "biom": "fjall",
+        "nivaband": [4, 30],
+        "pool": "vargar och björnar 4 till 6, frusna stupade 7 till 9, fjällvättar 11 till 12, bergsulvar och fjällbjörnar 14 till 15, gruvkryp 12 till 18, järnbröder 16 till 18, galna munkar 20 till 25, ytterkant 28 till 30",
+        "ring": [3, 4]
+      },
+      {
+        "biom": "kust",
+        "nivaband": [3, 30],
+        "pool": "smittade strandbor 3 till 5, skeppsbrutna skelett 7 till 9, korpfolk 12 till 13, drunknade 12 till 15, lyktgastar 16 till 18, drunknade vakter 19 till 21, havsgastar och dödsljus 28 till 30",
+        "ring": [3, 6]
+      },
+      {
+        "biom": "ask",
+        "nivaband": [3, 30],
+        "pool": "smittade askbor 3 till 5, kolnade skelett 8 till 9, glödbaggar 12 till 18, askdemoner 17 till 23, askans präster 20, ruttfolk 24 till 25, ytterkant 28 till 30",
+        "ring": [2, 5]
+      }
+    ],
+    "familjeregel": "En chunk spawnar en familj, ingen mix. Familjen är huvudfamiljen från närmaste region om biomet har en undertyp av den familjen i ringens band, annars den egna_monster-grupp i biomet vars undertyp ligger närmast malniva(d).",
+    "tackning": "Varje biom har i varje ringband 1 till 7 (ring 7 band 28 till 30) minst en familj, och varje familj som finns i en cell har minst 2 undertyper på minst 2 nivåer, eftersom en chunk bara spawnar en familj. Kontrolleras med spel/design/verktyg/tackning.py. Fallback steg 2 och 3 behövs då inte i mellanmark.",
+    "vikter": {
+      "regel": "Undertyp väljs viktat inom familjens pool i cellen. Standardvikt 1. Gruppens fält vikter i varld_stor.json skriver över.",
+      "undertyper": {
+        "sprickvasen": 0.25,
+        "vriden_jatte": 0.5
+      },
+      "max_andel": {
+        "sprickvasen": 0.15,
+        "vriden_jatte": 0.25
+      },
+      "sprickvasen": "Tungt väsen knutet till Sprickans botten (regionens undertyp, full vikt där). I mellanmarken bara i träsket nära Sprickan, ring 6 och 7, vikt 0,25. Andel enligt tackning.py ca 3 procent av mellanmarksspawnen (utan vikter ca 6 procent, mål högst 15).",
+      "vriden_jatte": "Tung (HP 2709), vikt 0,5 så att sprickpilgrimen blir ring 7:s vanliga fiende och jätten mer sällsynt."
+    },
+    "ring_falt": "per_biom.ring = lägsta och högsta ringzon bland biomets regioner i varld_stor.json (t.ex. kust 3 till 6 med Sista ljuset i ring 6). Mellanmarken använder biomets pool i alla ringar 1 till 7.",
+    "tathet": {
+      "regel": "Tätheten är data: tathet_per_chunk per ring för mellanmark, regioner[].tathet i varld_stor.json och monster_per_game i bana1_stor.json. XP per monster räknas med spelets formel (monster_niva.json meta.xp_regel) från den råa basen xp i monsterfamiljer.json. Räkna om med spel/design/verktyg/tathet.py när något av talen eller monstrens XP ändras.",
+      "utforskad_andel": {
+        "mellanmark": 0.5,
+        "namngivna_ring_0_till_2": 1.0,
+        "namngivna_ring_3_och_ut": 0.5,
+        "bossar": 1.0
+      },
+      "utforskade_mellanmarkschunkar": {
+        "ring_0": 9,
+        "ring_1": 18,
+        "ring_2": 20,
+        "ring_3": 16,
+        "ring_4": 16,
+        "ring_5": 16,
+        "ring_6": 20
+      },
+      "utforskning_not": "Modell: i akt 1 rensas alla namngivna platser (som bana1_stor.json maltavla), längre ut hälften. Mellanmark: hjälten korsar ringen längs vägarna och ser ungefär så många mellanmarkschunkar som anges (högst hälften av ringen).",
+      "malniva_yttre_kant": {
+        "ring_0": 3,
+        "ring_1": 9,
+        "ring_2": 13,
+        "ring_3": 15,
+        "ring_4": 19,
+        "ring_5": 24,
+        "ring_6": 30
+      },
+      "modell_radie": 15,
+      "bossar_xp": "Spelet multiplicerar bossars kill-XP med monster_niva.json boss_xp_faktor (akt 1 1,0, akt 2 0,17, akt 3 0,37, akt 4 0,3, akt 5 1,0; underbossar 0,4 × aktens faktor), framräknat med tathet.py --forslag. xp i monsterfamiljer.json är rå bas utan faktor.",
+      "resultat": "tathet.py 2026-10-31 med spelets formel, mellanmark 1,0 per chunk, champions 10 procent av grupperna från ring 2, regiongolv 1,5, allt i ring 0 till 2 rensat: ring 0 nivå 3 (802 XP), ring 1 9 (10953), ring 2 13 (24911), ring 3 15 (36942), ring 4 19 (66330), ring 5 24 (117124), ring 6 29 (186753). Mål 3, 9, 13, 15, 19, 24, 30. Kortaste vägen (akt1.py): nivå 7 före ring 2, 11 efter Benkungen.",
+      "malniva_not": "malniva_yttre_kant gäller när allt namngivet i ring 0 till 2 rensas (tathet.py). Kortaste vägen har egna mål: malniva_kortaste_vag (spel/design/verktyg/akt1.py). Båda nås samtidigt med nuvarande data.",
+      "malniva_kortaste_vag": {
+        "fore_ring_2": 7,
+        "efter_akt_1": 11,
+        "not": "Nivå 6 efter Vargaby, 7 efter Ulvhild i Idets skog (6102 XP), alltså före ring 2; nivå 8 vid Gravåsen, 11 efter Benkungen (15119 XP)."
+      },
+      "region_golv": 1.5,
+      "region_golv_not": "Region med öppna chunkar har minst region_golv × mellanmarkens medel monster per chunk (1,5 × 1,0), så att regioner alltid är tätare än mellanmarken. tathet.py använder samma golv."
+    },
+    "elit_modell": {
+      "fran_ring": 2,
+      "chans_per_grupp": 0.1,
+      "not": "Modellvärden för verktygen (tathet.py): andel mellanmarksmonster som är champions (hela gruppen), XP × 3 och nivå + 1 enligt monster_niva.json elites.champion. Samma tal som monsterpooler.elit."
     }
   },
+  "platser": {
+    "typer": {
+      "by": {
+        "min_avstand_chunk": 3,
+        "per_biom": "bara namngivna (stader.json)",
+        "placering": "på huvudväg"
+      },
+      "lager": {
+        "min_avstand_rutor": 96,
+        "per_biom": [2, 4],
+        "placering": "inom 8 rutor från väg eller stig, minst 1,5 chunk från by och annat läger",
+        "sakert": "radie 5 till 6 rutor, inga monster"
+      },
+      "ruin": {
+        "min_avstand_rutor": 48,
+        "per_chunk": [0, 2],
+        "placering": "var som helst utom på väg, minst 16 rutor från läger"
+      },
+      "grotta": {
+        "min_avstand_rutor": 128,
+        "per_biom": [2, 3],
+        "placering": "minst 16 rutor från väg, nås via stig. Instans med teleport (atkomst: teleport)"
+      },
+      "kyrka": {
+        "min_avstand_rutor": 128,
+        "per_biom": [1, 2],
+        "placering": "vid by eller väg"
+      },
+      "fyr": {
+        "min_avstand_rutor": 192,
+        "per_biom": "bara kust",
+        "placering": "vid kustlinje"
+      },
+      "gruva": {
+        "min_avstand_rutor": 128,
+        "per_biom": "bara fjäll",
+        "placering": "i sluttning, inom 1 chunk från väg"
+      },
+      "runsten": {
+        "min_avstand_rutor": 64,
+        "per_biom": [1, 3],
+        "placering": "glänta eller vägkorsning. Aldrig mellan de tre runstenarna i startskogen"
+      },
+      "handelseplats": {
+        "min_avstand_rutor": 48,
+        "per_delomrade": [1, 1],
+        "placering": "ankare från varldshandelser.json"
+      },
+      "npc_grupp": {
+        "min_avstand_rutor": 32,
+        "per_delomrade": [0, 1],
+        "placering": "på eller vid väg, minst 24 rutor från läger, minst 18 från hjältens ingång"
+      }
+    },
+    "relativt_start": [
+      "Ingen grotta, kyrka eller bana inom 2 chunkar från startpunkten (startskogen är fri att utforska först).",
+      "Ring 0 får bara ruin, runsten, läger och händelseplatser.",
+      "Varje huvudväg ska ha ett läger eller en säker plats högst 2 chunkar från varje stad den når."
+    ],
+    "algoritm": [
+      "1. Placera fasta POI:er ur varld_stor.json pois på sina ankare.",
+      "2. Per biom: dra antal ur per_biom med world_seed, placera med Poisson disk (min_avstand), förkasta kandidater som bryter placering.",
+      "3. Kandidat som inte får plats efter 30 försök hoppas över; inget annat flyttas.",
+      "4. Ge varje plats ett ankare-id <typ>_<cx>_<cy>_<n> som quests och händelser kan peka på."
+    ],
+    "kollision": "Platser får inte ligga på väg, i vatten eller inom 8 rutor från en teleportingång."
+  },
+  "svarighet_avstand": {
+    "malniva": "malniva(d) = linjär interpolation mellan punkterna, avrundat till heltal.",
+    "punkter": [
+      [0, 1],
+      [2, 3],
+      [4, 6.5],
+      [6, 10],
+      [8, 14.5],
+      [10, 19],
+      [12, 24.5],
+      [15, 30]
+    ],
+    "efter_15": "30 (maxnivå). Ytterkant enligt varld_stor.json zonmodell.",
+    "exempel": [
+      {
+        "d": 1,
+        "malniva": 2
+      },
+      {
+        "d": 3,
+        "malniva": 5
+      },
+      {
+        "d": 5,
+        "malniva": 8
+      },
+      {
+        "d": 7,
+        "malniva": 12
+      },
+      {
+        "d": 9,
+        "malniva": 17
+      },
+      {
+        "d": 11,
+        "malniva": 22
+      },
+      {
+        "d": 13,
+        "malniva": 26
+      }
+    ],
+    "regel": "malniva väljer bara vilka undertyper som får spawna (fönster ± 2). Stats är fasta per undertyp, ingen skalning. Namngivna regioner med egen nivaband går före.",
+    "xp": "BESLUT: ingen avstånds-XP. Hjältens XP kommer bara från monstrens xp per monster (monsterfamiljer.json, champions och unika med sina xp_mult) med xp_penalty (monster_niva.json). Ingen multiplikator för avstånd, ring eller chunk, inte heller för quest-monster eller bossar. Svårighet styrs enbart av monsternivå efter ring (malniva och ringens band). Kurva: monster_niva.json hero_xp_curve; kontroll akt 1 i bana1_stor.json nivakurva och per ring med spel/design/verktyg/tathet.py.",
+    "kontroll_per_ring": "Målnivå vid ringens yttre kant i monsterpooler.tathet.malniva_yttre_kant. Räknas med spel/design/verktyg/tathet.py när tätheten eller monstrens XP ändras."
+  },
+  "ljud_och_musik": {
+    "musik_regel": "Enligt musik.md: två spår nu. Byte med korsfade 2 sekunder när hjälten går in i eller ut ur en by eller ett läger.",
+    "per_biom": {
+      "skog": {
+        "musik": "dark_forest_theme",
+        "ambient": ["vind i granar", "korpar långt bort", "kvistar som knäcker", "vargylande på natten"],
+        "natt": "tystare vind, uggla, ylande närmare"
+      },
+      "trask": {
+        "musik": "dark_forest_theme",
+        "ambient": ["bubblor i myren", "grodor", "klockor under vattnet (svagt)", "droppande"],
+        "natt": "grodorna tystnar, klockorna hörs tydligare",
+        "variant_rutt": "pulserande lågt brus, fåglar som sjunger fel"
+      },
+      "fjall": {
+        "musik": "dark_forest_theme (reserv: stone_road när den tas in)",
+        "ambient": ["stark vind", "rasande sten", "hackor långt nere i berget"],
+        "natt": "vinden ylar, hackorna fortsätter"
+      },
+      "kust": {
+        "musik": "dark_forest_theme",
+        "ambient": ["vågor mot klippor", "måsar och korpar", "knarrande vrak"],
+        "natt": "bara vågor och en avlägsen klocka"
+      },
+      "ask": {
+        "musik": "dark_forest_theme",
+        "ambient": ["sprakande glöd", "dov rök som susar", "avlägsna skrik", "aska som faller (mjukt brus)"],
+        "natt": "glöden lyser starkare, skriken närmare"
+      }
+    },
+    "platser": {
+      "by_och_lager": "enchanted_forest_of_min, ambient eld och röster",
+      "rensad_stad": "ingen musik, bara vind, sedan by-spåret från Återbefolkad 1",
+      "grotta_och_kyrka": "ingen musik, ambient droppande och eko",
+      "boss": "ingen egen musik än (musik.md)"
+    },
+    "volym": "Ambient 30 procent av musikvolymen som standard, eget reglage i inställningar, sparas.",
+    "overgang": "Ambient blandas linjärt över biomgränsens övergångsband."
+  },
+  "questplatser": {
+    "regel": "Questmallar i varld_stor.json quest_mallar placerar sina ankare med reglerna här. Inga döda X eller samla X, inga spärrar.",
+    "mallar": {
+      "spar": {
+        "ankare": [3, 5],
+        "avstand_mellan_rutor": [24, 64],
+        "regel": "Ankarna ligger i rad från givaren mot mal_poi, högst 1 chunk från väg. mal_poi i samma eller nästa region."
+      },
+      "budbarare": {
+        "ankare": 2,
+        "regel": "Från givare till mottagare längs väg, minst 2 chunkar mellan dem. Mottagaren är alltid en säker plats eller en NPC i ett läger."
+      },
+      "mysterium": {
+        "ankare": [2, 4],
+        "regel": "Ankarna inom en region eller instans. Minst ett ankare kräver tid (natt) för stämning, aldrig för att låsa något."
+      },
+      "val_tva_npc": {
+        "ankare": 2,
+        "regel": "De två NPC:erna i olika läger eller byar, högst 3 chunkar isär, båda nåbara på väg."
+      },
+      "eskort": {
+        "ankare": 2,
+        "regel": "Start och mål på samma väg, högst 2 chunkar. NPC:n kan inte förlora questen: faller den blir det ett nytt steg (varld_stor.md)."
+      },
+      "aterlamning": {
+        "ankare": 2,
+        "regel": "Föremålet ligger i ruin, grotta eller kyrka; ägaren i närmaste säkra plats eller by."
+      }
+    },
+    "per_region": "Högst 2 aktiva questankare per chunk så att kartan inte blir rörig. Ring 0 och 1 använder främst platserna i varldshandelser.json och bana1_stor.json.",
+    "markering": "Questankare syns inte på kartan förrän questen är aktiv. Världshändelser markeras aldrig."
+  },
   "karta_och_dimma": {
-    "dimma_radie_rutor": 14,
-    "dimma_radie_enheter": 28,
-    "regel": "Avslöjade rutor sparas i världskoordinater per sparfil tillsammans med world_seed."
+    "avslojning": "Kartan avslöjas i en cirkel med radie 14 rutor (28 världsenheter) runt hjälten, mätt från hjältens ruta, uppdaterat när hjälten byter ruta.",
+    "lagring": "Avslöjat lagras per chunk som en bitmask 64 × 64 rutor (512 byte, gärna RLE-packad) i världskoordinater, inte relativt ett ankare. Nyckel cx,cy. Bara chunkar med minst en avslöjad ruta sparas.",
+    "sparfil": "Avslöjade chunkar sparas i sparfilen (karta.avslojat) tillsammans med världens frö world_seed, som skapas en gång per sparfil. Ny sparfil = nytt frö och tom karta. Laddning läser tillbaka masken oförändrad.",
+    "tab_karta": "Tab-kartan och minikartan ritar terräng, vägar och regionnamn bara i avslöjade rutor. Oavslöjat är svart (#000000) över hela kartans fönster, även utanför de laddade chunkarna. Ikoner: besökta byar, läger och städer, besökta waypoints (rod_portal och stadsvägstenar) och hjälten. POI:er syns först när hjälten varit där.",
+    "markeringar": "Questankare syns först när questen är aktiv (questplatser.markering), även i oavslöjat område. Världshändelser markeras aldrig.",
+    "inga_sparrar": "Dimman spärrar ingenting: ingen rörelse, teleport eller snabbresa kräver avslöjad karta. Snabbresa kräver bara att waypointen är besökt (meta.waypoints).",
+    "ingen_tid": "Avslöjat blir aldrig dimma igen och påverkas inte av dygnet."
   }
 }

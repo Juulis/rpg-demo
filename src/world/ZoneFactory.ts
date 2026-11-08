@@ -10,6 +10,7 @@ import { ForestGroundChunks } from './ForestGroundChunks';
 import { BigWorldStreamGround } from './bigWorld/BigWorldStreamGround';
 import { BIG_WORLD_STREAMING_ENABLED } from './bigWorld/bigWorldConfig';
 import { bigWorldCityPortalWorld } from './bigWorld/bigWorldPortals';
+import { campStartPos } from './bigWorld/heroRegion';
 import { applyStartskogenAnchor } from './bigWorld/startskogenSpawn';
 import {
   CITY_RNG_SEED,
@@ -143,7 +144,7 @@ export class ZoneFactory {
     const zone = new Zone('forest', 'startskogen', 4096, 4096);
     zone.bigWorldStreaming = true;
     zone.safeRadius = FOREST_SAFE_RADIUS;
-    zone.entry = { x: 0, y: 4 };
+    zone.entry = campStartPos();
     const ground = new BigWorldStreamGround(this.assets);
     const decor: Container[] = [];
     const decorAnims: StripAnimSprite[] = [];

@@ -36,7 +36,7 @@
   "family_tables": {
     "ododa": {
       "drop_chance": 0.45,
-      "gold_mult": 1.0,
+      "gold_mult": 1,
       "category_weights": {
         "vapen": 30,
         "rustning": 25,
@@ -357,6 +357,296 @@
         },
         "note": "Beväpnad och bepansrad, släpper även rustning."
       }
+    },
+    "vandrande_skelett": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 2,
+      "ilvl": 2,
+      "weapon_type": "svard",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "svard"
+      }
+    },
+    "skogsspindel": {
+      "family": "insekter",
+      "table": "insekter",
+      "monster_level": 2,
+      "ilvl": 2,
+      "weapon_type": null
+    },
+    "forvriden_jagare": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 3,
+      "ilvl": 3,
+      "weapon_type": "bage",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "bage"
+      }
+    },
+    "ruttnande_lik": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 4,
+      "ilvl": 4,
+      "weapon_type": null,
+      "table_override": {
+        "category_weights": {
+          "amulett": 10,
+          "ring": 10,
+          "guld": 5,
+          "ben": 25,
+          "mat": 50
+        },
+        "note": "Obeväpnad: benföremål i stället för vapen och rustning."
+      }
+    },
+    "smittad_bybo": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 5,
+      "ilvl": 5,
+      "weapon_type": null,
+      "table_override": {
+        "category_weights": {
+          "amulett": 10,
+          "ring": 10,
+          "guld": 5,
+          "ben": 25,
+          "mat": 50
+        },
+        "note": "Obeväpnad: benföremål i stället för vapen och rustning."
+      }
+    },
+    "likatare_varg": {
+      "family": "bestar",
+      "table": "bestar",
+      "monster_level": 8,
+      "ilvl": 8,
+      "weapon_type": null
+    },
+    "gravgast": {
+      "family": "gastar",
+      "table": "gastar",
+      "monster_level": 8,
+      "ilvl": 8,
+      "weapon_type": null
+    },
+    "drunknad": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 12,
+      "ilvl": 12,
+      "weapon_type": "svard",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "svard"
+      }
+    },
+    "trask_igel": {
+      "family": "insekter",
+      "table": "insekter",
+      "monster_level": 12,
+      "ilvl": 12,
+      "weapon_type": null
+    },
+    "forvriden_gruvarbetare": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 16,
+      "ilvl": 16,
+      "weapon_type": "klubba",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "klubba"
+      }
+    },
+    "gruvdemon": {
+      "family": "demoner",
+      "table": "demoner",
+      "monster_level": 17,
+      "ilvl": 17,
+      "weapon_type": null
+    },
+    "askkultist": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 20,
+      "ilvl": 20,
+      "weapon_type": "dolk",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "dolk"
+      }
+    },
+    "brandskelett": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 21,
+      "ilvl": 21,
+      "weapon_type": "yxa",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "yxa"
+      }
+    },
+    "myrlik": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 8,
+      "ilvl": 8,
+      "weapon_type": "svard",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "svard"
+      }
+    },
+    "myrhund": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 7,
+      "ilvl": 7,
+      "weapon_type": null,
+      "table_override": {
+        "category_weights": {
+          "amulett": 10,
+          "ring": 10,
+          "guld": 5,
+          "ben": 25,
+          "mat": 50
+        },
+        "note": "Obeväpnad: benföremål i stället för vapen och rustning."
+      }
+    },
+    "fjallvatte": {
+      "family": "gastar",
+      "table": "gastar",
+      "monster_level": 12,
+      "ilvl": 12,
+      "weapon_type": null
+    },
+    "bergsulv": {
+      "family": "bestar",
+      "table": "bestar",
+      "monster_level": 15,
+      "ilvl": 15,
+      "weapon_type": null
+    },
+    "sprickvasen": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 29,
+      "ilvl": 29,
+      "weapon_type": null,
+      "table_override": {
+        "category_weights": {
+          "amulett": 10,
+          "ring": 10,
+          "guld": 5,
+          "ben": 25,
+          "mat": 50
+        },
+        "note": "Obeväpnad: benföremål i stället för vapen och rustning."
+      }
+    },
+    "lyktgast": {
+      "family": "gastar",
+      "table": "gastar",
+      "monster_level": 16,
+      "ilvl": 16,
+      "weapon_type": null
+    },
+    "klockdrunknad": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 15,
+      "ilvl": 15,
+      "weapon_type": "svard",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "svard"
+      }
+    },
+    "havsgast": {
+      "family": "gastar",
+      "table": "gastar",
+      "monster_level": 28,
+      "ilvl": 28,
+      "weapon_type": null
+    },
+    "irrbloss": {
+      "family": "gastar",
+      "table": "gastar",
+      "monster_level": 18,
+      "ilvl": 18,
+      "weapon_type": null
+    },
+    "fjallbjorn": {
+      "family": "bestar",
+      "table": "bestar",
+      "monster_level": 14,
+      "ilvl": 14,
+      "weapon_type": null
+    },
+    "jarnbroder": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 18,
+      "ilvl": 18,
+      "weapon_type": "klubba",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "klubba"
+      }
+    },
+    "drunknad_vakt": {
+      "family": "ododa",
+      "table": "ododa",
+      "monster_level": 19,
+      "ilvl": 19,
+      "weapon_type": "svard",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "svard"
+      }
+    },
+    "sprickpilgrim": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 28,
+      "ilvl": 28,
+      "weapon_type": "klubba",
+      "weapon_drop": {
+        "chance": 0.25,
+        "weapon_type": "klubba"
+      }
+    },
+    "vriden_jatte": {
+      "family": "forvridna",
+      "table": "forvridna",
+      "monster_level": 30,
+      "ilvl": 30,
+      "weapon_type": null,
+      "table_override": {
+        "category_weights": {
+          "amulett": 10,
+          "ring": 10,
+          "guld": 5,
+          "ben": 25,
+          "mat": 50
+        },
+        "note": "Obeväpnad: benföremål i stället för vapen och rustning."
+      }
+    },
+    "dodsljus": {
+      "family": "gastar",
+      "table": "gastar",
+      "monster_level": 30,
+      "ilvl": 30,
+      "weapon_type": null
     }
   },
   "bosses": {
@@ -370,10 +660,10 @@
       ],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
@@ -381,7 +671,7 @@
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -416,10 +706,10 @@
       ],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
@@ -427,7 +717,7 @@
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -458,10 +748,10 @@
       ],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
@@ -469,7 +759,7 @@
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -500,10 +790,10 @@
       ],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
@@ -511,7 +801,7 @@
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -550,10 +840,10 @@
       ],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
@@ -561,7 +851,7 @@
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -604,10 +894,10 @@
       ],
       "no_drop_chance": 0,
       "quality_bonus": {
-        "magic": 2.0,
-        "rare": 3.0,
-        "set": 3.0,
-        "legendary": 3.0
+        "magic": 2,
+        "rare": 3,
+        "set": 3,
+        "legendary": 3
       },
       "guaranteed": [
         {
@@ -615,7 +905,7 @@
           "count": 2
         }
       ],
-      "gold_mult": 8.0,
+      "gold_mult": 8,
       "first_kill_bonus": {
         "min_quality": "rare",
         "count": 1
@@ -627,10 +917,129 @@
           "chance": 0.25
         }
       ]
+    },
+    "korpmodern": {
+      "family": "gastar",
+      "monster_level": 13,
+      "weapon_type": "bage",
+      "underboss": true,
+      "drops": [
+        3,
+        5
+      ],
+      "no_drop_chance": 0,
+      "quality_bonus": {
+        "magic": 1.5,
+        "rare": 2,
+        "set": 2,
+        "legendary": 2
+      },
+      "guaranteed": [
+        {
+          "item": "rokerat_hogrev",
+          "count": 1
+        }
+      ],
+      "gold_mult": 5,
+      "first_kill_bonus": {
+        "min_quality": "rare",
+        "count": 1
+      },
+      "named_drops": [
+        {
+          "legendary": "korpmoderns_bage",
+          "chance": 0.15
+        }
+      ],
+      "ilvl": 15,
+      "note": "Underboss enligt monster_niva.json underboss_regel.loot: som boss men färre drops och lägre bonus. Questbelöningen ges av questvalet.",
+      "weapon_drop": {
+        "chance": 0.4,
+        "weapon_type": "bage"
+      }
+    },
+    "jarnmunken": {
+      "family": "forvridna",
+      "monster_level": 17,
+      "weapon_type": "klubba",
+      "underboss": true,
+      "drops": [
+        3,
+        5
+      ],
+      "no_drop_chance": 0,
+      "quality_bonus": {
+        "magic": 1.5,
+        "rare": 2,
+        "set": 2,
+        "legendary": 2
+      },
+      "guaranteed": [
+        {
+          "item": "rokerat_hogrev",
+          "count": 1
+        }
+      ],
+      "gold_mult": 5,
+      "first_kill_bonus": {
+        "min_quality": "rare",
+        "count": 1
+      },
+      "named_drops": [
+        {
+          "legendary": "jarnmunkens_gordel",
+          "chance": 0.15
+        }
+      ],
+      "ilvl": 19,
+      "note": "Underboss enligt monster_niva.json underboss_regel.loot: som boss men färre drops och lägre bonus. Questbelöningen ges av questvalet.",
+      "weapon_drop": {
+        "chance": 0.4,
+        "weapon_type": "klubba"
+      }
+    },
+    "askans_profet": {
+      "family": "forvridna",
+      "monster_level": 23,
+      "weapon_type": "dolk",
+      "underboss": true,
+      "drops": [
+        3,
+        5
+      ],
+      "no_drop_chance": 0,
+      "quality_bonus": {
+        "magic": 1.5,
+        "rare": 2,
+        "set": 2,
+        "legendary": 2
+      },
+      "guaranteed": [
+        {
+          "item": "rokerat_hogrev",
+          "count": 1
+        }
+      ],
+      "gold_mult": 5,
+      "first_kill_bonus": {
+        "min_quality": "rare",
+        "count": 1
+      },
+      "named_drops": [
+        {
+          "legendary": "tystnadens_stilett",
+          "chance": 0.15
+        }
+      ],
+      "ilvl": 25,
+      "note": "Underboss enligt monster_niva.json underboss_regel.loot: som boss men färre drops och lägre bonus. Questbelöningen ges av questvalet.",
+      "weapon_drop": {
+        "chance": 0.4,
+        "weapon_type": "dolk"
+      }
     }
   },
   "potion_weights_by_tier": {
-    "note": "tier enligt ilvl: 1 = 1 till 6, 2 = 7 till 14, 3 = 15+. Mat och naturliga förbrukningsvaror.",
     "1": {
       "torkat_kott": 50,
       "skogsörtste": 35,
@@ -647,7 +1056,8 @@
       "skogsörtste": 25,
       "vargblod": 15,
       "varlbrygd": 20
-    }
+    },
+    "note": "tier enligt ilvl: 1 = 1 till 6, 2 = 7 till 14, 3 = 15+. Mat och naturliga förbrukningsvaror."
   },
   "elite_loot_ref": "monster_niva.json elites",
   "legendary_sources": {

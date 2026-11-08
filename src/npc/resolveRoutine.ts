@@ -51,11 +51,13 @@ export function resolveRoutinePlacement(
     };
   }
 
-  const routine = templateId ? undefined : routineForNpc(def.id);
+  const named = routineForNpc(def.id);
+  const routine = named;
+  const useTemplate = !named && !!templateId;
   const routineArea = routine?.omrade ? routineAreaId(routine.omrade) : def.area;
   if (routineArea !== zoneAreaId) return null;
 
-  const seg = activeRoutineSegment(def.id, worldTime, templateId);
+  const seg = activeRoutineSegment(def.id, worldTime, useTemplate ? templateId : undefined);
   const plats = seg?.plats ?? routine?.home;
   if (!plats) return null;
   const pos = anchorPosition(zoneAreaId, plats);
